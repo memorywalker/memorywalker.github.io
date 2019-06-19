@@ -1,0 +1,30 @@
+language: node_js
+node_js: stable
+
+# assign build branches
+branches:
+  only:
+    - hexo
+
+# cache this directory
+cache:
+  directories:
+    - node_modules
+
+# S: Build Lifecycle
+before_install:
+  - npm install -g hexo-cli # install hexo
+  #- git clone https://github.com/renyuzh/hexo-theme-next.git themes/next 
+
+install:
+  - npm install # install by package.json
+
+script:
+  - hexo generate
+
+after_success:
+  - git config --global user.name "memorywalker"
+  - git config --global user.email "eddy.wd5@gmail.com"
+  - sed -i "s/gh_token/${GH_TOKEN}/g" _config.yml #使用travisCI中配置的token替换掉_config.yml中对应的占位符
+  - hexo deploy
+# E: Build LifeCycle
