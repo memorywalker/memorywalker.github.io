@@ -1,4 +1,8 @@
 # memorywalker
+
 For the memory
 
-http://aquar25.github.io/memorywalker
+[![Build Status](https://www.travis-ci.org/memorywalker/memorywalker.github.io.svg?branch=hexo)](https://www.travis-ci.org/memorywalker/memorywalker.github.io)
+
+
+http://memorywalker.github.io/
