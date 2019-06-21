@@ -8,13 +8,14 @@ branches:
 
 # cache this directory
 cache:
-  directories:
-    - node_modules
+  directories:  # 这两个目录不用每次都更新
+    #- node_modules
+    #- themes
 
 # S: Build Lifecycle
 before_install:
   - npm install -g hexo-cli # install hexo
-  #- git clone https://github.com/renyuzh/hexo-theme-next.git themes/next 
+  #- git clone https://github.com/theme-next/hexo-theme-next themes/next 
 
 install:
   - npm install # install by package.json
