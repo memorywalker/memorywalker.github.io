@@ -9,8 +9,8 @@ branches:
 # cache this directory
 cache:
   directories:  # 这两个目录不用每次都更新
-    #- node_modules
-    #- themes
+    - node_modules
+    - themes
 
 # S: Build Lifecycle
 before_install:
@@ -22,7 +22,6 @@ install:
 
 script:
   - hexo clean
-  - hexo generate
   - hexo generate
 
 after_success:

@@ -86,6 +86,31 @@ INFO  Hexo is running at http://0.0.0.0:4000/memorywalker/. Press Ctrl+C to stop
 
 4. 升级主题 `$ cd themes/next` and then `$ git pull`
 
+5. 安装next主题后，使用`Travis-CI`自动部署会出现访问页面时主题用到的资源无法加载，需要修改原来项目`_config.yml`中的url如下:
+```yml
+url: http://memorywalker.github.io
+root: /
+```
+
+* 安装本地搜索插件 
+
+`cnpm install hexo-generator-searchdb --save`
+
+修改`themes\next\_config.yml`找到`local_search`，设置为true
+
+修改项目的`_config.yml` 添加如下：
+```yml
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+  content: true
+```
+
+
+
+
 ### Github部署
 
 GitHub Pages是针对个人提供的页面，一个用户只能有一个这样的仓库。这个仓库的名称必须是`用户名.github.io`，对应的访问网址也是`用户名.github.io`
