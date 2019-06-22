@@ -23,6 +23,7 @@ install:
 script:
   - hexo clean
   - hexo generate
+  - hexo generate
 
 after_success:
   - git config --global user.name "memorywalker"
