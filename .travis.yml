@@ -9,7 +9,7 @@ branches:
 # cache this directory
 cache:
   directories:  # 这两个目录不用每次都更新
-    #- node_modules
+    - node_modules
     #- themes
 
 # S: Build Lifecycle
