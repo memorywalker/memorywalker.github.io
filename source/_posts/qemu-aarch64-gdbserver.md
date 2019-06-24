@@ -300,7 +300,7 @@ qemu-system-aarch64 \
 指明了共享目录的位置
 
 在内核启动起来之后，把共享目录挂载上来，就可以看到文件了
-
+也可以把这个mount添加到内核启动程序中，不用每次都执行一遍
 ```
 [root@aarch64 ]# mount -t 9p -o trans=virtio,version=9p2000.L hostshare /mnt
 [root@aarch64 ]# ls /mnt/
@@ -328,16 +328,32 @@ br0		8000.3860773ac46e	no		enp5s0
 							tap0
 ```
 
-7. host设置各个网卡和网桥的ip 
-`sudo ifconfig enp5s0 192.168.43.50 netmask 255.255.255.0`
+10. host设置各个网卡和网桥的ip，**此处需要注意先设置br0的ip和tap0的ip，再设置host网卡的ip，否则guest里面无法ping外部主机的ip，最终使br0的mac和tap0的mac地址相同**，具体原因还没来及查
 `sudo ifconfig br0 192.168.43.210 netmask 255.255.255.0`
 `sudo ifconfig tap0 192.168.43.51 netmask 255.255.255.0`
+`sudo ifconfig enp5s0 192.168.43.50 netmask 255.255.255.0`
 
-8. guest设置eth0的ip route add  default gw 192.168.43.1
+```
+br0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.43.210  netmask 255.255.255.0  broadcast 192.168.43.255
+        inet6 fe80::1429:b3ff:fe07:5f92  prefixlen 64  scopeid 0x20<link>
+        ether fe:16:30:37:22:4f  txqueuelen 1000  (Ethernet)
+
+tap0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.43.51  netmask 255.255.255.0  broadcast 192.168.43.255
+        inet6 fe80::fc16:30ff:fe37:224f  prefixlen 64  scopeid 0x20<link>
+        ether fe:16:30:37:22:4f  txqueuelen 1000  (Ethernet)
+
+enp5s0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 192.168.43.50  netmask 255.255.255.0  broadcast 192.168.43.255
+        ether 38:xx:xx:xx:xx:xx  txqueuelen 1000  (Ethernet)
+```
+
+11. guest设置eth0的ip 与br0的ip在一个网段内 例如 192.168.43.202
 
 `qemu-bridge-helper`使用`/etc/qemu-ifup`和`/etc/qemu-ifdown`来控制虚拟虚拟机网卡tap0启动
 
-* 如果想使用其他定义的网桥
+* 如果想使用其他定义的网桥, `/etc/qemu/bridge.conf`中添加`allow qemubr0`
 ```
 qemu linux.img 
 -netdev tap,helper="/usr/local/libexec/qemu-bridge-helper --br=qemubr0",id=hn0 -device virtio-net-pci,netdev=hn0,id=nic1
@@ -345,7 +361,7 @@ qemu linux.img
 
 ### Gdbserver
 
-进入gdbserver的源码目录
+到GDB网站下载gdb的源码，其中gdbserver在里面的子目录gdbserver中，进入gdbserver的源码目录
 
 ```bash
 $ cd ~/develop/arm/gdb-8.3/gdb/gdbserver
@@ -381,7 +397,7 @@ warning: File transfers from remote targets can be slow. Use "set sysroot" to ac
 Reading /lib/ld-linux-aarch64.so.1 from remote target...
 Reading symbols from target:/lib/ld-linux-aarch64.so.1...(no debugging symbols found)...done.
 0x0000ffffbf6d3d00 in ?? () from target:/lib/ld-linux-aarch64.so.1
-
+# 设置一个目录，否则看不到库函数
 (gdb) set sysroot /home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/
 warning: .dynamic section for "/home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib/ld-linux-aarch64.so.1" is not at the expected address (wrong library or version mismatch?)
 Reading symbols from /home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib/ld-linux-aarch64.so.1...done.
@@ -417,6 +433,64 @@ Breakpoint 2, func (i=25) at main.cpp:16
 Continuing.
 [Inferior 1 (process 1066) exited normally]
 
+```
+
+#### 测试程序
+
+```c++
+#include <stdio.h>
+ 
+int func(int i);
+ 
+int main(void)
+{
+  int i = 25;
+  int v = func(i);
+  printf("value is %d\n", v);
+  getchar();
+  return 0;
+}
+ 
+int func(int i)
+{
+  int a = 2;
+  return a * i;
+}
+```
+* 简单的makefile
+```makefile
+# marcros
+CROSS_COMPILE := /home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+
+CC		:= $(CROSS_COMPILE)gcc
+LD		:= $(CC) -nostdlib
+CPP		:= $(CC) -E
+
+CCFLAGS := -Wall
+DBGFLAG := -g
+CCOBJFLAG := $(CCFLAG) -c
+
+# Path
+
+BIN_PATH := bin
+OBJ_PATH := obj
+SRC_PATH := src
+DBG_PATH := debug
+
+# compile 
+TARGET_NAME := main
+
+TARGET := $(BIN_PATH)/$(TARGET_NAME)
+TARGET_DEBUG := $(DBG_PATH)/$(TARGET_NAME)
+
+all: main.o
+	$(CC) -o $@ $^
+
+main.o: main.cpp
+	$(CC) $(CCOBJFLAG) $(DBGFLAG) $^
+    
+clean:
+	rm -rf *.o all
 ```
 
 
