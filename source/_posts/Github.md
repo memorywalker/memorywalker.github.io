@@ -20,6 +20,8 @@
 
 `git remote -v`查看当前关联的remote repo是否正确
 
+`git remote rename newname oldname`更改一个remote repo的别名
+
 ### push
 
 `git push origin master`把本地的master分支发送到名为origin的远端repo，会在远端创建一个master分支
@@ -65,7 +67,73 @@ f85bd96 (origin/master) add h2 style
 
 `git log --grep=bug`和`git log --grep bug`过滤commit的信息中有bug的commit，这里grep的规则和shell的grep相同，如果有空格也需要""包住
 
+### rebase
 
+rebase可以把多个commit合并到一起，如果和多人一起工作，不要把已经push过的commit执行rebase，这样会导致其他人本地的和库里面的不一致，合并起来很麻烦。
+
+`git rebase -i HEAD~3`从`HEAD~3`的位置重新创建一个base，这个commit之后的会合并到一起，之后`git log`不会看见已经合并的这些commit，`-i`标识交互的方式进行rebase
+
+在执行rebase之前可以先创建一个backup分支，避免rebase之后被合并的commit被删除了无法恢复
+
+```shell
+*   c4f25cd (HEAD -> backup, master) change h2 style
+|\
+| * f85bd96 (origin/master) add h2 style
+* | ff309fe add h2 style local
+|/
+* 0f40286 change call of duty
+* 65d78c2 Revert "change title"
+* ee4190c change title
+```
+
+执行`git rebase -i HEAD~3`后
+
+```shell
+pick 0f40286 change call of duty
+pick ff309fe add h2 style local
+pick f85bd96 add h2 style
+
+# Rebase 65d78c2..c4f25cd onto 65d78c2 (3 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup <commit> = like "squash", but discard this commit's log message
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+```
+
+修改其中的内容，从下向上依次是最早的commit，前缀改为s，说明要把这个commit合并到它的上一个commit，而r对这次提交重新写commit信息，作为最后rebase的新的commit的信息
+
+```shell
+r 0f40286 change call of duty
+s ff309fe add h2 style local
+s f85bd96 add h2 style
+```
+
+保存文件后，会提示编辑commit信息
+
+合并后65d78c2现在是master的base，中间的其他commit都没有了，不过backup分支还有备份
+
+```
+* fc0772e (HEAD -> master) add h2 style
+| * 9848bbf (readme) add readme file
+| *   c4f25cd (backup) change h2 style
+| |\
+| | * f85bd96 (origin/master) add h2 style
+| * | ff309fe add h2 style local
+| |/
+| * 0f40286 change call of duty
+|/
+* 65d78c2 Revert "change title"
+* ee4190c change title
+```
 
 ### Github
 
@@ -104,6 +172,32 @@ watch:当项目有任何的变化都会通知到你的邮箱，如果你是项�
 
 star:在自己的主页可以看到项目的更改，但是不会主动通知
 
+#### 与源项目同步
+
+fork的项目在本地更改后，原始的项目可能已经更新了内容，但是还是需要把源项目的更改同步过来的
+
+1. 在本地的项目中增加源项目作物一个remote repo
+
+   `git remote add upstream https://github.com/udacity/course-collaboration-travel-plans.git`
+
+   `upstream`通常作为原始项目的remote的别名
+
+2. `git remote -v`查看本地的项目应该是关联了两个remote的repo
+
+3. `git fetch upstream master`从源项目获取最新的更改
+
+4. `git checkout master`本地的分支切换到master分支
+
+5. `git merge upstream/master`合并远端upstream的master分支到本地的master分支
+
+6. `git push origin master`把最新的master推到自己的GitHub的项目的master上
+
+### Reference
+
+[http://www.firsttimersonly.com/](http://www.firsttimersonly.com/ )
+
+[up for grabs](https://up-for-grabs.net/#/)
+
 
 ### Vocabulary
 
@@ -112,6 +206,8 @@ star:在自己的主页可以看到项目的更改，但是不会主动通知
  substantial  大量的; 价值巨大的; 重大的; 大而坚固的; 结实的; 牢固的 
 
  `a11y` stands for "accessibility". In the word "accessibility", there are eleven letters between the `a` and the `y`, so it gets shortened to just `a11y` 
+
+ squash  压软(或挤软、压坏、压扁等); 把…压(或挤)变形; (使) 挤进; 塞入; 打断; 制止; 去除; 粉碎;  墙网球; 壁球; 果汁饮料; 南瓜小果 
 
 
 
