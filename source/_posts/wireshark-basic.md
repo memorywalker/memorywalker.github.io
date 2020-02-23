@@ -8,6 +8,10 @@ tags: network; wireshark
 
 一个包称为帧更准确
 
+主界面分为4个区域：Display Filter, Packet List, Packet Detail, Packet bytes
+
+![wireshark](/wireshark/wireshark.png)
+
 #### 减小包的大小
 
 为了减小抓包的数据大小，可以对抓包进行设置
@@ -72,7 +76,41 @@ tags: network; wireshark
 
    可以通过`View-->Coloring Rules`设置每一种包的颜色，方便一下找到，例如默认的icmp的颜色为粉色
 
-1. 待定
+1. 自动分析
+
+   `Analyze->Expert Information`可以看连接建立、重传、reset的统计信息，分析网络性能和连接问题时有用
+
+   `Statistics->Service Response Time`可以查看某种协议的响应时间，检测服务器性能时有用
+
+   `Statistics->TCP Stream Graphs`可以查看TCP数据传输统计，在`Time Sequence`中可以查看哪段时间sequence没有变化(水平直线)，说明没有数据传输
+
+1. 查找
+
+    `Ctrl+F`后可以在搜索条件中选项查找的范围，数据类型，关键字。例如要查找baidu相关的，数据类型选择string，输入baidu查找
+
+1. 其他
+
+
+
+### TLS
+
+ https://wiki.wireshark.org/TLS 
+
+在页面的Example capture file章节有一个TLS的例子可以下载
+
+  [SampleCaptures#SSL_with_decryption_keys](https://wiki.wireshark.org/SampleCaptures#SSL_with_decryption_keys) 下载 **[snakeoil2_070531.tgz](https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=snakeoil2_070531.tgz)** 这个文件
+
+1. 使用wireshark打开其中的cap文件，可以看到443端口的通信
+
+2. 第19个包的info显示为Application Data，在包详细信息中显示数据是加密数据
+
+3. 选择要解密的包，右键`Protocol Preference->Open Transport Layer Security Preferences  `打开RSA key list，编辑加入新的一条解码信息 ip 127.0.0.1, port 443, protocol http, key file选择下载的key文件
+
+   也可以在`Edit->Prefernces->Protocol->TLS`中编辑
+
+   ![tls](/wireshark/tls.png)
+
+4. 此时19号包显示为HTTP协议，里面的原始数据可以看到
 
 
 
