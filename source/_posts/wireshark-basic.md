@@ -10,7 +10,7 @@ tags: network; wireshark
 
 主界面分为4个区域：Display Filter, Packet List, Packet Detail, Packet bytes
 
-![wireshark](/wireshark/wireshark.png)
+![wireshark](/uploads/wireshark/wireshark.png)
 
 #### 减小包的大小
 
@@ -108,7 +108,7 @@ tags: network; wireshark
 
    也可以在`Edit->Prefernces->Protocol->TLS`中编辑
 
-   ![tls](/wireshark/tls.png)
+   ![tls](/uploads/wireshark/tls.png)
 
 4. 此时19号包显示为HTTP协议，里面的原始数据可以看到
 
