@@ -68,6 +68,19 @@ INFO  Hexo is running at http://0.0.0.0:4000/memorywalker/. Press Ctrl+C to stop
 
 * 执行命令的过程中增加`--debug`选项可以输出更多的调试信息，方便定位原因例如 `hexo s --debug` 
 
+* 支持图片显示
+
+  `_config.yml`中`post_asset_folder: true`设置为true，由于github上只有source目录有直接访问权限，放在_posts目录中无法访问图片文件，所以新建一个uploads目录在source中，可以把需要的图片文件放在这个目录，也可以在这里建立子目录，此时目录结构如下
+
+  ```
+  source--_posts\xx.md
+        --uploads\avatar.gif
+  ```
+
+  目前缺点就是本地目录是不正确导致无法查看
+
+  ![icon](/uploads/avatar.gif)
+
 #### 升级Hexo
 1. 升级全局的hexo`npm i hexo-cli -g`
 2. 新建一个目录，`$ hexo init .`创建一个新的开发环境
