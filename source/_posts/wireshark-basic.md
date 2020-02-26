@@ -90,6 +90,32 @@ tags: network; wireshark
 
 1. 其他
 
+### 网络基础
+
+应用层：应用协议
+
+传输层：TCP
+
+网络层：IP
+
+数据链路层：MAC
+
+MTU：最大传输单元，大多数的网络MTU是1500字节，除非启用了巨帧(Jumbo Frame)达到9000字节。因此TCP不能一次把5000字节的数据之间给网络层传输，否则因为切分导致只能发送1500字节，会认为发送失败要求重传。
+
+TCP建立连接进行三次握手时，双方会把自己的MSS(Max Segment Size)告诉对方，MSS加上TCP头和IP头的长度，就得到MTU的值。
+
+TCP和IP头的长度都是20字节，客户端给服务端发送的MSS为1460，服务端应答的MSS为1400，因此通信的最小MTU为1400+20+20为1440
+
+![mss](/uploads/wireshark/mss.png)
+
+实际数据传输中网络层的数据大小为1440字节
+
+![mss](/uploads/wireshark/mtulen.png)
+
+### TCP
+
+TCP中连接的双方各自维护自己的Seq和Ack编号
+
 
 
 ### TLS
