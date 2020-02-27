@@ -200,13 +200,13 @@ PSH： 接收端应用程序需要从TCP缓冲区把数据读走
 
 #### 四次挥手
 
-![tcpclose](../uploads/wireshark/tcpclose.png)
+![tcpclose](/uploads/wireshark/tcpclose.png)
 
  http://www.tcpipguide.com/free/t_TCPConnectionTermination-2.htm 
 
 抓包的例子中，是服务端主动发起端口连接，与上图不同
 
-![tcpall](../uploads/wireshark/tcpall.png)
+![tcpall](/uploads/wireshark/tcpall.png)
 
 1. 338号包服务端1发起终止连接**FIN**，seq为162+369=531 (X)，ack为对端的seq+len = 621服务端进入**FIN_WAIT1**状态
 
