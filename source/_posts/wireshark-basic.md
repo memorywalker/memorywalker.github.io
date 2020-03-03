@@ -100,6 +100,8 @@ tags: network; wireshark
 
 数据链路层：MAC
 
+跨子网通信需要默认网关转发，因此需要先ARP查询默认网关的mac地址，如果一个ARP请求来自另一个子网，也会应答。
+
 MTU：最大传输单元，大多数的网络MTU是1500字节，除非启用了巨帧(Jumbo Frame)达到9000字节。因此TCP不能一次把5000字节的数据之间给网络层传输，否则因为切分导致只能发送1500字节，会认为发送失败要求重传。
 
 TCP建立连接进行三次握手时，双方会把自己的MSS(Max Segment Size)告诉对方，MSS加上TCP头和IP头的长度，就得到MTU的值。
@@ -385,7 +387,43 @@ udp的包头一共8个字节，数据量比TCP小，同时不需要建立连接�
 
 4. 此时19号包显示为HTTP协议，里面的原始数据可以看到
 
+### Kerberos
 
+Kerberos是一种身份认证协议，Windows的域中身份认证用到
+
+### 问题解决
+
+* `telnet <ip> <port>` 测试与主机一个端口是否可以连通，如果可以连通，考虑是否因为对端主动拒绝
+
+*　把两个通信的设备连接到简单的网络环境中，排除网络问题
+
+* NIC teaming和Large Segment Offload(LSO)可能导致乱序
+
+* 一般存储设备都是读比写快；对于网络环境，服务端的带宽大，客户端的带宽小。读文件时，大带宽进入小带宽可能导致性能问题
+
+* 查看实际重传的网络包，分析如果是连续的包都进行了重传，可以考虑打开SACK模式，减少重传包的量
+
+* 梳理问题的工作原理流程，缩小问题出现在流程中的范围，从而缩小问题范围，模拟问题环境进行复现和解决
+
+### tshark
+
+终端上的wireshark版本，Windows安装目录默认有,还有capinfos/editcap。终端处理的数据方便进行导出，生成想要的报表
+
+常用的命令或操作整理为脚本，提高效率
+
+* `capinfos.exe xx.pcap`查看一个包的统计信息
+
+* `tshark -n -q -r xxx.pcap -z "rpc,programs"`重看NFS协议的服务响应时间
+
+* `tshark -n -q -r xxx.pcap -z "io.stat.0.tcp.analysis.retransmission"` 重传统计数据
+
+* `tshark -n -q -r xxx.pcap -z "io.stat.0.tcp.analysis.out_of_order"`乱序统计数据
+
+* `tshark -n -q -r xxx.pcap -z "conv,tcp"`一个cap文件中所有tcp协议的会话
+
+* `editcap input.cap output.cap -i <second>`把包input拆分为second秒长的一个个包文件
+
+* `editcap input.cap output.cap -c <packets per file>`把包input拆分为xxx个packets一个的包文件
 
 ### 参考资料
 
