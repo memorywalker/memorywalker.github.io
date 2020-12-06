@@ -1,5 +1,5 @@
 ---
-title: IBM Cloud Usage
+title: CMCC 宽带
 date: 2020-07-12 17:25:49
 tags: cmcc
 ---
@@ -30,3 +30,13 @@ tags: cmcc
 #### B站
 
 如果要看有弹幕的Bilibili，需要下载bilibili的老版本1.6.6版本
+
+#### 京东无线路由器配置
+
+登录移动光猫 http://192.168.1.1/html/login_CM.html
+
+用户名：CMCCAdmin
+
+
+
+`应用--高级NAT设置--DMZ设置`其中的ip地址输入无线路由器的地址如192.168.1.1
