@@ -6,7 +6,7 @@ tags: stack, frame, arm, linux
 
 ## 程序运行
 
-[原始文档]:https://www.embeddedrelated.com/showarticle/1330.php  
+[原始文档](https://www.embeddedrelated.com/showarticle/1330.php)
 
 ### 基本知识
 
