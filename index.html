@@ -319,13 +319,6 @@
     </header>
 
     
-  
-  
-
-  
-
-  <a href="https://github.com/memorywalker" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
 
 
     <main id="main" class="main">
@@ -399,7 +392,7 @@
                 
               
 
-              <time title="创建时间：2022-02-09 09:25:49 / 修改时间：12:22:59" itemprop="dateCreated datePublished" datetime="2022-02-09T09:25:49+00:00">2022-02-09</time>
+              <time title="创建时间：2022-02-09 09:25:49 / 修改时间：12:33:39" itemprop="dateCreated datePublished" datetime="2022-02-09T09:25:49+00:00">2022-02-09</time>
             
 
             
@@ -458,30 +451,20 @@
       
         
           
-            <h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><p> <a href="https://developer.android.google.cn/guide/components/services" target="_blank" rel="noopener">Services overview  | Android Developers (google.cn)</a> </p>
-<p>一个应用程序组件，没有界面，即使切换到其他程序还可以长期在后台运行。一个组件可以和一个服务绑定后交互，甚至可以进程间通信。服务可以在后台处理网络通信，播放音乐，文件读写或者与content provider交互。</p>
-<p>服务运行在当前进程的主线程中，除非指定，否则服务不会创建自己的线程也不会运行在独立的进程中，因此服务中执行任何阻塞操作需要在单独的线程中执行，避免阻塞主线程导致ANR。</p>
-<p>考虑使用WorkManager来代替Service的功能</p>
-<h4 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h4><p><strong>前端服务</strong>：显示在通知栏上的服务，用户可以明确知道当前有这个服务在运行，例如音乐播放时，通知栏显示</p>
-<p><strong>后端服务</strong>：后台服务，用户不会感知到在执行，例如下载文件</p>
-<p><strong>绑定服务</strong>：当一个应用组件通过bindService()绑定到这个服务，服务给组件提供C/S模式的交互，也可以进程间通信。绑定服务只在一个组件与他绑定后才会运行，当多个组件和一个服务绑定，只有当所有的组件都解绑后，服务才会销毁。</p>
-<p>服务作为一个组件需要在manifest文件中声明，也可声明为私有，这样别的应用程序不能使用。可以在声明中增加<code>android:description</code>属性提供一个服务的说明，用户可以看到这个服务的作用。</p>
-<p>安全考虑使用一个显式的Intent来启动服务，不要给服务声明intent filter。</p>
-<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><p>由于用户可能看不到服务的运行状态，所以服务的生命周期管理十分重要，避免没有被销毁。</p>
-<p><strong>启动服务</strong>：一个组件通过调用startService()运行起来，通过参数Intent将信息传递给服务，服务自己调用stopSelf()或其他组件调用stopService()。启动这个服务的组件即使销毁了，服务还是运行状态。另一个组件可以停止其他组件启动的服务。一个服务可以启动多次，如果服务已经是运行状态，那么startService()执行后会调用onStartCommand()，而不再调用onCreate()</p>
-<p><strong>绑定服务</strong>：其他组件通过调用bindService()运行起来，客户端通过IBinder接口与服务交互。客户端通过调用unbindService()结束连接。服务不需要自己结束。</p>
-<p>对于一个启动服务，其他组件还可以bind到这个服务上，此时调用stopService()或stopSelf()并不会结束服务，直到所有绑定的客户端unbind。例如通过启动服务开始播放音乐，其他组件可以通过绑定到这个服务获取当前播放的歌曲信息。</p>
-<p><strong>停止一个服务</strong>，当一个服务有多个并行启动的请求时，多个请求都会执行onStartCommand()，如果有一个触发停止，可能会导致新启动服务被停止掉，因此可以在stopSelf(int)中传入对应请求onStartCommand()的startId，在stopSelf()中判断如果id不是当前最新的id，就不能停止。</p>
-<p>系统在内存很少时会结束后台运行的服务，如果服务与用户当前交互的界面绑定，不太会被销毁；如果一个服务声明为前端服务，几乎不会被自动销毁；系统销毁一个服务后，当资源满足后，还会把服务运行起来，此时会执行onStartCommand()接口。根据onStartCommand()的返回值<code>START_NOT_STICKY</code>/<code>START_STICKY</code>/<code>START_REDELIVER_INTENT</code>，系统会决定重启服务时传入的Intent的方式。</p>
-<p><img src="/uploads/android/service_lifecycle.png" alt="android"></p>
-<h4 id="基本接口"><a href="#基本接口" class="headerlink" title="基本接口"></a>基本接口</h4><p> onStartCommand()  组件调用startService()启动服务时会回调这个接口，只要有调用这个接口，就需要手动调用stopService()来释放</p>
-<p>onBind() 组件通过调用bindService()与服务绑定会回调这个接口，这个接口需要返回一个IBinder接口，用来实现客户端与服务的交互。如果不希望被绑定，返回null。</p>
-<p>onCreate() 只会在服务初始化调用一次，如果服务已经运行，不会被回调。例如绑定一个已经启动服务，不会回调这个接口。可以在这里创建线程</p>
-<p>onDestroy() 系统销毁服务回调，可以用来释放创建的资源例如线程。</p>
-<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> Looper serviceLooper;</span><br><span class="line">  <span class="keyword">private</span> ServiceHandler serviceHandler;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Handler that receives messages from the thread</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceHandler</span> <span class="keyword">extends</span> <span class="title">Handler</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">ServiceHandler</span><span class="params">(Looper looper)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">super</span>(looper);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">          <span class="comment">// Normally we would do some work here, like download a file.</span></span><br><span class="line">          <span class="comment">// For our sample, we just sleep for 5 seconds.</span></span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">              Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">              <span class="comment">// Restore interrupt status.</span></span><br><span class="line">              Thread.currentThread().interrupt();</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// Stop the service using the startId, so that we don't stop</span></span><br><span class="line">          <span class="comment">// the service in the middle of handling another job</span></span><br><span class="line">          stopSelf(msg.arg1);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Start up the thread running the service. Note that we create a</span></span><br><span class="line">    <span class="comment">// separate thread because the service normally runs in the process's</span></span><br><span class="line">    <span class="comment">// main thread, which we don't want to block. We also make it</span></span><br><span class="line">    <span class="comment">// background priority so CPU-intensive work doesn't disrupt our UI.</span></span><br><span class="line">    HandlerThread thread = <span class="keyword">new</span> HandlerThread(<span class="string">"ServiceStartArguments"</span>,</span><br><span class="line">            Process.THREAD_PRIORITY_BACKGROUND);</span><br><span class="line">    thread.start();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get the HandlerThread's Looper and use it for our Handler</span></span><br><span class="line">    serviceLooper = thread.getLooper();</span><br><span class="line">    serviceHandler = <span class="keyword">new</span> ServiceHandler(serviceLooper);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">onStartCommand</span><span class="params">(Intent intent, <span class="keyword">int</span> flags, <span class="keyword">int</span> startId)</span> </span>&#123;</span><br><span class="line">      Toast.makeText(<span class="keyword">this</span>, <span class="string">"service starting"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line"></span><br><span class="line">      <span class="comment">// For each start request, send a message to start a job and deliver the</span></span><br><span class="line">      <span class="comment">// start ID so we know which request we're stopping when we finish the job</span></span><br><span class="line">      Message msg = serviceHandler.obtainMessage();</span><br><span class="line">      msg.arg1 = startId;</span><br><span class="line">      serviceHandler.sendMessage(msg);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// If we get killed, after returning from here, restart</span></span><br><span class="line">      <span class="keyword">return</span> START_STICKY;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> IBinder <span class="title">onBind</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">      <span class="comment">// We don't provide binding, so return null</span></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Toast.makeText(<span class="keyword">this</span>, <span class="string">"service done"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Start Sevice</span></span><br><span class="line">Intent intent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, HelloService<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">startService(intent);</span><br></pre></td></tr></table></figure>
-
-<h4 id="前端服务"><a href="#前端服务" class="headerlink" title="前端服务"></a>前端服务</h4><h4 id="后台服务"><a href="#后台服务" class="headerlink" title="后台服务"></a>后台服务</h4><h4 id="绑定服务"><a href="#绑定服务" class="headerlink" title="绑定服务"></a>绑定服务</h4><h4 id="AIDL"><a href="#AIDL" class="headerlink" title="AIDL"></a>AIDL</h4>
+            <p>
+              Service Services overview  | Android Developers (google.cn) 
+一个应用程序组件，没有界面，即使切换到其他程序还可以长期在后台运行。一个组件可以和一个服务绑定后交互，甚至可以进程间通信。服务可以在后台处理网络通信，播放音乐，文件读写或者与co
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2022/02/09/android-service/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -598,7 +581,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -652,125 +635,25 @@
       
         
           
-            <h2 id="程序运行"><a href="#程序运行" class="headerlink" title="程序运行"></a>程序运行</h2><p><a href="https://www.embeddedrelated.com/showarticle/1330.php" target="_blank" rel="noopener">原始文档</a></p>
-<h3 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h3><h4 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h4><p>以下假设内存空间类似一个梯子，从上到下，地址值从小到大。</p>
-<p>程序运行时内存主要分3种区域：</p>
-<ul>
-<li>静态内存，存储全局变量，静态变量 即BSS和Data段</li>
-<li>堆，malloc动态分配的内存，使用free释放</li>
-<li>栈，函数调用过程中动态分配的内存段。每个函数有自己的栈帧，包括函数的局部变量和返回值信息。可以通过alloca函数扩展当前栈帧。</li>
-</ul>
-<p>这三个区域在系统中的大小是预设好的，需要根据应用的情况进行分配各个区域的大小。如果一个区域分配的不合理，可能出现堆空间耗尽或栈溢出(stackoverflow)</p>
-<h4 id="ARM-汇编学习"><a href="#ARM-汇编学习" class="headerlink" title="ARM 汇编学习"></a>ARM 汇编学习</h4><p><a href="https://azeria-labs.com/writing-arm-assembly-part-1/" target="_blank" rel="noopener">https://azeria-labs.com/writing-arm-assembly-part-1/</a></p>
-<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><p>作者发现<code>getaddrinfo()</code>  在他的树莓派系统初始化过程中占用了大量的栈空间，所以写了一个测试程序</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span>* <span class="title">address_list</span>;</span></span><br><span class="line">    <span class="built_in">memset</span>(&amp;hints, <span class="number">0</span>, <span class="keyword">sizeof</span>(hints));</span><br><span class="line">    hints.ai_family = AF_UNSPEC;</span><br><span class="line">    hints.ai_socktype = SOCK_STREAM;</span><br><span class="line">    hints.ai_protocol = IPPROTO_TCP;</span><br><span class="line">    <span class="keyword">int</span> result = getaddrinfo(<span class="string">"test.example.com"</span>, <span class="string">"80"</span>, &amp;hints, &amp;address_list);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <p>
+              程序运行原始文档
+基本知识内存以下假设内存空间类似一个梯子，从上到下，地址值从小到大。
+程序运行时内存主要分3种区域：
 
-<p>编译运行</p>
-<p><code>gcc test-getaddrinfo.c -o test-getaddrinfo -g</code></p>
-<h4 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程"></a>分析过程</h4><p>查看Linux给程序分配的栈开始和结束位置</p>
-<p><code>/proc/&lt;pid&gt;/maps</code>文件中列出了内存的所有分段，<code>/proc/</code>文件系统可以看作是查看内核数据的一个UI界面。</p>
-<p>也可以在一个运行的gdb会话中执行<code>info proc map</code></p>
-<p>对于Nucleo的实时系统，这个地址区间可能在他的链接控制脚本(.ld)文件中</p>
-<p>Linux中的栈使用从高地址向低地址方向，即从End到Start的方向使用。</p>
-<p>一个栈帧包含了函数运行需要的所有信息，例如暂时保存寄存器中的值，局部变量，函数参数。ARM EABI (Embedded Application Binary Interfac)规定函数的第一个参数通过寄存器传递。</p>
-<p>栈区域在进程创建时全部初始化为0.所以可以从栈的开始地址找第一个值为非0的地址，就可以找到当前程序执行的栈的最大深度（从栈底到栈顶的长度）</p>
-<p> SP (Stack Pointer)当前栈顶指针，gdb中对应变量$sp</p>
-<p>FP (Frame Pointer)当前栈帧地址，gdb中对应变量$r11</p>
-<p>函数调用时，通过对SP的值进行减法操作（从高地址向低地址使用），例如当前函数执行需要20字节空间，就对<code>sp=sp-20</code>，让sp指向当前栈空间的顶部。这个操作只是移动了sp指向的位置，对其中的内存并没有执行初始化，所以如果对函数的局部变量不进行初始化就使用，局部变量的值可能就是原来这个内存区域的值，很有可能造成bug。</p>
-<h5 id="gdb调试程序"><a href="#gdb调试程序" class="headerlink" title="gdb调试程序"></a>gdb调试程序</h5><p><code>-q</code>选项去掉gdb的启动信息 <code>gdb -q ./test-getaddrinfo</code></p>
-<p>使用<code>(gdb) list</code>命令查看当前的源代码</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="number">3</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="number">4</span> </span><br><span class="line"><span class="number">5</span> <span class="keyword">int</span></span><br><span class="line"><span class="number">6</span> main()</span><br><span class="line"><span class="number">7</span> &#123;</span><br><span class="line"><span class="number">8</span>     <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span>  <span class="title">hints</span>;</span></span><br><span class="line"><span class="number">9</span>     <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span>* <span class="title">address_list</span>;</span></span><br><span class="line"><span class="number">10</span> </span><br><span class="line"><span class="number">11</span>     <span class="built_in">memset</span>(&amp;hints, <span class="number">0</span>, <span class="keyword">sizeof</span>(hints));</span><br><span class="line"><span class="number">12</span>     hints.ai_family   = AF_UNSPEC;</span><br><span class="line"><span class="number">13</span>     hints.ai_socktype = SOCK_STREAM;</span><br><span class="line"><span class="number">14</span>     hints.ai_protocol = IPPROTO_TCP;</span><br><span class="line"><span class="number">15</span> </span><br><span class="line"><span class="number">16</span>     <span class="keyword">int</span> result = getaddrinfo(<span class="string">"test.example.com"</span>, <span class="string">"80"</span>, &amp;hints, &amp;address_list);</span><br><span class="line"><span class="number">17</span>     <span class="keyword">return</span> result;</span><br><span class="line"><span class="number">18</span> &#125;</span><br></pre></td></tr></table></figure>
-
-<p>在main函数打断点 <code>(gdb) b main</code></p>
-<p>在main返回之前的17行打断点<code>(gdb) b 17</code></p>
-<p>开始运行程序<code>(gdb) r</code></p>
-<p>在程序在main中断点停止后，查看栈地址信息<code>(gdb) info proc map</code></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">process <span class="number">10163</span></span><br><span class="line">Mapped address spaces:</span><br><span class="line"> Start Addr   End Addr       Size     Offset objfile</span><br><span class="line">    <span class="number">0x10000</span>    <span class="number">0x11000</span>     <span class="number">0x1000</span>        <span class="number">0x0</span> /home/pi/Projects/test-getaddrinfo/test-getaddrinfo</span><br><span class="line">    <span class="number">0x20000</span>    <span class="number">0x21000</span>     <span class="number">0x1000</span>        <span class="number">0x0</span> /home/pi/Projects/test-getaddrinfo/test-getaddrinfo</span><br><span class="line">    <span class="number">0x21000</span>    <span class="number">0x22000</span>     <span class="number">0x1000</span>     <span class="number">0x1000</span> /home/pi/Projects/test-getaddrinfo/test-getaddrinfo</span><br><span class="line"> <span class="number">0x76e64000</span> <span class="number">0x76f8e000</span>   <span class="number">0x12a000</span>        <span class="number">0x0</span> /lib/arm-linux-gnueabihf/libc<span class="number">-2.24</span>.so</span><br><span class="line"> <span class="number">0x76f8e000</span> <span class="number">0x76f9d000</span>     <span class="number">0xf000</span>   <span class="number">0x12a000</span> /lib/arm-linux-gnueabihf/libc<span class="number">-2.24</span>.so</span><br><span class="line"> <span class="number">0x76f9d000</span> <span class="number">0x76f9f000</span>     <span class="number">0x2000</span>   <span class="number">0x129000</span> /lib/arm-linux-gnueabihf/libc<span class="number">-2.24</span>.so</span><br><span class="line"> <span class="number">0x76f9f000</span> <span class="number">0x76fa0000</span>     <span class="number">0x1000</span>   <span class="number">0x12b000</span> /lib/arm-linux-gnueabihf/libc<span class="number">-2.24</span>.so</span><br><span class="line"> <span class="number">0x76fa0000</span> <span class="number">0x76fa3000</span>     <span class="number">0x3000</span>        <span class="number">0x0</span> </span><br><span class="line"> <span class="number">0x76fb8000</span> <span class="number">0x76fbd000</span>     <span class="number">0x5000</span>        <span class="number">0x0</span> /usr/lib/arm-linux-gnueabihf/libarmmem.so</span><br><span class="line"> <span class="number">0x76fbd000</span> <span class="number">0x76fcc000</span>     <span class="number">0xf000</span>     <span class="number">0x5000</span> /usr/lib/arm-linux-gnueabihf/libarmmem.so</span><br><span class="line"> <span class="number">0x76fcc000</span> <span class="number">0x76fcd000</span>     <span class="number">0x1000</span>     <span class="number">0x4000</span> /usr/lib/arm-linux-gnueabihf/libarmmem.so</span><br><span class="line"> <span class="number">0x76fcd000</span> <span class="number">0x76fce000</span>     <span class="number">0x1000</span>     <span class="number">0x5000</span> /usr/lib/arm-linux-gnueabihf/libarmmem.so</span><br><span class="line"> <span class="number">0x76fce000</span> <span class="number">0x76fef000</span>    <span class="number">0x21000</span>        <span class="number">0x0</span> /lib/arm-linux-gnueabihf/ld<span class="number">-2.24</span>.so</span><br><span class="line"> <span class="number">0x76ff9000</span> <span class="number">0x76ffb000</span>     <span class="number">0x2000</span>        <span class="number">0x0</span> </span><br><span class="line"> <span class="number">0x76ffb000</span> <span class="number">0x76ffc000</span>     <span class="number">0x1000</span>        <span class="number">0x0</span> [sigpage]</span><br><span class="line"> <span class="number">0x76ffc000</span> <span class="number">0x76ffd000</span>     <span class="number">0x1000</span>        <span class="number">0x0</span> [vvar]</span><br><span class="line"> <span class="number">0x76ffd000</span> <span class="number">0x76ffe000</span>     <span class="number">0x1000</span>        <span class="number">0x0</span> [vdso]</span><br><span class="line"> <span class="number">0x76ffe000</span> <span class="number">0x76fff000</span>     <span class="number">0x1000</span>    <span class="number">0x20000</span> /lib/arm-linux-gnueabihf/ld<span class="number">-2.24</span>.so</span><br><span class="line"> <span class="number">0x76fff000</span> <span class="number">0x77000000</span>     <span class="number">0x1000</span>    <span class="number">0x21000</span> /lib/arm-linux-gnueabihf/ld<span class="number">-2.24</span>.so</span><br><span class="line"> <span class="number">0x7efdf000</span> <span class="number">0x7f000000</span>    <span class="number">0x21000</span>        <span class="number">0x0</span> [<span class="built_in">stack</span>]</span><br><span class="line"> <span class="number">0xffff0000</span> <span class="number">0xffff1000</span>     <span class="number">0x1000</span>        <span class="number">0x0</span> [vectors]</span><br></pre></td></tr></table></figure>
-
-<p>可以看到栈的结束位置在<code>0x7f000000</code>，大小为<code>0x21000</code>，可以算出来栈的开始位置为<code>0x7EFDF000</code></p>
-<p> <strong>注意：</strong>这里的栈大小不是Linux系统默认的8M，是132K，这是系统默认给当前进程分配的大小，当进程中的使用的栈空间更多时，系统会扩大这个区域的大小。例如在一个函数中使用了2M的局部变量，系统会把stack区域范围调大，即把低地址0x7efdf000再像低地址区域扩大，例如编程0x7bf00000</p>
-<p>查看当前栈执行最大深度</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">(gdb) scan_stack 0 <span class="variable">$stack_size</span></span><br><span class="line">Scanned 10000</span><br><span class="line">Scanned 20000</span><br><span class="line">Scanned 30000</span><br><span class="line">Scanned 40000</span><br><span class="line">Scanned 50000</span><br><span class="line">Scanned 60000</span><br><span class="line">Scanned 70000</span><br><span class="line">Scanned 80000</span><br><span class="line">Scanned 90000</span><br><span class="line">Scanned 100000</span><br><span class="line">Scanned 110000</span><br><span class="line">Scanned 120000</span><br><span class="line">Found data 4660 bytes deeper than current stack frame (0x7effeeb0).</span><br><span class="line">Address    2130697340 = 0x7effdc7c</span><br><span class="line">Stack size   135168 = 0x21000 = 132.0KB, 0x7efdf000-0x7f000000</span><br><span class="line">Stack offset 126076 = 0x1ec7c = 123.1KB</span><br><span class="line">Stack depth    9092 = 0x02384 =   8.9KB</span><br><span class="line">0x7effdc7c: 0x00000020 0x00002e41 0x61656100 0x01006962</span><br><span class="line">0x7effdc8c: 0x00000024 0x06003605 0x09010806 0x12020a01</span><br><span class="line">0x7effdc9c: 0x14011304 0x16011501 0x18031701 0x1c021a01</span><br><span class="line">0x7effdcac: 0x00012201 0x00000000 0x7effe8f4 0x00000000</span><br></pre></td></tr></table></figure>
-
-<p>可以出当前使用栈的最大深度是8.9K，而栈顶的历史最大值比当前SP的值还小了4660字节。这是因为系统在执行我们的程序的main函数之前进行的库和数据段的初始化，例如把二进制程序中的<code>.data</code>段数据拷贝到静态内存区域，初始化全局变量和静态变量。</p>
-<p>查看当前栈顶的深度</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(gdb) stack_offset <span class="variable">$sp</span></span><br><span class="line">Address    2130702000 = 0x7effeeb0</span><br><span class="line">Stack size   135168 = 0x21000 = 132.0KB, 0x7efdf000-0x7f000000</span><br><span class="line">Stack offset 130736 = 0x1feb0 = 127.7KB</span><br><span class="line">Stack depth    4432 = 0x01150 =   4.3KB</span><br></pre></td></tr></table></figure>
-
-<p>查看当前程序的汇编</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disassemble </span><br><span class="line">Dump of assembler code for function main:</span><br><span class="line">   0x00010474 &lt;+0&gt;: push &#123;r11, lr&#125;</span><br><span class="line">   0x00010478 &lt;+4&gt;: add r11, sp, #4</span><br><span class="line">   0x0001047c &lt;+8&gt;: sub sp, sp, #40 ; 0x28</span><br><span class="line">=&gt; 0x00010480 &lt;+12&gt;: sub r3, r11, #40 ; 0x28</span><br><span class="line">   0x00010484 &lt;+16&gt;: mov r2, #32</span><br><span class="line">   0x00010488 &lt;+20&gt;: mov r1, #0</span><br><span class="line">   0x0001048c &lt;+24&gt;: mov r0, r3</span><br><span class="line">   0x00010490 &lt;+28&gt;: bl 0x10328 &lt;memset@plt&gt;</span><br><span class="line">   0x00010494 &lt;+32&gt;: mov r3, #0</span><br><span class="line">   0x00010498 &lt;+36&gt;: str r3, [r11, #-36] ; 0xffffffdc</span><br><span class="line">   0x0001049c &lt;+40&gt;: mov r3, #1</span><br><span class="line">   0x000104a0 &lt;+44&gt;: str r3, [r11, #-32] ; 0xffffffe0</span><br><span class="line">   0x000104a4 &lt;+48&gt;: mov r3, #6</span><br><span class="line">   0x000104a8 &lt;+52&gt;: str r3, [r11, #-28] ; 0xffffffe4</span><br><span class="line">   0x000104ac &lt;+56&gt;: sub r3, r11, #44 ; 0x2c</span><br><span class="line">   0x000104b0 &lt;+60&gt;: sub r2, r11, #40 ; 0x28</span><br><span class="line">   0x000104b4 &lt;+64&gt;: ldr r1, [pc, #24] ; 0x104d4 &lt;main+96&gt;</span><br><span class="line">   0x000104b8 &lt;+68&gt;: ldr r0, [pc, #24] ; 0x104d8 &lt;main+100&gt;</span><br><span class="line">   0x000104bc &lt;+72&gt;: bl 0x10334 &lt;getaddrinfo@plt&gt;</span><br><span class="line">   0x000104c0 &lt;+76&gt;: str r0, [r11, #-8]</span><br><span class="line">   0x000104c4 &lt;+80&gt;: ldr r3, [r11, #-8]</span><br><span class="line">   0x000104c8 &lt;+84&gt;: mov r0, r3</span><br><span class="line">   0x000104cc &lt;+88&gt;: sub sp, r11, #4</span><br><span class="line">   0x000104d0 &lt;+92&gt;: pop &#123;r11, pc&#125;</span><br><span class="line">   0x000104d4 &lt;+96&gt;: andeq r0, r1, r12, asr #10</span><br><span class="line">   0x000104d8 &lt;+100&gt;: andeq r0, r1, r0, asr r5</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
-
-<p>如果我们有当前程序的源代码，可以匹配使用<code>(gdb) disassemble /s</code>匹配到源代码</p>
-<p>每一个函数的汇编由序言，正文和结尾组成，序言用来保存返回上一个函数的地址以及分配当前函数的栈帧空间，正文是函数内容的实现，结尾返回值并跳转回上一级地址。</p>
-<ul>
-<li>ARM汇编函数的序言</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0x00010474 &lt;+0&gt;: push &#123;r11, lr&#125;</span><br><span class="line">0x00010478 &lt;+4&gt;: add r11, sp, #4</span><br><span class="line">0x0001047c &lt;+8&gt;: sub sp, sp, #40 ; 0x28</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>把当前FP和LR(Link Register)这两个寄存器的值依次压入栈中，LR中是上一级函数中调用当前函数后的下一个指令地址</li>
-<li>把SP的值+4，然后把结果存入FP中，此时FP指向的是当前栈帧的开始</li>
-<li>让sp-40，给当前栈帧分配空间</li>
-</ol>
-<ul>
-<li>ARM汇编函数的结束</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0x000104c8 &lt;+84&gt;: mov r0, r3</span><br><span class="line">0x000104cc &lt;+88&gt;: sub sp, r11, #4</span><br><span class="line">0x000104d0 &lt;+92&gt;: pop &#123;r11, pc&#125;</span><br><span class="line">0x000104d4 &lt;+96&gt;: andeq r0, r1, r12, asr #10</span><br><span class="line">0x000104d8 &lt;+100&gt;: andeq r0, r1, r0, asr r5</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>把返回值存入r0</li>
-<li>让sp指向FP-4的位置</li>
-<li>依次把当前栈中的值弹出到pc和FP中，把进入函数时的LR填入PC，从而让处理器执行下一行指令</li>
-</ol>
-<ul>
-<li>函数调用</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x000104bc &lt;+72&gt;: bl 0x10334 &lt;getaddrinfo@plt&gt;</span><br></pre></td></tr></table></figure>
-
-<p><code>bl</code>是branch-and-link指令，跳转到新的函数地址，并把当前PC的值存入LR寄存器作为返回地址。</p>
-<p><strong>plt</strong> Procedure Linkage Table，库加载的函数，参见</p>
-<p><a href="https://www.technovelty.org/linux/plt-and-got-the-key-to-code-sharing-and-dynamic-libraries.html" target="_blank" rel="noopener">https://www.technovelty.org/linux/plt-and-got-the-key-to-code-sharing-and-dynamic-libraries.html</a></p>
-<p>继续执行程序到main函数返回前的17行后，在查看当前栈的最大深度</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">(gdb) scan_stack 0 <span class="variable">$stack_size</span></span><br><span class="line">Scanned 10000</span><br><span class="line">Scanned 20000</span><br><span class="line">Scanned 30000</span><br><span class="line">Scanned 40000</span><br><span class="line">Scanned 50000</span><br><span class="line">Scanned 60000</span><br><span class="line">Scanned 70000</span><br><span class="line">Scanned 80000</span><br><span class="line">Scanned 90000</span><br><span class="line">Scanned 100000</span><br><span class="line">Scanned 110000</span><br><span class="line">Found data 11648 bytes deeper than current stack frame (0x7effeeb0).</span><br><span class="line">Address    2130690352 = 0x7effc130</span><br><span class="line">Stack size   135168 = 0x21000 = 132.0KB, 0x7efdf000-0x7f000000</span><br><span class="line">Stack offset 119088 = 0x1d130 = 116.3KB</span><br><span class="line">Stack depth   16080 = 0x03ed0 =  15.7KB</span><br><span class="line">0x7effc130: 0x76ff94b0 0x7effc1a8 0x76e66c28 0x000004b0</span><br><span class="line">0x7effc140: 0x7effc1ac 0x76fd8548 0x00000001 0x76e6c754</span><br><span class="line">0x7effc150: 0x000004b0 0x76e70804 0x76ff94b0 0x7effc1ac</span><br><span class="line">0x7effc160: 0x7effc1a8 0x00000000 0x76ffecf0 0x76e70804</span><br></pre></td></tr></table></figure>
-
-<p>此时的最大深度变为了15.7KB，说明执行过程某一个函数栈顶指向到了<code>0x7effc130</code>的位置</p>
-<p>重启程序，并在执行到在main函数的断点后，增加一个<strong>数据断点</strong>，当指定的地址值发生变化时，触发断点</p>
-<p><code>(gdb) watch *(int*)0x7effc130</code></p>
-<p>继续执行<code>(gdb) c</code>后，程序断点在</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Hardware watchpoint 3: *(int*)0x7effc130</span><br><span class="line"></span><br><span class="line">Old value = 0</span><br><span class="line">New value = 1996461232</span><br><span class="line">check_match (undef_name=undef_name@entry=0x76df8116 <span class="string">"strcasecmp"</span>, ref=0x76df775c, ref@entry=0x59c2869, version=0x22e80, version@entry=0x76fffabc, flags=1, flags@entry=2, type_class=type_class@entry=1, sym=0x76e6c754, </span><br><span class="line">    sym@entry=0x770037f0, symidx=symidx@entry=1200, strtab=0x76e70804 <span class="string">""</span>, strtab@entry=0x0, map=map@entry=0x76ff94b0, versioned_sym=versioned_sym@entry=0x7effc1ac, num_versions=num_versions@entry=0x7effc1a8) at dl-lookup.c:92</span><br><span class="line">92 dl-lookup.c: No such file or directory.</span><br></pre></td></tr></table></figure>
-
-<p>说明执行到这个<code>check_match</code>函数时，栈深度增加到了最大值。此时需要分析包括这个函数在内的所有函数的栈帧空间大小。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">(gdb) <span class="built_in">set</span> height 0</span><br><span class="line">(gdb) stack_walk</span><br><span class="line"><span class="comment">#0  check_match (undef_name=undef_name@entry=0x76df8116 "strcasecmp", ref=0x76df775c, ref@entry=0x59c2869, version=0x22e80, version@entry=0x76fffabc, flags=1, flags@entry=2, type_class=type_class@entry=1, sym=0x76e6c754, </span></span><br><span class="line">    sym@entry=0x770037f0, symidx=symidx@entry=1200, strtab=0x76e70804 <span class="string">""</span>, strtab@entry=0x0, map=map@entry=0x76ff94b0, versioned_sym=versioned_sym@entry=0x7effc1ac, num_versions=num_versions@entry=0x7effc1a8) at dl-lookup.c:92</span><br><span class="line">92 <span class="keyword">in</span> dl-lookup.c</span><br><span class="line">Top stack frame 0x7effc130</span><br><span class="line">.......</span><br><span class="line"><span class="comment">#13 0x76e1e340 in _nss_dns_gethostbyname4_r (name=name@entry=0x10550 "test.example.com", pat=pat@entry=0x7effe998, buffer=0x7effea88 "\177", buflen=1024, errnop=errnop@entry=0x7effe99c, herrnop=herrnop@entry=0x7effe9ac, </span></span><br><span class="line">    ttlp=ttlp@entry=0x0) at nss_dns/dns-host.c:326</span><br><span class="line">326 nss_dns/dns-host.c: No such file or directory.</span><br><span class="line">Last stack frame 0x7effdbe0, current 0x7effe068, size of last 1160 = 0x488, total deeper   7992 = 0x01f38 =   7.8KB</span><br><span class="line"></span><br><span class="line"><span class="comment">#14 0x76f1dee0 in gaih_inet (name=&lt;optimized out&gt;, name@entry=0x10550 "test.example.com", service=&lt;optimized out&gt;, req=0x7effeeb4, pai=pai@entry=0x7effea40, naddrs=&lt;optimized out&gt;, naddrs@entry=0x7effea4c, </span></span><br><span class="line">    tmpbuf=&lt;optimized out&gt;, tmpbuf@entry=0x7effea80) at ../sysdeps/posix/getaddrinfo.c:848</span><br><span class="line">848 ../sysdeps/posix/getaddrinfo.c: No such file or directory.</span><br><span class="line">Last stack frame 0x7effe068, current 0x7effe8e0, size of last 2168 = 0x878, total deeper  10160 = 0x027b0 =   9.9KB</span><br><span class="line"></span><br><span class="line"><span class="comment">#15 0x76f1f010 in __GI_getaddrinfo (name=&lt;optimized out&gt;, service=&lt;optimized out&gt;, hints=&lt;optimized out&gt;, pai=0x7effeeb0) at ../sysdeps/posix/getaddrinfo.c:2391</span></span><br><span class="line">2391 <span class="keyword">in</span> ../sysdeps/posix/getaddrinfo.c</span><br><span class="line">Last stack frame 0x7effe8e0, current 0x7effe9e8, size of last  264 = 0x108, total deeper  10424 = 0x028b8 =  10.2KB</span><br><span class="line"></span><br><span class="line"><span class="comment">#16 0x000104c0 in main () at test-getaddrinfo.c:16</span></span><br><span class="line">16     int result = getaddrinfo(<span class="string">"test.example.com"</span>, <span class="string">"80"</span>, &amp;hints, &amp;address_list);</span><br><span class="line">Last stack frame 0x7effe9e8, current 0x7effeeb0, size of last 1224 = 0x4c8, total deeper  11648 = 0x02d80 =  11.4KB</span><br></pre></td></tr></table></figure>
-
-<p>由于这个<code>stack_walk</code>函数每次输出的是上一个函数的栈帧大小，所以frame 16的size of last 1224说明了frame15的大小为1224字节。切换到frame 15，查看这个函数具体做了什么</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(gdb) f 15</span><br><span class="line">#15 0x76f1f010 in __GI_getaddrinfo (name=&lt;optimized out&gt;, service=&lt;optimized out&gt;, hints=&lt;optimized out&gt;, pai=0x7effeec0) at ../sysdeps/posix/getaddrinfo.c:2391</span><br><span class="line">2391 ../sysdeps/posix/getaddrinfo.c: No such file or directory.</span><br><span class="line"></span><br><span class="line">(gdb) disassemble </span><br><span class="line">Dump of assembler code for function __GI_getaddrinfo:</span><br><span class="line">   0x76f1eef0 &lt;+0&gt;: push &#123;r4, r5, r6, r7, r8, r9, r10, r11, lr&#125;</span><br><span class="line">   0x76f1eef4 &lt;+4&gt;: add r11, sp, #32</span><br><span class="line">   0x76f1eef8 &lt;+8&gt;: ldr r6, [pc, #2712] ; 0x76f1f998 &lt;__GI_getaddrinfo+2728&gt;</span><br><span class="line">   0x76f1eefc &lt;+12&gt;: sub sp, sp, #1184 ; 0x4a0</span><br></pre></td></tr></table></figure>
-
-<p>可以看到这个函数在开始时分配了1184字节的栈空间<code>sub sp, sp, #1184</code></p>
-<p>从 <a href="https://code.woboq.org/userspace/glibc/sysdeps/posix/getaddrinfo.c.html" target="_blank" rel="noopener">https://code.woboq.org/userspace/glibc/sysdeps/posix/getaddrinfo.c.html</a> 找到源代码</p>
-<p>感觉frame14知道这个函数接下来调用的是<code>gaih_inet</code>，而这个函数在2265行，说明代码已经有了一些差异了，不过不影响。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2263</span>       <span class="class"><span class="keyword">struct</span> <span class="title">scratch_buffer</span> <span class="title">tmpbuf</span>;</span></span><br><span class="line"><span class="number">2264</span>       scratch_buffer_init (&amp;tmpbuf);</span><br><span class="line"><span class="number">2265</span>       last_i = gaih_inet (name, pservice, hints, end, &amp;naddrs, &amp;tmpbuf);</span><br></pre></td></tr></table></figure>
-
-<p>在这个函数之前有个结构体buffer，从名字上看就是要占用很大空间。转到这个结构体的定义</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">scratch_buffer</span> &#123;</span></span><br><span class="line">  <span class="keyword">void</span> *data;    <span class="comment">/* Pointer to the beginning of the scratch area.  */</span></span><br><span class="line">  <span class="keyword">size_t</span> length; <span class="comment">/* Allocated space at the data pointer, in bytes.  */</span></span><br><span class="line">  <span class="keyword">union</span> &#123; <span class="keyword">max_align_t</span> __align; <span class="keyword">char</span> __c[<span class="number">1024</span>]; &#125; __space;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>还真有1024字节的数组buffer。</p>
-<p>Frame 14的输出记录了Frame 13占用了2168的栈空间</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(gdb) f 13</span><br><span class="line">#13 0x76e1e340 in _nss_dns_gethostbyname4_r (name=name@entry=0x10550 &quot;test.example.com&quot;, pat=pat@entry=0x7effe9a8, buffer=0x7effea98 &quot;\177&quot;, buflen=1024, </span><br><span class="line">    errnop=errnop@entry=0x7effe9ac, herrnop=herrnop@entry=0x7effe9bc, ttlp=ttlp@entry=0x0) at nss_dns/dns-host.c:326</span><br><span class="line">326 nss_dns/dns-host.c: No such file or directory.</span><br><span class="line"></span><br><span class="line">(gdb) disassemble </span><br><span class="line">Dump of assembler code for function _nss_dns_gethostbyname4_r:</span><br><span class="line">   0x76e1e268 &lt;+0&gt;: push &#123;r4, r5, r6, r7, r8, r9, r10, r11, lr&#125;</span><br><span class="line">   0x76e1e26c &lt;+4&gt;: add r11, sp, #32</span><br><span class="line">   0x76e1e270 &lt;+8&gt;: ldr r4, [pc, #812] ; 0x76e1e5a4 &lt;_nss_dns_gethostbyname4_r+828&gt;</span><br><span class="line">   0x76e1e274 &lt;+12&gt;: sub sp, sp, #76 ; 0x4c</span><br></pre></td></tr></table></figure>
-
-<p>但是看函数栈初始化只是增加了76字节，没有2000多啊 ，通过查看<code>_nss_dns_gethostbyname4_r</code>的函数实现，其中有一句</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">host_buffer.buf = orig_host_buffer = (querybuf *) alloca (<span class="number">2048</span>);</span><br></pre></td></tr></table></figure>
-
-<p>根据Linux手册描述<code>alloca</code>函数分配栈上的空间 <a href="https://linux.die.net/man/3/alloca" target="_blank" rel="noopener">https://linux.die.net/man/3/alloca</a></p>
-<blockquote>
-<p>The <strong>alloca</strong>() function allocates <em>size</em> bytes of space in the stack frame of the caller. This temporary space is automatically freed when the function that called <strong>alloca</strong>() returns to its caller.</p>
-</blockquote>
-<p>剩下的几个函数中都使用了<code>char tname[MAXDNAME+1]</code>这样的buffer来存储最大域名，但是每一个函数都有一份这个buffer，导致累加起来中共就有11K了。</p>
-<p> 所以，对于嵌入式的平台，一般有特定的库，而不是通用的Linux库，不然栈都不够用的。</p>
-<h4 id="GDB工具脚本"><a href="#GDB工具脚本" class="headerlink" title="GDB工具脚本"></a>GDB工具脚本</h4><p>作者写了几个函数用来查看函数的栈帧大小，以及栈空间的深度，即运行过程中栈顶的最大值</p>
-<p><a href="https://sourceware.org/gdb/onlinedocs/gdb/Define.html#index-user_002ddefined-command" target="_blank" rel="noopener">https://sourceware.org/gdb/onlinedocs/gdb/Define.html#index-user_002ddefined-command</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Functions for examining and manipulating the stack in gdb.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Script constants.</span></span><br><span class="line"><span class="built_in">set</span> <span class="variable">$one_kb</span>        = 1024.0</span><br><span class="line"><span class="built_in">set</span> <span class="variable">$safety_margin</span> = 16</span><br><span class="line"></span><br><span class="line"><span class="comment"># Raspbian Linux stack parameters.</span></span><br><span class="line"><span class="built_in">set</span> <span class="variable">$stack_start</span>   = 0x7efdf000</span><br><span class="line"><span class="built_in">set</span> <span class="variable">$stack_end</span>     = 0x7f000000</span><br><span class="line"><span class="built_in">set</span> <span class="variable">$stack_size</span>    = <span class="variable">$stack_end</span> - <span class="variable">$stack_start</span></span><br><span class="line"></span><br><span class="line">define stack_args</span><br><span class="line">    <span class="keyword">if</span> <span class="variable">$argc</span> &lt; 2</span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Usage: stack_args &lt;offset|start&gt; &lt;length|end&gt;\n"</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable">$arg0</span> &lt; <span class="variable">$stack_start</span></span><br><span class="line">            <span class="comment"># Assume arg0 is a relative offset from start of stack.</span></span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$offset</span> = (int)<span class="variable">$arg0</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="comment"># Assume arg0 is an absolute address, so compute its offset.</span></span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$offset</span> = (int)<span class="variable">$arg0</span> - <span class="variable">$stack_start</span></span><br><span class="line">        end</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> <span class="variable">$arg1</span> &lt; <span class="variable">$stack_start</span></span><br><span class="line">            <span class="comment"># Assume arg1 is a relative length.</span></span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$length</span> = (int)<span class="variable">$arg1</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="comment"># Assume arg1 is an absolute address, so compute its length.</span></span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$length</span> = (int)<span class="variable">$arg1</span> - <span class="variable">$stack_start</span> - <span class="variable">$offset</span></span><br><span class="line">        end</span><br><span class="line">    end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">document stack_args</span><br><span class="line">Usage: stack_args &lt;offset|start&gt; &lt;length|end&gt;</span><br><span class="line"></span><br><span class="line">Set stack region offset and length from arguments.</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">define dump_stack</span><br><span class="line">    <span class="keyword">if</span> <span class="variable">$argc</span> &lt; 2</span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Usage: dump_stack &lt;offset|start&gt; &lt;length|end&gt;\n"</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        stack_args <span class="variable">$arg0</span> <span class="variable">$arg1</span></span><br><span class="line">        </span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$i</span> = 0</span><br><span class="line">        <span class="keyword">while</span> <span class="variable">$i</span> &lt; <span class="variable">$length</span></span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$addr</span> = <span class="variable">$stack_start</span> + <span class="variable">$offset</span> + <span class="variable">$i</span></span><br><span class="line">            x/4wx <span class="variable">$addr</span></span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$i</span> = <span class="variable">$i</span> + 16</span><br><span class="line">        end</span><br><span class="line">    end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">document dump_stack</span><br><span class="line">Usage: dump_stack &lt;offset|start&gt; &lt;length|end&gt;</span><br><span class="line"></span><br><span class="line">Dumps stack starting at &lt;offset|start&gt; bytes, 4 longwords at a time,</span><br><span class="line"><span class="keyword">for</span> &lt;length|end&gt; bytes.</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">define clear_stack</span><br><span class="line">    <span class="keyword">if</span> <span class="variable">$argc</span> &lt; 2</span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Usage: clear_stack &lt;offset|start&gt; &lt;length|end&gt;\n"</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        stack_args <span class="variable">$arg0</span> <span class="variable">$arg1</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> <span class="variable">$stack_start</span> + <span class="variable">$offset</span> + <span class="variable">$safety_margin</span> &gt;= <span class="variable">$sp</span></span><br><span class="line">            <span class="built_in">printf</span> <span class="string">"Error: start is in active stack.\n"</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">if</span> <span class="variable">$stack_start</span> + <span class="variable">$offset</span> + <span class="variable">$length</span> + safety_margin &gt;= <span class="variable">$sp</span></span><br><span class="line">                <span class="built_in">printf</span> <span class="string">"Error: end is in active stack.\n"</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">set</span> <span class="variable">$i</span> = 0</span><br><span class="line">                <span class="keyword">while</span> <span class="variable">$i</span> &lt; <span class="variable">$length</span></span><br><span class="line">                    <span class="built_in">set</span> <span class="variable">$addr</span> = <span class="variable">$stack_start</span> + <span class="variable">$offset</span> + <span class="variable">$i</span></span><br><span class="line">                    <span class="built_in">set</span> *((int *) <span class="variable">$addr</span>) = 0</span><br><span class="line">                    <span class="built_in">set</span> <span class="variable">$i</span> = <span class="variable">$i</span> + 4</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment"># Takes a while, so give some feedback.</span></span><br><span class="line">                    <span class="keyword">if</span> <span class="variable">$i</span> % 10000 == 0</span><br><span class="line">                        <span class="built_in">printf</span> <span class="string">"Cleared %d\n"</span>, <span class="variable">$i</span></span><br><span class="line">                    end</span><br><span class="line">                end</span><br><span class="line">            end</span><br><span class="line">        end</span><br><span class="line">    end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">document clear_stack</span><br><span class="line">Usage: clear_stack &lt;offset|start&gt; &lt;length|end&gt;</span><br><span class="line"></span><br><span class="line">Clears stack starting at &lt;offset|start&gt; bytes, one longword at a time,</span><br><span class="line"><span class="keyword">for</span> &lt;length|end&gt; bytes.</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">define stack_offset</span><br><span class="line">    <span class="keyword">if</span> <span class="variable">$argc</span> &lt; 1</span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Usage: stack_offset &lt;address&gt;\n"</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="comment"># Cast to int is needed to set $depth when $arg0 is $sp.</span></span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$addr</span>   = (int)<span class="variable">$arg0</span></span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$offset</span> = <span class="variable">$addr</span> - <span class="variable">$stack_start</span></span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$depth</span>  = <span class="variable">$stack_end</span> - <span class="variable">$addr</span></span><br><span class="line">        </span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Address    %10d = 0x%08x\n"</span>, <span class="variable">$addr</span>, <span class="variable">$addr</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> <span class="variable">$addr</span> &lt; <span class="variable">$stack_start</span> || <span class="variable">$addr</span> &gt;= <span class="variable">$stack_end</span></span><br><span class="line">            <span class="built_in">printf</span> <span class="string">"Warning: address is not in stack.\n"</span></span><br><span class="line">        end</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Stack size   %6d = 0x%05x = %5.1fKB, 0x%x-0x%x\n"</span>, <span class="variable">$stack_size</span>, <span class="variable">$stack_size</span>, <span class="variable">$stack_size</span> / <span class="variable">$one_kb</span>, <span class="variable">$stack_start</span>, <span class="variable">$stack_end</span></span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Stack offset %6d = 0x%05x = %5.1fKB\n"</span>, <span class="variable">$offset</span>, <span class="variable">$offset</span>, <span class="variable">$offset</span> / <span class="variable">$one_kb</span></span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Stack depth  %6d = 0x%05x = %5.1fKB\n"</span>, <span class="variable">$depth</span>, <span class="variable">$depth</span>, <span class="variable">$depth</span> / <span class="variable">$one_kb</span></span><br><span class="line">    end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">document stack_offset</span><br><span class="line">Usage: stack_offset &lt;address&gt;</span><br><span class="line"></span><br><span class="line">Shows stack offset and depth represented by address.</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">define scan_stack</span><br><span class="line">    <span class="keyword">if</span> <span class="variable">$argc</span> &lt; 2</span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Usage: scan_stack &lt;offset|start&gt; &lt;length|end&gt;\n"</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        stack_args <span class="variable">$arg0</span> <span class="variable">$arg1</span></span><br><span class="line">        </span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$addr</span> = <span class="variable">$stack_start</span> + <span class="variable">$offset</span></span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$i</span>    = 0</span><br><span class="line">        <span class="keyword">while</span> <span class="variable">$i</span> &lt; <span class="variable">$length</span> &amp;&amp; *((int *) <span class="variable">$addr</span>) == 0</span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$addr</span> = <span class="variable">$stack_start</span> + <span class="variable">$offset</span> + <span class="variable">$i</span></span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$i</span> = <span class="variable">$i</span> + 4</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># Takes a while, so give some feedback.</span></span><br><span class="line">            <span class="keyword">if</span> <span class="variable">$i</span> % 10000 == 0</span><br><span class="line">                <span class="built_in">printf</span> <span class="string">"Scanned %d\n"</span>, <span class="variable">$i</span></span><br><span class="line">            end</span><br><span class="line">        end</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> *((int *) <span class="variable">$addr</span>) != 0</span><br><span class="line">            <span class="keyword">if</span> <span class="variable">$addr</span> &lt; <span class="variable">$sp</span></span><br><span class="line">                <span class="built_in">set</span> <span class="variable">$offset</span> = <span class="variable">$sp</span> - <span class="variable">$addr</span></span><br><span class="line">                <span class="built_in">printf</span> <span class="string">"Found data %d bytes deeper than current stack frame (0x%x).\n"</span>, <span class="variable">$offset</span>, <span class="variable">$sp</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">printf</span> <span class="string">"Stack is clear up to current stack frame (0x%x), it is deepest stack usage.\n"</span>, <span class="variable">$sp</span></span><br><span class="line">            end</span><br><span class="line">            </span><br><span class="line">            stack_offset <span class="variable">$addr</span></span><br><span class="line">            dump_stack <span class="variable">$addr</span>-<span class="variable">$stack_start</span> 64</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="built_in">printf</span> <span class="string">"Stack is clear in requested range.\n"</span></span><br><span class="line">        end</span><br><span class="line">    end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">document scan_stack</span><br><span class="line">Usage: scan_stack &lt;offset|start&gt; &lt;length|end&gt;</span><br><span class="line"></span><br><span class="line">Scans stack <span class="keyword">for</span> non-zero contents starting at &lt;offset|start&gt; bytes, one</span><br><span class="line">longword at a time, <span class="keyword">for</span> &lt;length|end&gt; bytes.</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">define stack_walk</span><br><span class="line">    <span class="built_in">set</span> <span class="variable">$first_sp</span> = <span class="variable">$sp</span></span><br><span class="line">    <span class="built_in">set</span> <span class="variable">$last_sp</span>  = <span class="variable">$sp</span></span><br><span class="line">    <span class="built_in">set</span> <span class="variable">$total</span>    = 0</span><br><span class="line">    frame</span><br><span class="line">    <span class="built_in">printf</span> <span class="string">"Top stack frame 0x%08x\n\n"</span>, <span class="variable">$last_sp</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Loop will error out gracefully when there are no more frames.</span></span><br><span class="line">    <span class="keyword">while</span> 1</span><br><span class="line">        up</span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$delta</span>   = <span class="variable">$sp</span> - <span class="variable">$last_sp</span></span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$total</span>   = <span class="variable">$total</span> + <span class="variable">$delta</span></span><br><span class="line">        <span class="built_in">printf</span> <span class="string">"Last stack frame 0x%08x, current 0x%08x, size of last %4d = 0x%03x, total deeper %6d = 0x%05x = %5.1fKB\n\n"</span>, <span class="variable">$last_sp</span>, <span class="variable">$sp</span>, <span class="variable">$delta</span>, <span class="variable">$delta</span>, <span class="variable">$total</span>, <span class="variable">$total</span>, <span class="variable">$total</span> / <span class="variable">$one_kb</span></span><br><span class="line">        <span class="built_in">set</span> <span class="variable">$last_sp</span> = <span class="variable">$sp</span></span><br><span class="line">    end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">document stack_walk</span><br><span class="line">Usage: stack_walk</span><br><span class="line"></span><br><span class="line">Walks stack frames upward from currently selected frame and computes</span><br><span class="line">incremental and cumulative size of frames, so that stack consumption</span><br><span class="line">can be attributed to specific <span class="built_in">functions</span>.</span><br><span class="line"></span><br><span class="line">Use <span class="string">"f 0"</span> to select deepest frame of call stack, or <span class="string">"f &lt;n&gt;"</span> to select</span><br><span class="line">frame &lt;n&gt; higher up <span class="keyword">in</span> stack.</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-
-
+静态内存，存储全局变量，静态变量 即BSS和Data段
+堆，malloc动态分配的内存，使用free释放
+栈，函数调用过程中动态分配的内存段。每个函数有自己的栈帧，包括函数的局部
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2021/06/12/function-stack-size/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -887,7 +770,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -941,101 +824,26 @@
       
         
           
-            <h2 id="ASF"><a href="#ASF" class="headerlink" title="ASF"></a>ASF</h2><p>ArchiSteamFarm </p>
-<p>这是一个服务器端的程序，当然也可以在本地的PC上运行</p>
-<ol>
-<li>可以用来挂卡</li>
-<li>和小号聊天，让机器人执行命令，批量激活游戏 </li>
-</ol>
-<h3 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h3><h4 id="Install-NET-Core-prerequisites"><a href="#Install-NET-Core-prerequisites" class="headerlink" title="Install .NET Core prerequisites"></a>Install .NET Core prerequisites</h4><ul>
-<li>Microsoft Visual C++ 2015 Redistributable Update 3 RC</li>
-<li>KB2533623 and KB2999226</li>
-</ul>
-<p>For Linux:</p>
-<ul>
-<li>libcurl3 (libcurl)</li>
-<li>libicu60 (libicu, latest version for your distribution, for example libicu57 for Debian 9)</li>
-<li>libkrb5-3 (krb5-libs)</li>
-<li>liblttng-ust0 (lttng-ust)</li>
-<li>libssl1.0.2 (libssl, openssl-libs, latest 1.0.X version for your distribution)</li>
-<li>zlib1g (zlib)</li>
-</ul>
-<h4 id="Download-latest-ASF-release"><a href="#Download-latest-ASF-release" class="headerlink" title="Download latest ASF release"></a>Download latest ASF release</h4><p>From <a href="https://github.com/JustArchi/ArchiSteamFarm/releases/latest" target="_blank" rel="noopener">here</a></p>
-<p>windows 64位 下载这个<strong>ASF-win-x64</strong></p>
-<p>recommend file structrue</p>
-<pre><code>C:\ASF (where you put your own things)
-    ├── ASF shortcut.lnk (optional)
-    ├── Config shortcut.lnk (optional)
-    ├── Commands.txt (optional)
-    ├── MyExtraScript.bat (optional)
-    ├── ... (any other files of your choice, optional)
-    └── Core (dedicated to ASF only, where you extract the archive)
-         ├── ArchiSteamFarm.dll
-         ├── config
-         └── (...)</code></pre><h4 id="Configure-ASF"><a href="#Configure-ASF" class="headerlink" title="Configure ASF"></a>Configure ASF</h4><h5 id="Web-配置"><a href="#Web-配置" class="headerlink" title="Web 配置"></a>Web 配置</h5><ul>
-<li>可以直接到官方提供的网站配置，这个网页只是客户端执行，因此不要担心帐号被盗<a href="https://justarchi.github.io/ArchiSteamFarm/#/" target="_blank" rel="noopener">here</a></li>
-<li>也可以把那个网页下载下来，在本地浏览器打开，这个工具只是js写的，不需要服务器环境</li>
-<li>直接拷贝模板配置，修改配置文件</li>
-</ul>
-<p>切换到Bot选项：</p>
-<ol>
-<li>输入一个Bot的名字，不能是<code>ASF</code>，<code>example</code>以及<code>minimal</code>，因为默认配置目录已经有了这3个文件</li>
-<li>steam的用户名和密码这里如果不填，每次启动asf时，需要与程序交互输入密码，如果是本地使用建议填上密码，也可以生成配置文件后手动增加的配置文件中</li>
-<li>勾选Enabled</li>
-<li>点击下载json格式的配置文件，并把这个文件放入config目录</li>
-</ol>
-<h4 id="Launch-ASF"><a href="#Launch-ASF" class="headerlink" title="Launch ASF"></a>Launch ASF</h4><p>点击ArchiSteamFarm.exe启动asf，第一次登录过程中，需要输入steam guard</p>
-<p>如果steam的帐号解锁了5美元限制，系统会自动挂卡，并显示每个游戏还有多少个卡</p>
-<p><img src="/uploads/steam/asf_account_limited.png" alt="limited"></p>
-<h4 id="Extended-configuration"><a href="#Extended-configuration" class="headerlink" title="Extended configuration"></a>Extended configuration</h4><ul>
-<li><p>ASF支持同时挂多个帐号，只需要将帐号的配置文件放到config目录即可，一个帐号配置如<code>tip_bot.json</code></p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"SteamLogin"</span>: <span class="string">"loginname"</span>,</span><br><span class="line">  <span class="attr">"SteamPassword"</span>: <span class="string">"password"</span>,</span><br><span class="line">  <span class="attr">"Enabled"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"AutoSteamSaleEvent"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"SteamUserPermissions"</span>: &#123;</span><br><span class="line">    <span class="attr">"76561199116482158"</span>: <span class="number">3</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <p>
+              ASFArchiSteamFarm 
+这是一个服务器端的程序，当然也可以在本地的PC上运行
 
+可以用来挂卡
+和小号聊天，让机器人执行命令，批量激活游戏 
 
-
-</li>
-</ul>
-<ul>
-<li><p>可以自定义设置挂卡时显示的游戏信息，在配置页面的高级选项中，编辑<code>CustomGamePlayedWhileFarming</code>为你想显示的文字，这样看不到当前正在挂哪个游戏。</p>
-</li>
-<li><p>配置页面的ASF选项页是针对ASF的全局配置，编辑后使用生成的<code>ASF.json</code>替换原来的文件即可</p>
-</li>
-</ul>
-<h4 id="Using-IPC-GUI"><a href="#Using-IPC-GUI" class="headerlink" title="Using IPC GUI"></a>Using IPC GUI</h4><p>ASF提供了一个IPC的GUI访问方式，这个功能目前还处于预览阶段，但是常用的功能都是支持的。</p>
-<p>使用这个功能需要知道自己的<code>SteamOwnerID</code>，这个id可在<a href="https://steamrep.com/" target="_blank" rel="noopener">steamrep</a>网站查询，是一个7656开始的数字</p>
-<p>也可以直接看自己的个人资料页面 <code>https://steamcommunity.com/profiles/</code>后面的数字就是</p>
-<p>配置页面切换到ASF配置，配置全局配置文件<code>ASF.json</code></p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"s_SteamOwnerID"</span>: <span class="string">"76561198099917059"</span>,</span><br><span class="line">  <span class="attr">"IPC"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>填入自己的<code>SteamOwnerID</code></li>
-<li>在Remote Access中勾选IPC选项即可</li>
-<li>用新生成的<code>ASF.json</code>替换config目录的原始文件</li>
-<li>运行asf时，注意ipc服务是否有运行起来<br><img src="/uploads/steam/asf_ipc_server.png" alt="asf_ipc_run"></li>
-<li>浏览器打开<code>http://127.0.0.1:1242/</code>就可以访问到asf的ipc界面</li>
-</ol>
-<h4 id="Command"><a href="#Command" class="headerlink" title="Command"></a>Command</h4><h5 id="使用IPC执行命令"><a href="#使用IPC执行命令" class="headerlink" title="使用IPC执行命令"></a>使用IPC执行命令</h5><p>点击左侧的<code>Commands</code>, 在命令窗口输入命令，例如让所有的bot都添加游戏 输入</p>
-<p><code>!addlicense ASF 533150,533382,533349</code></p>
-<p>如果让指定的bot执行一个命令，需要在命令后指定bot的名称，</p>
-<p> <code>!addlicense  bottle_bot 884660</code></p>
-<ul>
-<li>addlicensem命令后的id默认为subid，可以在steamdb上查到，如果要用app id，命令格式为</li>
-</ul>
-<p><code>addlicense ASF app/292030,sub/47807</code></p>
-<p><img src="/uploads/steam/asf_bot_command.png" alt="asf_bot_command"></p>
-<h5 id="使用与小号聊天执行命令"><a href="#使用与小号聊天执行命令" class="headerlink" title="使用与小号聊天执行命令"></a>使用与小号聊天执行命令</h5><ul>
-<li>在生成bot的配置文件时，Access里面的SteamUserPermissions可以控制权限，权限有4种，默认为None。一般需要将自己帐号设置为Master最大权限。</li>
-<li>每个命令有自己的权限要求，例如添加免费游戏的命令只需要operator权限</li>
-</ul>
-<p>SteamUserPermissions是Key-Value格式的配置，key为用户的64位id，value为具体的权限数值，生成的配置文件部分如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;SteamUserPermissions&quot;: &#123;</span><br><span class="line">  &quot;76561198833106606&quot;: 3</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>举例：<br>假设有大号Android和小号Apple，ASF中运行了一个大号Android的机器人bottle_bot。<br>在Steam网页上，大号Android发起与Apple的聊天，发起消息!addlicense bottle_bot 32287，则自动会把这个游戏加入到大号的库中。如果小号发送这个消息则没有任何反映，因为小号没有任何权限。这里小号的作用只是让大号可以把消息发给机器人而建立的聊天入口。因为大号无法自己给你聊天，除非通过群组聊天。</p>
-<p>如果小号Apple也启动了一个<code>apple_bot</code>，则需要把Apple的64位id设置到<code>apple_bot</code>的用户权限中。在聊天窗口中执行<code>!addlicense 32287</code>，则所有的bot都会执行这个命令，根据发命令的用户的权限来判断是否执行这个命令。</p>
-<p>在ASF全局配置中的设置的<code>SteamOwnerID</code>的帐号的权限为Owner拥有对于ASF中所有bot的最高权限，因此这个帐号可以让所有的bot执行所有的命令。一般这个id是大号的id，因此大号在聊天窗口中可以给所有的bot添加游戏执行命令。如果需要给指定bot发命令，则需要指明bot的名字。例如<code>!cmd bot_name param</code></p>
-<h4 id="Privacy-Policy"><a href="#Privacy-Policy" class="headerlink" title="Privacy Policy"></a>Privacy Policy</h4><p>默认系统会使用你的帐号加入ASF群组</p>
-
+InstallInstall .NET Core prerequisites
+Microsoft Visual C++ 2015 Redistr
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2021/01/05/ASF/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1152,7 +960,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -1188,24 +996,24 @@
       
         
           
-            <h2 id="中国移动魔百盒使用"><a href="#中国移动魔百盒使用" class="headerlink" title="中国移动魔百盒使用"></a>中国移动魔百盒使用</h2><p>陕西移动的电视盒子版本为<code>CM201-2</code></p>
-<h4 id="安装第三方软件步骤"><a href="#安装第三方软件步骤" class="headerlink" title="安装第三方软件步骤"></a>安装第三方软件步骤</h4><ol>
-<li>第一次开机后不要升级，如果已经升级可以在设置中恢复出厂设置</li>
-<li>遥控器点设置，在关于本机界面下依次按遥控器的 <code>上上下下左左右右OKOKOK</code></li>
-<li>进入DebugTool界面后，abd服务设置，永久打开abd服务</li>
-<li>将电脑和盒子连入同一个局域网中，下载电视应用安装器 <a href="http://www.cnhezi.com/pctool/" target="_blank" rel="noopener">http://www.cnhezi.com/pctool/</a></li>
-<li>点击自动搜索后，找到盒子的ip地址，双击连接</li>
-<li>点击安装应用，把下载好的当贝市场拖入软件，等待自动安装。时间会比较长</li>
-<li>安装之后，就可以在当贝市场中安装需要的软件了</li>
-</ol>
-<h4 id="打开WIFI功能"><a href="#打开WIFI功能" class="headerlink" title="打开WIFI功能"></a>打开WIFI功能</h4><p>默认这个盒子只能通过有线网口连接网络，系统设置中的无线网络被移动用密码保护了，网上也没找来密码。</p>
-<p>在当贝桌面中，进入桌面设置，无线网络，打开无线网络就可以连接WIFI了</p>
-<h4 id="B站"><a href="#B站" class="headerlink" title="B站"></a>B站</h4><p>如果要看有弹幕的Bilibili，需要下载bilibili的老版本1.6.6版本</p>
-<h4 id="京东无线路由器配置"><a href="#京东无线路由器配置" class="headerlink" title="京东无线路由器配置"></a>京东无线路由器配置</h4><p>登录移动光猫 <a href="http://192.168.1.1/html/login_CM.html" target="_blank" rel="noopener">http://192.168.1.1/html/login_CM.html</a></p>
-<p>用户名：CMCCAdmin</p>
-<p><code>应用--高级NAT设置--DMZ设置</code>其中的ip地址输入无线路由器的地址如192.168.1.1</p>
-
+            <p>
+              中国移动魔百盒使用陕西移动的电视盒子版本为CM201-2
+安装第三方软件步骤
+第一次开机后不要升级，如果已经升级可以在设置中恢复出厂设置
+遥控器点设置，在关于本机界面下依次按遥控器的 上上下下左左右右OKOKOK
+进入DebugTool界面后，abd服务设置，永久打开abd服务
+将电脑和盒子连入同一
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/07/12/cmcc-tvbox/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1322,7 +1130,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -1376,74 +1184,24 @@
       
         
           
-            <h2 id="IBM-Cloud-Usage"><a href="#IBM-Cloud-Usage" class="headerlink" title="IBM Cloud Usage"></a>IBM Cloud Usage</h2><p>IBM Cloud 提供了256M的免费运行空间</p>
-<p>注册地址: cloud.ibm.com</p>
-<h3 id="创建实例"><a href="#创建实例" class="headerlink" title="创建实例"></a>创建实例</h3><p>Cloud Foundry 可以看作是一个docker容器实例，支持多种语言的Linux环境</p>
-<ol>
-<li>登录<a href="https://cloud.ibm.com/" target="_blank" rel="noopener">https://cloud.ibm.com/</a></li>
-<li>点击<code>Create resource</code></li>
-<li>选择Cloud Foundry</li>
-<li>Application Runtimes中选择自己需要的语言，目前支持Java、JS、Python、Go、Swift、PHP</li>
-<li>区域默认的<code>Dallas</code>,配置选择免费的256M；App Name输入自己应用名称，后面要用；域名选择默认的<code>us-south.cf.appdomain.cloud</code></li>
-<li>创建完成后，会自动转到帮助页面</li>
-</ol>
-<h3 id="Python-Demo"><a href="#Python-Demo" class="headerlink" title="Python Demo"></a>Python Demo</h3><h4 id="code"><a href="#code" class="headerlink" title="code"></a>code</h4><p>官方提供的Demo例子，用的是Flask</p>
-<p><code>git clone https://github.com/IBM-Cloud/get-started-python</code></p>
-<p><code>cd get-started-python</code></p>
-<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ol>
-<li>安装ibmcloud CLI程序 <a href="https://github.com/IBM-Cloud/ibm-cloud-cli-release/releases/" target="_blank" rel="noopener">https://github.com/IBM-Cloud/ibm-cloud-cli-release/releases/</a></li>
-<li>安装Python</li>
-<li>创建虚拟Python环境 <code>python -m venv pyvenv36</code></li>
-<li>激活当前的虚拟环境<code>pyvenv36\Scripts\activate</code>，然后进入到下载的代码目录安装python依赖<code>pip install -r requirements.txt</code></li>
-<li>本地执行Demo程序<code>python hello.py</code></li>
-<li>浏览器中访问<a href="http://127.0.0.1:8000/" target="_blank" rel="noopener">http://127.0.0.1:8000/</a> 可以看到一个输入框</li>
-</ol>
-<h4 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h4><p>安装ibmcloud CLI程序后，进入下载代码目录</p>
-<ol>
-<li><p>修改配置文件<code>manifest.yml</code>的应用名称为自己创建时写的名称如<code>xxxxxx</code></p>
-</li>
-<li><p>执行<code>ibmcloud login</code>登录服务，中间需要输入邮箱和密码</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">E:\code\ibm\dev\get-started-python&gt;ibmcloud login</span><br><span class="line">API 端點: https://cloud.ibm.com</span><br><span class="line"></span><br><span class="line"><span class="meta">Email&gt;</span><span class="bash"> xxxx@gmail.com</span></span><br><span class="line"></span><br><span class="line"><span class="meta">Password&gt;</span></span><br><span class="line">正在鑑別...</span><br><span class="line">确定</span><br><span class="line"></span><br><span class="line">已設定帳戶 xxxxx's Account (xxxxxxx) 的目標</span><br></pre></td></tr></table></figure>
+            <p>
+              IBM Cloud UsageIBM Cloud 提供了256M的免费运行空间
+注册地址: cloud.ibm.com
+创建实例Cloud Foundry 可以看作是一个docker容器实例，支持多种语言的Linux环境
 
-
-
-</li>
-</ol>
-<ol start="3">
-<li><p>提示选择地区直接<code>Enter</code>跳过，此时会显示应用的基本信息，还会问是否给IBM统计信息，当然是no</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">API 端點：      https://cloud.ibm.com</span><br><span class="line">地區：</span><br><span class="line">使用者：        xxxxx@gmail.com</span><br><span class="line">帳戶：          xxxx's Account (xxxxxxxxx)</span><br><span class="line">資源群組：      未設定資源群組的目標，請使用 'ibmcloud target -g RESOURCE_GROUP'</span><br><span class="line"></span><br><span class="line">CF API 端點：</span><br><span class="line">組織:</span><br><span class="line">空間：</span><br><span class="line"></span><br><span class="line">我們想要收集使用情形統計資料以協助改善 IBM Cloud CLI。</span><br><span class="line">此資料絕不會在 IBM 之外共用。</span><br><span class="line">若要進一步瞭解，請參閱 IBM 隱私權條款：https://www.ibm.com/privacy</span><br><span class="line">您可以啟用或停用使用情形資料收集，方法是執行 'ibmcloud config --usage-stats-coll</span><br><span class="line">ect [true | false]'</span><br><span class="line"></span><br><span class="line">您要傳送使用情形統計資料給 IBM 嗎？ [y/n]&gt; n</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<ol start="4">
-<li><p>选择要用的cf应用节点<code>ibmcloud target --cf</code>，这个过程需要代理，否则可能会提示网络错误</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">失败</span><br><span class="line">無法取得 Cloud Foundry 實例：</span><br><span class="line">Get "https://mccp.us-south.cf.cloud.ibm.com/v2/regions": dial tcp: lookup mccp.u</span><br><span class="line">s-south.cf.cloud.ibm.com: no such host</span><br></pre></td></tr></table></figure>
-
-<p><strong>正常的输出</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">E:\code\ibm\dev\get-started-python&gt;ibmcloud target --cf</span><br><span class="line"></span><br><span class="line">選取 Cloud Foundry 實例：</span><br><span class="line">1. public CF us-south (https://api.us-south.cf.cloud.ibm.com)</span><br><span class="line">2. public CF eu-de (https://api.eu-de.cf.cloud.ibm.com)</span><br><span class="line">3. public CF eu-gb (https://api.eu-gb.cf.cloud.ibm.com)</span><br><span class="line">4. public CF au-syd (https://api.au-syd.cf.cloud.ibm.com)</span><br><span class="line">5. public CF us-east (https://api.us-east.cf.cloud.ibm.com)</span><br><span class="line">請輸入數字&gt; 1</span><br><span class="line">目標 Cloud Foundry (https://api.us-south.cf.cloud.ibm.com)</span><br><span class="line"></span><br><span class="line">已設定組織 xxxx 的目標</span><br><span class="line"></span><br><span class="line">已設定空間 dev 的目標</span><br><span class="line"></span><br><span class="line">API 端點：      https://cloud.ibm.com</span><br><span class="line">地區：</span><br><span class="line">使用者：        xxxxx@gmail.com</span><br><span class="line">帳戶：          xxxxxx's Account (xxxxxxxxx)</span><br><span class="line">資源群組：      未設定資源群組的目標，請使用 'ibmcloud target -g RESOURCE_GROUP'</span><br><span class="line"></span><br><span class="line">CF API 端點：   https://api.us-south.cf.cloud.ibm.com（API 版本：2.148.0）</span><br><span class="line">組織:           xxx</span><br><span class="line">空間：          xxx</span><br></pre></td></tr></table></figure>
-
-<p><em>其中的组织和空间都可以通过网站的账户下面更改名称，免费账户只能有一个组织</em></p>
-</li>
-<li><p>安装Cloud Foundry CLI <code>ibmcloud cf install</code></p>
-</li>
-<li><p>本地代码push到服务器<code>ibmcloud cf push</code> 会输出一堆日志和部署信息，最终会显示系统的运行信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">正在等待應用程式啟動...</span><br><span class="line"></span><br><span class="line">名稱:            xxxxx</span><br><span class="line">所要求的狀態:    started</span><br><span class="line">路徑:            xxxxxx.us-south.cf.appdomain.cloud</span><br><span class="line">前次上傳:        Mon 22 Jun 22:43:39 CST 2020</span><br><span class="line">堆疊:            cflinuxfs3</span><br><span class="line">建置套件:        python</span><br><span class="line"></span><br><span class="line">類型:         web</span><br><span class="line">實例:         1/1</span><br><span class="line">記憶體用量:   128M</span><br><span class="line">啟動指令:     python hello.py</span><br><span class="line">     state    自從                   cpu    memory       磁碟        詳細資料</span><br><span class="line"><span class="meta">#</span><span class="bash">0   執行中   2020-06-22T14:44:05Z   0.4%   18.8M/128M   198.7M/1G</span></span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<ol start="7">
-<li><p>浏览器访问<code>xxxxxx.us-south.cf.appdomain.cloud</code>就可以看到应用</p>
-</li>
-<li><p>使用<code>ibmcloud cf ssh appname</code>可以以ssh访问应用的容器空间，不过我试了一直提示<code>no such host</code></p>
-</li>
-</ol>
-<p><em>先到这里，休息一下</em></p>
-
+登录https://cloud.ibm.com/
+点击Create reso
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/06/22/ibmcloud/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1560,7 +1318,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -1614,50 +1372,23 @@
       
         
           
-            <h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><p>虚拟内存管理的最小单位为<strong>页</strong>，一个页可以是4K或8K</p>
-<p><strong>段</strong>是一个进程的数据或代码的逻辑分组，段不是连续的</p>
-<p>现在的操作系统同时使用段和页，一个进程被分为多个段，每个段又有页</p>
-<p>对于内存块的分配算法，不同的应用场景效率是不一样的。</p>
-<h4 id="Buddy-memory-allocation"><a href="#Buddy-memory-allocation" class="headerlink" title="Buddy memory allocation"></a>Buddy memory allocation</h4><p><a href="https://en.wikipedia.org/wiki/Buddy_memory_allocation" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Buddy_memory_allocation</a>  </p>
-<p>把内存分割为小块，尽可能的满足内存的分配需求。1963年Harry Markowitz发明</p>
-<p>buddy分配方案有多种实现策略，最简单的是2分法。每一个内存块都有一个编号(order)，这个编号从0开始到n，编号为n的内存块的大小为<code>2**n</code>。当一个大的块被分割为两个相同的小块时，这两个小块就是buddy。只有两个buddy才能合并为一个大块。</p>
-<p>一个块的最小大小值为2的0次方，即order为0的大小。</p>
-<p>需要分配的内存大小为s，分配的块的order为x，则需要满足 <code>2**(x-1)&lt;s&lt;2**(x)</code>,即s大于order为x的大小的一半。</p>
-<p>oder的最大值由系统可用的内存大小和最小块大小决定。例如最小块大小即order-0的大小为4K，对于一个有2000K内存的系统，order的最大值为8.因为对于order-8这个块，他的大小为2的8次方256*块的最小值4K为1024K，大于2000的一半了，所以如果order为9，就会超过2000的总大小。</p>
-<h6 id="举例："><a href="#举例：" class="headerlink" title="举例："></a>举例：</h6><p>一个系统中的最小块大大小为64K，order的最大值为4，系统一次可以分配的内存大小最大值为<code>(2**4)*64=1024K</code>.假定系统的内存刚好也就1024K大小。</p>
-<p><img src="../uploads/memory/buddyexp.png" alt="buddyexp"></p>
-<ol>
-<li>初始状态</li>
-<li>程序A需要34K内存，因此order-0的块分配给A用就足够了，因为最小就是64.但是当前系统没有0的块，只有一个order是4的块，所以这个为4的块就一次一次对半分割，直到得到一个order-0，并把最左侧的给A使用。分割的过程中会产生一些其他块，这些块以free-list进行管理起来</li>
-<li>程序B需要66K内存，需要把order-1的块给B用，从当前的链表中发现已经有对应大小的块了，所以把对于的块之间给B用</li>
-<li>程序C需要35K内存，需要一个order-0的块给C用，现在刚好还有</li>
-<li>程序D需要67K内存，需要一个order-1的块，而此时没有order-1的块了，那就把order-2的块分解为两个order-1的块，把其中一个给D</li>
-<li>程序B释放了资源，此时order-1就多了一块出来，但是他不能和另一个order-1进行合并，因为他们不是来自同一个块，不是buddy</li>
-<li>程序D释放了资源，此时又一个order-1空出来了，发现他有buddy，所以他们可以合并为order-2</li>
-</ol>
-<p>Buddy方案会导致内存浪费internal fragmentation，例如66K的内存需要order-1，其中近一半都被浪费了。</p>
-<p>Linux内核使用buddy时进行了改进，同时结合了其他分配方案来管理内存块。</p>
-<h4 id="Slab-Allocation"><a href="#Slab-Allocation" class="headerlink" title="Slab Allocation"></a>Slab Allocation</h4><h3 id="进程内存分段"><a href="#进程内存分段" class="headerlink" title="进程内存分段"></a>进程内存分段</h3><p>一个进程使用的内存分为以下几个段</p>
-<p>代码段(Text) ：存放可执行文件的指令即代码，只读避免程序被修改</p>
-<p>数据段：存储可执行文件中已经初始化好的全局变量，静态分配的变量和全局变量</p>
-<p>BSS：程序中未初始化的全局变量，值全部为0，内存位置连续</p>
-<p>堆：动态分配的内存段，连续的内存，malloc使用，地址向大扩展</p>
-<p>栈：程序执行中的局部变量，函数参数，返回值，地址向小扩展</p>
-<p>brk, sbrk可以修改<strong>program break</strong>的位置，即heap的大小。</p>
-<p><strong>sbrk()</strong> increments the program’s data space by <em>increment</em> bytes. 成功返回上一次的<strong>program break</strong>的位置。因此<code>sbrk((ptrdiff_t)0)</code>就可以返回当前的<strong>program break</strong>.</p>
-<p><strong>brk()</strong> sets the end of the data segment to the value specified by <em>addr</em>。成功返回0，这里的data segment并不是数据段。</p>
-<p><a href="http://man7.org/linux/man-pages/man2/sbrk.2.html" target="_blank" rel="noopener">http://man7.org/linux/man-pages/man2/sbrk.2.html</a></p>
-<p><img src="../uploads/memory/linuxmemory.png" alt="linuxmemory"></p>
-<p>进程地址空间分为用户空间和内核空间。用户空间从0到0xC0000000，内核空间使用剩下的高地址部分。用户进程只有进行系统调用才可以访问内核空间。每个进程使用自己的用户空间，而内核空间是内核负责，不会随着进程改变而变化。内核空间地址有自己对应的页表。用户进程各自有不同的页表。</p>
-<p>逻辑地址经过段机制转化为线性地址，线性地址经过页机制转化为物理地址</p>
-<p>使用<code>cat /proc/&lt;pid&gt;/maps</code>查看进程的内存区域</p>
-<p>内核使用<code>vm_area_struct</code>描述进程地址空间的基本管理单元，使用链表进行链接这些块，以红黑树的形式组织。遍历时使用链表，定位内存位置时使用红黑树</p>
-<p>内核使用<code>do_mmap()</code>函数创建一个新的线性地址空间</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li>Wireshark网络分析就是这么简单</li>
-</ul>
-
+            <p>
+              内存虚拟内存管理的最小单位为页，一个页可以是4K或8K
+段是一个进程的数据或代码的逻辑分组，段不是连续的
+现在的操作系统同时使用段和页，一个进程被分为多个段，每个段又有页
+对于内存块的分配算法，不同的应用场景效率是不一样的。
+Buddy memory allocationhttps://en.wik
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/03/06/memory-manage/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1774,7 +1505,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -1828,61 +1559,30 @@
       
         
           
-            <h3 id="Proxifier使用"><a href="#Proxifier使用" class="headerlink" title="Proxifier使用"></a>Proxifier使用</h3><p>启动SSR之后，<strong>不用</strong>选择服务器负载均衡，系统代理模式选择<strong>直连</strong>或<strong>PAC</strong>都可以</p>
-<ol>
-<li><p>设置服务器</p>
-<p>使用默认的127.0.0.1端口为1080</p>
-<p><img src="/uploads/proxy/proxifier_server.png" alt="proxifier_server"></p>
-</li>
-<li><p>设置域名解析</p>
-<p>不设置也可以，如果域名解析失败需要通过代理解析再设置</p>
-<p><img src="/uploads/proxy/proxifier_dns.png" alt="proxifier_dns"></p>
-</li>
-<li><p>设置代理规则</p>
-<p>可以设置对一个程序禁止访问一些目标网址，action选择block</p>
-<p>可以设置全局所有程序都走proxifier，application保留any不变，action选择刚刚的服务器，同时由于不能让SSR也走proxifier，所以需要新建一个rule，让ssr走direct即可</p>
-<p><img src="/uploads/proxy/proxifier_rules.png" alt="proxifier_rules">   </p>
-</li>
-<li><p>运行程序后，显示数据包转发过程</p>
-<p>epic客户端使用</p>
-<p><img src="/uploads/proxy/proxifier_using.png" alt="proxifier_using"></p>
-</li>
-</ol>
-<h4 id="游戏加速"><a href="#游戏加速" class="headerlink" title="游戏加速"></a>游戏加速</h4><p>玩GTA5的线上模式时，每日的赌场任务如果是裸连或香港的IP，无法游玩大转盘，虽然用联通手机开热点可以直接连接线上模式</p>
-<p>在<a href="https://keylol.com/t290826-1-1" target="_blank" rel="noopener">keylol论坛</a>看到分享的GTA5代理设置，试了一下用美区代理可以玩转盘了，网络还还是挺稳定的。每次保存战局中的内容时会触发网络连接。</p>
-<p>新增3个代理规则：</p>
-<ul>
-<li><p>GTA加速</p>
-<p>应用程序: subprocess.exe; gta5.exe; gtavlauncher.exe;</p>
-<p>目标主机：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">conductor-prod.ros.rockstargames.com; </span><br><span class="line">auth-prod.ros.rockstargames.com; </span><br><span class="line">prod.cloud.rockstargames.com;</span><br></pre></td></tr></table></figure>
+            <p>
+              Proxifier使用启动SSR之后，不用选择服务器负载均衡，系统代理模式选择直连或PAC都可以
 
-<p>动作：选择配置好的sock5代理服务</p>
-</li>
-<li><p>GTA分析禁连</p>
-<p>应用程序: subprocess.exe; gta5.exe; gtavlauncher.exe;</p>
-<p>目标主机：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">www.google-analytics.com;</span><br><span class="line">stats.g.doubleclick.net;</span><br><span class="line">www.google.com;</span><br></pre></td></tr></table></figure>
+设置服务器
+使用默认的127.0.0.1端口为1080
 
-<p>动作：Block</p>
-</li>
-<li><p>GTA识别</p>
-<p>应用程序: gta5.exe; gtavlauncher.exe;</p>
-<p>目标主机：prod.ros.rockstargames.com;</p>
-<p>动作：选择配置好的sock5代理服务</p>
-</li>
-</ul>
-<p>游戏运行过程中会在状态窗口中刷</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[03.07 19:49:28] GTA5.exe *64 - prod.p02sjc.pod.rockstargames.com:443 打开通过代理 127.0.0.1:10808 SOCKS5</span><br><span class="line">[03.07 19:49:30] GTA5.exe *64 - prod.p02sjc.pod.rockstargames.com:443 关闭，965 字节已发送，5005 字节 (4.88 KB) 已接收，生存期 00:02</span><br><span class="line">[03.07 19:49:51] GTA5.exe *64 - prod.ros.rockstargames.com:80 打开通过代理 127.0.0.1:10808 SOCKS5</span><br><span class="line">[03.07 19:49:54] GTA5.exe *64 - prod.ros.rockstargames.com:80 关闭，643 字节已发送，13001 字节 (12.6 KB) 已接收，生存期 00:03</span><br></pre></td></tr></table></figure>
 
-<h5 id="GTA5-相关备注"><a href="#GTA5-相关备注" class="headerlink" title="GTA5 相关备注"></a>GTA5 相关备注</h5><ul>
-<li>完成全福银行任务后，可以用批发价买骷髅马装甲版，这个车必须买，之后可以在车里做R星制作的任务刷等级和钱</li>
-<li>北京时间每周四晚更新每周的活动，每周的活动有物品打折和新的玩法，赌场更新汽车奖品</li>
-<li>有钱后可以先买公寓20W的，通过观光客任务一次2.5W，每次用时15分钟</li>
-<li>可以创建两个角色，两个角色银行共享，其他都不共享，资产都要各自买，R星的奖励左轮枪任务、寻宝任务和帐号绑定，只能领取一次</li>
-</ul>
-<h3 id="SocksCap64使用"><a href="#SocksCap64使用" class="headerlink" title="SocksCap64使用"></a>SocksCap64使用</h3><h3 id="SSTAP使用"><a href="#SSTAP使用" class="headerlink" title="SSTAP使用"></a>SSTAP使用</h3>
+设置域名解析
+不设置也可以，如果域名解析失败需要通过代理解析再设置
+
+
+设置代理规则
+可以设置对一个程序禁止访问一些目标网址，action选
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/02/23/app-proxy-use/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1999,7 +1699,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -2053,325 +1753,24 @@
       
         
           
-            <h3 id="Wireshark基本使用"><a href="#Wireshark基本使用" class="headerlink" title="Wireshark基本使用"></a>Wireshark基本使用</h3><p>一个包称为帧更准确</p>
-<p>主界面分为4个区域：Display Filter, Packet List, Packet Detail, Packet bytes</p>
-<p><img src="/uploads/wireshark/wireshark.png" alt="wireshark"></p>
-<h4 id="减小包的大小"><a href="#减小包的大小" class="headerlink" title="减小包的大小"></a>减小包的大小</h4><p>为了减小抓包的数据大小，可以对抓包进行设置</p>
-<ol>
-<li><p>只抓包头。一般能抓到包的大小为1514字节，启用了Jumbo Frame之后可达9000字节以上。大多数情况只需要IP或TCP的头就足够了，具体应用数据都是加密的，一般不需要。<code>Capture--&gt;Options</code>中设置<code>Limit each packet to</code>为80字节，这样TCP、网络层、数据链路层的信息都有了。如果还要看应用层的信息，可以适当调大到200字节</p>
-<p>新版本的wireshark中可以在<code>Capture--&gt;Input</code>中的对应网络接口上设置Snaplen(B)的大小</p>
-<p>使用Tcpdump抓eth0上的每个包的前80个字节，并把结果保存到tcpdump.cap文件中<code>tcpdump -i eth0 -s 80 -w /tmp/tcpdump.cap</code> </p>
-</li>
-<li><p>只抓必要的包。让wireshark在<strong>抓包时过滤</strong>掉不需要的包。在<code>Capture--&gt;Options--&gt;Input</code>的Capture Filter中输入过滤条件。例如只查看ip为192.168.43.101的包可以输入<code>host 192.168.43.1</code></p>
-<p><code>tcpdump -i eth0 host 192.168.43.1 -w /tmp/tcpdump.cap</code></p>
-<p>需要注意如果自己关注的包可能被过滤掉，例如NAT设备把关注的ip地址改掉了</p>
-</li>
-</ol>
-<h4 id="显示过滤-Display-Filter"><a href="#显示过滤-Display-Filter" class="headerlink" title="显示过滤 Display Filter"></a>显示过滤 Display Filter</h4><p>显示过滤可以在主界面上直接输入过滤条件</p>
-<ol>
-<li><p>协议过滤 </p>
-<p>已经定义好的协议直接输入协议名称即可。对与nfs挂载失败可以使用<code>portmap || mount</code>进行过滤</p>
-</li>
-<li><p>地址过滤</p>
-<p><code>ip.addr == 192.168.1.104 &amp;&amp; tcp.port == 443</code></p>
-<p>选择一个包后，可以右键选择follow，再选择一个这个包的协议，可以自动过滤出相关的包。</p>
-</li>
-<li><p>使用系统右键功能 </p>
-<p>选择一个关注的数据包后，可以右键后，选择<code>Prepare as filter</code>,系统会自动提示当前提取的过滤条件，选择select之后，就会填入过滤条件输入框中。<code>Apply as filter</code>则是直接应用这个过滤</p>
-<p>右键列表中还有其他的filter可以使用</p>
-</li>
-<li><p>对过滤后的包保存</p>
-<p><code>File -&gt; Export Specified Packets</code>，在对话框中可以选择勾选当前显示的包</p>
-</li>
-</ol>
-<h4 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h4><ol>
-<li><p>标记数据包，在每个关注的操作之前发一个指定数据长度的ping命令，这样知道这个操作的数据包的范围，只需要找到这些ping的特殊的ip地址和对应的数据段的大小，就把所有的数据包分割开了</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ping 192.168.43.1 -n 1 -l 1</span><br><span class="line">操作1执行</span><br><span class="line">ping 192.168.43.1 -n 1 -l 2</span><br><span class="line">操作2执行</span><br><span class="line">ping 192.168.43.1 -n 1 -l 3</span><br></pre></td></tr></table></figure>
+            <p>
+              Wireshark基本使用一个包称为帧更准确
+主界面分为4个区域：Display Filter, Packet List, Packet Detail, Packet bytes
 
+减小包的大小为了减小抓包的数据大小，可以对抓包进行设置
 
-
-</li>
-</ol>
-<ol>
-<li><p>设置时间格式</p>
-<p>可以通过<code>View--&gt;Time display format-&gt;Date time of Day</code>把时间显示为当前系统的时间，而不出相对的时间</p>
-<p>如果分析其他时区的包文件，需要把本机的时区改为和当地的时区一致，这样不用再去进行时区换算 </p>
-</li>
-<li><p>设置某种类型包的颜色</p>
-<p>可以通过<code>View--&gt;Coloring Rules</code>设置每一种包的颜色，方便一下找到，例如默认的icmp的颜色为粉色</p>
-</li>
-<li><p>自动分析</p>
-<p><code>Analyze-&gt;Expert Information</code>可以看连接建立、重传、reset的统计信息，分析网络性能和连接问题时有用</p>
-<p><code>Statistics-&gt;Service Response Time</code>可以查看某种协议的响应时间，检测服务器性能时有用</p>
-<p><code>Statistics-&gt;TCP Stream Graphs</code>可以查看TCP数据传输统计，在<code>Time Sequence</code>中可以查看哪段时间sequence没有变化(水平直线)，说明没有数据传输</p>
-</li>
-<li><p>查找</p>
-<p> <code>Ctrl+F</code>后可以在搜索条件中选项查找的范围，数据类型，关键字。例如要查找baidu相关的，数据类型选择string，输入baidu查找</p>
-</li>
-<li><p>其他</p>
-</li>
-</ol>
-<h3 id="网络基础"><a href="#网络基础" class="headerlink" title="网络基础"></a>网络基础</h3><p>应用层：应用协议</p>
-<p>传输层：TCP</p>
-<p>网络层：IP</p>
-<p>数据链路层：MAC</p>
-<p>跨子网通信需要默认网关转发，因此需要先ARP查询默认网关的mac地址，如果一个ARP请求来自另一个子网，也会应答。</p>
-<p>MTU：最大传输单元，大多数的网络MTU是1500字节，除非启用了巨帧(Jumbo Frame)达到9000字节。因此TCP不能一次把5000字节的数据之间给网络层传输，否则因为切分导致只能发送1500字节，会认为发送失败要求重传。</p>
-<p>TCP建立连接进行三次握手时，双方会把自己的MSS(Max Segment Size)告诉对方，MSS加上TCP头和IP头的长度，就得到MTU的值。</p>
-<p>TCP和IP头的长度都是20字节，客户端给服务端发送的MSS为1460，服务端应答的MSS为1400，因此通信的最小MTU为1400+20+20为1440</p>
-<p><img src="/uploads/wireshark/mss.png" alt="mss"></p>
-<p>实际数据传输中网络层的数据大小为1440字节</p>
-<p><img src="/uploads/wireshark/mtulen.png" alt="mss"></p>
-<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><p>TCP提供可靠有序的数据传输，因此每个数据都有序号，这样接收端可以对数据排序。</p>
-<p><img src="/uploads/wireshark/tcpseq.png" alt="mss"></p>
-<p>TCP中连接的双方各自维护自己的Seq和Ack编号，数据包中的Len的值不包括Tcp包头的长度</p>
-<p>seq的规则：对于一个连接，<code>seq(n) = seq(n-1)+Len(n-1)</code>，即上次的seq+上次的Len。例如102发出的17号，seq为102发出的上一个包16号的seq 1 加上 Len 224 所以为225，而102发出的下一个20号包的seq为 17号的seq 225 + Len 1448 = 1673。这样可以知道102一共发送了多少数据，只需要看最后一次的seq+len</p>
-<p>ack规则：收到对端的seq+Len。这样可以告诉对端自己一共收到了多少数据。例如18号包应答为16号的seq+16号的Len，即225，19号包应答为17号的seq+17号的Len，即1673，当收到19号包的时候已经<strong>累积</strong>收了1673字节的数据</p>
-<ul>
-<li>对收到的数据包按照seq进行排序，并比较相邻的seq和len就知道少了哪些包</li>
-</ul>
-<p>例如接收端抓包获取的seq 和len 分别为 </p>
-<table>
-<thead>
-<tr>
-<th>包号</th>
-<th>1</th>
-<th>2</th>
-<th>3</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>seq</td>
-<td>101</td>
-<td>301</td>
-<td>401</td>
-</tr>
-<tr>
-<td>len</td>
-<td>100</td>
-<td>100</td>
-<td>100</td>
-</tr>
-</tbody></table>
-<p>对于第二个包的seq为301，而它的上一个包的seq+len为101+100=201，说明201这个包没有收到，需要回复ack:201通知对端把seq为201的包再发送一次</p>
-<h4 id="TCP的标志"><a href="#TCP的标志" class="headerlink" title="TCP的标志"></a>TCP的标志</h4><p>SYN：发起连接请求，由于是双向连接，需要双方都发一次SYN</p>
-<p>FIN：请求终止连接，也需要双方都发一次FIN</p>
-<p>RST：重置一个连接，或拒绝一个无效请求，一般有这个标志都是有问题</p>
-<p>ACK：确认是否有效</p>
-<p>PSH： 接收端应用程序需要从TCP缓冲区把数据读走 </p>
-<h4 id="TCP-三次握手"><a href="#TCP-三次握手" class="headerlink" title="TCP 三次握手"></a>TCP 三次握手</h4><p><img src="/uploads/wireshark/tcpall.png" alt="tcpall"></p>
-<p>上面的抓包中，</p>
-<ol>
-<li><p>330号包客户端102发起连接<strong>SYN</strong>( Synchronize Sequence Numbers )，seq为0 (X)，客户端进入<strong>SYN_SEND</strong>状态</p>
-</li>
-<li><p>331号包服务器1向客户端发<strong>SYN</strong>，并对客户端应答<strong>ACK</strong>，应答ack=1 (X+1),自己的序号seq为0 (Y)，服务端进入<strong>SYN_RECV</strong>状态</p>
-</li>
-<li><p>332号包客户端102向服务端确认ACK，seq为1(X+1)，ack为1(Y+1)，客户端和服务端进入<strong>ESTABLISHED</strong>状态</p>
-</li>
-</ol>
-<p>实际的seq并不是从0开始的，只是wireshark为了方便查看包序号，默认设置了一次连接的相对序号功能。这个功能默认是打开的，可以在<code>Edit-&gt;Preference-&gt;Protocol-&gt;TCP</code>勾选<code>Relative Sequence Number</code></p>
-<p><img src="/uploads/wireshark/tcphandseq.png" alt="mss"></p>
-<h5 id="为什么要三次握手"><a href="#为什么要三次握手" class="headerlink" title="为什么要三次握手"></a>为什么要三次握手</h5><ol>
-<li>确认双方准备好，如果只有两次握手，服务端收到SYN之后，并给客户端发送SYN就认为连接建立了，但如果这次服务端发送的SYN失败了，它还是认为成功的，直接发送数据D给客户端，而客户端收到数据后，发现seq不匹配,认为连接没有建立，认为数据无效而丢掉数据D，服务端则会认为发送数据一直失败，不断重发数据D</li>
-<li>明确对端的seq号，才能有序传输</li>
-</ol>
-<p>如果客户端发送了一次SYN服务端一直没有应答SYN，此时客户端又发了一次SYN给服务端，而现在服务给第二次应答后，客户端可以依据第二次的服务的应答给服务端应答，从而建立一次正确的连接。如果此时收到服务端应答的第一次SYN，客户端此时的X已经是第二次的X值了，所以判断是一个无效的SYN就可以拒绝服务端对第一次SYN的回复，从而避免错误的连接。</p>
-<h4 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h4><p><img src="/uploads/wireshark/tcpclose.png" alt="tcpclose"></p>
-<p> <a href="http://www.tcpipguide.com/free/t_TCPConnectionTermination-2.htm" target="_blank" rel="noopener">http://www.tcpipguide.com/free/t_TCPConnectionTermination-2.htm</a> </p>
-<p>抓包的例子中，是服务端主动发起端口连接，与上图不同</p>
-<p><img src="/uploads/wireshark/tcpall.png" alt="tcpall"></p>
-<ol>
-<li><p>338号包服务端1发起终止连接<strong>FIN</strong>，seq为162+369=531 (X)，ack为对端的seq+len = 621服务端进入<strong>FIN_WAIT1</strong>状态</p>
-</li>
-<li><p>339号包客户端102向服务端应答<strong>ACK</strong>，告诉对端收到了结束连接的请求，应答ack=532 (X+1),自己的序号seq为334号包的Seq+Len= 621(Y)，其实也等于服务端应答的ack的值，客户端进入<strong>CLOSE WAIT</strong>状态，之所以这里没有发<strong>FIN</strong>是因为此时102可能还有数据给1要发，要等数据发完之后，才能发<strong>FIN</strong>给1。而服务端收到<strong>ACK</strong>后进入<strong>FIN_WAIT2</strong>状态</p>
-</li>
-<li><p>340号包客户端现在没有要发的数据了，此时给服务端1发送FIN和ACK，这里由于没有数据交互了seq和ack的值没有变化(如果中间102还有给1发过数据，那么这次的seq根据上一个包的seq按照seq的计算规则计算)，客户端进入<strong>LAST ACK</strong>状态</p>
-</li>
-<li><p>341号包服务端1收到客户端102的<strong>FIN</strong>之后，说明数据发送完了，可以断开了进入<strong>TIME WAIT</strong>状态，并给对端应答ACK，seq=X+1 = 532, ack = 对端FIN的seq+1 = 621+1 = 622</p>
-</li>
-<li><p>客户端102收到<strong>ACK</strong>后，最终进入<strong>CLOSED</strong>状态</p>
-</li>
-<li><p>服务端1在等待2倍<strong>MSL</strong>( 一个片段在网络中最大的存活时间 )时间后，才进入<strong>CLOSED</strong>状态</p>
-</li>
-</ol>
-<h5 id="计算规则"><a href="#计算规则" class="headerlink" title="计算规则"></a>计算规则</h5><ul>
-<li><p>对<strong>FIN</strong>的应答<strong>ACK</strong>的ack的值为对端的<strong>FIN</strong>请求的seq+1，即339和341的ack为发送FIN的338和340的seq+1</p>
-</li>
-<li><p>一次FIN占用1个seq号，因此发送了一次FIN之后，下一包的seq为X+1，即341的seq为338的seq+1</p>
-</li>
-</ul>
-<h5 id="为什么断开连接要四次"><a href="#为什么断开连接要四次" class="headerlink" title="为什么断开连接要四次"></a>为什么断开连接要四次</h5><p>在断开连接的发起端发送FIN后，接收端可能还有数据要发送，因此接收端需要先把FIN应答一下，等自己的数据发送完，再给对端发送一个FIN，标识现在可以断开了。因此当一端发送断开连接请求后，没有接收完的数据还是会接收完才会真正断开</p>
-<h5 id="为什么要等2MSL"><a href="#为什么要等2MSL" class="headerlink" title="为什么要等2MSL"></a>为什么要等2MSL</h5><p>最后一个ACK发出后，对端可能没有收到，从而可能还会发FIN过来，如果直接断开，就不会应答，导致对端一直重复发FIN过来。而2MSL是一个发送和应答的时间，如果等了这么久没有消息，说明对端收到了ACK，就可以断开了。</p>
-<h4 id="TCP窗口"><a href="#TCP窗口" class="headerlink" title="TCP窗口"></a>TCP窗口</h4><p>一发一答的机制保障数据的可靠性，但是每次一个包的发送，等待应答效率就很低。发送数据时，如果有1000字节的数据，而每个包只能发100个字节，如果1s发送一次数据，每次发送完等待收到应答后，再发送下一个数据，需要发送10s才能发送完所有数据。这样效率太低了，可以不用等上次的应答，直接发送下一个包的数据，例如接收端告诉发送端1s可以处理200个字节，这样发送端1s就发送两个包，这样5s就发完所有数据。而那个200就是接收窗口大小。</p>
-<p>一个数据包中的<code>win=8192</code>标识的发送方的接收窗口的大小，这样对端发送数据的时候知道当前可以一次发送多少数据。如果接收时的处理速度跟不上接收数据的速度，缓存就会被占满，最终导致接收窗口的大小为0.</p>
-<p>发送窗口由接收窗口和网络因素共同决定大小。发送窗口决定一下子可以最多发送多少字节，MSS是每个包的最大长度</p>
-<p>在一个窗口中发出的n个包，不一定就必须对应n个确认包。TCP可以累积起来确认，收到多个包时，可以只确认最后一个。</p>
-<p>TCP Window Scale:是为了解决最大窗口数的扩展，TCP头中只有16bit作为窗口大小，因此窗口的大小为65535字节，而技术进步后，这个值太小了，因此又在option中增加了Window Scale，它是2的指数倍。例如窗口大小为128，而window scale是3，则最终的窗口大小为<code>128*(2**3)=128*8=1024</code></p>
-<h4 id="网络拥塞"><a href="#网络拥塞" class="headerlink" title="网络拥塞"></a>网络拥塞</h4><p>一次性发送太多数据，就会导致接收端处理不过来，拥塞导致丢包，能导致网络拥塞的数据量称为拥塞点。拥塞情况和数据通过的节点、当时的网络状态相关，因此是动态变化的。</p>
-<p>为什么一般很少出现拥塞点？</p>
-<ul>
-<li>windows默认的TCP窗口为64KB，而网络已经进步了这么多，所以不会在窗口范围拥塞</li>
-<li>大多场景都是小数据传输如网络聊天</li>
-<li>数据同步传输，就会发一次等一次</li>
-<li>网络性能提升，出现后很快恢复不易发现</li>
-</ul>
-<h6 id="拥塞窗口"><a href="#拥塞窗口" class="headerlink" title="拥塞窗口"></a>拥塞窗口</h6><p>由于无法准确定位拥塞点的大小，发送方只能维护一个虚拟的拥塞窗口，并尽量让它接近真实的拥塞点。网络对发送窗口的限制，通过拥塞窗口实现。</p>
-<ol>
-<li>连接刚建立时，初始拥塞窗口设置为2、3或4个MSS大小</li>
-<li>如果发出去的包都收到确认，说明可以增大窗口，每收到n个确认，就把窗口增加n个MSS。比如发了2个后收到两个确认，窗口就增大到2+2个，当发了4个都收到时，就增加到4+4个，以2的指数增加。这个过程为<strong>慢启动</strong></li>
-<li>增加到一定值后，增加的量要小点，不能翻倍的增加了，每个往返时间增加了1个MSS，例如发了16个包，全部被确认了，拥塞窗口就增加到17个MSS，一次增加1个。这个过程为<strong>拥塞避免</strong>。慢启动到拥塞避免的过度点为<strong>临界窗口值</strong>。</li>
-</ol>
-<h6 id="超时重传"><a href="#超时重传" class="headerlink" title="超时重传"></a>超时重传</h6><p>发送方发出的数据收不到对应的确认包应答，发送方等待一段时间后，认为包丢失，重新发送一次。从发出原始包到重传这个包的这段时间成为RTO。</p>
-<p>发生重传之后，RFC建议重新调整拥塞窗口为1MSS，然后进入慢启动过程。</p>
-<p>超时重传性能影响：</p>
-<ol>
-<li>RTO阶段不能发数据，浪费了时间</li>
-<li>拥塞窗口需要从1MSS重新调整一遍</li>
-</ol>
-<h6 id="快速重传"><a href="#快速重传" class="headerlink" title="快速重传"></a>快速重传</h6><p>发送数据过程中只有中间的几个包丢失，接收端发现后续的包的seq比预期的大，就会每收一个包，就ack一次期望的seq号，用来提醒发送方重传，当发送方收到<strong>3个</strong>或以上的重复确认<strong>Dup Ack</strong>，就认为对应的包丢了，立即重传那个包。用3个来判断是为了避免由于包到达接收端的顺序有差异，导致错误的触发重传。</p>
-<p>当在拥塞避免阶段发生快速重传时，RFC 5681认为临界窗口应设置为发送拥塞时还没有被确认的数据量的1/2(但不能小于2个MSS)。然后将拥塞窗口设置为临界窗口的值+3个MSS，继续保持在拥塞避免阶段。而不用向超时重传那样从1个MSS重来一遍。</p>
-<p>当发送端有多个包丢掉时，重发的策略有多种：</p>
-<ol>
-<li>从第一个丢包号开始之后的所有包都重新发一遍</li>
-<li>接收方收到重传的第一个包后，回复丢的第二个包的序号，发送方根据ack重传，依次把所有丢的包重传完。这个称为NewReno，由RFC 2582和3782定义</li>
-<li>接收方通知发送端自己已经收到的包号，同时告诉发送端第一个丢失的包号，发送端根据已经收到和第一个没有收到的包号，把所有没有收到的重发一遍。这种称为Sack方案 RFC2018中定义.Sack中的seq区间为收到的包</li>
-</ol>
-<p><img src="/uploads/wireshark/tcpsack.png" alt="tcpsack"></p>
-<h6 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h6><ul>
-<li>没有拥塞时，窗口越大，性能越好，可以尽量的增加接收窗口</li>
-<li>经常发生拥塞，通过限制接收窗口，可间接限制发送窗口，从而减少重传导致的性能损失</li>
-<li>尽量避免超时重传</li>
-<li>快速重传影响小，几乎没有等到时间，拥塞窗口减小幅度小</li>
-<li>SACK和NewReno都可以提高重传效率</li>
-<li>丢包对小文件的影响比大文件严重，小文件可能等不到3个dup ack（总的数据量都没有3个包），所以无法触发快速重传，只能超时重传</li>
-</ul>
-<h6 id="Westwood算法"><a href="#Westwood算法" class="headerlink" title="Westwood算法"></a>Westwood算法</h6><p>根据接收端应答的ack计算拥塞窗口的大小，收到的确认越多，窗口越大</p>
-<h6 id="Vegas算法"><a href="#Vegas算法" class="headerlink" title="Vegas算法"></a>Vegas算法</h6><p>根据网络的RTT（往返时间）来决定拥塞窗口，当RTT稳定时，增大拥塞窗口，RTT变大，网络繁忙时主动减小拥塞窗口。</p>
-<h6 id="Compound算法"><a href="#Compound算法" class="headerlink" title="Compound算法"></a>Compound算法</h6><p>windows中使用两个拥塞窗口，一个用Westwood算法，一个用Vegas算法，真正的拥塞窗口为两者之和。</p>
-<p>windows可以使用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">netsh interface tcp show global  # 查看当前的状态,默认为none，即关闭</span><br><span class="line">netsh interface tcp set global congestionprovider=ctcp # 使用compound</span><br><span class="line">netsh interface tcp set global congestionprovider=none # 关闭为none</span><br></pre></td></tr></table></figure>
-
-<p><img src="/uploads/wireshark/compound.png" alt="compound"></p>
-<h5 id="延迟确认"><a href="#延迟确认" class="headerlink" title="延迟确认"></a>延迟确认</h5><p>TCP处理交互式场景时，例如远程登录的SSH终端，输入字符，收到一个包之后暂时没有数据要发送给对方，就延迟一段时间再应答确认windows上为200ms。如果在这段时间里有数据发送，把确认包和这个数据在一个包中发回去。这样减轻网络负担。</p>
-<h6 id="Nagle算法"><a href="#Nagle算法" class="headerlink" title="Nagle算法"></a>Nagle算法</h6><p>在发出去的数据还没有确认之前，又有小数据生成，就把小数据收集起来，凑满一个MSS或等收到确认后再发送。相当于把以后要发送的数据聚集起来一起发。</p>
-<h3 id="NFS"><a href="#NFS" class="headerlink" title="NFS"></a>NFS</h3><p>Network File System 由SUN设计，用来将网络上的目录挂载到客户端，对于客户端，就像是访问本地磁盘</p>
-<p>RFC1813中有详细介绍</p>
-<p>NFS对客户端的访问控制是通过IP绑定的，创建共享目录时，可以设置每一个ip的权限</p>
-<p>客户端在共享目录中创建文件时可能会用UID作为文件所有者的标识，而不是用户名，而这个UID在别的客户端可能被映射为其他用户，不同的Linux系统客户端用户UID可能是相同的。可以通过抓包查看网络中实际创建的用户信息，在TCP上一层的RPC协议中</p>
-<p>portmap进程维护一张进程与端口映射表，他自己的端口号是111，默认值</p>
-<h5 id="连接过程"><a href="#连接过程" class="headerlink" title="连接过程"></a>连接过程</h5><ol>
-<li>客户端通过服务器的portmap进程请求服务端NFS的端口，服务端应答端口号</li>
-<li>客户端按端口请求连接NFS进程，服务端应答</li>
-<li>客户端请求mount的端口，服务器应答端口号</li>
-<li>客户端按返回端口尝试连接服务端mount进程，服务器应答</li>
-<li>客户端请求挂载/xxx目录，服务端应答file handler给客户端，以便客户端访问文件</li>
-</ol>
-<p>客户端访问服务端的文件时，服务端通过文件名先找到file handler来进行后续操作，如果目录中文件过多，获取file handler非常耗时</p>
-<p>mount时可以设置每次读的数据大小为512KB</p>
-<p><code>mount -o rsize=524288 192.168.1.101:/tmp/share</code></p>
-<p>默认写数据是异步的async WRITE Call，服务器在真正存盘之前就会应答WRITE Reply从而提高性能，只有COMMIT之后的数据才认为是写成功的。写操作中有<code>UNSTABLE</code>标志。</p>
-<p>写操作中<code>FILE_SYNC</code>表示当前为同步sync写，同步写是一写一答，所以不需要COMMIT操作。一些客户端无论设置<code>wsize</code>为多少，每次写的数据都为4KB。</p>
-<p>mount时使用<code>noac</code>选项表示让客户端不缓存文件属性，但是会把写操作设置为sync方式，导致效率降低</p>
-<h5 id="查问题"><a href="#查问题" class="headerlink" title="查问题"></a>查问题</h5><p>如果有问题，可以先用rpcinfo命令获取服务器上的端口列表，再用telnet命令逐个试探进程能否连上</p>
-<p><code>rpcinfo -p 192.168.1.101 | egrep &quot;portmapper|mountd|nfs&quot;</code></p>
-<p><code>telnet 192.168.1.101 111</code>查看portmap的111端口能否连接上</p>
-<h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><ul>
-<li>使用nslookup默认的UDP查询域名</li>
-</ul>
-<p><img src="/uploads/wireshark/dnscmd.png" alt="mss"></p>
-<p>对应抓包为</p>
-<p><img src="/uploads/wireshark/dnsudp.png" alt="mss"></p>
-<p>网络环境为两级路由器，主路由器地址为192.168.0.x，次级路由器的ip地址为192.168.1.x，本机ip为192.168.1.102，连接在次级路由器上</p>
-<p>由于没有指定服务器的地址，所以会到主路由器上查询，可以看到DNS的传输层为UDP协议</p>
-<ul>
-<li>使用TCP的DNS</li>
-</ul>
-<p><img src="/uploads/wireshark/dnscmdtcp.png" alt="dnscmdtcp"></p>
-<p>指定<code>-vc</code>选项使用TCP协议，并通过<code>114.114.114.114</code>进行查询</p>
-<p>对应抓包为</p>
-<p><img src="/uploads/wireshark/dnstcp.png" alt="dnstcp"></p>
-<p>其中215-217是TCP握手过程，220-221对应于查询和应答，223/225为断开连接</p>
-<ul>
-<li><p>A记录 通过域名找到对应的IP地址</p>
-</li>
-<li><p>PTR记录 从IP解析到域名 <code>nslookup xx.xx.xx.xx</code>可以找到域中的ip对应的名称</p>
-</li>
-<li><p>SRV记录  指向域内的资源 </p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nslookup</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">set</span> tpye=SRV</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">_ldap._tcp.dc._msdcs.xxx.com  <span class="comment">#其中xxx.com为域名</span></span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>CNAME记录 别名。即让二级域名指向另一个域名，这样当IP改变只需要改指向的那个www的域名对应的ip，别名指向的是www的域名，不用更改。</p>
-</li>
-</ul>
-<h5 id="域名查询方式"><a href="#域名查询方式" class="headerlink" title="域名查询方式"></a>域名查询方式</h5><ul>
-<li>递归查询： 从A找到B，B再找C，C再找D，再原路径把D返回给A</li>
-<li>迭代查询：A依次把B、C、D问一遍，最后找到D</li>
-</ul>
-<h5 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h5><p>DNS支持循环工作模式(round-robin)。一个网站有10服务器，对应10个IP，每次服务器返回的是其中一个ip，每次查询都按一定的规则切换ip，达到服务器资源的充分利用。</p>
-<h5 id="引入问题"><a href="#引入问题" class="headerlink" title="引入问题"></a>引入问题</h5><ul>
-<li>名字相近的假域名</li>
-<li>DNS服务器地址被恶意修改为假的ip地址</li>
-<li>DNS服务器被攻击</li>
-<li>DNS攻击</li>
-</ul>
-<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><p>udp的包头一共8个字节，数据量比TCP小，同时不需要建立连接过程</p>
-<ul>
-<li>UDP发送的数据大小直接在网络层分割，接收方收到后组装，这个过程会降低性能</li>
-<li>UDP没有重传机制，丢包由应用层协议处理。如果某个操作过程中，一个包丢失，需要把所有的包全部重传一遍。而TCP只需要重传丢的那个包</li>
-<li>接收端收到的包中如果有<code>More Fragments</code>标记说明还有分片的包，如果连续给接收端发这种包，接收端一直收而且无法组装这些分片导致内存耗尽。</li>
-</ul>
-<h3 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h3><p> <a href="https://wiki.wireshark.org/TLS" target="_blank" rel="noopener">https://wiki.wireshark.org/TLS</a> </p>
-<p>在页面的Example capture file章节有一个TLS的例子可以下载</p>
-<p>  <a href="https://wiki.wireshark.org/SampleCaptures#SSL_with_decryption_keys" target="_blank" rel="noopener">SampleCaptures#SSL_with_decryption_keys</a> 下载 <strong><a href="https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=snakeoil2_070531.tgz" target="_blank" rel="noopener">snakeoil2_070531.tgz</a></strong> 这个文件</p>
-<ol>
-<li><p>使用wireshark打开其中的cap文件，可以看到443端口的通信</p>
-</li>
-<li><p>第19个包的info显示为Application Data，在包详细信息中显示数据是加密数据</p>
-</li>
-<li><p>选择要解密的包，右键<code>Protocol Preference-&gt;Open Transport Layer Security Preferences</code>打开RSA key list，编辑加入新的一条解码信息 ip 127.0.0.1, port 443, protocol http, key file选择下载的key文件</p>
-<p>也可以在<code>Edit-&gt;Prefernces-&gt;Protocol-&gt;TLS</code>中编辑</p>
-<p><img src="/uploads/wireshark/tls.png" alt="tls"></p>
-</li>
-<li><p>此时19号包显示为HTTP协议，里面的原始数据可以看到</p>
-</li>
-</ol>
-<h3 id="Kerberos"><a href="#Kerberos" class="headerlink" title="Kerberos"></a>Kerberos</h3><p>Kerberos是一种身份认证协议，Windows的域中身份认证用到</p>
-<h3 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h3><ul>
-<li><code>telnet &lt;ip&gt; &lt;port&gt;</code> 测试与主机一个端口是否可以连通，如果可以连通，考虑是否因为对端主动拒绝</li>
-</ul>
-<p>*　把两个通信的设备连接到简单的网络环境中，排除网络问题</p>
-<ul>
-<li><p>NIC teaming和Large Segment Offload(LSO)可能导致乱序</p>
-</li>
-<li><p>一般存储设备都是读比写快；对于网络环境，服务端的带宽大，客户端的带宽小。读文件时，大带宽进入小带宽可能导致性能问题</p>
-</li>
-<li><p>查看实际重传的网络包，分析如果是连续的包都进行了重传，可以考虑打开SACK模式，减少重传包的量</p>
-</li>
-<li><p>梳理问题的工作原理流程，缩小问题出现在流程中的范围，从而缩小问题范围，模拟问题环境进行复现和解决</p>
-</li>
-</ul>
-<h3 id="tshark"><a href="#tshark" class="headerlink" title="tshark"></a>tshark</h3><p>终端上的wireshark版本，Windows安装目录默认有,还有capinfos/editcap。终端处理的数据方便进行导出，生成想要的报表</p>
-<p>常用的命令或操作整理为脚本，提高效率</p>
-<ul>
-<li><p><code>capinfos.exe xx.pcap</code>查看一个包的统计信息</p>
-</li>
-<li><p><code>tshark -n -q -r xxx.pcap -z &quot;rpc,programs&quot;</code>重看NFS协议的服务响应时间</p>
-</li>
-<li><p><code>tshark -n -q -r xxx.pcap -z &quot;io.stat.0.tcp.analysis.retransmission&quot;</code> 重传统计数据</p>
-</li>
-<li><p><code>tshark -n -q -r xxx.pcap -z &quot;io.stat.0.tcp.analysis.out_of_order&quot;</code>乱序统计数据</p>
-</li>
-<li><p><code>tshark -n -q -r xxx.pcap -z &quot;conv,tcp&quot;</code>一个cap文件中所有tcp协议的会话</p>
-</li>
-<li><p><code>editcap input.cap output.cap -i &lt;second&gt;</code>把包input拆分为second秒长的一个个包文件</p>
-</li>
-<li><p><code>editcap input.cap output.cap -c &lt;packets per file&gt;</code>把包input拆分为xxx个packets一个的包文件</p>
-</li>
-</ul>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li>Wireshark网络分析就是这么简单</li>
-</ul>
-
+只抓包头。一般能抓到包的大小为1514字节，启用了Jumbo
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/02/22/wireshark-basic/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -2488,7 +1887,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -2542,40 +1941,23 @@
       
         
           
-            <h2 id="Gitlab"><a href="#Gitlab" class="headerlink" title="Gitlab"></a>Gitlab</h2><p> <a href="https://gitlab.com/" target="_blank" rel="noopener">https://gitlab.com/</a> </p>
-<p>Gitlab实现了git flow的工作模式，可以进行项目的管理、追溯、任务分配。</p>
-<p>可以在网站注册账号直接使用gitlab的服务，也可以下载软件，自己在linux系统安装配置服务</p>
-<p>注册时需要人机验证，需要科学上网</p>
-<h3 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h3><p>使用账号登陆后，可以开始创建一个项目</p>
-<p>这个项目可以自己从零开始创建，也可以使用现有的模板，甚至从其他平台如GitHub导入</p>
-<p>项目创建完成后，就可以<code>git clone</code>下来再本地进行开发了</p>
-<h3 id="项目管理"><a href="#项目管理" class="headerlink" title="项目管理"></a>项目管理</h3><h3 id="Milestone"><a href="#Milestone" class="headerlink" title="Milestone"></a>Milestone</h3><p>可以看做是一个大的功能版本，这个版本里面有一些小的功能Issue组成</p>
-<p>例如可以把读一本书作为一个里程碑</p>
-<p>新建一个里程碑时，可以设置<strong>标题</strong>和<strong>开始</strong>、<strong>结束日期</strong></p>
-<h3 id="Issue"><a href="#Issue" class="headerlink" title="Issue"></a>Issue</h3><p>一个Issue是一个独立的功能点，例如可以是读完书的某一个章节</p>
-<ul>
-<li><p>一个Issue可以把它指派给某个成员，这个成员的To Do List将会收到通知</p>
-</li>
-<li><p>可以把它设置为某个milestone的issue</p>
-</li>
-<li><p>issue可以设置完成时间</p>
-</li>
-</ul>
-<p>直接在To Do List里点击对应的Issue，就可以看Issue的信息</p>
-<h4 id="处理Issue"><a href="#处理Issue" class="headerlink" title="处理Issue"></a>处理Issue</h4><p>本地新建一个对应Issue的分支<code>git checkout -b wireshark</code></p>
-<p>代码完成后，本地commit之后，push到远端</p>
-<p><code>git push --set-upstream origin wireshark</code> </p>
-<p>填写commit的消息时，可以填入issue的编号例如<code>read chapter 1 finished #1.</code>其中的<code>#1</code>可以自动关联到对应的issue</p>
-<p>此时在第一个issue的信息页面可以看到</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Memory Walker @memorywalker changed due date to February 22, 2020 11 minutes ago</span><br><span class="line">Memory Walker @memorywalker changed milestone to %wireshark数据包分析 11 minutes ago</span><br><span class="line">Memory Walker @memorywalker mentioned in commit 57932869 5 minutes ago</span><br></pre></td></tr></table></figure>
-
-<p>在Merge Request中新建一个Request，选择issue的分支合并到master，并选择对应的管理人进行合并</p>
-<p>管理人会收到一个新的Merge Request的任务，可以自己或再找人审核提交的内容</p>
-<p>在changes标签页可以看到更改的内容，并进行评注</p>
-<p>如果没有问题，可以点击merge进行合并，然后就可以关闭这个issue</p>
-<h4 id="测试项目"><a href="#测试项目" class="headerlink" title="测试项目"></a>测试项目</h4><p> <a href="https://gitlab.com/memorywalker/blog/" target="_blank" rel="noopener">https://gitlab.com/memorywalker/blog/</a> </p>
-
+            <p>
+              Gitlab https://gitlab.com/ 
+Gitlab实现了git flow的工作模式，可以进行项目的管理、追溯、任务分配。
+可以在网站注册账号直接使用gitlab的服务，也可以下载软件，自己在linux系统安装配置服务
+注册时需要人机验证，需要科学上网
+远程仓库使用账号登陆后，可以开
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/02/18/Gitlab/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -2692,7 +2074,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
               
             
           </span>
@@ -2728,44 +2110,22 @@
       
         
           
-            <h2 id="Code-Review"><a href="#Code-Review" class="headerlink" title="Code Review"></a>Code Review</h2><p>当多人合作时，可以每个人各自创建一个分支，每个分支都有明确的名称，做完自己的开发后，合并到一起</p>
-<h3 id="评审别人代码"><a href="#评审别人代码" class="headerlink" title="评审别人代码"></a>评审别人代码</h3><ul>
-<li>接受这样的事实：很多编程上的主张都是一种个人观点。应该讨论它们的利与弊，提出你的倾向观点，迅速的达成一种解决方案。</li>
-<li>提问，而不是命令。(“把这个变量命名成<code>:user_id</code>你觉得怎样？”)</li>
-<li>请求说明。(“我不明白。你能解释一下吗？”)</li>
-<li>避免代码的归属之争。(“我的”，“不是我的”，“你的”)</li>
-<li>避免使用一些会被认为是有关人身特征的词语。(“笨蛋”，“愚蠢”)要把所有人都看作是有魅力的、聪明的、善意的。</li>
-<li>要明确。要记着并不是每个人都能理解你的意图。</li>
-<li>要谦虚。(“我不能确定——我们来分析一下。”)</li>
-<li>不要用夸张修辞语。(“总是”，“从不”，“永远”，“毫无…”)</li>
-<li>不要讽刺。</li>
-<li>展现真实的你。如果你不是幽默型的人，不喜欢使用一些表情符号或动画gif图，不要勉强。如果你是这种人，请自信的发挥。</li>
-<li>如果有太多的“我不理解”或“另一种方案：”的评论，请专门针对这个人进行交流。可以把你们线下的交流总结成一个帖子附在后面。</li>
-</ul>
-<h3 id="被别人评审代码"><a href="#被别人评审代码" class="headerlink" title="被别人评审代码"></a>被别人评审代码</h3><ul>
-<li>对审查者的建议表示感激。(“谢谢提醒。我会把它改正。”)</li>
-<li>理解审查是对事不对人。审查的是你的代码，而不是你。</li>
-<li>解释为什么代码写成这样。(“因为xxx原因我才写成这样。如果我把这个类/文件/方法/变量改个名会更清晰些吗？”)</li>
-<li>整理所作的改动，在以后的迭代中重构它们。</li>
-<li>在做修改的版本上注明代码审查的链接。(“Ready for review: <a href="http://github.com/organization/project/pull/1" " target="_blank" rel="noopener">http://github.com/organization/project/pull/1″</a>)</li>
-<li>push提交要基于最早的一轮反馈，并形成一个独立的分支。等这个分支上的任务完全完成了再合并。这让审查者能够根据早先的反馈找到你的单独的更新。</li>
-<li>努力站在审查者的立场上理解。</li>
-<li>争取回复每个评论。</li>
-<li>直到最后一个人退出登录后再合并分支。</li>
-<li>直到持续集成测试(TDDium, TravisCI,等)告诉你这个分支的测试套件通过后再合并分支。</li>
-</ul>
-<h3 id="代码审查的过程"><a href="#代码审查的过程" class="headerlink" title="代码审查的过程"></a>代码审查的过程</h3><ul>
-<li>针对你感觉非常好的地方以及不是很好的地方与作者交流。</li>
-<li>找出既能解决问题又能简化代码的方法。</li>
-<li>如果讨论变得过于哲学或理论，把讨论转到线下，做成一个有规律的每周五下午的讨论会。同时，是否采用你提出的实现方案，让作者自己做决定。</li>
-<li>提出你的实现方案，但要表现出作者也在考虑这种方案。(“你觉得这里用一个自定义校验如何？”)</li>
-<li>努力理解作者的立场。</li>
-<li>pull请求登出时，加一个 👍 或“可以合并了”的注释。</li>
-</ul>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p>[中文原文] (<a href="https://www.oschina.net/news/38067/github-code-review" target="_blank" rel="noopener">https://www.oschina.net/news/38067/github-code-review</a>)</p>
-<p><a href="https://github.com/thoughtbot/guides/tree/master/code-review" target="_blank" rel="noopener"> 英文原文 </a></p>
-<h3 id="Vocabulary"><a href="#Vocabulary" class="headerlink" title="Vocabulary"></a>Vocabulary</h3>
+            <p>
+              Code Review当多人合作时，可以每个人各自创建一个分支，每个分支都有明确的名称，做完自己的开发后，合并到一起
+评审别人代码
+接受这样的事实：很多编程上的主张都是一种个人观点。应该讨论它们的利与弊，提出你的倾向观点，迅速的达成一种解决方案。
+提问，而不是命令。(“把这个变量命名成:user_i
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/02/13/code-review/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
