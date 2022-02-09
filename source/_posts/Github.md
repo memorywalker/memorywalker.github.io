@@ -212,6 +212,16 @@ fork的项目在本地更改后，原始的项目可能已经更新了内容，�
 
 6. `git push origin master`把最新的master推到自己的GitHub的项目的master上
 
+#### 错误处理
+
+* git push origin 提示 `OpenSSL SSL_read: Connection was reset, errno 10054`
+
+  网络原因导致失败，可以多试几次，也可以关闭ssl验证
+
+  `git config --global http.sslVerify "false"`
+
+
+
 ### Reference
 
 [http://www.firsttimersonly.com/](http://www.firsttimersonly.com/ )
