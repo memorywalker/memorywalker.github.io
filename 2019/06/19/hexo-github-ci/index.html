@@ -94,19 +94,21 @@
 
 
 
-  <meta name="description" content="现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz HEXO之前使用了HEXO作为静态blog的框架，虽然Github官方支持的是Jekyll，但是之前创建仓库时用的Hexo，还想继续用原来的仓库，就不再调整了 安装 安装nvm   $ sudo">
+  <meta name="description" content="2022-02-09 update: 增加使用Github Action来自动化编译的方法 现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz HEXO之前使用了HEXO作为静态blog的框架，虽然Github官方支持的是Jekyll，但是之前创">
 <meta name="keywords" content="blog">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GitPages+Hexo+CI 自动部署个人主页">
 <meta property="og:url" content="http://memorywalker.github.io/2019/06/19/hexo-github-ci/index.html">
 <meta property="og:site_name" content="How Time Flies">
-<meta property="og:description" content="现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz HEXO之前使用了HEXO作为静态blog的框架，虽然Github官方支持的是Jekyll，但是之前创建仓库时用的Hexo，还想继续用原来的仓库，就不再调整了 安装 安装nvm   $ sudo">
+<meta property="og:description" content="2022-02-09 update: 增加使用Github Action来自动化编译的方法 现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz HEXO之前使用了HEXO作为静态blog的框架，虽然Github官方支持的是Jekyll，但是之前创">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/avatar.gif">
-<meta property="og:updated_time" content="2022-02-09T10:38:52.052Z">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/github/pages_setting.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/github/github_actions.png">
+<meta property="og:updated_time" content="2022-02-09T11:14:33.127Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GitPages+Hexo+CI 自动部署个人主页">
-<meta name="twitter:description" content="现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz HEXO之前使用了HEXO作为静态blog的框架，虽然Github官方支持的是Jekyll，但是之前创建仓库时用的Hexo，还想继续用原来的仓库，就不再调整了 安装 安装nvm   $ sudo">
+<meta name="twitter:description" content="2022-02-09 update: 增加使用Github Action来自动化编译的方法 现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz HEXO之前使用了HEXO作为静态blog的框架，虽然Github官方支持的是Jekyll，但是之前创">
 <meta name="twitter:image" content="http://memorywalker.github.io/uploads/avatar.gif">
 
 
@@ -379,7 +381,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 10:38:52" itemprop="dateModified" datetime="2022-02-09T10:38:52+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 11:14:33" itemprop="dateModified" datetime="2022-02-09T11:14:33+00:00">2022-02-09</time>
               
             
           </span>
@@ -413,7 +415,8 @@
       
 
       
-        <p>现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz</p>
+        <p>2022-02-09 update: 增加使用Github Action来自动化编译的方法</p>
+<p>现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz</p>
 <h3 id="HEXO"><a href="#HEXO" class="headerlink" title="HEXO"></a>HEXO</h3><p>之前使用了HEXO作为静态blog的框架，虽然Github官方支持的是Jekyll，但是之前创建仓库时用的Hexo，还想继续用原来的仓库，就不再调整了</p>
 <h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
 <li>安装nvm </li>
@@ -506,7 +509,18 @@
 <li>执行<code>$ hexo deploy</code>,hexo会自动把public的文件push到github的master分支</li>
 </ul>
 <p>以后每次写完markdown文件后，只需要<code>$ hexo generate --deploy</code>，在生成后自动发布</p>
-<h3 id="CI-自动发布"><a href="#CI-自动发布" class="headerlink" title="CI 自动发布"></a>CI 自动发布</h3><p>如果本地没有node.js的环境，此时如果需要发布文章，还要搭建完整的开发环境，使用TravisCI可以自动编译github上的工程，并把结果进行发布<br><a href="https://www.travis-ci.org/" target="_blank" rel="noopener">https://www.travis-ci.org/</a> 使用github账号可以直接登陆</p>
+<h3 id="CI-自动发布"><a href="#CI-自动发布" class="headerlink" title="CI 自动发布"></a>CI 自动发布</h3><h4 id="Github-Actions"><a href="#Github-Actions" class="headerlink" title="Github Actions"></a>Github Actions</h4><p>在项目的根目录中增加以下文件<code>memorywalker.github.io\.github\workflows\pages.yml</code>，把这个文件push到服务器的hexo分支。配置文件最后把发布分支配置为<strong>pages</strong>，因此需要在<code>https://github.com/memorywalker/memorywalker.github.io/settings</code>的左侧Pages配置中将主页的分支更新为pages分支，而不是原来的master分支。</p>
+<img src="/uploads/github/pages_setting.png" alt="icon" style="zoom:60%;">
+
+<ul>
+<li>pages.yml</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Pages</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">hexo</span>  <span class="comment"># default branch</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">pages:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">hexo</span> <span class="string">blog</span> <span class="string">build</span> <span class="string">&amp;</span> <span class="string">deploy</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span> <span class="string">Code</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">      </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="number">12.</span><span class="string">x</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">'12.x'</span></span><br><span class="line">      </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Cache</span> <span class="string">NPM</span> <span class="string">dependencies</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/cache@v2</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">node_modules</span></span><br><span class="line">          <span class="attr">key:</span> <span class="string">$&#123;&#123;</span> <span class="string">runner.OS</span> <span class="string">&#125;&#125;-npm-cache</span></span><br><span class="line">          <span class="attr">restore-keys:</span> <span class="string">|</span></span><br><span class="line">            <span class="string">$&#123;&#123;</span> <span class="string">runner.OS</span> <span class="string">&#125;&#125;-npm-cache</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">Dependencies</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span> <span class="string">-g</span> <span class="string">hexo-cli</span></span><br><span class="line">          <span class="string">npm</span> <span class="string">install</span></span><br><span class="line">      </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Clean</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">      </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Build</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">hexo</span> <span class="string">generate</span></span><br><span class="line">      </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">peaceiris/actions-gh-pages@v3</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">github_token:</span> <span class="string">$&#123;&#123;</span> <span class="string">secrets.GITHUB_TOKEN</span> <span class="string">&#125;&#125;</span></span><br><span class="line">          <span class="attr">publish_dir:</span> <span class="string">./public</span></span><br><span class="line">          <span class="attr">publish_branch:</span> <span class="string">pages</span></span><br></pre></td></tr></table></figure>
+
+<p>在项目的Action页面中可以看每次push后执行的结果</p>
+<img src="/uploads/github/github_actions.png" alt="icon" style="zoom:60%;">
+
+<h4 id="Travis-CI"><a href="#Travis-CI" class="headerlink" title="Travis-CI"></a>Travis-CI</h4><p>如果本地没有node.js的环境，此时如果需要发布文章，还要搭建完整的开发环境，使用TravisCI可以自动编译github上的工程，并把结果进行发布<br><a href="https://www.travis-ci.org/" target="_blank" rel="noopener">https://www.travis-ci.org/</a> 使用github账号可以直接登陆</p>
 <ol>
 <li>在自己的所有工程列表中，打开需要自动部署的工程，并点击Settings</li>
 <li>Settings–General: 只需要打开<code>Build pushed branches</code>,其他两个保持关闭</li>
@@ -755,7 +769,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HEXO"><span class="nav-number">1.</span> <span class="nav-text">HEXO</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写文章"><span class="nav-number">1.2.</span> <span class="nav-text">写文章</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#升级Hexo"><span class="nav-number">1.3.</span> <span class="nav-text">升级Hexo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Next主题"><span class="nav-number">1.4.</span> <span class="nav-text">安装Next主题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Github部署"><span class="nav-number">2.</span> <span class="nav-text">Github部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CI-自动发布"><span class="nav-number">3.</span> <span class="nav-text">CI 自动发布</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HEXO"><span class="nav-number">1.</span> <span class="nav-text">HEXO</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写文章"><span class="nav-number">1.2.</span> <span class="nav-text">写文章</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#升级Hexo"><span class="nav-number">1.3.</span> <span class="nav-text">升级Hexo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Next主题"><span class="nav-number">1.4.</span> <span class="nav-text">安装Next主题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Github部署"><span class="nav-number">2.</span> <span class="nav-text">Github部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CI-自动发布"><span class="nav-number">3.</span> <span class="nav-text">CI 自动发布</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Github-Actions"><span class="nav-number">3.1.</span> <span class="nav-text">Github Actions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Travis-CI"><span class="nav-number">3.2.</span> <span class="nav-text">Travis-CI</span></a></li></ol></li></ol></div>
             
 
           </div>
