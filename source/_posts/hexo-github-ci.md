@@ -4,6 +4,7 @@ date: 2019-06-19 22:02:50
 tags: blog
 ---
 
+2022-02-09 update: 增加使用Github Action来自动化编译的方法
 
 现在已经习惯了使用Markdown写日志了，个人blog还是要坚持记录，WordPress平台的服务器资源总是不稳定，所以还是恢复很久之前使用gh-pages搭的主页。原来这里只是放了一篇模板文件 ORz
 
@@ -152,6 +153,67 @@ deploy:
 以后每次写完markdown文件后，只需要`$ hexo generate --deploy`，在生成后自动发布
 
 ### CI 自动发布
+
+#### Github Actions
+
+在项目的根目录中增加以下文件`memorywalker.github.io\.github\workflows\pages.yml`，把这个文件push到服务器的hexo分支。配置文件最后把发布分支配置为**pages**，因此需要在`https://github.com/memorywalker/memorywalker.github.io/settings `的左侧Pages配置中将主页的分支更新为pages分支，而不是原来的master分支。
+
+<img src="/uploads/github/pages_setting.png" alt="icon" style="zoom:60%;" />
+
+* pages.yml
+
+```yaml
+name: Pages
+
+on:
+  push:
+    branches:
+      - hexo  # default branch
+
+jobs:
+  pages:
+    name: hexo blog build & deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-npm-cache
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache
+      - name: Install Dependencies
+        run: |
+          npm install -g hexo-cli
+          npm install
+      
+      - name: Clean
+        run: hexo clean
+      
+      - name: Build
+        run: hexo generate
+      
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: pages
+```
+
+在项目的Action页面中可以看每次push后执行的结果
+
+<img src="/uploads/github/github_actions.png" alt="icon" style="zoom:60%;" />
+
+#### Travis-CI
 
 如果本地没有node.js的环境，此时如果需要发布文章，还要搭建完整的开发环境，使用TravisCI可以自动编译github上的工程，并把结果进行发布
 https://www.travis-ci.org/ 使用github账号可以直接登陆
