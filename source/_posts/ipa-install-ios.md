@@ -1,7 +1,12 @@
 ---
 title: ipa文件安装
 date: 2020-02-08 20:11:49
-tags: ios
+categories:
+- tech
+tags:
+- tech
+- ios
+- jailbreak
 ---
 
 ## ipa文件安装

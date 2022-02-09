@@ -1,7 +1,13 @@
 ---
 title: GitPages+Hexo+CI 自动部署个人主页
 date: 2019-06-19 22:02:50
-tags: blog
+categories:
+- tech
+tags:
+- blog
+- tech
+- github
+- ci
 ---
 
 2022-02-09 update: 增加使用Github Action来自动化编译的方法

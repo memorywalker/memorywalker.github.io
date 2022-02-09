@@ -1,10 +1,15 @@
 ---
 title: 内存管理
 date: 2020-03-06 20:25:49
-tags: 内存内存
+categories:
+- program
+tags:
+- memory
+- linux
+- malloc
 ---
 
-### 
+
 
 ## 内存
 

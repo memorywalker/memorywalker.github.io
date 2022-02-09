@@ -1,7 +1,13 @@
 ---
 title: Qemu下模拟ARM64搭建GDB Server调试环境
 date: 2019-06-22 16:42:43
+categories:
+- tech
 tags:
+- linux
+- qemu
+- arm
+- kernel
 ---
 
 OS： ubuntu 18.04 LTS x64

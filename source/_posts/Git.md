@@ -1,7 +1,10 @@
 ---
 title: Git study
 date: 2020-02-05 20:30:49
-tags: git
+categories:
+- git
+tags:
+- git
 ---
 
 ## Git 

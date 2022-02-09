@@ -1,7 +1,11 @@
 ---
 title: Gitlab使用
 date: 2020-02-18 20:25:49
-tags: Gitlab; git
+categories:
+- git
+tags:
+- git
+- gitlab
 ---
 
 

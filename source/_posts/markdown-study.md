@@ -1,7 +1,11 @@
 ---
 title: MarkDown学习
 date: 2016-03-29 23:11:49
+categories:
+- tech
 tags:
+- tech
+- markdown
 ---
 
 ## MarkDown学习 

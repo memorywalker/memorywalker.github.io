@@ -1,7 +1,11 @@
 ---
 title: Github study
 date: 2020-02-07 20:25:49
-tags: github; git
+categories:
+- git
+tags:
+- git
+- github
 ---
 
 

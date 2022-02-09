@@ -1,7 +1,12 @@
 ---
 title: 函数栈大小分析
 date: 2021-06-12 20:25:49
-tags: stack, frame, arm, linux
+categories:
+- program
+tags:
+- stack
+- arm
+- linux
 ---
 
 ## 程序运行

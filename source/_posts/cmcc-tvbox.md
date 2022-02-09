@@ -5,8 +5,6 @@ tags: cmcc
 ---
 
 
-## IBM Cloud Usage
-
 ## 中国移动魔百盒使用
 
 陕西移动的电视盒子版本为`CM201-2`

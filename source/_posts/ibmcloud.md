@@ -1,7 +1,12 @@
 ---
 title: IBM Cloud Usage
 date: 2020-06-22 20:25:49
-tags: ibm; docker; cloud;
+categories:
+- tech
+tags:
+- tech
+- cloud
+- docker
 ---
 
 

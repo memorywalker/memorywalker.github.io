@@ -1,7 +1,11 @@
 ---
 title: Steam ASF
 date: 2021-01-05 20:30:49
-tags: steam, asf
+categories:
+- game
+tags:
+- steam
+- asf
 ---
 
 ## ASF
