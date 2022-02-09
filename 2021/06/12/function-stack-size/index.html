@@ -95,14 +95,14 @@
 
 
   <meta name="description" content="程序运行原始文档 基本知识内存以下假设内存空间类似一个梯子，从上到下，地址值从小到大。 程序运行时内存主要分3种区域：  静态内存，存储全局变量，静态变量 即BSS和Data段 堆，malloc动态分配的内存，使用free释放 栈，函数调用过程中动态分配的内存段。每个函数有自己的栈帧，包括函数的局部变量和返回值信息。可以通过alloca函数扩展当前栈帧。  这三个区域在系统中的大小是预设好的，需要">
-<meta name="keywords" content="stack, frame, arm, linux">
+<meta name="keywords" content="stack,arm,linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="函数栈大小分析">
 <meta property="og:url" content="http://memorywalker.github.io/2021/06/12/function-stack-size/index.html">
 <meta property="og:site_name" content="How Time Flies">
 <meta property="og:description" content="程序运行原始文档 基本知识内存以下假设内存空间类似一个梯子，从上到下，地址值从小到大。 程序运行时内存主要分3种区域：  静态内存，存储全局变量，静态变量 即BSS和Data段 堆，malloc动态分配的内存，使用free释放 栈，函数调用过程中动态分配的内存段。每个函数有自己的栈帧，包括函数的局部变量和返回值信息。可以通过alloca函数扩展当前栈帧。  这三个区域在系统中的大小是预设好的，需要">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2022-02-09T12:08:19.895Z">
+<meta property="og:updated_time" content="2022-02-09T12:22:59.725Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="函数栈大小分析">
 <meta name="twitter:description" content="程序运行原始文档 基本知识内存以下假设内存空间类似一个梯子，从上到下，地址值从小到大。 程序运行时内存主要分3种区域：  静态内存，存储全局变量，静态变量 即BSS和Data段 堆，malloc动态分配的内存，使用free释放 栈，函数调用过程中动态分配的内存段。每个函数有自己的栈帧，包括函数的局部变量和返回值信息。可以通过alloca函数扩展当前栈帧。  这三个区域在系统中的大小是预设好的，需要">
@@ -418,11 +418,29 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:08:19" itemprop="dateModified" datetime="2022-02-09T12:08:19+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:22:59" itemprop="dateModified" datetime="2022-02-09T12:22:59+00:00">2022-02-09</time>
               
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/program/" itemprop="url" rel="index"><span itemprop="name">program</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -595,7 +613,11 @@
         
         <div class="post-tags">
           
-            <a href="/tags/stack-frame-arm-linux/" rel="tag"># stack, frame, arm, linux</a>
+            <a href="/tags/stack/" rel="tag"># stack</a>
+          
+            <a href="/tags/arm/" rel="tag"># arm</a>
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
           
         </div>
       
@@ -710,7 +732,17 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -757,7 +789,31 @@
                     
                       
                     
-                    <span class="site-state-item-count">15</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">27</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
