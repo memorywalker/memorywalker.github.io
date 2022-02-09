@@ -1,7 +1,11 @@
 ---
 title: Android Service
 date: 2022-02-09 09:25:49
-tags: android; service
+categories:
+- android
+tags:
+- android
+- service
 ---
 
 ### Service
