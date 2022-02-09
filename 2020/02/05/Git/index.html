@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Git/git/  BOOK Terminology/tɜːrmɪˈnɑːlədʒi /  (某学科的) 术语; 有特别含义的用语; 专门用语   version control system (abbreviated as VCS)   source code manager (abbreviated as SCM)   commit  保存一份当前项目的state到git中，可以看做游戏保存当">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git study">
+<meta property="og:url" content="http://memorywalker.github.io/2020/02/05/Git/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="Git/git/  BOOK Terminology/tɜːrmɪˈnɑːlədʒi /  (某学科的) 术语; 有特别含义的用语; 专门用语   version control system (abbreviated as VCS)   source code manager (abbreviated as SCM)   commit  保存一份当前项目的state到git中，可以看做游戏保存当">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2022-02-09T10:38:52.052Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git study">
+<meta name="twitter:description" content="Git/git/  BOOK Terminology/tɜːrmɪˈnɑːlədʒi /  (某学科的) 术语; 有特别含义的用语; 专门用语   version control system (abbreviated as VCS)   source code manager (abbreviated as SCM)   commit  保存一份当前项目的state到git中，可以看做游戏保存当">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2020/02/05/Git/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Git study | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2020/02/05/Git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git study
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-05 20:30:49" itemprop="dateCreated datePublished" datetime="2020-02-05T20:30:49+00:00">2020-02-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-02-09 10:38:52" itemprop="dateModified" datetime="2022-02-09T10:38:52+00:00">2022-02-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p>/git/ </p>
+<p><a href="https://git-scm.com/book/en/v2" target="_blank" rel="noopener">BOOK</a></p>
+<h3 id="Terminology"><a href="#Terminology" class="headerlink" title="Terminology"></a>Terminology</h3><p>/tɜːrmɪˈnɑːlədʒi /  (某学科的) 术语; 有特别含义的用语; 专门用语 </p>
+<p> <strong>version control system</strong> (abbreviated as <strong>VCS</strong>) </p>
+<p> <strong>source code manager</strong> (abbreviated as <strong>SCM</strong>) </p>
+<p> <strong>commit</strong>  保存一份当前项目的state到git中，可以看做游戏保存当前进度</p>
+<p> <strong>Repository / repo</strong> 一个仓库中包含了项目的所有文件，由commit组成</p>
+<p> <strong>Working Directory</strong> 本地的工作目录</p>
+<p> <strong>checkout</strong> 把repo中的所有文件拷贝一份到本地目录</p>
+<p> <strong>staging area</strong> as a prep table where Git will take the next commit. Files on the <strong>Staging Index</strong> are poised to be added to the repository </p>
+<p> <strong>branch</strong> 分支 游戏中保存一个新的存档，然后就可以选择不同的结局，在Half Life结尾G Man给你选择前可以新建一个存档位置，可以选择不为他打工</p>
+<p><strong>Working Directory</strong>  -(add)-&gt; <strong>staging area</strong> -(commit)-&gt; <strong>Repository</strong></p>
+<h3 id="Config"><a href="#Config" class="headerlink" title="Config"></a>Config</h3><ol>
+<li><p>右键打开Git bash，直接输入<code>cd</code>，进入<strong>home</strong>目录</p>
+</li>
+<li><p><code>start .</code> 在资源管理器中打开目录</p>
+</li>
+<li><p>再打开的文件中，右键点收藏夹，将当前文件添加到收藏夹，方便以后打开这个目录</p>
+</li>
+<li><p>把下载的配置文件中的<code>bash_profile</code>和文件夹<code>udacity-terminal-config</code>拷贝到根目录</p>
+</li>
+<li><p>由于windows不支持修改文件名为.开始的名字，需要在命令提示符下使用<code>mv</code>命令实现</p>
+<p><code>$ mv bash_profile .bash_profile</code></p>
+<p><code>$ mv udacity-terminal-config .udacity-terminal-config</code></p>
+</li>
+<li><p>重新打开一个bash窗口，点击左上角，option，设置前景色为黑色，背景色为白色   </p>
+</li>
+<li><p>执行以下命令进行全局配置</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> sets up Git with your name</span><br><span class="line">git config --global user.name "&lt;Your-Full-Name&gt;"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> sets up Git with your email</span><br><span class="line">git config --global user.email "&lt;your-email-address&gt;"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> makes sure that Git output is colored</span><br><span class="line">git config --global color.ui auto</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> displays the original state in a conflict</span><br><span class="line">git config --global merge.conflictstyle diff3</span><br><span class="line"></span><br><span class="line">git config --list</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> git work with sublime editor</span><br><span class="line">git config --global core.editor "'C:/Program Files/Sublime Text 2/sublime_text.exe' -n -w"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> git work with VS Code</span><br><span class="line">git config --global core.editor "code --wait"</span><br></pre></td></tr></table></figure>
+
+<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><h4 id="init一个Repo"><a href="#init一个Repo" class="headerlink" title="init一个Repo"></a>init一个Repo</h4><ol>
+<li>新建一个目录并进入到新建目录中<code>mkdir -p udacity-git-course/new-git-project &amp;&amp; cd $_</code></li>
+<li>执行<code>git init</code>，会在当前目录下创建一个repo，<code>.git</code>中就是这个repo的目录</li>
+</ol>
+<p>Repo中的内容</p>
+<ul>
+<li><strong>config file</strong> - where all <em>project specific</em> configuration settings are stored. </li>
+<li><strong>description file</strong> - this file is only used by the GitWeb program </li>
+<li><strong>hooks directory</strong> - this is where we could place client-side or server-side scripts that we can use to hook into Git’s different lifecycle events </li>
+<li><strong>info directory</strong> - contains the global excludes file </li>
+<li><strong>objects directory</strong> - this directory will store all of the commits we make </li>
+<li><strong>refs directory</strong> - this directory holds pointers to commits (basically the “branches” and “tags”) </li>
+</ul>
+<h4 id="clone一个Repo"><a href="#clone一个Repo" class="headerlink" title="clone一个Repo"></a>clone一个Repo</h4><p>clone可以创建一个现有项目的完全相同的复制</p>
+<p>执行<code>git clone https://github.com/udacity/course-git-blog-project</code>会创建一个新的项目目录<code>course-git-blog-project</code>在当前目录中</p>
+<p>执行<code>git clone http://xxx/project newName</code>可以在克隆时直接换一个本地的目录名称</p>
+<h4 id="status"><a href="#status" class="headerlink" title="status"></a>status</h4><p><code>git status</code>查看当前repo的状态，应该在执行每一个git的命令后都查看一下status</p>
+<h4 id="log"><a href="#log" class="headerlink" title="log"></a>log</h4><p><code>git log</code>查看所有commit历史记录</p>
+<p>输出的内容在<strong>Less</strong>中相同</p>
+<ul>
+<li>下翻<ul>
+<li><code>j</code> or <code>↓</code> 下翻一行</li>
+<li><code>d</code> 下翻半屏</li>
+<li><code>f</code> 下翻一屏</li>
+</ul>
+</li>
+<li>上翻<ul>
+<li><code>k</code> or <code>↑</code> 上翻一行</li>
+<li><code>u</code> 上翻半屏</li>
+<li><code>b</code> 上翻一屏</li>
+</ul>
+</li>
+<li>退出 press <code>q</code> to <strong>quit</strong> </li>
+</ul>
+<p><code>git log --oneline</code> 简化显示log信息</p>
+<p><code>git log --stat</code>显示每一个commit的汇总信息，stat是 statistics 的缩写</p>
+<p><code>git log -p</code> p是patch的缩写，显示每个文件具体改了哪些内容</p>
+<p><code>git log -p --stat -w</code>可以组合使用标记，<code>-w</code>不显示空白行的更改</p>
+<p>git以行为单位对文件的更改进行追踪</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">diff --git a/index.html b/index.html  (正在显示的文件)</span><br><span class="line">index 0381211..43f5b28 100644 （更改前的前后的这个文件的hash）</span><br><span class="line"><span class="comment">--- a/index.html  （指明旧的文件）</span></span><br><span class="line"><span class="comment">+++ b/index.html  （指明新的文件）</span></span><br><span class="line">@@ -15,83 +15,85 @@ （-标识旧文件，从15行开始共83行，+标识新文件，15行开始，共85行）</span><br><span class="line">         &lt;h1&gt;Expedition&lt;/h1&gt;</span><br><span class="line">     &lt;/header&gt;</span><br><span class="line"></span><br><span class="line"><span class="deletion">-    &lt;main&gt;   （旧文件删除的行）</span></span><br><span class="line"><span class="deletion">-        &lt;h2 class="visuallyhidden"&gt;Articles&lt;/h2&gt;</span></span><br><span class="line"><span class="addition">+    &lt;div class="container"&gt;  （新文件增加行）</span></span><br><span class="line"><span class="addition">+        &lt;main&gt;</span></span><br><span class="line"><span class="addition">+            &lt;h2 class="visuallyhidden"&gt;Articles&lt;/h2&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>git log -p fdf5493</code>显示fdf5493和这个commit之前的所有log</p>
+</li>
+<li><p><code>git show [SHA]</code>查看指定的一次提交的信息，默认附带了<code>-p</code>标记，如果要加<code>--stat</code>会把默认的<code>-p</code>标记去掉，要手动加上<code>-p</code>, <code>-w</code>不显示对空白行的更改 <code>git show --stat -p 8d3ea36</code></p>
+</li>
+</ul>
+<h4 id="add"><a href="#add" class="headerlink" title="add"></a>add</h4><p>将文件从<strong>work directory</strong>加入<strong>staging index</strong></p>
+<ul>
+<li><code>git add index.html</code>增加一个文件到staging index，多个文件用空格分隔开</li>
+<li><code>git rm --cached index.html</code> 删除一个staged的文件</li>
+<li><code>git add .</code>把当前目录下的所有文件增加到staging index</li>
+</ul>
+<h4 id="commit"><a href="#commit" class="headerlink" title="commit"></a>commit</h4><p><code>git commit</code>会打开配置的默认编辑器，当保存文件，关闭编辑器后，数据才会提交</p>
+<p><code>git commit -m &quot;Initial commit&quot;</code>提交信息使用<code>-m</code></p>
+<p>每次提交应该只有一个重点，记录一个单位的更改，只是更改项目的一个方面</p>
+<p>一次提交不能包含不相关的更改</p>
+<h5 id="提交信息"><a href="#提交信息" class="headerlink" title="提交信息"></a>提交信息</h5><ul>
+<li>信息简短，不超过60个英文单词</li>
+<li>解释提交内容做了什么，而不是为什么或怎么做的</li>
+<li>不要解释为什么做了这个更改</li>
+<li>不要解释怎么做了更改</li>
+<li>不要使用and，说明你提交了多个更改</li>
+<li>写完简短的信息后，可以换行增加一个空行，再写详细的更改原因，方便<code>git log --oneline</code></li>
+</ul>
+<p>udacity的<a href="https://udacity.github.io/git-styleguide/" target="_blank" rel="noopener">commit style guide</a></p>
+<h4 id="diff"><a href="#diff" class="headerlink" title="diff"></a>diff</h4><p>用来查看当前没有commit的更改</p>
+<h4 id="gitignore"><a href="#gitignore" class="headerlink" title="gitignore"></a>gitignore</h4><p>在和<code>.git</code>目录同级的目录下使用<code>touch .gitignore</code>新建<code>.gitignore</code>文件用来屏蔽那些不需要版本管理的文件</p>
+<h5 id="globbing规则"><a href="#globbing规则" class="headerlink" title="globbing规则"></a>globbing规则</h5><ul>
+<li>空行用来分隔</li>
+<li><code>#</code>标识注释</li>
+<li><code>*</code>匹配0或多个字符</li>
+<li><code>?</code>匹配1个字符</li>
+<li><code>[abc]</code>匹配a, b, or c</li>
+<li><code>**</code>匹配嵌入的目录 <code>a/**/z</code>匹配<code>a/z</code>,<code>a/b/z</code>, <code>a/b/c/z</code></li>
+</ul>
+<h4 id="tag"><a href="#tag" class="headerlink" title="tag"></a>tag</h4><p>tag用来标识一个特殊的版本，比如beta1.0，它和一个commit关联起来</p>
+<p><code>git tag -a v1.0</code>会以当前的commit创建一个tag并打开编辑器等待输入tag的备注信息，<code>-a</code>指明创建一个annotated tag，建议始终带有a选项的tag，包含更多的信息，如果不带a，只是一个轻量级的tag，没有创建人和创建日期信息</p>
+<p><code>git tag</code>列出当前repo的所有tag，使用<code>git log</code>可以看到当前的tag信息</p>
+<p><code>git tag -d v1.0</code>删除tag v1.0</p>
+<p><code>git tag -a v1.0 9a2e3bf</code>指定commit创建一个tag</p>
+<h4 id="branch"><a href="#branch" class="headerlink" title="branch"></a>branch</h4><p>一个Tag永久性的指向一个commit，一个branch会移动到最后的一个commit</p>
+<p>master是git给的默认branch，head指向当前活动的branch</p>
+<p><code>git branch</code>列出当前的所有分支，星号标识的是当前分支</p>
+<p><code>git branch feature</code>以当前的commit创建一个名为feature的分支</p>
+<p><code>git branch feature SHA</code>以SHA对应的commit创建一个名为feature的分支</p>
+<p><code>git checkout master</code>切换到master分支，checkout可以在多个branch之间切换，让head指向当前的分支。这个命令会：</p>
+<ol>
+<li>删除当前工作目录下的所有被git管理的文件（所有已经commit到repo中的文件），没有被add或commit的文件会保持不变</li>
+<li>从repo中取出指定分支的文件到当前工作目录</li>
+</ol>
+<p><code>git branch -d feature</code>删除名为feature的分支，当前活动的分支不能被删除，如果一个分支上有commit是只有这个分支才有的，还没有合并到其他分支，也不能删除；如果要强制删除这个有自己的commit的分支，使用<code>git branch -D feature</code></p>
+<p><code>git checkout -b footer master</code>基于master分支创建footer分支，并切换到footer分支</p>
+<p><code>git log --graph --all --oneline</code> graph用来显示log最左侧的分支路径线all参数用来显示repo中的所有分支</p>
+<h4 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h4><p>把分支的更改进行合并，git可以自动合并不同分支的更改</p>
+<ul>
+<li>普通merge ： 如果两个分支有差异的内容，把另一个分支的内容合并到当前的分支，此时merge也是一次commit，需要提供message，而且git已经提供了默认的message</li>
+<li>fast-forward merge 如果一个分支newfeature已经在master的前面（在master的基础上已经有了新的更改，但是master一直没有更改），此时要把它合入master分支，在合并的时候，只是把master指向newfeature的commit即可，并不需要一次新的commit</li>
+</ul>
+<p><code>git merge name-of-branch-to-merge-in</code>把另一个分支合入当前的分支，例如<code>git merge sidebar</code></p>
+<h5 id="冲突处理"><a href="#冲突处理" class="headerlink" title="冲突处理"></a>冲突处理</h5><p>git以文件中的一行为单位作为文件改变的标识，当两个分支中对同一个文件的同一行都有修改，在自动merge的时候，就不能自动选择用哪一个分支的了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> git merge head-update</span><br><span class="line">Auto-merging index.html</span><br><span class="line">CONFLICT (content): Merge conflict in index.html</span><br><span class="line">Automatic merge failed; fix conflicts and then commit the result.</span><br></pre></td></tr></table></figure>
+
+<p>此时执行<code>git status</code>会提示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">On branch master</span><br><span class="line">You have unmerged paths.</span><br><span class="line">  (fix conflicts and run "git commit")</span><br><span class="line">  (use "git merge --abort" to abort the merge)</span><br><span class="line"></span><br><span class="line">Unmerged paths:</span><br><span class="line">  (use "git add &lt;file&gt;..." to mark resolution)</span><br><span class="line">        both modified:   index.html</span><br></pre></td></tr></table></figure>
+
+<p>此时文件已经被改动，并且有标记哪些部分是冲突的</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">header</span>&gt;</span></span><br><span class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD  本地分支当前内容</span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Future<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">||||||| b27a903 合并前的上一次的原始内容</span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Expedition Future<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">======= 合并内容的结束行标记</span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Past<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; head-update 合入的分支的结束标记</span><br><span class="line">    <span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在编辑器中直接修改文本内容为最终需要的内容，保存后提交，可以在提交之前执行<code>git diff</code>查看更改的内容，避免把标记没有删除也提交上去</p>
+<h4 id="amend"><a href="#amend" class="headerlink" title="amend"></a>amend</h4><p><code>git commit --amend</code>修改最近一次的commit，而不会产生新的commit。</p>
+<p>如果当前已经没有需要commit的内容，则会弹出编辑commit message的编辑器，修改message的内容</p>
+<p>如果有遗漏的文件忘记修改，可以修改文件后并执行add来stage文件，执行<code>git commit --amend</code>让上次的commit增加新的文件</p>
+<h4 id="revert"><a href="#revert" class="headerlink" title="revert"></a>revert</h4><p>revert是对一次commit的恢复，因此也是一次新的commit</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> git revert ee4190c</span><br><span class="line">[master 65d78c2] Revert "change title"</span><br><span class="line"> 1 file changed, 1 insertion(+), 1 deletion(-)</span><br><span class="line">Moon (master) newrepo</span><br><span class="line"><span class="meta">$</span> git log --oneline</span><br><span class="line">65d78c2 (HEAD -&gt; master) Revert "change title" #新的一次提交</span><br><span class="line">ee4190c change title</span><br></pre></td></tr></table></figure>
+
+<h4 id="reset"><a href="#reset" class="headerlink" title="reset"></a>reset</h4><p> reset从repo中删除一个commit，git会在删除数据前保存所有的信息30天，可以使用<code>git reflog</code></p>
+<p>在执行reset之前可以对当前的commit创建一个backup的新分支用来备份commit的数据<code>git branch backup_somework</code>。需要恢复时，<code>git merge backup</code>即可</p>
+<p><code>git reset &lt;reference-to-commit&gt;</code>把Head指向reference commit，删除中间的commit，把已经commit的数据放入staging index，把staged的数据变为unstaged</p>
+<p><code>git reset --mixed HEAD^</code>默认的选项，把当前commit的内容回退到work directory，变为unstaged状态</p>
+<p><code>git reset --soft HEAD^</code>把当前commit的内容回退到staging index</p>
+<p><code>git reset --hard HEAD^</code>把当前commit的内容放入stash</p>
+<p><code>git checkout -- &lt;filename&gt;</code>撤销当前工作目录中filename文件的所有更改</p>
+<h5 id="Relative-Commit-References"><a href="#Relative-Commit-References" class="headerlink" title="Relative Commit References"></a>Relative Commit References</h5><p>相对commit引用, <code>HEAD</code>指向当前commit，<code>^</code>指向当前的父commit，<code>~</code>指向第一层父commit</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HEAD^ = HEAD~ = HEAD~1</span><br><span class="line">HEAD^^ = HEAD~2</span><br></pre></td></tr></table></figure>
+
+<p>一个merge的commit有两个父commit，<code>^</code>指向执行<code>git merge</code>分支的父commit，<code>^2</code>指向合并过来的分支的父commit</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">* 9ec05ca (HEAD -&gt; master) Revert "Set page heading to "Quests &amp; Crusades""</span><br><span class="line">* db7e87a Set page heading to "Quests &amp; Crusades"</span><br><span class="line">*   796ddb0 Merge branch 'heading-update'</span><br><span class="line">|\  </span><br><span class="line">| * 4c9749e (heading-update) Set page heading to "Crusade"</span><br><span class="line">* | 0c5975a Set page heading to "Quest"</span><br><span class="line">|/  </span><br><span class="line">*   1a56a81 Merge branch 'sidebar'</span><br></pre></td></tr></table></figure>
+
+<p> <code>HEAD^^^</code> 指向 <code>0c5975a</code> ，只有当前分支路径上带<code>*</code>的commit都是这个分支的</p>
+<p> <code>HEAD^^^2</code> 指向 <code>4c9749e</code> </p>
+<h3 id="Vocabulary"><a href="#Vocabulary" class="headerlink" title="Vocabulary"></a>Vocabulary</h3><ul>
+<li><p>sneak / sniːk /  偷偷地走; 溜; 偷偷地做; 偷带; 偷拿; 偷走(不重要的或小的东西);  突然的; 出其不意的 ; 打小报告的人，告状者(尤指儿童);</p>
+<p>Wanna <em>have a sneak peak of</em> the next lesson (偷偷看一下)</p>
+</li>
+<li><p>intro  介绍; (尤指) 前奏，前言，导言 </p>
+</li>
+<li><p>outro  结尾部分 </p>
+</li>
+<li><p>globbing   通配符; 文件名扩展; 文件名代换; 展开 </p>
+</li>
+<li><p>annotated  给…作注解(或评注) </p>
+</li>
+<li><p>delve  /delv/  (在手提包、容器等中) 翻找;  delve into her mother’s past探究母亲的过去</p>
+</li>
+<li><p>nitty  尼堤; 多虱卵的; 很紧甚至有些紧弱; </p>
+</li>
+<li><p>gritty  含沙砾的; 沙砾般的; 有勇气的; 坚定的; 坚毅的; (对消极事物的描述) 逼真的，真实的，活生生的;  The sheets fell on the <em>gritty</em> floor  床单掉到满是沙砾的地板上 </p>
+</li>
+<li><p>nitty gritty  本质; 实质; 基本事实; The city’s newspapers still attempt to get down to the <em>nitty</em> <em>gritty</em> of investigative <em>journalism</em>  该市报纸仍在试图厘清调查性新闻的实质 </p>
+</li>
+<li><p>asterisk / ˈæstərɪsk / 星号(置于词语旁以引起注意或另有注释) </p>
+</li>
+<li><p>nerve-wracking  令人焦虑的; 使人十分紧张的 </p>
+</li>
+<li><p>grins  露齿而笑; 咧着嘴笑; 龇着牙笑 </p>
+</li>
+<li><p>giggles  咯咯笑; 傻笑; 趣事; 玩笑; 可笑的事; 止不住的咯咯笑 </p>
+</li>
+<li><p>divergent  有分歧的; 不同的; 相异的; </p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/git/" rel="tag"># git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/22/qemu-aarch64-gdbserver/" rel="next" title="Qemu下模拟ARM64搭建GDB Server调试环境">
+                <i class="fa fa-chevron-left"></i> Qemu下模拟ARM64搭建GDB Server调试环境
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/07/Github/" rel="prev" title="Github study">
+                Github study <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git"><span class="nav-number">1.</span> <span class="nav-text">Git</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Terminology"><span class="nav-number">1.1.</span> <span class="nav-text">Terminology</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Config"><span class="nav-number">1.2.</span> <span class="nav-text">Config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本使用"><span class="nav-number">1.3.</span> <span class="nav-text">基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#init一个Repo"><span class="nav-number">1.3.1.</span> <span class="nav-text">init一个Repo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#clone一个Repo"><span class="nav-number">1.3.2.</span> <span class="nav-text">clone一个Repo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#status"><span class="nav-number">1.3.3.</span> <span class="nav-text">status</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#log"><span class="nav-number">1.3.4.</span> <span class="nav-text">log</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#add"><span class="nav-number">1.3.5.</span> <span class="nav-text">add</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#commit"><span class="nav-number">1.3.6.</span> <span class="nav-text">commit</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#提交信息"><span class="nav-number">1.3.6.1.</span> <span class="nav-text">提交信息</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#diff"><span class="nav-number">1.3.7.</span> <span class="nav-text">diff</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gitignore"><span class="nav-number">1.3.8.</span> <span class="nav-text">gitignore</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#globbing规则"><span class="nav-number">1.3.8.1.</span> <span class="nav-text">globbing规则</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tag"><span class="nav-number">1.3.9.</span> <span class="nav-text">tag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#branch"><span class="nav-number">1.3.10.</span> <span class="nav-text">branch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#merge"><span class="nav-number">1.3.11.</span> <span class="nav-text">merge</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#冲突处理"><span class="nav-number">1.3.11.1.</span> <span class="nav-text">冲突处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#amend"><span class="nav-number">1.3.12.</span> <span class="nav-text">amend</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#revert"><span class="nav-number">1.3.13.</span> <span class="nav-text">revert</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reset"><span class="nav-number">1.3.14.</span> <span class="nav-text">reset</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Relative-Commit-References"><span class="nav-number">1.3.14.1.</span> <span class="nav-text">Relative Commit References</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vocabulary"><span class="nav-number">1.4.</span> <span class="nav-text">Vocabulary</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
