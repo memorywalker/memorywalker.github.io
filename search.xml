@@ -392,6 +392,12 @@
 <li><p><code>git push origin master</code>把最新的master推到自己的GitHub的项目的master上</p>
 </li>
 </ol>
+<h4 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h4><ul>
+<li><p>git push origin 提示 <code>OpenSSL SSL_read: Connection was reset, errno 10054</code></p>
+<p>网络原因导致失败，可以多试几次，也可以关闭ssl验证</p>
+<p><code>git config --global http.sslVerify &quot;false&quot;</code></p>
+</li>
+</ul>
 <h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="http://www.firsttimersonly.com/" target="_blank" rel="noopener">http://www.firsttimersonly.com/</a></p>
 <p><a href="https://up-for-grabs.net/#/" target="_blank" rel="noopener">up for grabs</a></p>
 <h3 id="Vocabulary"><a href="#Vocabulary" class="headerlink" title="Vocabulary"></a>Vocabulary</h3><p> defacto  事实上; 事实; 事实上的; 实际上; 实际上的 </p>
