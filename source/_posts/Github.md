@@ -148,6 +148,15 @@ s f85bd96 add h2 style
 
 拷贝一份其他人的repo到自己的账户
 
+#### push
+
+> remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.
+> remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.
+
+现在github不再使用用户名密码作为验证，而使用token，这个token在` [Personal Access Tokens (github.com)](https://github.com/settings/tokens) `生成，在生成的页面会显示一次，需要自己保存好，每一个token可以有不同的权限和有效期设置
+
+本地push时，输入用户名后，提示输入密码要用这个新生成的token（一串字符）
+
 #### issue
 
 如果要给公共库提交更改，要先查看库的贡献说明文档；查看issue列表是否有类似的问题，咨询库的所有者是否有人在处理这个问题、自己是否可以处理，避免浪费工作时间；是不要提交一个issue来追溯这个更改
