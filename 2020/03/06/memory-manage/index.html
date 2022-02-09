@@ -102,13 +102,13 @@
 <meta property="og:site_name" content="How Time Flies">
 <meta property="og:description" content="内存虚拟内存管理的最小单位为页，一个页可以是4K或8K 段是一个进程的数据或代码的逻辑分组，段不是连续的 现在的操作系统同时使用段和页，一个进程被分为多个段，每个段又有页 对于内存块的分配算法，不同的应用场景效率是不一样的。 Buddy memory allocationhttps://en.wikipedia.org/wiki/Buddy_memory_allocation   把内存分割为小块">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://memorywalker.github.io/2020/03/06/uploads/memory/buddyexp.png">
-<meta property="og:image" content="http://memorywalker.github.io/2020/03/06/uploads/memory/linuxmemory.png">
-<meta property="og:updated_time" content="2022-02-09T12:33:39.085Z">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/memory/buddyexp.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/memory/linuxmemory.png">
+<meta property="og:updated_time" content="2022-02-09T12:47:20.547Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="内存管理">
 <meta name="twitter:description" content="内存虚拟内存管理的最小单位为页，一个页可以是4K或8K 段是一个进程的数据或代码的逻辑分组，段不是连续的 现在的操作系统同时使用段和页，一个进程被分为多个段，每个段又有页 对于内存块的分配算法，不同的应用场景效率是不一样的。 Buddy memory allocationhttps://en.wikipedia.org/wiki/Buddy_memory_allocation   把内存分割为小块">
-<meta name="twitter:image" content="http://memorywalker.github.io/2020/03/06/uploads/memory/buddyexp.png">
+<meta name="twitter:image" content="http://memorywalker.github.io/uploads/memory/buddyexp.png">
 
 
 
@@ -414,7 +414,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2022-02-09 12:33:39" itemprop="dateModified" datetime="2022-02-09T12:33:39+00:00">2022-02-09</time>
+                <time title="修改时间：2022-02-09 12:47:20" itemprop="dateModified" datetime="2022-02-09T12:47:20+00:00">2022-02-09</time>
               
             
           </span>
@@ -477,7 +477,7 @@
 <p>需要分配的内存大小为s，分配的块的order为x，则需要满足 <code>2**(x-1)&lt;s&lt;2**(x)</code>,即s大于order为x的大小的一半。</p>
 <p>oder的最大值由系统可用的内存大小和最小块大小决定。例如最小块大小即order-0的大小为4K，对于一个有2000K内存的系统，order的最大值为8.因为对于order-8这个块，他的大小为2的8次方256*块的最小值4K为1024K，大于2000的一半了，所以如果order为9，就会超过2000的总大小。</p>
 <h6 id="举例："><a href="#举例：" class="headerlink" title="举例："></a>举例：</h6><p>一个系统中的最小块大大小为64K，order的最大值为4，系统一次可以分配的内存大小最大值为<code>(2**4)*64=1024K</code>.假定系统的内存刚好也就1024K大小。</p>
-<p><img src="../uploads/memory/buddyexp.png" alt="buddyexp"></p>
+<p><img src="/uploads/memory/buddyexp.png" alt="buddyexp"></p>
 <ol>
 <li>初始状态</li>
 <li>程序A需要34K内存，因此order-0的块分配给A用就足够了，因为最小就是64.但是当前系统没有0的块，只有一个order是4的块，所以这个为4的块就一次一次对半分割，直到得到一个order-0，并把最左侧的给A使用。分割的过程中会产生一些其他块，这些块以free-list进行管理起来</li>
@@ -499,14 +499,14 @@
 <p><strong>sbrk()</strong> increments the program’s data space by <em>increment</em> bytes. 成功返回上一次的<strong>program break</strong>的位置。因此<code>sbrk((ptrdiff_t)0)</code>就可以返回当前的<strong>program break</strong>.</p>
 <p><strong>brk()</strong> sets the end of the data segment to the value specified by <em>addr</em>。成功返回0，这里的data segment并不是数据段。</p>
 <p><a href="http://man7.org/linux/man-pages/man2/sbrk.2.html" target="_blank" rel="noopener">http://man7.org/linux/man-pages/man2/sbrk.2.html</a></p>
-<p><img src="../uploads/memory/linuxmemory.png" alt="linuxmemory"></p>
+<p><img src="/uploads/memory/linuxmemory.png" alt="linuxmemory"></p>
 <p>进程地址空间分为用户空间和内核空间。用户空间从0到0xC0000000，内核空间使用剩下的高地址部分。用户进程只有进行系统调用才可以访问内核空间。每个进程使用自己的用户空间，而内核空间是内核负责，不会随着进程改变而变化。内核空间地址有自己对应的页表。用户进程各自有不同的页表。</p>
 <p>逻辑地址经过段机制转化为线性地址，线性地址经过页机制转化为物理地址</p>
 <p>使用<code>cat /proc/&lt;pid&gt;/maps</code>查看进程的内存区域</p>
 <p>内核使用<code>vm_area_struct</code>描述进程地址空间的基本管理单元，使用链表进行链接这些块，以红黑树的形式组织。遍历时使用链表，定位内存位置时使用红黑树</p>
 <p>内核使用<code>do_mmap()</code>函数创建一个新的线性地址空间</p>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li>Wireshark网络分析就是这么简单</li>
+<li>xxx</li>
 </ul>
 
       
