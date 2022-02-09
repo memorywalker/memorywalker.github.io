@@ -14,7 +14,6 @@ tags:
 ## 内存
 
 
-
 虚拟内存管理的最小单位为**页**，一个页可以是4K或8K
 
 **段**是一个进程的数据或代码的逻辑分组，段不是连续的
@@ -41,7 +40,7 @@ oder的最大值由系统可用的内存大小和最小块大小决定。例如�
 
 一个系统中的最小块大大小为64K，order的最大值为4，系统一次可以分配的内存大小最大值为`(2**4)*64=1024K`.假定系统的内存刚好也就1024K大小。
 
-![buddyexp](../uploads/memory/buddyexp.png)
+![buddyexp](/uploads/memory/buddyexp.png)
 
 1. 初始状态
 2. 程序A需要34K内存，因此order-0的块分配给A用就足够了，因为最小就是64.但是当前系统没有0的块，只有一个order是4的块，所以这个为4的块就一次一次对半分割，直到得到一个order-0，并把最左侧的给A使用。分割的过程中会产生一些其他块，这些块以free-list进行管理起来
@@ -82,7 +81,7 @@ brk, sbrk可以修改**program break**的位置，即heap的大小。
 
 http://man7.org/linux/man-pages/man2/sbrk.2.html
 
-![linuxmemory](../uploads/memory/linuxmemory.png)
+![linuxmemory](/uploads/memory/linuxmemory.png)
 
 进程地址空间分为用户空间和内核空间。用户空间从0到0xC0000000，内核空间使用剩下的高地址部分。用户进程只有进行系统调用才可以访问内核空间。每个进程使用自己的用户空间，而内核空间是内核负责，不会随着进程改变而变化。内核空间地址有自己对应的页表。用户进程各自有不同的页表。
 
