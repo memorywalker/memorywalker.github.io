@@ -132,8 +132,92 @@ startService(intent);
 
 #### 前端服务
 
-#### 后台服务
+前端服务用于当用户不需要与应用直接交互，但是又需要知道应用当前的运行状态的场景。前端服务会固定显示通知栏通知，直到服务结束。例如音乐播放器切换到后台后，波形音乐信息可以用前端服务在状态栏显示，一个跑步应用可以实时显示跑步距离。
+
+##### 配置
+
+API level 28 anroid 9 必须声明`FOREGROUND_SERVICE`
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" ...>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <application ...>
+        ...
+    </application>
+</manifest>
+```
+
+##### 前端服务周期
+
+1. 启动一个服务
+
+   ```java
+   Context context = getApplicationContext();
+   Intent intent = new Intent(...); // Build the intent for the service
+   context.startForegroundService(intent);
+   ```
+
+2. 在服务的 onStartCommand 接口中调用 [startForeground](https://developer.android.google.cn/reference/android/app/Service#startForeground(int, android.app.Notification)) 让服务在前端运行
+
+   ```java
+   Intent notificationIntent = new Intent(this, ExampleActivity.class);
+   PendingIntent pendingIntent =
+           PendingIntent.getActivity(this, 0, notificationIntent, 0);
+   
+   Notification notification =
+             new Notification.Builder(this, CHANNEL_DEFAULT_IMPORTANCE)
+       .setContentTitle(getText(R.string.notification_title))
+       .setContentText(getText(R.string.notification_message))
+       .setSmallIcon(R.drawable.icon)
+       .setContentIntent(pendingIntent)
+       .setTicker(getText(R.string.ticker_text))
+       .build();
+   
+   // Notification ID cannot be 0.
+   startForeground(ONGOING_NOTIFICATION_ID, notification);
+   ```
+
+3. 移除前端服务 使用 [`stopForeground`](https://developer.android.google.cn/reference/android/app/Service#stopForeground(boolean)) 传入boolean变量决定是否同时删除通知栏显示，这个方法执行后，服务还是运行状态。也可以停止服务来结束服务运行，通知栏会自动删除。
+
+##### 声明前端服务类型
+
+声明前端服务的类型，可以让前端服务访问位置，摄像头和麦克风信息
+
+1. 配置文件中需要增加配置
+
+   ```xml
+   <manifest>
+       ...
+       <service ...
+           android:foregroundServiceType="location|camera|microphone" />
+   </manifest>
+   ```
+
+2. 启动服务时指明需要哪些权限
+
+   ```java
+   Notification notification = ...;
+   Service.startForeground(notification,
+           FOREGROUND_SERVICE_TYPE_LOCATION | FOREGROUND_SERVICE_TYPE_CAMERA);
+   ```
+
+3. 当应用在后台运行时，前端服务使用的这些权限会有限制，此时不能访问麦克风和摄像头，只有当用户授权了 [`ACCESS_BACKGROUND_LOCATION`](https://developer.android.google.cn/reference/android/Manifest.permission#ACCESS_BACKGROUND_LOCATION) 权限后，才能访问位置信息。当然还有一些特殊情况可以去掉这种[限制](https://developer.android.google.cn/guide/components/foreground-services#bg-access-restriction-exemptions)。
+
+##### 通知栏
+
+以下几种前端服务会立即显示到通知栏：
+
+* The service is associated with a notification that includes [action buttons](https://developer.android.google.cn/training/notify-user/build-notification#Actions).
+* The service has a [`foregroundServiceType`](https://developer.android.google.cn/guide/topics/manifest/service-element#foregroundservicetype) of `mediaPlayback`, `mediaProjection`, or `phoneCall`.
+* The service provides a use case related to phone calls, navigation, or media playback, as defined in the notification's [category attribute](https://developer.android.google.cn/reference/android/app/Notification#category).
+* The service has opted out of the behavior change by passing `FOREGROUND_SERVICE_IMMEDIATE` into [`setForegroundServiceBehavior()`](https://developer.android.google.cn/reference/android/app/Notification.Builder#setForegroundServiceBehavior(int)) when setting up the notification.
+
+
 
 #### 绑定服务
+
+绑定服务是一种客户端-服务端模式的服务，当一个组件例如activity绑定了一个服务，activity作为客户端可以向服务发送请求。同时不同进程间可以使用绑定服务实现IPC。
+
+可以同时实现 [onBind()](https://developer.android.google.cn/reference/android/app/Service#onBind(android.content.Intent)) 和 [onStartCommand()](https://developer.android.google.cn/reference/android/app/Service#onStartCommand(android.content.Intent, int, int)) 两个接口，这样一个服务可以正常启动后，再被别的组件绑定。例如用户从一个音乐播放器程序的activity启动了服务进行音乐播放，在用户把音乐程序切换后台后，再切换回来，这个activity可以绑定之前服务，对音乐进行控制。
 
 #### AIDL
