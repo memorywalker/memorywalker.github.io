@@ -16,7 +16,7 @@ tags:
 
 服务运行在当前进程的主线程中，除非指定，否则服务不会创建自己的线程也不会运行在独立的进程中，因此服务中执行任何阻塞操作需要在单独的线程中执行，避免阻塞主线程导致ANR。
 
-考虑使用WorkManager来代替Service的功能
+考虑使用`WorkManager`来代替`Service`的功能
 
 #### 分类
 
@@ -24,7 +24,7 @@ tags:
 
 **后端服务**：后台服务，用户不会感知到在执行，例如下载文件
 
-**绑定服务**：当一个应用组件通过bindService()绑定到这个服务，服务给组件提供C/S模式的交互，也可以进程间通信。绑定服务只在一个组件与他绑定后才会运行，当多个组件和一个服务绑定，只有当所有的组件都解绑后，服务才会销毁。
+**绑定服务**：当一个应用组件通过`bindService()`绑定到这个服务，服务给组件提供C/S模式的交互，也可以进程间通信。绑定服务只在一个组件与他绑定后才会运行，当多个组件和一个服务绑定，只有当所有的组件都解绑后，服务才会销毁。
 
 服务作为一个组件需要在manifest文件中声明，也可声明为私有，这样别的应用程序不能使用。可以在声明中增加`android:description`属性提供一个服务的说明，用户可以看到这个服务的作用。
 
@@ -48,7 +48,7 @@ tags:
 
 #### 基本接口
 
- onStartCommand()  组件调用startService()启动服务时会回调这个接口，只要有调用这个接口，就需要手动调用stopService()来释放
+onStartCommand()  组件调用startService()启动服务时会回调这个接口，只要有调用这个接口，就需要手动调用stopService()来释放
 
 onBind() 组件通过调用bindService()与服务绑定会回调这个接口，这个接口需要返回一个IBinder接口，用来实现客户端与服务的交互。如果不希望被绑定，返回null。
 
@@ -157,7 +157,7 @@ API level 28 anroid 9 必须声明`FOREGROUND_SERVICE`
    context.startForegroundService(intent);
    ```
 
-2. 在服务的 onStartCommand 接口中调用 [startForeground](https://developer.android.google.cn/reference/android/app/Service#startForeground(int, android.app.Notification)) 让服务在前端运行
+2. 在服务的 `onStartCommand` 接口中调用 `startForeground` 让服务在前端运行
 
    ```java
    Intent notificationIntent = new Intent(this, ExampleActivity.class);
@@ -177,7 +177,7 @@ API level 28 anroid 9 必须声明`FOREGROUND_SERVICE`
    startForeground(ONGOING_NOTIFICATION_ID, notification);
    ```
 
-3. 移除前端服务 使用 [`stopForeground`](https://developer.android.google.cn/reference/android/app/Service#stopForeground(boolean)) 传入boolean变量决定是否同时删除通知栏显示，这个方法执行后，服务还是运行状态。也可以停止服务来结束服务运行，通知栏会自动删除。
+3. 移除前端服务 使用 `stopForeground`传入boolean变量决定是否同时删除通知栏显示，这个方法执行后，服务还是运行状态。也可以停止服务来结束服务运行，通知栏会自动删除。
 
 ##### 声明前端服务类型
 
@@ -218,7 +218,7 @@ API level 28 anroid 9 必须声明`FOREGROUND_SERVICE`
 
 绑定服务是一种客户端-服务端模式的服务，当一个组件例如activity绑定了一个服务，activity作为客户端可以向服务发送请求。同时不同进程间可以使用绑定服务实现IPC。
 
-可以同时实现 [onBind()](https://developer.android.google.cn/reference/android/app/Service#onBind(android.content.Intent)) 和 [onStartCommand()](https://developer.android.google.cn/reference/android/app/Service#onStartCommand(android.content.Intent, int, int)) 两个接口，这样一个服务可以正常启动后，再被别的组件绑定。例如用户从一个音乐播放器程序的activity启动了服务进行音乐播放，在用户把音乐程序切换后台后，再切换回来，这个activity可以绑定之前服务，对音乐进行控制。
+可以同时实现 `onBind() `和` onStartCommand() `两个接口，这样一个服务可以正常启动后，再被别的组件绑定。例如用户从一个音乐播放器程序的activity启动了服务进行音乐播放，在用户把音乐程序切换后台后，再切换回来，这个activity可以绑定之前服务，对音乐进行控制。
 
 ##### 服务端
 
@@ -228,25 +228,25 @@ API level 28 anroid 9 必须声明`FOREGROUND_SERVICE`
 
 ###### IBinder接口对象
 
-有三种方式提供IBinder接口：
+有三种方式提供`IBinder`接口实现：
 
-* 提供Binder的子类
+* 提供`Binder`的子类
 
   如果服务只是给应用内部使用，且不需要进程间通信，返回一个继承Binder类的对象来提供服务的公共接口最合适。
 
-* 使用Messenger
+* 使用`Messenger`
 
-  如果服务需要在不同进程间通信，由于不同进程间不能获取对方接口信息，所以不能直接调用Binder对象的方法。这时需要使用Messenger，通过消息的方式给服务发送请求。服务中定义一个Handler来处理客户端请求的Message。
+  如果服务需要在不同进程间通信，由于不同进程间不能获取对方接口信息，所以不能直接调用`Binder`对象的方法。这时需要使用`Messenger`，通过消息的方式给服务发送请求。服务中定义一个`Handler`来处理客户端请求的`Message`。
 
-  Messenger内部会把所有的客户端请求Message放在一个线程的队列中通知给服务，这样服务中不需要考虑多线程问题。
+  `Messenger`内部会把所有的客户端请求`Message`放在一个线程的队列中通知给服务，这样服务中不需要考虑多线程问题。
 
 * 使用AIDL
 
-   Android Interface Definition Language (AIDL)  可以将对象进行序列化后用于进程间的通信。Messenger本质上也是使用了AIDL，只是把所有的请求放在一个队列中执行。当服务需要同时处理多个客户端的请求时，可以使用AIDL的方式，此时需要服务端自己处理多线程。
+   Android Interface Definition Language (AIDL)  可以将对象进行序列化后用于进程间的通信。`Messenger`本质上也是使用了AIDL，只是把所有的请求放在一个队列中执行。当服务需要同时处理多个客户端的请求时，可以使用AIDL的方式，此时需要服务端自己处理多线程。
 
 ##### 客户端
 
-客户端通过调用 [bindService()](https://developer.android.google.cn/reference/android/content/Context#bindService(android.content.Intent, android.content.ServiceConnection, int)) 来绑定一个服务，绑定过程是异步的，bindService()会立即返回，客户端需要实现 [ServiceConnection](https://developer.android.google.cn/reference/android/content/ServiceConnection) 用来监控与服务的连接状态。
+客户端通过调用 `bindService()`来绑定一个服务，绑定过程是异步的，bindService()会立即返回，客户端需要实现 [ServiceConnection](https://developer.android.google.cn/reference/android/content/ServiceConnection) 用来监控与服务的连接状态。
 
 `bindService(new Intent(Binding.this, MessengerService.class), mConnection, Context.BIND_AUTO_CREATE)`
 
@@ -256,7 +256,7 @@ API level 28 anroid 9 必须声明`FOREGROUND_SERVICE`
 
 ##### 注意事项
 
-* bind和unbind要成对出现。如果客户端只是在用户可见的时候与服务有交互，在`onStart`中绑定，`onStop`中解绑定
+* `bind`和`unbind`要成对出现。如果客户端只是在用户可见的时候与服务有交互，在`onStart`中绑定，`onStop`中解绑定
 * 如果activity切换到后台后还有交互，在`onCreate`中绑定，`onDestory`中解绑定。这种方式activity在整个生命周期中都使用服务，如果服务在另一个进程中运行，这样会增加服务进程的权重，系统更可能杀死这个进程。
 * 对象的引用计数会跨进程累计
 * 连接发生异常时，会抛出 [DeadObjectException](https://developer.android.google.cn/reference/android/os/DeadObjectException) 
@@ -267,8 +267,8 @@ API level 28 anroid 9 必须声明`FOREGROUND_SERVICE`
    * 客户端可以调用的公共方法
    * 返回当前的Service类的实例，客户端可以通过这个实例访问服务的公共方法
    * 返回服务中定义的其他类的实例，客户端可以访问这些类的公共方法
-2. 服务的onBind()方法返回定义的**Binder**类的实例
-3. 客户端在 [onServiceConnected()](https://developer.android.google.cn/reference/android/content/ServiceConnection#onServiceConnected(android.content.ComponentName, android.os.IBinder)) 中获取Binder类对象，并调用其提供的接口。
+2. 服务的`onBind()`方法返回定义的**Binder**类的实例
+3. 客户端在 `onServiceConnected() `中获取Binder类对象，并调用其提供的接口。
 
 ###### 服务端举例
 
