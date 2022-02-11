@@ -857,6 +857,13 @@
 
 <p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 ]]></content>
+      <categories>
+        <category>demo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>demo</tag>
+      </tags>
   </entry>
   <entry>
     <title>GitPages+Hexo+CI 自动部署个人主页</title>
@@ -1363,6 +1370,27 @@
         <tag>linux</tag>
         <tag>qemu</tag>
         <tag>kernel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RxJava for Android</title>
+    <url>/2022/02/11/rxjava-android/</url>
+    <content><![CDATA[<blockquote>
+<p>RxJava for Android Developers – Timo Tuominen</p>
+</blockquote>
+<p>Rx是Reactive Extensions的缩写，即响应式编程Reactive Programming，是一种编程范式，通过使用数据流的方式来构建应用。RxJava是对Java的响应式编程的实现。</p>
+<p>React是Facebook的一个UI库，与这里的响应式编程不是一个东西。</p>
+<h3 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h3><p>函数式编程</p>
+<p>数据流</p>
+<p>Observable</p>
+<p>Subscribe</p>
+]]></content>
+      <categories>
+        <category>program</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>RxJava</tag>
       </tags>
   </entry>
   <entry>
