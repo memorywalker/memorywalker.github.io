@@ -398,28 +398,28 @@ def index(request):
 
 对于每个页面都有的元素，可以通过定义一个父模板，其中实现通用的界面显示部分，在子模板中继承父模板即可。
 
-* 定义一个父模板`base.html`
+* 定义一个父模板`base.html` 其中{% raw %}xxx{% endraw %}是为了解决Hexo的nunjunks erro，实际代码不需要
 
 ```xml
 <p>
-    <a href="{ % url 'demoapp:index' % }">Index</a>
+    <a href="{% raw %}{ % url 'demoapp:index' % }{% endraw %}">Index</a>
 </p>
 // 定义了一个名为content的block，用来给子模板占位
-{ % block content % } { % endblock content % }
+{% raw %}{ % block content % } { % endblock content % }{% endraw %}
 ```
 
-`{% %} `定义了一个`Template tag`.这个代码片段用来生成显示在页面上的信息。
+``{% raw %}{% %}{% endraw %}`定义了一个`Template tag`.这个代码片段用来生成显示在页面上的信息。
 
-`{% url 'demoapp:index' %}  `生成一个URL与`demoapp/urls.py`中的名称为index的url映射匹配，其中的demoapp就是urls.py中定义的**app_name**
+`{% raw %} {% url 'demoapp:index' %} {% endraw %}`生成一个URL与`demoapp/urls.py`中的名称为index的url映射匹配，其中的demoapp就是urls.py中定义的**app_name**
 
 * 定义子模板index.html
 
 ```xml
-{ % extends "demoapp/base.html" % }
+{% raw %}{ % extends "demoapp/base.html" % }{% endraw %}
 
-{ % block content % }
+{% raw %}{ % block content % }{% endraw %}
 <p>Learning Log helps you keep track of your learning, for any topic you're
     learning about.</p>
-{ % endblock content % }
+{% raw %}{ % endblock content % }{% endraw %}
 ```
 
