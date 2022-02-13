@@ -400,11 +400,11 @@ def index(request):
 
 * 定义一个父模板`base.html`
 
-```HTML
+```xml
 <p>
     <a href="{% url 'demoapp:index' %}">Index</a>
 </p>
-定义了一个名为content的block，用来给子模板占位
+// 定义了一个名为content的block，用来给子模板占位
 {% block content %}{% endblock content %}
 ```
 
@@ -414,7 +414,7 @@ def index(request):
 
 * 定义子模板index.html
 
-```HTML
+```xml
 {% extends "demoapp/base.html" %}
 
 {% block content %}
