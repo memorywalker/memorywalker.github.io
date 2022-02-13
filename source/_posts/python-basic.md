@@ -402,10 +402,10 @@ def index(request):
 
 ```xml
 <p>
-    <a href="{% url 'demoapp:index' %}">Index</a>
+    <a href="{ % url 'demoapp:index' % }">Index</a>
 </p>
 // 定义了一个名为content的block，用来给子模板占位
-{% block content %}{% endblock content %}
+{ % block content % } { % endblock content % }
 ```
 
 `{% %} `定义了一个`Template tag`.这个代码片段用来生成显示在页面上的信息。
@@ -415,11 +415,11 @@ def index(request):
 * 定义子模板index.html
 
 ```xml
-{% extends "demoapp/base.html" %}
+{ % extends "demoapp/base.html" % }
 
-{% block content %}
+{ % block content % }
 <p>Learning Log helps you keep track of your learning, for any topic you're
     learning about.</p>
-{% endblock content %}
+{ % endblock content % }
 ```
 
