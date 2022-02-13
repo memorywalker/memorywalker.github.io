@@ -119,7 +119,6 @@ friend_foods = my_foods[:] # 拷贝一个新列表，不能用friend_foods = my_
 
 ```python
 my_t = (3,)  # 定义只有一个元素的元组需要多加一个，号
-
 ```
 
 
@@ -393,15 +392,15 @@ def index(request):
 
 模板定义了页面的显示方式，Django把数据填入模板对应的代码片段中。
 
-在demoapp中创建以下目录并创建index.html文件`template/demoapp/index.html`这样和view中函数的相对路径保持一致。
+在demoapp中创建以下目录并创建`index.html`文件`template/demoapp/index.html`这样和view中函数的相对路径保持一致。
 
 ###### 模板继承
 
 对于每个页面都有的元素，可以通过定义一个父模板，其中实现通用的界面显示部分，在子模板中继承父模板即可。
 
-* 定义一个父模板base.html
+* 定义一个父模板`base.html`
 
-```php+HTML
+```HTML
 <p>
     <a href="{% url 'demoapp:index' %}">Index</a>
 </p>
@@ -409,13 +408,13 @@ def index(request):
 {% block content %}{% endblock content %}
 ```
 
-{% %}  定义了一个Template tag.这个代码片段用来生成显示在页面上的信息。
+`{% %} `定义了一个`Template tag`.这个代码片段用来生成显示在页面上的信息。
 
-{% url 'demoapp:index' %}  生成一个URL与demoapp/urls.py中的名称为index的url映射匹配，其中的demoapp就是urls.py中定义的**app_name**
+`{% url 'demoapp:index' %}  `生成一个URL与`demoapp/urls.py`中的名称为index的url映射匹配，其中的demoapp就是urls.py中定义的**app_name**
 
 * 定义子模板index.html
 
-```php+HTML
+```HTML
 {% extends "demoapp/base.html" %}
 
 {% block content %}
