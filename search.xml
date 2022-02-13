@@ -1340,16 +1340,16 @@
 <p>在demoapp中创建以下目录并创建<code>index.html</code>文件<code>template/demoapp/index.html</code>这样和view中函数的相对路径保持一致。</p>
 <h6 id="模板继承"><a href="#模板继承" class="headerlink" title="模板继承"></a>模板继承</h6><p>对于每个页面都有的元素，可以通过定义一个父模板，其中实现通用的界面显示部分，在子模板中继承父模板即可。</p>
 <ul>
-<li>定义一个父模板<code>base.html</code> 其中xxx是为了解决Hexo的nunjunks erro，实际代码不需要</li>
+<li>定义一个父模板<code>base.html</code> 其中<code>xxx</code>是为了解决Hexo的nunjunks erro，实际代码不需要</li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;% raw %&#125;&#123; % url 'demoapp:index' % &#125;&#123;% endraw %&#125;"</span>&gt;</span>Index<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">// 定义了一个名为content的block，用来给子模板占位</span><br><span class="line">&#123;% raw %&#125;&#123; % block content % &#125; &#123; % endblock content % &#125;&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123; % url 'demoapp:index' % &#125;"</span>&gt;</span>Index<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">// 定义了一个名为content的block，用来给子模板占位</span><br><span class="line">&#123; % block content % &#125; &#123; % endblock content % &#125;</span><br></pre></td></tr></table></figure>
 
 <p>``{% %}<code>定义了一个</code>Template tag`.这个代码片段用来生成显示在页面上的信息。</p>
 <p><code> {% url 'demoapp:index' %} </code>生成一个URL与<code>demoapp/urls.py</code>中的名称为index的url映射匹配，其中的demoapp就是urls.py中定义的<strong>app_name</strong></p>
 <ul>
 <li>定义子模板index.html</li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">&#123;% raw %&#125;&#123; % extends "demoapp/base.html" % &#125;&#123;% endraw %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% raw %&#125;&#123; % block content % &#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Learning Log helps you keep track of your learning, for any topic you're</span><br><span class="line">    learning about.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123; % endblock content % &#125;&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">&#123; % extends "demoapp/base.html" % &#125;</span><br><span class="line"></span><br><span class="line">&#123; % block content % &#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Learning Log helps you keep track of your learning, for any topic you're</span><br><span class="line">    learning about.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">&#123; % endblock content % &#125;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>
