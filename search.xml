@@ -63,11 +63,11 @@
 <li><p>配置页面的ASF选项页是针对ASF的全局配置，编辑后使用生成的<code>ASF.json</code>替换原来的文件即可</p>
 </li>
 </ul>
-<h4 id="Using-IPC-GUI"><a href="#Using-IPC-GUI" class="headerlink" title="Using IPC GUI"></a>Using IPC GUI</h4><p>ASF提供了一个IPC的GUI访问方式，这个功能目前还处于预览阶段，但是常用的功能都是支持的。</p>
+<h4 id="Using-IPC-GUI"><a href="#Using-IPC-GUI" class="headerlink" title="Using IPC GUI"></a>Using IPC GUI</h4><p>ASF提供了一个IPC的GUI访问方式，默认这个功能是开启的，但是常用的功能都是支持的。</p>
 <p>使用这个功能需要知道自己的<code>SteamOwnerID</code>，这个id可在<a href="https://steamrep.com/" target="_blank" rel="noopener">steamrep</a>网站查询，是一个7656开始的数字</p>
 <p>也可以直接看自己的个人资料页面 <code>https://steamcommunity.com/profiles/</code>后面的数字就是</p>
 <p>配置页面切换到ASF配置，配置全局配置文件<code>ASF.json</code></p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"s_SteamOwnerID"</span>: <span class="string">"76561198099917059"</span>,</span><br><span class="line">  <span class="attr">"IPC"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"SteamOwnerID"</span>: <span class="string">"76561198099917059"</span>, </span><br><span class="line">  <span class="attr">"UpdatePeriod"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol>
 <li>填入自己的<code>SteamOwnerID</code></li>
@@ -96,6 +96,12 @@
 <p>如果小号Apple也启动了一个<code>apple_bot</code>，则需要把Apple的64位id设置到<code>apple_bot</code>的用户权限中。在聊天窗口中执行<code>!addlicense 32287</code>，则所有的bot都会执行这个命令，根据发命令的用户的权限来判断是否执行这个命令。</p>
 <p>在ASF全局配置中的设置的<code>SteamOwnerID</code>的帐号的权限为Owner拥有对于ASF中所有bot的最高权限，因此这个帐号可以让所有的bot执行所有的命令。一般这个id是大号的id，因此大号在聊天窗口中可以给所有的bot添加游戏执行命令。如果需要给指定bot发命令，则需要指明bot的名字。例如<code>!cmd bot_name param</code></p>
 <h4 id="Privacy-Policy"><a href="#Privacy-Policy" class="headerlink" title="Privacy Policy"></a>Privacy Policy</h4><p>默认系统会使用你的帐号加入ASF群组</p>
+<h4 id="Plugins"><a href="#Plugins" class="headerlink" title="Plugins"></a>Plugins</h4><h5 id="ASFEnhance"><a href="#ASFEnhance" class="headerlink" title="ASFEnhance"></a>ASFEnhance</h5><p><a href="https://github.com/chr233/ASFEnhance" target="_blank" rel="noopener">GitHub - chr233/ASFEnhance: ASF增强插件 / Add useful features for ASF</a></p>
+<p>将<code>ASFEnhance.dll</code> 丢进 ASF 目录下的 <code>plugins</code> 文件夹即可安装</p>
+<p>2022 夏促，在网页的命令中输入</p>
+<p><code>EVENT ASF</code>,获取特卖徽章</p>
+<p><code>EVENTTHEME ASF</code>获取特卖主题</p>
+<p><code>EXPLORER ASF</code>5 秒后触发 ASF 探索队列任务</p>
 ]]></content>
       <categories>
         <category>game</category>
