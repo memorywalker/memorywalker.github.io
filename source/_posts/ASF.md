@@ -94,7 +94,7 @@ recommend file structrue
 * 配置页面的ASF选项页是针对ASF的全局配置，编辑后使用生成的`ASF.json`替换原来的文件即可
 
 #### Using IPC GUI
-ASF提供了一个IPC的GUI访问方式，这个功能目前还处于预览阶段，但是常用的功能都是支持的。
+ASF提供了一个IPC的GUI访问方式，默认这个功能是开启的，但是常用的功能都是支持的。
 
 使用这个功能需要知道自己的`SteamOwnerID`，这个id可在[steamrep](https://steamrep.com/)网站查询，是一个7656开始的数字
 
@@ -104,8 +104,8 @@ ASF提供了一个IPC的GUI访问方式，这个功能目前还处于预览阶�
 
 ```json
 {
-  "s_SteamOwnerID": "76561198099917059",
-  "IPC": true
+  "SteamOwnerID": "76561198099917059", 
+  "UpdatePeriod": 0
 }
 ```
 
@@ -156,3 +156,21 @@ SteamUserPermissions是Key-Value格式的配置，key为用户的64位id，value
 
 #### Privacy Policy
 默认系统会使用你的帐号加入ASF群组
+
+
+
+#### Plugins
+
+##### ASFEnhance
+
+[GitHub - chr233/ASFEnhance: ASF增强插件 / Add useful features for ASF](https://github.com/chr233/ASFEnhance)
+
+将`ASFEnhance.dll` 丢进 ASF 目录下的 `plugins` 文件夹即可安装
+
+2022 夏促，在网页的命令中输入
+
+`EVENT ASF`,获取特卖徽章
+
+`EVENTTHEME ASF`获取特卖主题
+
+`EXPLORER ASF`5 秒后触发 ASF 探索队列任务
