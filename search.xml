@@ -1123,6 +1123,38 @@
       </tags>
   </entry>
   <entry>
+    <title>kindle books convert</title>
+    <url>/2022/06/19/kindle-books-convert/</url>
+    <content><![CDATA[<h3 id="Kindle-Books-Convert"><a href="#Kindle-Books-Convert" class="headerlink" title="Kindle Books Convert"></a>Kindle Books Convert</h3><p>最近开通了美区Amazon Prime会员试用一个月，因此有了Prime Reading的福利，同时亚马逊中国也宣布了2024年6月kindle退出中国，以后如果需要同步电子书，只能使用美区的帐号同步美区的服务。</p>
+<p>Prime Reading一个用户可以一次租借10本书，主要是小说和杂志</p>
+<h3 id="转换官方电子书-Epubor-Ultimate"><a href="#转换官方电子书-Epubor-Ultimate" class="headerlink" title="转换官方电子书 (Epubor Ultimate)"></a>转换官方电子书 (Epubor Ultimate)</h3><ol>
+<li>下载<code>EpuborUltimate</code> </li>
+<li>下载<code>KindleForPC-installer-1.17.44170.exe</code>，注意<code>EpuborUltimate</code> 会检测Kindle For PC的版本，如果是1.25之后的版本，会提示进行版本降级，并在[帮助文档](<a href="https://www.epubor.com/faq.html?utm_medium=soft&utm_source=right_menu&utm_campaign=kindle&utm_content=EpuborUltimatev3.0.12.529_36498-15#e501" target="_blank" rel="noopener">Welcome to Epubor Knowledge Base (FAQ)</a>)中提供<a href="http://download.epubor.com/KindleForPC-installer-1.17.44170.exe?_ga=2.245238471.374470622.1655634956-1642488113.1655634956" target="_blank" rel="noopener">下载地址</a></li>
+<li>在PC版本的Kindle软件登录后，可以看到自己库中的所有电子书，把需要转换的电子书下载下来</li>
+<li>在<code>EpuborUltimate</code>中配置好Kindle电子书的目录后，在软件中可以看到当前的书，选择一本书，拖入右侧的工作区后，在下方选择需要转换的格式，就可以进行转换了</li>
+<li>如果出现转换失败，可以升级最新版本的<code>EpuborUltimate</code>软件，在设置中可以自动下载升级包。</li>
+</ol>
+<p>我的百度网盘</p>
+<p>Software/kindle/Kindle 正版书转换工具/</p>
+<p><code>EpuborUltimate</code></p>
+<p><code>KindleForPC-installer-1.17.44170.exe</code></p>
+<h3 id="转换官方电子书-Calibre"><a href="#转换官方电子书-Calibre" class="headerlink" title="转换官方电子书 (Calibre)"></a>转换官方电子书 (Calibre)</h3><p>不知道为什么昨天还能使用<code>EpuborUltimate</code>转换电子书，今天就提示软件不支持租借来的电子书，那就换开源的Calibre</p>
+<ol>
+<li>下载Calibre的3.48版本，之后的版本不支持win7运行 <a href="https://download.calibre-ebook.com/3.48.0/" target="_blank" rel="noopener">calibre release (3.48.0) (calibre-ebook.com)</a></li>
+<li>下载插件<a href="https://github.com/apprenticeharper/DeDRM_tools" target="_blank" rel="noopener">DeDRM_tools</a>，对于calibre 4.x and earlier，需要下载<a href="https://github.com/apprenticeharper/DeDRM_tools/releases/tag/v6.8.1" target="_blank" rel="noopener">v6.8.1</a>；下载好后，把压缩包解压，其中有<code>DeDRM_Plugin.zip</code>这个文件</li>
+<li>运行Calibre，到Preference中，高级，插件，选择Load Plugin from files，选择刚刚的<code>DeDRM_Plugin.zip</code>，安装后重启Calibre程序</li>
+<li>把Kindle库目录的azw格式的电子书拖入Calibre后，解析完成后就已经去掉了DRM，可以右键选择这本书，转换格式为mobi</li>
+</ol>
+]]></content>
+      <categories>
+        <category>read</category>
+      </categories>
+      <tags>
+        <tag>kindle</tag>
+        <tag>book</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MarkDown学习</title>
     <url>/2016/03/29/markdown-study/</url>
     <content><![CDATA[<h2 id="MarkDown学习"><a href="#MarkDown学习" class="headerlink" title="MarkDown学习"></a>MarkDown学习</h2><p>2013/9/16 23:46:13 </p>
@@ -1864,6 +1896,34 @@
       <tags>
         <tag>network</tag>
         <tag>wireshark</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Xbox Tips</title>
+    <url>/2022/07/11/xbox-tips/</url>
+    <content><![CDATA[<h2 id="Xbox"><a href="#Xbox" class="headerlink" title="Xbox"></a>Xbox</h2><h3 id="Xbox-Proxy"><a href="#Xbox-Proxy" class="headerlink" title="Xbox Proxy"></a>Xbox Proxy</h3><p>xbox的Rewards需要美区IP才能激活，同时部分游戏也需要加速器才能正常联机使用，自己实际使用的时间不多，也没必要购买各种加速器。由于Xbox不支持设置代理功能，因此如果没有刷机的路由器或加速盒子，就只能开一个电脑进行转发。在网上搜了一下找到一个开源项目</p>
+<h4 id="pcap2socks"><a href="#pcap2socks" class="headerlink" title="pcap2socks"></a><strong>pcap2socks</strong></h4><p><a href="https://github.com/zhxie/pcap2socks" target="_blank" rel="noopener">https://github.com/zhxie/pcap2socks</a></p>
+<p>它还有个前端UI界面工程，<a href="https://github.com/zhxie/pcap2socks-gui" target="_blank" rel="noopener">pcap2socks GUI</a> 实际上使用命令行已经足够了。</p>
+<h5 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h5><ol>
+<li>开启自己的Clash软件，设置全局加速</li>
+<li>下载<code>pcap2socks.exe</code>，把它放在一个英文目录中</li>
+<li>在目录中新建一个bat脚本<code>proxy_xbox.bat</code>，内容为<code>pcap2socks -s 172.2.2.2 -p 172.2.2.1 -d 127.0.0.1:7890 -i &quot;\Device\NPF_{6DADC48E-B6C8-4920-9B93-3BBCF597A8D5}&quot;</code></li>
+<li>运行批处理后，会提示当前代理的IP地址，网关和掩码，并等待连接<code>Proxy 172.2.2.2/32 to 127.0.0.1:7890</code></li>
+<li>在xbox的网络设置中，进阶设置中，设置有线网的IP地址为手动，将代理的IP<code>172.2.2.2</code>，掩码<code>255.255.255.0</code>以及网关<code>172.2.2.1</code>输入设置，DNS设置一个自己路由器的默认网关例如<code>192.168.68.1</code>和一个备用DNS地址<code>8.8.8.8</code></li>
+<li>如果Clash代理没有问题的话，Xbox就可以使用代理进行连接了</li>
+</ol>
+<h5 id="命令说明"><a href="#命令说明" class="headerlink" title="命令说明"></a>命令说明</h5><p><code>pcap2socks -s &lt;需要代理的设备的 IP 地址&gt; -p &lt;需要代理的设备上所填写的网关&gt; -d &lt;SOCKS 代理，如 127.0.0.1:1080&gt; -i &lt;网卡名称&gt;</code></p>
+<p>其中如果电脑有多个网卡，需要指定网卡，如果不设置<code>-i</code>参数，会提示<code>error: Cannot determine the interface. Available interfaces are listed below</code>，可以从程序输出的列表中查看自己是哪个网卡的ip地址和xbox的在同一个局域网中，使用那个网卡的名称作为参数。例如我本机的输出中最后一个无线网卡和xbox在同一个局域网，所以配置的网卡参数为<code>&quot;\Device\NPF_{6DADC48E-B6C8-4920-9B93-3BBCF597A8D5}&quot;</code>：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">D:\network\pcap2socks<span class="literal">-v0</span>.<span class="number">6.2</span><span class="literal">-windows</span><span class="literal">-amd64</span>&gt;pcap2socks <span class="literal">-s</span> <span class="number">172.2</span>.<span class="number">2.2</span> <span class="literal">-p</span> <span class="number">172.2</span>.<span class="number">2.1</span></span><br><span class="line"><span class="literal">-d</span> <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">7890</span></span><br><span class="line">Interface <span class="string">'&#123;7667A9BA-BB55-4645-B68B-771977DC791E&#125;'</span> has an unexpected address len</span><br><span class="line">gth: <span class="number">8</span></span><br><span class="line">Interface <span class="string">'&#123;EF09116C-B70F-479F-96B5-985556028D0F&#125;'</span> has an unexpected address len</span><br><span class="line">gth: <span class="number">8</span></span><br><span class="line">error: Cannot determine the interface. Available interfaces are listed below, an</span><br><span class="line">d please use <span class="literal">-i</span> &lt;INTERFACE&gt; to designate:</span><br><span class="line">Interface <span class="string">'&#123;7667A9BA-BB55-4645-B68B-771977DC791E&#125;'</span> has an unexpected address len</span><br><span class="line">gth: <span class="number">8</span></span><br><span class="line">Interface <span class="string">'&#123;EF09116C-B70F-479F-96B5-985556028D0F&#125;'</span> has an unexpected address len</span><br><span class="line">gth: <span class="number">8</span></span><br><span class="line">    \Device\NPF_&#123;<span class="number">04</span>D21285<span class="literal">-A380</span><span class="literal">-4EE3</span><span class="literal">-BA6F</span><span class="literal">-BA624E1AE318</span>&#125; (VirtualBox Host<span class="literal">-Only</span> Eth</span><br><span class="line">ernet Adapter) [<span class="number">0</span><span class="type">a</span>:<span class="number">00</span>:<span class="number">37</span>:<span class="number">00</span>:<span class="number">00</span>:<span class="number">28</span>]: <span class="number">192.168</span>.<span class="number">56.1</span></span><br><span class="line">    \Device\NPF_&#123;<span class="number">6</span>DADC48E<span class="literal">-B6C8</span><span class="literal">-4920</span><span class="literal">-9B93</span><span class="literal">-3BBCF597A8D5</span>&#125; (Atheros AR9285 Wireless</span><br><span class="line">Network Adapter) [<span class="number">6</span><span class="type">c</span>:<span class="type">fd</span>:<span class="type">b7</span>:<span class="number">33</span>:<span class="number">78</span>:<span class="type">ad</span>]: <span class="number">10.1</span>.<span class="number">1.151</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>game</category>
+      </categories>
+      <tags>
+        <tag>game</tag>
+        <tag>xbox</tag>
+        <tag>proxy</tag>
       </tags>
   </entry>
 </search>
