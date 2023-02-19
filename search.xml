@@ -1610,6 +1610,60 @@
       </tags>
   </entry>
   <entry>
+    <title>Rust Learning</title>
+    <url>/2023/02/19/rust-learning/</url>
+    <content><![CDATA[<h2 id="RUST"><a href="#RUST" class="headerlink" title="RUST"></a>RUST</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h3><p>rustup 是一个管理 Rust 版本和相关工具的命令行工具</p>
+<p><img src="../uploads/rust/rust_install.png" alt="rust_install"></p>
+<p>环境变量</p>
+<p><img src="../uploads/rust/rust_env.png" alt="rust_env"></p>
+<p>更新 <code>$rustup update</code></p>
+<p>安装状态 <code>$rustc --version</code>  输出 <code>rustc 1.67.1 (d5a82bbd2 2023-02-07)</code></p>
+<p>查看文档 <code>rustup doc</code>会自动使用默认浏览器打开安装的离线文档页面</p>
+<h3 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h3><ul>
+<li>缩进使用4个空格，而不是一个tab</li>
+<li>调用的宏时，名字后有<code>!</code>，例如<code>println!(&quot;hi human&quot;);</code></li>
+<li>rust中的模块被称为crates</li>
+</ul>
+<h4 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h4><p>rust和c++一样是预编译静态类型语言</p>
+<p><code>rustc .\main.rs</code></p>
+<h4 id="Cargo"><a href="#Cargo" class="headerlink" title="Cargo"></a>Cargo</h4><p>Cargo是rust的构建系统和包管理器，可以自动下载依赖库，在使用rustup安装时一并安装到系统中。</p>
+<p>创建一个项目执行</p>
+<p>​     <code>$cargo new cargo_demo</code></p>
+<p>会自动创建一个src目录，一个.gitignore文件和Cargo.toml文件</p>
+<p>Cargo使用TOML (Tom’s Obvious, Minimal Language) 格式作为项目配置文件</p>
+<p><code>[package]</code>以[]开始的是一个片段</p>
+<ul>
+<li>编译工程 在工程目录下执行<code>cargo build</code>,编译时间很长，生成的文件在target的debug目录下</li>
+<li><code>cargo run</code>编译并直接运行</li>
+<li><code>cargo check</code>代码检查</li>
+<li><code>cargo build --release</code>编译release版本</li>
+</ul>
+<h5 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h5><p>在Cargo.toml的[dependencies]添加依赖库<strong>crate</strong>，添加一个生成随机数的rand库，版本为0.8.5</p>
+<figure class="highlight toml"><table><tr><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">"cargo_demo"</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">"0.1.0"</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">"2021"</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">rand</span> = <span class="string">"0.8.5"</span></span><br></pre></td></tr></table></figure>
+
+<p>再次执行build后，会下载所有依赖的库，包括rand依赖的库</p>
+<h5 id="Cargo-lock"><a href="#Cargo-lock" class="headerlink" title="Cargo.lock"></a>Cargo.lock</h5><p>工程中的<code>Cargo.lock</code>文件记录了第一次构建时，所有符合要求的依赖库版本，以后再次构建不会再去找依赖库的版本，方便今后“可重复构建”</p>
+<p>如果没有修改工程配置，使用<code>cargo update</code>可以强制更新当前配置文件设置的最新库版本，例如更新到配置文件中指定的最新版本</p>
+<p>如果修改了toml的配置文件，执行build时，就会下载最新的库文件。</p>
+<h5 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h5><p>执行<code>cargo doc --open</code>可以构建本地依赖库的文档，并在浏览器中打开</p>
+<p><img src="..%5Cuploads%5Crust%5Ccargo_doc.png" alt="image-20230219110744359"></p>
+<h5 id="示例程序"><a href="#示例程序" class="headerlink" title="示例程序"></a>示例程序</h5><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> rand::Rng;</span><br><span class="line"><span class="keyword">use</span> std::cmp::Ordering;</span><br><span class="line"><span class="keyword">use</span> std::io;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Guess my age!"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> my_age = rand::thread_rng().gen_range(<span class="number">1</span>..=<span class="number">100</span>);</span><br><span class="line">    <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"Input your guess: &#123;my_age&#125;"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> guess = <span class="built_in">String</span>::new();  <span class="comment">// mut 可变变量</span></span><br><span class="line">        io::stdin()</span><br><span class="line">            .read_line(&amp;<span class="keyword">mut</span> guess)</span><br><span class="line">            .expect(<span class="string">"Failed to read line"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> guess: <span class="built_in">u32</span> = <span class="keyword">match</span> guess.trim().parse() &#123;</span><br><span class="line">            <span class="literal">Ok</span>(num) =&gt; num,</span><br><span class="line">            <span class="literal">Err</span>(_) =&gt; <span class="keyword">continue</span>, <span class="comment">// -是一个通配符，匹配所有Err值，如果不能转换为数字，进入下次循环</span></span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"You guessed: &#123;guess&#125;"</span>); <span class="comment">// &#123;&#125;占位符，可以打印变量或表达式结果</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">match</span> guess.cmp(&amp;my_age) &#123;</span><br><span class="line">            Ordering::Less =&gt; <span class="built_in">println!</span>(<span class="string">"Small"</span>),</span><br><span class="line">            Ordering::Greater =&gt; <span class="built_in">println!</span>(<span class="string">"Big"</span>),</span><br><span class="line">            Ordering::Equal =&gt; &#123;</span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">"Right"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h3><p>match表达式</p>
+<p>由多个分支组成，类似switch语句。每个分支包含一个模式和表达式开头的值进行 匹配。</p>
+<p>隐藏（shadowing）</p>
+<p>循环（loop）</p>
+]]></content>
+      <categories>
+        <category>programming</category>
+      </categories>
+      <tags>
+        <tag>rust</tag>
+        <tag>learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>RxJava for Android</title>
     <url>/2022/02/11/rxjava-android/</url>
     <content><![CDATA[<blockquote>
