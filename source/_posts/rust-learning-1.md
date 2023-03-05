@@ -194,3 +194,226 @@ fn fisrt_word(s: &String) -> &str { // 返回一个String的slice
 `let s = "book a ticket";`中s的类型是`&str`，他是指向一个二进制程序特定位置的slice，由于他是一个不可变引用，所以值不可改变。
 
 对于一个整型数的数组他的slice数据类型为`&[i32]`
+
+#### 结构体
+
+结构体和C++中的类似，包含不同类型的字段。
+
+声明一个结构体
+
+```rust
+struct Game {
+    game_name: String,
+    game_type: i32,
+    rate: f32,
+}
+```
+
+初始化一个结构体变量
+
+```rust
+let mut cod = Game {
+    game_name: String::from("Call of duty"),
+    game_type:1,
+    rate:8.2,
+};
+cod.rate = 7.5;
+```
+
+结构体作为返回值
+
+```rust
+fn build_game(name: String) -> Game {
+    Game {
+        game_name:name,
+        rate:0.0,
+        game_type:0,
+    }
+}
+let mut bf5 = build_game(String::from("Battle Field 5"));
+```
+
+* 字段初始化简写语法，函数的参数名称和结构体字段名称相同
+
+```rust
+fn build_game(game_name: String) -> Game {
+    Game {
+        game_name,
+        rate:0.0,
+        game_type:0,
+    }
+}
+```
+
+* 结构体更新语法 `..`语法指定结构体中剩余没有设置的字段使用给定实例对应字段相同的值，相当于逐个=，这个语法必须放在**最后**。
+
+```rust
+let halo = Game {
+    game_name: String::from("HALO"),
+    ..cod
+};
+println!("The value is {}, {}", halo.game_name, halo.rate);
+```
+
+这里需要**注意**当自动赋值的字段中有不可Copy的数据类型时，前一个变量不能被使用了，因为他已经被移动了。
+
+```rust
+let halo = Game {
+    game_type: 2,
+    ..cod
+}; //编译会提示 borrow of moved value: `cod.game_name`
+
+let my_name = cod.game_name;
+println!("info of struct value {:?}", cod); // borrow of partially moved value: `cod`
+```
+
+##### 元组结构体
+
+使用元组的方式定义结构体，可以不用给每个字段定一个名字。
+
+```rust
+struct Color(i32, i32, i32);
+let black = Color(0, 0, 0);
+```
+
+##### 单元结构体
+
+没有任何字段的结构体，在某个类型上实现trait但又不需要存储数据。
+
+##### 派生trait增加功能
+
+通过给结构体增加外部属性`#[derive(Debug)]`，结构体就可以输出调试信息
+
+```rust
+#[derive(Debug)]
+struct Game {
+    game_name: String,
+    game_type: i32,
+    rate: f32,
+}
+println!("info of struct value {:?}", cod);
+// info of struct value Game { game_name: "Call of duty", game_type: 1, rate: 7.5 }
+println!("info of struct value {:#?}", cod);  // 格式化打印
+//info of struct value Game {
+//    game_name: "Call of duty",
+//    game_type: 1,
+//    rate: 7.5,
+//}
+```
+
+###### dbg!宏
+
+println!宏接受变量的引用，dbg!宏接收变量的所有权，可以打印执行宏所在的文件和行号，表达式计算结果并把结果的所有权返回。
+
+```rust
+let halo_rate = 8.0;
+let halo = Game {
+    game_name:String::from("HALO"),
+    game_type:1,
+    rate: dbg!(halo_rate*0.9)  // [src\main.rs:195] halo_rate * 0.9 = 7.2
+};
+dbg!(&halo);
+```
+
+##### 方法
+
+方法是定义在结构体，枚举上下文中的，他的第一个参数一定是self，表示调用该方法结构体实例。使用impl关键字开始的一个代码块来定义结构体关联的方法。
+
+```rust
+impl Game {
+    fn description(&self) {
+        println!("Game {} rate is {}", self.game_name, self.rate);
+    }
+}
+```
+
+第一个参数`&self`是`self: &Self`的缩写，在impl中，Self是块的类型的别名。self的传递参数时可以选择获取`self`的所有权也可以选择借用(引用)`&self`，或者可变的借用`&mut self`。
+
+如果想要在方法中改变调用方法的实例，需要将第一个参数改为 &mut self。通过仅仅使用 self 作为第一个参数来使方法获取实例的所有权是很少见的；这种技术通常用在当方法将 self 转换成别的实例的时，我们想要防止调用者在转换之后使用原始的实例。
+
+方法名称可以和字段名称相同，编译器根据方法名称后有`()`就知道是调用方法，而不是获取字段。这样可以实现getter方法。
+
+##### 关联函数
+
+定义在impl块中的不以self作为第一个参数函数称为结构的关联函数，因为它不作用于一个结构的实例，所以不是方法。例如`String::from`，一般这样的关联函数用来返回一个结构的实例的构造函数，类似new的作用，但是new不是rust的关键字。
+
+```rust
+impl Game {
+    fn new_game(name: String) -> Self {
+        Self { //Self关键字在关联函数的返回值中表示impl中的类型Game。
+            game_name:name,
+            game_type:0,
+            rate:0.0,
+        }
+    }
+}
+let halo = Game::new_game(String::from("HALO"));
+println!("info of struct value {:?}", halo);
+```
+
+#### 枚举
+
+枚举定一个了一种数据类型，可以让你列举出其中的每一个成员(variants)
+
+```rust
+#[derive(Debug)]
+enum GameType {
+    FPS,
+    RPG,
+    Sport,
+}
+#[derive(Debug)]
+struct Game {
+    game_name: String,
+    game_type: GameType,
+    rate: f32,
+}
+```
+
+可以将数据直接附加到枚举成员上，并且每个枚举成员可以处理不同类型和数量的数据。
+
+枚举也可以定义方法，self的作用和结构的相同，也表示调用方法的值。
+
+```rust
+#[derive(Debug)]
+enum Message {
+    Quit,
+    Move { x: i32, y: i32},
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+struct WriteMessage(String); //元组结构体
+struct MoveMessage {
+    x:i32,
+    y:i32,
+}
+
+impl Message {
+    fn call(&self) {
+        println!("{:?}", self);
+    }
+}
+let m = Message::Write(String::from("best game is"));
+m.call(); // Write("best game is")
+let move_msg = Message::Move { x: 15, y: 20 };
+move_msg.call(); // Move { x: 15, y: 20 }
+```
+
+我们可以使用不同的结构体来定义上面Message枚举选项中的各个数据类型，但是对于struct由于他们是不同的类型，无法定义一个函数就可以处理所有这些结构体类型，但是枚举是同一个数据类型。
+
+##### Option枚举
+
+对于rust没有null关键字，因为程序中会出现因为没有判断null导致的bug。rust使用Option表示是否有值。`Option<T>`和`T`是不同的数据类型，所以他们之间不能直接运算，这样就能避免对没有值时的异常调用。所有的计算都需要先将`Option<T>`转换为`T`类型后才能执行。所以只要一个值类型不是Option类型，就可认为他的值不会为空，增加代码安全性。
+
+```rust
+enum Option<T> {
+    None,
+    Some(T),
+}
+let x : i8 = 5;
+let y: Option<i8> = Some(5);
+let null_num: Option<i32> = None;
+
+let sum = x + y; // error no implementation for `i8 + Option<i8>`
+```
+
