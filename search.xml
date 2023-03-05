@@ -1610,6 +1610,76 @@
       </tags>
   </entry>
   <entry>
+    <title>Rust Learning 1</title>
+    <url>/2023/03/05/rust-learning-1/</url>
+    <content><![CDATA[<h2 id="RUST-Learning-1"><a href="#RUST-Learning-1" class="headerlink" title="RUST Learning 1"></a>RUST Learning 1</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="所有权-Ownership"><a href="#所有权-Ownership" class="headerlink" title="所有权(Ownership)"></a>所有权(Ownership)</h3><h4 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h4><ol>
+<li>每一个值都有一个所有者(owner)</li>
+<li>值在任何时刻只能有一个所有者</li>
+<li>当所有者(变量)离开作用域，这个值就被释放</li>
+</ol>
+<p>rust中的作用域和C的一样。</p>
+<h4 id="资源释放"><a href="#资源释放" class="headerlink" title="资源释放"></a>资源释放</h4><p>以String类型为例，一个String类型变量值存储在栈上，但是它实际指向的字符串数据内存在堆上。</p>
+<p><img src="../uploads/rust/string_pointer.png" alt="string_pointer"></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> s = <span class="built_in">String</span>::from(<span class="string">"Flower"</span>);</span><br><span class="line">&#125; <span class="comment">// s drop</span></span><br></pre></td></tr></table></figure>
+
+<p>当变量s离开作用域，rust会调用drop函数来释放内存。这个机制类似C++中的Resource Acquisition Is Initialization(RAII)，一个对象在生命周期结束时，自己释放拥有的资源。</p>
+<h5 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h5><p>变量的所有权规则：将值赋给另一个变量时移动它，当持有堆中的数据的变量离开作用域时，其值通过drop被清理掉，除非数据被移动为另一个变量所有。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> x = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> y = x;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"x is &#123;x&#125; y is &#123;y&#125;"</span>);</span><br><span class="line">    <span class="keyword">let</span> s1 = <span class="built_in">String</span>::from(<span class="string">"Flower"</span>);</span><br><span class="line">    <span class="keyword">let</span> s2 = s1;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"s2 is &#123;s2&#125; s1 is &#123;s1&#125;"</span>); <span class="comment">// error: borrow of moved value: `s1`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于复杂的数据类型，变量之间在赋值时，相当于把前一个变量s1<strong>移动</strong>到了s2，这样避免了s1和s2都还指向子串的实际内容，退出作用域时，s1和s2都会对内存资源进行释放导致double free。对于普通的数据类型，rust给x和y在栈上各提供了一个5作为值。</p>
+<h5 id="克隆"><a href="#克隆" class="headerlink" title="克隆"></a>克隆</h5><p>rust永远不会自动创建数据的深拷贝。</p>
+<p>如果需要深度复制String在堆上的数据，可以使用clone函数。clone出现的地方说明有额外的代码执行可能会很耗资源。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">String</span>::from(<span class="string">"Flower"</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = s1.clone();</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"s2 is &#123;s2&#125; s1 is &#123;s1&#125;"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Rust有个Copy trait的特殊注解，如果一个类型实现了Copy trait，那么一个旧的变量将其赋给其他变量后仍然可用。基本的整数类型，bool类型，浮点类型，字符类型，以及只包含实现了Copy元素的元组类型都是Copy类型。</p>
+<p>Rust禁止自身或其任何部分实现了Drop trait的类型使用Copy trait。</p>
+<h5 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h5><p>对于不支持Copy的类型作为参数，会把传入参数的变量移动到函数内，除非把这个变量通过函数返回出来，否则之前的变量由于被移动走，无法使用。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">take_owner</span></span>(<span class="built_in">str</span>: <span class="built_in">String</span>) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"func string: &#123;&#125;"</span>, <span class="built_in">str</span>);</span><br><span class="line">&#125; <span class="comment">// str 退出作用域调用drop，把字串占用的内存资源释放</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">make_copy</span></span>(value: <span class="built_in">i32</span>) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"func integer: &#123;&#125;"</span>, value);</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">	<span class="keyword">let</span> s1 = <span class="built_in">String</span>::from(<span class="string">"Flower"</span>);</span><br><span class="line">    take_owner(s1); <span class="comment">// s1 moved into function</span></span><br><span class="line">    <span class="comment">// s1 is not valid here</span></span><br><span class="line">    <span class="keyword">let</span> x = <span class="number">5</span>; </span><br><span class="line">    make_copy(x);  <span class="comment">// copy for i32 type</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"integer: &#123;&#125;"</span>, x);  <span class="comment">// x is still valid</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h5><p>函数的返回值可以把函数内的变量的所有权移动给函数外的变量。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">give_owner</span></span>() -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> game = <span class="built_in">String</span>::from(<span class="string">"call of duty"</span>);</span><br><span class="line">    game  <span class="comment">// 注意这里没有语句结束；所以作为一个表达式返回变量game</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> fps = give_owner(); <span class="comment">// 变量的所有权现在归fps</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h5><p>如果一个变量作为参数把值的所有权移动到了函数体内，函数执行后还需要使用这个变量的地方就不能使用这个变量了，如果每次把参数再作为返回值把所有权移动出来也会很麻烦。此时可以使用引用作为函数的参数。</p>
+<p>引用像一个指针，它是一个地址，我们可以由此访问存储于该地址属于其他变量的数据。引用需要确保它指向了某个特定类型的有效值。</p>
+<p>创建一个引用的行为称为借用(borrowing)</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">cal_str_len</span></span>(s: &amp;<span class="built_in">String</span>) -&gt; <span class="built_in">usize</span> &#123;</span><br><span class="line">    s.len(); <span class="comment">// 引用使用值，但不获取所有全，但是默认不能修改值</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">String</span>::from(<span class="string">"Flower"</span>);</span><br><span class="line"><span class="keyword">let</span> len = cal_str_len(&amp;s1); <span class="comment">//使用引用作为参数</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"string &#123;&#125; len is &#123;&#125;"</span>, s1, len);  <span class="comment">// s1还有所有权</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="可变引用"><a href="#可变引用" class="headerlink" title="可变引用"></a>可变引用</h6><p>通过使用mut关键字可以声明一个引用是可修改的。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">change_ref</span></span>(<span class="built_in">str</span>: &amp;<span class="keyword">mut</span> <span class="built_in">String</span>) &#123;</span><br><span class="line">    <span class="built_in">str</span>.push_str(<span class="string">" is beautiful"</span>); <span class="comment">// 修改一个引用</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> s1 = <span class="built_in">String</span>::from(<span class="string">"Flower"</span>); <span class="comment">// 定一个可变字符串</span></span><br><span class="line">change_ref(&amp;<span class="keyword">mut</span> s1);  <span class="comment">// 可变引用参数</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"string &#123;&#125;"</span>, s1);</span><br></pre></td></tr></table></figure>
+
+<p>一个引用的生命周期从这个引用定义开始，到这个引用的最后一次使用终止。</p>
+<p>如果已经有一个对变量的可变引用，在这个引用的生命周期内，不能对被引用的变量再次引用，这样会导致多个引用修改或访问同一个变量，引发多线程的数据竞争问题。同样，不可变引用和可变引用也不能同时存在。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> s1 = <span class="built_in">String</span>::from(<span class="string">"Flower"</span>);</span><br><span class="line"><span class="keyword">let</span> r1 = &amp;<span class="keyword">mut</span> s1;</span><br><span class="line"><span class="keyword">let</span> r2 = &amp;<span class="keyword">mut</span> s1; <span class="comment">// 编译器会提示 ^^^^^^^ second mutable borrow occurs here</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"&#123;&#125; &#123;&#125; "</span>, r1, r2); <span class="comment">// -- first borrow later used here</span></span><br></pre></td></tr></table></figure>
+
+<p>如果对一个变量的引用都是不可变的，那么不存在数据竞争访问问题，是可以使用的。</p>
+<p>Rust的编译器会保证一个引用不会变成<strong>悬垂引用(Dangling Reference)</strong>.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">dangle_ref</span></span>() -&gt; &amp;<span class="built_in">String</span> &#123; <span class="comment">// 返回一个字符串引用</span></span><br><span class="line">    <span class="keyword">let</span> s = <span class="built_in">String</span>::from(<span class="string">"Flower"</span>);</span><br><span class="line">    &amp;s <span class="comment">// 返回引用</span></span><br><span class="line">&#125; <span class="comment">// s 退出作用域，内存资源被释放</span></span><br><span class="line">编译器提示：</span><br><span class="line">this function<span class="symbol">'s</span> <span class="keyword">return</span> <span class="class"><span class="keyword">type</span> <span class="title">contains</span></span> a borrowed value, but there is no value <span class="keyword">for</span> it to be borrowed from</span><br></pre></td></tr></table></figure>
+
+<p>总结：</p>
+<ul>
+<li>要么只能有一个可变引用，要么只有多个不可变引用</li>
+<li>引用必须总是有效的</li>
+</ul>
+<h5 id="Slice类型"><a href="#Slice类型" class="headerlink" title="Slice类型"></a>Slice类型</h5><p>slice是一种引用，所以它没有所有权。可以引用集合中一段连续的元素序列，是一个部分不可变引用。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> poem = <span class="built_in">String</span>::from(<span class="string">"best way to find a secret"</span>);</span><br><span class="line"><span class="keyword">let</span> key = &amp;poem[<span class="number">0</span>..<span class="number">4</span>];</span><br></pre></td></tr></table></figure>
+
+<p><code>[start..end]</code>表示从start开始，end-start长度的子集。当start为0时，可以不写，end为最后一个字符时也可以省略。</p>
+<p>字符串slice的类型声明为<code>&amp;str</code></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">fisrt_word</span></span>(s: &amp;<span class="built_in">String</span>) -&gt; &amp;<span class="built_in">str</span> &#123; <span class="comment">// 返回一个String的slice</span></span><br><span class="line">    <span class="keyword">let</span> bytes = s.as_bytes(); <span class="comment">// 转换为字符数组</span></span><br><span class="line">    <span class="keyword">for</span> (i, &amp;item) <span class="keyword">in</span> bytes.iter().enumerate() &#123; <span class="comment">// 数组迭代器</span></span><br><span class="line">        <span class="keyword">if</span> item == <span class="string">b' '</span> &#123; <span class="comment">// 找到第一个空格的位置</span></span><br><span class="line">            <span class="keyword">return</span> &amp;s[<span class="number">0</span>..i]; <span class="comment">// 截取第一个空格之前的字符为第一个字</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &amp;s[..]  <span class="comment">// 没有空格</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>let s = &quot;book a ticket&quot;;</code>中s的类型是<code>&amp;str</code>，他是指向一个二进制程序特定位置的slice，由于他是一个不可变引用，所以值不可改变。</p>
+<p>对于一个整型数的数组他的slice数据类型为<code>&amp;[i32]</code></p>
+]]></content>
+      <categories>
+        <category>programming</category>
+      </categories>
+      <tags>
+        <tag>rust</tag>
+        <tag>learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Rust Learning</title>
     <url>/2023/02/19/rust-learning/</url>
     <content><![CDATA[<h2 id="RUST"><a href="#RUST" class="headerlink" title="RUST"></a>RUST</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
