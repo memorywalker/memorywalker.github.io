@@ -321,9 +321,90 @@ while和其他语言相同，条件为true执行循环
 
 
 
+##### 匹配
+
 ###### match表达式
 
-由多个分支组成，类似switch语句。每个分支包含一个模式和表达式开头的值进行匹配。
+由多个分支组成，类似switch语句。每个分支包含一个模式和表达式，表达式以`,`结尾。
+
+match的每个分支的表达式就是match的返回值，所以分支表达式的数据类型需要相兼容。
+
+match必须用分支覆盖所有的情况，否则会编译错误，可以使用通配符匹配所有其他情况，这个通配符可以看作一个变量名，它匹配所有的其他相同类型的值，我们可以在这个分支的表达式中使用这个匹配变量，也可以使用`_`匹配任意值，但是我们不会引用它的值，可以看作是default。
+
+模式的匹配是按编写顺序执行，所以不能把通配符分支放在前面，这样后面的分支无法被匹配。
+
+```rust
+match value {
+	patten1 => expression1,
+	patten2 => expression2,
+	patten3 => expression3,
+}
+```
+
+在匹配的分支中可以使用模式的部分值。
+
+```rust
+#[derive(Debug)]
+enum Message {
+    Quit,
+    Move { x: i32, y: i32},
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+fn handle_message(msg: Message) {
+    println!("match start");
+    match msg {
+        Message::Quit => println!("Quit"),
+        Message::Write(val) => {
+            println!("write {}", val);            
+        }
+        Message::Move { x, y } => {
+            println!("move pos {},{}", x, y);            
+        }
+        Message::ChangeColor(r, g, b) => {
+            println!("change color {},{},{}", r,g,b);            
+        }
+    }
+    println!("match end");
+}
+
+let move_msg = Message::Move { x: 15, y: 20 };
+handle_message(move_msg);
+
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(i) => Some(i+1),
+    }
+}
+
+let roll = 100;
+match roll {
+    5 => println!("luck num:{roll}"),
+    10 => println!("bad num:{roll}"),
+    left => println!("norm num:{left}"),// left是通配符
+}
+
+let config_max = Some(3u8);
+match config_max {
+    Some(max) => println!("The max is {max}"),
+    _ => (), // 匹配所有其他值，但是不需要引用，这样没有编译警告，写法简单
+}
+```
+
+###### if let表达式
+
+如果只关系一种匹配的情况，而忽略其他match的分支时，可以使用`if let`简化match的写法。
+
+```rust
+let config_max = Some(3u8);
+let config_none: Option<u8> = None;
+if let Some(max) = config_max { // Some(max)等同于match中的模式
+    println!("The max is {max}"); // The max is 3
+} else {
+    println!("None is input");
+}
+```
 
 
 
