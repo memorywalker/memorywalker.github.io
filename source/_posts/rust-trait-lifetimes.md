@@ -276,3 +276,116 @@ impl<T: Display> Summary for T {
 
 ### 生命周期
 
+每一个引用都有其生命周期，可以理解为引用的有效作用域。Rust的编译器通过借用检查器(borrow cheker)来确保所有的借用都是有效的。需要为使用了引用的函数和结构体指定生命周期。
+
+```rust
+let r;
+{
+    let x = 5;
+    r = &x;  // ^^ borrowed value does not live long enough
+}
+println!("r: {}", r);  // r的生命周期大于他引用的x的生命周期
+```
+
+#### 生命周期注解
+
+如果一个函数的多个参数是引用，同时又把这些引用返回，返回时编译器并不知道每一个引用的生命周期，所以需要一个声明周期参数说明引用的声明周期关系。`&'生命周期类型 变量类型`，通常使用a作为第一个生命周期类型名称。
+
+```rust
+&'a i32   // 有一个名字为'a的生命周期参数的i32的引用
+&'a mut i32 // 有一个名字为'a的生命周期参数的i32的可变引用
+
+// 返回值的生命周期和两个参数中最短的生命周期和一样久
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
+
+生命周期注解只使用在函数的声明中，他也算是一种泛型，表示使用这个注解的所有引用的最小生命周期。
+
+```rust
+let str1 = String::from("best");
+let ret;
+{
+    let str2 = String::from("better");
+    // 返回值的生命周期和str2的相同
+    ret = longest(&str1, &str2);     // `str2` does not live long enough   
+}   
+println!("Resuslt is {}", ret); 
+```
+
+如果返回值是引用，但是他和任何一个输入参数的生命周期没有关联，说明返回了函数内部作用域的变量，这个会造成悬垂指针，编译会提前失败，而不会到运行出错。
+
+##### 结构体成员生命周期
+
+当结构体成员类型是引用时，需要给成员和结构体指定生命周期。结构体对象的生命周期不大于其引用类型成员变量的生命周期。
+
+```rust
+struct Owned_Game<'a> {
+    owned: &'a Game,
+}
+```
+
+`Owned_Game`的实例的生命周期不能大于其成员`owned`所引用对象的生命周期。
+
+#### 生命周期省略规则
+
+函数的参数的生命周期称为**输入生命周期**，返回值的生命周期称为**输出生命周期**
+
+为了避免函数声明写太多的生命周期泛型变量，编译器会根据省略规则自动推导生命周期。编译器在检查了下面三个规则后，无法确定生命周期就会报错，需要代码中指定声明周期。
+
+* 编译器给每一个参数默认分配一个独立的声明周期参数
+* 如果只有一个**输入生命周期**参数，那么他也被赋给所有的输出生命周期参数
+* 如果一个方法有多个输入生命周期参数，并且其中一个参数是`&self`，那么所有的输出生命周期参数使用self的生命周期
+
+```rust
+fn fisrt_word(s: &String) -> &str { // 符合规则2
+fn longest<'a, 'b>(x: &'a str, y: &'b str) -> &str { //规则1编译器给每个参数一个生命周期，不符合规则2，返回值的生命周期不知道用哪个
+```
+
+##### 结构方法生命周期
+
+主要依赖规则3，返回值的生命周期和self的相同。
+
+```rust
+impl<'a> Owned_Game<'a> {
+    // 返回值的生命周期和self相同
+    fn get_game(&self, name: &str) -> &Game {
+        println!("Get game: {}", name);
+        self.owned
+    }
+}
+```
+
+##### 静态生命周期
+
+静态生命周期和程序整个生命周期相同。所有字符串字面值都是静态生命周期的，因为子串字面值是直接存储在二进制文件中。
+
+```rust
+let s: &'static str = "life time as application";
+```
+
+#### 综合使用例子
+
+```rust
+// 同时使用了泛型参数T和生命周期泛型'a
+fn longest_with_output<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
+where
+    T: Display,  // 要求ann的类型必须实现了Display
+{
+    println!("Output: {}", ann);
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+let str1 = String::from("best");    
+let str2 = String::from("better");
+let result = longest_with_output(&str1, &str2, "best wishes");
+```
+
