@@ -152,3 +152,129 @@ pub fn add_to_waitlist() {}
 
 
 
+### IO控制台项目
+
+* 将程序拆成main.rs和lib.rs，程序的逻辑放入lib.rs中
+* main中调用lib的run函数
+
+**main.rs**中
+
+```rust
+use std::env;
+use std::process;
+use minigrep::Config;
+
+fn main() {
+    let args: Vec<String> = env::args().collect(); // 命令行获取参数转换为string的vec   
+	// 当程序返回Result的正常值给config，如果出错使用闭包处理错误信息
+    let config = Config::build(&args).unwrap_or_else(|err| {
+        eprintln!("args are error: {err}");
+        process::exit(1);
+    });
+
+    if let Err(e) = minigrep::run(config) { // run 成功并不返回值，所以只关心错误处理
+        eprintln!("args are error: {e}");
+        process::exit(1);
+    }
+}
+```
+
+**lib.rs**中
+
+```rust
+use std::error::Error;
+use std::fs;
+use std::env;
+
+pub fn run(config: Config) -> Result<(), Box<dyn Error>>{ // Error trait, dyn表示无需指定具体返回值类型
+    let contents = fs::read_to_string(config.file_path)?;
+    // ？会从函数中返回错误值并让调用者处理
+    
+    let results = if config.ignore_case {
+        search_case_insensitive(&config.query, &contents)
+    } else {
+        search(&config.query, &contents)
+    };
+    for line in results {
+        println!("{line}")
+    }
+    Ok(()) // 没有具体地内容要返回，那就返回unit()
+}
+
+pub struct Config {
+    pub query: String,
+    pub file_path: String,
+    pub ignore_case: bool,
+}
+
+impl Config {
+    pub fn build(args: &[String]) ->Result<Config, &'static str> {
+        if args.len() < 3 {
+            return Err("Not enough args");
+        }
+
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+        // 获取环境变量中IGNORE_CASE是否设置，但不关心他的值是什么
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+    
+        Ok(Config {query, file_path, ignore_case})
+    }
+}
+// 返回值的生命周期和输入的被查询内容的生命周期应该一样
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str>  {
+    let mut results = Vec::new();
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+    results
+}
+
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str>  {
+    let mut results = Vec::new();
+    let query = query.to_lowercase();
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&query) {
+            results.push(line);
+        }
+    }
+    results
+}
+// 单元测试
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn case_sensitive() {
+        let query = "day";
+        let contents = "\
+best and
+colorful days";
+
+        assert_eq!(vec!["colorful days"], search(query, contents));
+    }
+
+    #[test]
+    fn case_insensitive() {
+        let query = "Day";
+        let contents = "\
+best and
+colorful days";
+
+        assert_eq!(vec!["colorful days"], search_case_insensitive(query, contents));
+    }
+}
+```
+
+* cargo test执行其中的单元测试用例
+
+* windows中设置环境变量，并运行程序
+
+`PS E:\code\rust\minigrep> $Env:IGNORE_CASE=1; cargo run Body poem.txt`
+
+* 使用`eprintln!`将错误信息输出到标准错误流，将正常输出到文件中。
+
+`cargo run BOdy  poem.txt > output.txt`
