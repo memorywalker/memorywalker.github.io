@@ -717,6 +717,31 @@
       </tags>
   </entry>
   <entry>
+    <title>Hello World</title>
+    <url>/2016/03/29/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>demo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>demo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>函数栈大小分析</title>
     <url>/2021/06/12/function-stack-size/</url>
     <content><![CDATA[<h2 id="程序运行"><a href="#程序运行" class="headerlink" title="程序运行"></a>程序运行</h2><p><a href="https://www.embeddedrelated.com/showarticle/1330.php" target="_blank" rel="noopener">原始文档</a></p>
@@ -847,28 +872,82 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2016/03/29/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+    <title>IBM Cloud Usage</title>
+    <url>/2020/06/22/ibmcloud/</url>
+    <content><![CDATA[<h2 id="IBM-Cloud-Usage"><a href="#IBM-Cloud-Usage" class="headerlink" title="IBM Cloud Usage"></a>IBM Cloud Usage</h2><p>IBM Cloud 提供了256M的免费运行空间</p>
+<p>注册地址: cloud.ibm.com</p>
+<h3 id="创建实例"><a href="#创建实例" class="headerlink" title="创建实例"></a>创建实例</h3><p>Cloud Foundry 可以看作是一个docker容器实例，支持多种语言的Linux环境</p>
+<ol>
+<li>登录<a href="https://cloud.ibm.com/" target="_blank" rel="noopener">https://cloud.ibm.com/</a></li>
+<li>点击<code>Create resource</code></li>
+<li>选择Cloud Foundry</li>
+<li>Application Runtimes中选择自己需要的语言，目前支持Java、JS、Python、Go、Swift、PHP</li>
+<li>区域默认的<code>Dallas</code>,配置选择免费的256M；App Name输入自己应用名称，后面要用；域名选择默认的<code>us-south.cf.appdomain.cloud</code></li>
+<li>创建完成后，会自动转到帮助页面</li>
+</ol>
+<h3 id="Python-Demo"><a href="#Python-Demo" class="headerlink" title="Python Demo"></a>Python Demo</h3><h4 id="code"><a href="#code" class="headerlink" title="code"></a>code</h4><p>官方提供的Demo例子，用的是Flask</p>
+<p><code>git clone https://github.com/IBM-Cloud/get-started-python</code></p>
+<p><code>cd get-started-python</code></p>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ol>
+<li>安装ibmcloud CLI程序 <a href="https://github.com/IBM-Cloud/ibm-cloud-cli-release/releases/" target="_blank" rel="noopener">https://github.com/IBM-Cloud/ibm-cloud-cli-release/releases/</a></li>
+<li>安装Python</li>
+<li>创建虚拟Python环境 <code>python -m venv pyvenv36</code></li>
+<li>激活当前的虚拟环境<code>pyvenv36\Scripts\activate</code>，然后进入到下载的代码目录安装python依赖<code>pip install -r requirements.txt</code></li>
+<li>本地执行Demo程序<code>python hello.py</code></li>
+<li>浏览器中访问<a href="http://127.0.0.1:8000/" target="_blank" rel="noopener">http://127.0.0.1:8000/</a> 可以看到一个输入框</li>
+</ol>
+<h4 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h4><p>安装ibmcloud CLI程序后，进入下载代码目录</p>
+<ol>
+<li><p>修改配置文件<code>manifest.yml</code>的应用名称为自己创建时写的名称如<code>xxxxxx</code></p>
+</li>
+<li><p>执行<code>ibmcloud login</code>登录服务，中间需要输入邮箱和密码</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">E:\code\ibm\dev\get-started-python&gt;ibmcloud login</span><br><span class="line">API 端點: https://cloud.ibm.com</span><br><span class="line"></span><br><span class="line"><span class="meta">Email&gt;</span><span class="bash"> xxxx@gmail.com</span></span><br><span class="line"></span><br><span class="line"><span class="meta">Password&gt;</span></span><br><span class="line">正在鑑別...</span><br><span class="line">确定</span><br><span class="line"></span><br><span class="line">已設定帳戶 xxxxx's Account (xxxxxxx) 的目標</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="3">
+<li><p>提示选择地区直接<code>Enter</code>跳过，此时会显示应用的基本信息，还会问是否给IBM统计信息，当然是no</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">API 端點：      https://cloud.ibm.com</span><br><span class="line">地區：</span><br><span class="line">使用者：        xxxxx@gmail.com</span><br><span class="line">帳戶：          xxxx's Account (xxxxxxxxx)</span><br><span class="line">資源群組：      未設定資源群組的目標，請使用 'ibmcloud target -g RESOURCE_GROUP'</span><br><span class="line"></span><br><span class="line">CF API 端點：</span><br><span class="line">組織:</span><br><span class="line">空間：</span><br><span class="line"></span><br><span class="line">我們想要收集使用情形統計資料以協助改善 IBM Cloud CLI。</span><br><span class="line">此資料絕不會在 IBM 之外共用。</span><br><span class="line">若要進一步瞭解，請參閱 IBM 隱私權條款：https://www.ibm.com/privacy</span><br><span class="line">您可以啟用或停用使用情形資料收集，方法是執行 'ibmcloud config --usage-stats-coll</span><br><span class="line">ect [true | false]'</span><br><span class="line"></span><br><span class="line">您要傳送使用情形統計資料給 IBM 嗎？ [y/n]&gt; n</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+
+</li>
+</ol>
+<ol start="4">
+<li><p>选择要用的cf应用节点<code>ibmcloud target --cf</code>，这个过程需要代理，否则可能会提示网络错误</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">失败</span><br><span class="line">無法取得 Cloud Foundry 實例：</span><br><span class="line">Get "https://mccp.us-south.cf.cloud.ibm.com/v2/regions": dial tcp: lookup mccp.u</span><br><span class="line">s-south.cf.cloud.ibm.com: no such host</span><br></pre></td></tr></table></figure>
+
+<p><strong>正常的输出</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">E:\code\ibm\dev\get-started-python&gt;ibmcloud target --cf</span><br><span class="line"></span><br><span class="line">選取 Cloud Foundry 實例：</span><br><span class="line">1. public CF us-south (https://api.us-south.cf.cloud.ibm.com)</span><br><span class="line">2. public CF eu-de (https://api.eu-de.cf.cloud.ibm.com)</span><br><span class="line">3. public CF eu-gb (https://api.eu-gb.cf.cloud.ibm.com)</span><br><span class="line">4. public CF au-syd (https://api.au-syd.cf.cloud.ibm.com)</span><br><span class="line">5. public CF us-east (https://api.us-east.cf.cloud.ibm.com)</span><br><span class="line">請輸入數字&gt; 1</span><br><span class="line">目標 Cloud Foundry (https://api.us-south.cf.cloud.ibm.com)</span><br><span class="line"></span><br><span class="line">已設定組織 xxxx 的目標</span><br><span class="line"></span><br><span class="line">已設定空間 dev 的目標</span><br><span class="line"></span><br><span class="line">API 端點：      https://cloud.ibm.com</span><br><span class="line">地區：</span><br><span class="line">使用者：        xxxxx@gmail.com</span><br><span class="line">帳戶：          xxxxxx's Account (xxxxxxxxx)</span><br><span class="line">資源群組：      未設定資源群組的目標，請使用 'ibmcloud target -g RESOURCE_GROUP'</span><br><span class="line"></span><br><span class="line">CF API 端點：   https://api.us-south.cf.cloud.ibm.com（API 版本：2.148.0）</span><br><span class="line">組織:           xxx</span><br><span class="line">空間：          xxx</span><br></pre></td></tr></table></figure>
+
+<p><em>其中的组织和空间都可以通过网站的账户下面更改名称，免费账户只能有一个组织</em></p>
+</li>
+<li><p>安装Cloud Foundry CLI <code>ibmcloud cf install</code></p>
+</li>
+<li><p>本地代码push到服务器<code>ibmcloud cf push</code> 会输出一堆日志和部署信息，最终会显示系统的运行信息</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">正在等待應用程式啟動...</span><br><span class="line"></span><br><span class="line">名稱:            xxxxx</span><br><span class="line">所要求的狀態:    started</span><br><span class="line">路徑:            xxxxxx.us-south.cf.appdomain.cloud</span><br><span class="line">前次上傳:        Mon 22 Jun 22:43:39 CST 2020</span><br><span class="line">堆疊:            cflinuxfs3</span><br><span class="line">建置套件:        python</span><br><span class="line"></span><br><span class="line">類型:         web</span><br><span class="line">實例:         1/1</span><br><span class="line">記憶體用量:   128M</span><br><span class="line">啟動指令:     python hello.py</span><br><span class="line">     state    自從                   cpu    memory       磁碟        詳細資料</span><br><span class="line"><span class="meta">#</span><span class="bash">0   執行中   2020-06-22T14:44:05Z   0.4%   18.8M/128M   198.7M/1G</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<ol start="7">
+<li><p>浏览器访问<code>xxxxxx.us-south.cf.appdomain.cloud</code>就可以看到应用</p>
+</li>
+<li><p>使用<code>ibmcloud cf ssh appname</code>可以以ssh访问应用的容器空间，不过我试了一直提示<code>no such host</code></p>
+</li>
+</ol>
+<p><em>先到这里，休息一下</em></p>
 ]]></content>
       <categories>
-        <category>demo</category>
+        <category>tech</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
-        <tag>demo</tag>
+        <tag>tech</tag>
+        <tag>cloud</tag>
+        <tag>docker</tag>
       </tags>
   </entry>
   <entry>
@@ -1005,88 +1084,9 @@
       </categories>
       <tags>
         <tag>github</tag>
+        <tag>tech</tag>
         <tag>blog</tag>
-        <tag>tech</tag>
         <tag>ci</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>IBM Cloud Usage</title>
-    <url>/2020/06/22/ibmcloud/</url>
-    <content><![CDATA[<h2 id="IBM-Cloud-Usage"><a href="#IBM-Cloud-Usage" class="headerlink" title="IBM Cloud Usage"></a>IBM Cloud Usage</h2><p>IBM Cloud 提供了256M的免费运行空间</p>
-<p>注册地址: cloud.ibm.com</p>
-<h3 id="创建实例"><a href="#创建实例" class="headerlink" title="创建实例"></a>创建实例</h3><p>Cloud Foundry 可以看作是一个docker容器实例，支持多种语言的Linux环境</p>
-<ol>
-<li>登录<a href="https://cloud.ibm.com/" target="_blank" rel="noopener">https://cloud.ibm.com/</a></li>
-<li>点击<code>Create resource</code></li>
-<li>选择Cloud Foundry</li>
-<li>Application Runtimes中选择自己需要的语言，目前支持Java、JS、Python、Go、Swift、PHP</li>
-<li>区域默认的<code>Dallas</code>,配置选择免费的256M；App Name输入自己应用名称，后面要用；域名选择默认的<code>us-south.cf.appdomain.cloud</code></li>
-<li>创建完成后，会自动转到帮助页面</li>
-</ol>
-<h3 id="Python-Demo"><a href="#Python-Demo" class="headerlink" title="Python Demo"></a>Python Demo</h3><h4 id="code"><a href="#code" class="headerlink" title="code"></a>code</h4><p>官方提供的Demo例子，用的是Flask</p>
-<p><code>git clone https://github.com/IBM-Cloud/get-started-python</code></p>
-<p><code>cd get-started-python</code></p>
-<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ol>
-<li>安装ibmcloud CLI程序 <a href="https://github.com/IBM-Cloud/ibm-cloud-cli-release/releases/" target="_blank" rel="noopener">https://github.com/IBM-Cloud/ibm-cloud-cli-release/releases/</a></li>
-<li>安装Python</li>
-<li>创建虚拟Python环境 <code>python -m venv pyvenv36</code></li>
-<li>激活当前的虚拟环境<code>pyvenv36\Scripts\activate</code>，然后进入到下载的代码目录安装python依赖<code>pip install -r requirements.txt</code></li>
-<li>本地执行Demo程序<code>python hello.py</code></li>
-<li>浏览器中访问<a href="http://127.0.0.1:8000/" target="_blank" rel="noopener">http://127.0.0.1:8000/</a> 可以看到一个输入框</li>
-</ol>
-<h4 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h4><p>安装ibmcloud CLI程序后，进入下载代码目录</p>
-<ol>
-<li><p>修改配置文件<code>manifest.yml</code>的应用名称为自己创建时写的名称如<code>xxxxxx</code></p>
-</li>
-<li><p>执行<code>ibmcloud login</code>登录服务，中间需要输入邮箱和密码</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">E:\code\ibm\dev\get-started-python&gt;ibmcloud login</span><br><span class="line">API 端點: https://cloud.ibm.com</span><br><span class="line"></span><br><span class="line"><span class="meta">Email&gt;</span><span class="bash"> xxxx@gmail.com</span></span><br><span class="line"></span><br><span class="line"><span class="meta">Password&gt;</span></span><br><span class="line">正在鑑別...</span><br><span class="line">确定</span><br><span class="line"></span><br><span class="line">已設定帳戶 xxxxx's Account (xxxxxxx) 的目標</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<ol start="3">
-<li><p>提示选择地区直接<code>Enter</code>跳过，此时会显示应用的基本信息，还会问是否给IBM统计信息，当然是no</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">API 端點：      https://cloud.ibm.com</span><br><span class="line">地區：</span><br><span class="line">使用者：        xxxxx@gmail.com</span><br><span class="line">帳戶：          xxxx's Account (xxxxxxxxx)</span><br><span class="line">資源群組：      未設定資源群組的目標，請使用 'ibmcloud target -g RESOURCE_GROUP'</span><br><span class="line"></span><br><span class="line">CF API 端點：</span><br><span class="line">組織:</span><br><span class="line">空間：</span><br><span class="line"></span><br><span class="line">我們想要收集使用情形統計資料以協助改善 IBM Cloud CLI。</span><br><span class="line">此資料絕不會在 IBM 之外共用。</span><br><span class="line">若要進一步瞭解，請參閱 IBM 隱私權條款：https://www.ibm.com/privacy</span><br><span class="line">您可以啟用或停用使用情形資料收集，方法是執行 'ibmcloud config --usage-stats-coll</span><br><span class="line">ect [true | false]'</span><br><span class="line"></span><br><span class="line">您要傳送使用情形統計資料給 IBM 嗎？ [y/n]&gt; n</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<ol start="4">
-<li><p>选择要用的cf应用节点<code>ibmcloud target --cf</code>，这个过程需要代理，否则可能会提示网络错误</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">失败</span><br><span class="line">無法取得 Cloud Foundry 實例：</span><br><span class="line">Get "https://mccp.us-south.cf.cloud.ibm.com/v2/regions": dial tcp: lookup mccp.u</span><br><span class="line">s-south.cf.cloud.ibm.com: no such host</span><br></pre></td></tr></table></figure>
-
-<p><strong>正常的输出</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">E:\code\ibm\dev\get-started-python&gt;ibmcloud target --cf</span><br><span class="line"></span><br><span class="line">選取 Cloud Foundry 實例：</span><br><span class="line">1. public CF us-south (https://api.us-south.cf.cloud.ibm.com)</span><br><span class="line">2. public CF eu-de (https://api.eu-de.cf.cloud.ibm.com)</span><br><span class="line">3. public CF eu-gb (https://api.eu-gb.cf.cloud.ibm.com)</span><br><span class="line">4. public CF au-syd (https://api.au-syd.cf.cloud.ibm.com)</span><br><span class="line">5. public CF us-east (https://api.us-east.cf.cloud.ibm.com)</span><br><span class="line">請輸入數字&gt; 1</span><br><span class="line">目標 Cloud Foundry (https://api.us-south.cf.cloud.ibm.com)</span><br><span class="line"></span><br><span class="line">已設定組織 xxxx 的目標</span><br><span class="line"></span><br><span class="line">已設定空間 dev 的目標</span><br><span class="line"></span><br><span class="line">API 端點：      https://cloud.ibm.com</span><br><span class="line">地區：</span><br><span class="line">使用者：        xxxxx@gmail.com</span><br><span class="line">帳戶：          xxxxxx's Account (xxxxxxxxx)</span><br><span class="line">資源群組：      未設定資源群組的目標，請使用 'ibmcloud target -g RESOURCE_GROUP'</span><br><span class="line"></span><br><span class="line">CF API 端點：   https://api.us-south.cf.cloud.ibm.com（API 版本：2.148.0）</span><br><span class="line">組織:           xxx</span><br><span class="line">空間：          xxx</span><br></pre></td></tr></table></figure>
-
-<p><em>其中的组织和空间都可以通过网站的账户下面更改名称，免费账户只能有一个组织</em></p>
-</li>
-<li><p>安装Cloud Foundry CLI <code>ibmcloud cf install</code></p>
-</li>
-<li><p>本地代码push到服务器<code>ibmcloud cf push</code> 会输出一堆日志和部署信息，最终会显示系统的运行信息</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">正在等待應用程式啟動...</span><br><span class="line"></span><br><span class="line">名稱:            xxxxx</span><br><span class="line">所要求的狀態:    started</span><br><span class="line">路徑:            xxxxxx.us-south.cf.appdomain.cloud</span><br><span class="line">前次上傳:        Mon 22 Jun 22:43:39 CST 2020</span><br><span class="line">堆疊:            cflinuxfs3</span><br><span class="line">建置套件:        python</span><br><span class="line"></span><br><span class="line">類型:         web</span><br><span class="line">實例:         1/1</span><br><span class="line">記憶體用量:   128M</span><br><span class="line">啟動指令:     python hello.py</span><br><span class="line">     state    自從                   cpu    memory       磁碟        詳細資料</span><br><span class="line"><span class="meta">#</span><span class="bash">0   執行中   2020-06-22T14:44:05Z   0.4%   18.8M/128M   198.7M/1G</span></span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<ol start="7">
-<li><p>浏览器访问<code>xxxxxx.us-south.cf.appdomain.cloud</code>就可以看到应用</p>
-</li>
-<li><p>使用<code>ibmcloud cf ssh appname</code>可以以ssh访问应用的容器空间，不过我试了一直提示<code>no such host</code></p>
-</li>
-</ol>
-<p><em>先到这里，休息一下</em></p>
-]]></content>
-      <categories>
-        <category>tech</category>
-      </categories>
-      <tags>
-        <tag>tech</tag>
-        <tag>cloud</tag>
-        <tag>docker</tag>
       </tags>
   </entry>
   <entry>
@@ -2426,6 +2426,35 @@
 ]]></content>
       <tags>
         <tag>Design Pattern</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《达·芬奇的广博与创新》笔记</title>
+    <url>/2010/07/08/readnotes/decode-daVinci/</url>
+    <content><![CDATA[<h1 id="达·芬奇的广博与创新"><a href="#达·芬奇的广博与创新" class="headerlink" title="达·芬奇的广博与创新"></a>达·芬奇的广博与创新</h1><p><a href="https://www.cnblogs.com/aquar/archive/2010/07/30/3451419.html" target="_blank" rel="noopener">https://www.cnblogs.com/aquar/archive/2010/07/30/3451419.html</a></p>
+<blockquote>
+<p>《达·芬奇的广博与创新》 晓玲 编著 北京：东方出版社，2008，11</p>
+</blockquote>
+<p>达·芬奇（1452-1519）是一位思想深邃、学识渊博、多才多艺的艺术大师、科学巨匠、文艺理论家、哲学家、诗人、音乐家、工程师、解剖学实习生和发明家。</p>
+<p>由于是私生子，从小就被父亲皮耶罗抛弃与母亲一起生活，他不愿称她为母亲。后来父亲把他带到佛罗伦萨14岁跟随维罗基奥学习绘画。后来在佛罗伦萨不顺利，给米兰大公路德维克写了自荐信，开始了在米兰的辉煌时刻。</p>
+<p>金字塔型构图有恋母情节，有研究说梦那丽莎的微笑正是他母亲的微笑，所以绘画了四年时间。为了让画中人物能坚持坐在那里，他请来乐师取了模特。</p>
+<p>同性恋，终身未婚，和两个男孩有不正常的亲密关系。他十分不喜欢女性，所以有关女性的很少，也只是头部和脸部的绘画。在佛罗伦萨，他的故乡曾和米开朗基罗有过一段矛盾。左撇子，书写顺序刚好与我们相反，写出的手稿要从镜子里反着看。最有名的“莱彻斯特手稿”被Bill Gates购得。死于法国，他把蒙娜丽莎等几幅画总是带在身边，所以这些画现存在法国。</p>
+<p>作品：《受胎告知》《持花圣母》《圣哲罗姆和狮子》《博士来拜》（未完成）《岩间圣母》《斯福查骑马塑像》（未完成）《抱貂的女子》《女子肖像》《利塔圣母》《最后的晚餐》（米兰玛丽亚·格雷契修道院食堂）《蒙娜丽莎》（49岁）《安加利之战》《丽达与天鹅》《圣安娜与圣母子》《维特鲁威人》《自画像》《纺纱圣母》《施洗者圣约翰》</p>
+<p>杨·凡·爱克与他的哥哥胡伯特·凡·爱克并称为油画之父。</p>
+<p>梵高（1853-1890）不到十年的绘画生涯中共有850件油画作品和几乎同样数目的素描。</p>
+<p>笔记：</p>
+<p>愿望比现实更甜蜜。在树上显得甜蜜的果子，到了嘴里常常变得苦涩难尝。既然我们无法取得我们所希望的东西，那么，就让我们取得所能得到的东西吧。</p>
+<p>生命是神圣的。正因为我们没有力量创造生命，所以我们无权毁灭生命。剥夺任何生物多的生命，都是一种极端万恶的行为，灵魂不希望凶暴毁灭生命。</p>
+<p>不看重生命的人就不配享有生命。</p>
+<p>享乐之时，别忘了伴随享乐而来的痛苦和悔恨。</p>
+<p>人有很强的说话能力，但是他的大部分话都是空洞的，骗人的。动物只有一小点点的说话能力，但是那一小点点却是有用的，真实的。宁可少一点，准确一点，也不要大量的虚伪。</p>
+<p>总的来说，女人的欲望与男人相反，她希望男人的器官尽可能的大，而男人对女人生殖器的期望则正好相反。</p>
+]]></content>
+      <categories>
+        <category>read</category>
+      </categories>
+      <tags>
+        <tag>draw</tag>
       </tags>
   </entry>
   <entry>
