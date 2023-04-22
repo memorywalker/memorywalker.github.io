@@ -49,6 +49,7 @@ Composition(组合)一个对象和另一个对象组合在一起，这里指has-
 **方法**：因为飞行在不同的子类中会发生变化，因此可以把它独立出来成为一个接口，用不同的飞行类来实现这个接口，在基类中不再定义飞行方法，而是定义一个飞行的变量，从而在运行时动态调用相应的飞行实现类。在子类的构造函数中，只要对飞行变量调用需要的飞行接口构造函数就可以使用相应的飞行方法。在基类中，将以前的行为委托给行为类来执行。
 
 ![strategyduck](../../uploads/designpattern/strategyduck.png)
+![strategyduck](/uploads/designpattern/strategyduck.png)
 
 ```java
 public abstract class Duck {//基类
