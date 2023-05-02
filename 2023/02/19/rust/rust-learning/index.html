@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="RUSTRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Installrustup 是一个管理 Rust 版本和相关工具的命令行工具  环境变量  更新 $rustup update 安装状态 $rustc --version  输出 rustc 1.67.1 (d5a82bbd2 2023-02-07) 查看文档 rustup doc会自动">
+<meta name="keywords" content="rust,learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust Learning">
+<meta property="og:url" content="http://memorywalker.github.io/2023/02/19/rust/rust-learning/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="RUSTRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Installrustup 是一个管理 Rust 版本和相关工具的命令行工具  环境变量  更新 $rustup update 安装状态 $rustc --version  输出 rustc 1.67.1 (d5a82bbd2 2023-02-07) 查看文档 rustup doc会自动">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2023/02/19/uploads/rust/rust_install.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/rust_install.png">
+<meta property="og:image" content="http://memorywalker.github.io/2023/02/19/uploads/rust/rust_env.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/rust_env.png">
+<meta property="og:image" content="http://memorywalker.github.io/2023/02/19/rust/rust-learning/..%5Cuploads%5Crust%5Ccargo_doc.png">
+<meta property="og:updated_time" content="2023-05-02T02:37:30.939Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust Learning">
+<meta name="twitter:description" content="RUSTRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Installrustup 是一个管理 Rust 版本和相关工具的命令行工具  环境变量  更新 $rustup update 安装状态 $rustc --version  输出 rustc 1.67.1 (d5a82bbd2 2023-02-07) 查看文档 rustup doc会自动">
+<meta name="twitter:image" content="http://memorywalker.github.io/2023/02/19/uploads/rust/rust_install.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2023/02/19/rust/rust-learning/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Rust Learning | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2023/02/19/rust/rust-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust Learning
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2023-02-19 09:25:49" itemprop="dateCreated datePublished" datetime="2023-02-19T09:25:49+00:00">2023-02-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-05-02 02:37:30" itemprop="dateModified" datetime="2023-05-02T02:37:30+00:00">2023-05-02</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="RUST"><a href="#RUST" class="headerlink" title="RUST"></a>RUST</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h3><p>rustup 是一个管理 Rust 版本和相关工具的命令行工具</p>
+<p><img src="../../uploads/rust/rust_install.png" alt="rust_install"><br><img src="/uploads/rust/rust_install.png" alt="rust_install"></p>
+<p>环境变量</p>
+<p><img src="../../uploads/rust/rust_env.png" alt="rust_env"><br><img src="/uploads/rust/rust_env.png" alt="rust_env"></p>
+<p>更新 <code>$rustup update</code></p>
+<p>安装状态 <code>$rustc --version</code>  输出 <code>rustc 1.67.1 (d5a82bbd2 2023-02-07)</code></p>
+<p>查看文档 <code>rustup doc</code>会自动使用默认浏览器打开安装的离线文档页面</p>
+<h3 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h3><ul>
+<li>缩进使用4个空格，而不是一个tab</li>
+<li>调用的宏时，名字后有<code>!</code>，例如<code>println!(&quot;hi human&quot;);</code></li>
+<li>rust中的模块被称为crates</li>
+<li>使用snake case编程风格，所有字母小写并使用下划线分隔单词</li>
+</ul>
+<h4 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h4><p>rust和c++一样是预编译静态类型语言</p>
+<p><code>rustc .\main.rs</code></p>
+<h4 id="Cargo"><a href="#Cargo" class="headerlink" title="Cargo"></a>Cargo</h4><p>Cargo是rust的构建系统和包管理器，可以自动下载依赖库，在使用rustup安装时一并安装到系统中。</p>
+<p>创建一个项目执行</p>
+<p>​     <code>$cargo new cargo_demo</code></p>
+<p>会自动创建一个src目录，一个.gitignore文件和Cargo.toml文件</p>
+<p>Cargo使用TOML (Tom’s Obvious, Minimal Language) 格式作为项目配置文件</p>
+<p><code>[package]</code>以[]开始的是一个片段</p>
+<ul>
+<li>编译工程 在工程目录下执行<code>cargo build</code>,编译时间很长，生成的文件在target的debug目录下</li>
+<li><code>cargo run</code>编译并直接运行</li>
+<li><code>cargo check</code>代码检查</li>
+<li><code>cargo build --release</code>编译release版本</li>
+</ul>
+<h5 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h5><p>在Cargo.toml的[dependencies]添加依赖库<strong>crate</strong>，添加一个生成随机数的rand库，版本为0.8.5</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">"cargo_demo"</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">"0.1.0"</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">"2021"</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">rand</span> = <span class="string">"0.8.5"</span></span><br></pre></td></tr></table></figure>
+
+<p>再次执行build后，会下载所有依赖的库，包括rand依赖的库</p>
+<h5 id="Cargo-lock"><a href="#Cargo-lock" class="headerlink" title="Cargo.lock"></a>Cargo.lock</h5><p>工程中的<code>Cargo.lock</code>文件记录了第一次构建时，所有符合要求的依赖库版本，以后再次构建不会再去找依赖库的版本，方便今后“可重复构建”</p>
+<p>如果没有修改工程配置，使用<code>cargo update</code>可以强制更新当前配置文件设置的最新库版本，例如更新到配置文件中指定的最新版本</p>
+<p>如果修改了toml的配置文件，执行build时，就会下载最新的库文件。</p>
+<h5 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h5><p>执行<code>cargo doc --open</code>可以构建本地依赖库的文档，并在浏览器中打开</p>
+<p><img src="..%5Cuploads%5Crust%5Ccargo_doc.png" alt="image-20230219110744359"></p>
+<h5 id="示例程序"><a href="#示例程序" class="headerlink" title="示例程序"></a>示例程序</h5><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> rand::Rng;</span><br><span class="line"><span class="keyword">use</span> std::cmp::Ordering;</span><br><span class="line"><span class="keyword">use</span> std::io;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Guess my age!"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> my_age = rand::thread_rng().gen_range(<span class="number">1</span>..=<span class="number">100</span>);</span><br><span class="line">    <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"Input your guess: &#123;my_age&#125;"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> guess = <span class="built_in">String</span>::new();  <span class="comment">// mut 可变变量</span></span><br><span class="line">        io::stdin()</span><br><span class="line">            .read_line(&amp;<span class="keyword">mut</span> guess)</span><br><span class="line">            .expect(<span class="string">"Failed to read line"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> guess: <span class="built_in">u32</span> = <span class="keyword">match</span> guess.trim().parse() &#123;</span><br><span class="line">            <span class="literal">Ok</span>(num) =&gt; num,</span><br><span class="line">            <span class="literal">Err</span>(_) =&gt; <span class="keyword">continue</span>, <span class="comment">// -是一个通配符，匹配所有Err值，如果不能转换为数字，进入下次循环</span></span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"You guessed: &#123;guess&#125;"</span>); <span class="comment">// &#123;&#125;占位符，可以打印变量或表达式结果</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">match</span> guess.cmp(&amp;my_age) &#123;</span><br><span class="line">            Ordering::Less =&gt; <span class="built_in">println!</span>(<span class="string">"Small"</span>),</span><br><span class="line">            Ordering::Greater =&gt; <span class="built_in">println!</span>(<span class="string">"Big"</span>),</span><br><span class="line">            Ordering::Equal =&gt; &#123;</span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">"Right"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h3><h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><p>变量默认是不可改变的immutable，一旦一个值绑定到了一个变量上，就不能改变这个变量的值。</p>
+<p>如果修改一个不可变变量的值，会有这个错误：error[E0384]: cannot assign twice to immutable variable <code>game</code><br> 不可变变量的好处：</p>
+<ul>
+<li>并发程序在编译时避免多线程问题？</li>
+</ul>
+<p>定义可变变量需要使用<code>mut</code>关键字，虽然可以修改变量的值，但是不能更改变量的数据类型</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> game = <span class="string">"cod"</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h4><p>常量是固定不可变的，使用<code>const</code>关键字，常量可以在任何作用域声明，必须是表达式，不能在运行时计算出值。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> SECONDS_OF_DAY: <span class="built_in">u32</span> = <span class="number">24</span>*<span class="number">60</span>*<span class="number">60</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="隐藏（shadowing）"><a href="#隐藏（shadowing）" class="headerlink" title="隐藏（shadowing）"></a>隐藏（shadowing）</h4><p>可以定义一个和之前变量同名的新变量，前一个变量会被隐藏，当第二个变量退出自己的作用域后，变量会恢复第一个变量的值。隐藏是新建了一个变量，并不是改变原来变量的值，和mut完全不同。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> game = <span class="string">"cod"</span>;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> game = <span class="string">"halo"</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"The best FPS is &#123;game&#125;"</span>); <span class="comment">//halo</span></span><br><span class="line">&#125;    </span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"The best FPS is &#123;game&#125;"</span>); <span class="comment">// cod</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><h5 id="标量-scalar"><a href="#标量-scalar" class="headerlink" title="标量(scalar)"></a><strong>标量(scalar)</strong></h5><p>表示单独的一个数值</p>
+<ul>
+<li>整型：u8, i8(-128~127), u16, i16, u128, i128, usize, isize和程序架构绑定。变量赋值时，可以使用数据类型来指定类型，例如<code>56u8</code>指定数据类型为<code>u8</code>，数字之间可以使用下划线<code>_</code>分隔方便读数，如<code>5_600</code>表示5600. </li>
+<li>数字类型表示：十六进制(hex) 0xFF; 八进制(Octal) 0o77; 二进制(binary) 0b1111_0000; 字节(仅能用于u8) b’A’</li>
+<li>整数溢出：例如给一个u8类型变量赋值256时，debug版本会出现panic错误，release版本会给变量赋值为 0，257赋值为1进行回绕。标准库提供了检查溢出的方法例如<code>overflowing_*</code></li>
+<li>浮点型：f32, f64，默认为f64。使用<code>IEEE-754标准</code></li>
+<li>布尔型：bool 两个值<code>true</code>，<code>false</code></li>
+<li>字符类型：char <strong>占4个字节，代表一个Unicode标量值</strong>。范围U+0000<del>U+7DFF和U+E000</del>U+10FFFF在内的值。</li>
+</ul>
+<h5 id="复合类型-Compound-types"><a href="#复合类型-Compound-types" class="headerlink" title="复合类型(Compound types)"></a><strong>复合类型(Compound types)</strong></h5><p>将多个值组合成一个类型</p>
+<h6 id="元组类型"><a href="#元组类型" class="headerlink" title="元组类型"></a>元组类型</h6><p>元组长度固定，一旦声明，长度不能改变。元组中的每一个位置的数据类型可以是不同的。可以使用模式匹配来解构(destructure)元组值。也可以使用元组变量名加<code>.索引</code>的方式获取值。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> tup: (<span class="built_in">i32</span>, <span class="built_in">f64</span>, <span class="built_in">u8</span>) = (<span class="number">500</span>, <span class="number">3.6</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">let</span> (x, y, z) = tup; <span class="comment">// destructuring</span></span><br><span class="line"><span class="keyword">let</span> x = tup.<span class="number">0</span>;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"The value of x is : &#123;x&#125;"</span>);</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"The value of y is : &#123;y&#125;"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>没有任何值的元组称作<strong>单元(unit)</strong>，表示空值或空的返回类型。</p>
+<h6 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h6><p>数组中每个元素的数据类型相同，且长度固定。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> food = [<span class="string">"breakfast"</span>, <span class="string">"lunch"</span>, <span class="string">"supper"</span>];</span><br><span class="line"><span class="keyword">let</span> data:[<span class="built_in">i32</span>; <span class="number">3</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">let</span> data = [<span class="number">6</span>, <span class="number">3</span>]; <span class="comment">// [6, 6, 6]</span></span><br><span class="line"><span class="keyword">let</span> num = data[<span class="number">0</span>];</span><br></pre></td></tr></table></figure>
+
+<h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><p>函数声明使用<code>fn</code>关键字开始，每个参数必须声明类型，在函数参数列表后使用<code>-&gt;</code>指明函数的返回类型</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">cal_price</span></span>(val: <span class="built_in">f64</span>, fac: <span class="built_in">f64</span>) -&gt; <span class="built_in">f64</span>  &#123;</span><br><span class="line">    <span class="keyword">let</span> price = val*fac;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"The deal price is &#123;price&#125;"</span>);</span><br><span class="line">    price   <span class="comment">// return a expression as return value</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> price = cal_price(<span class="number">21.5</span>, <span class="number">1.25</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>语句(statements)</strong>是执行一些操作但不返回值的指令</p>
+<p><strong>表达式(Expressions)</strong>计算并产生一个值，<strong>表达式结尾没有分号</strong>。</p>
+<h4 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h4><h5 id="条件表达式"><a href="#条件表达式" class="headerlink" title="条件表达式"></a>条件表达式</h5><p>if后跟一个条件，和其他语言类似，这个条件必须返回bool类型的值。if表达式可以给let赋值。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">   <span class="keyword">let</span> number = <span class="number">255</span>;</span><br><span class="line">   <span class="keyword">if</span> number &gt; <span class="number">255</span> &#123;</span><br><span class="line">       <span class="built_in">println!</span>(<span class="string">"greater than 255"</span>);</span><br><span class="line">   &#125; <span class="keyword">else</span> <span class="keyword">if</span> number == <span class="number">0</span> &#123;</span><br><span class="line">       <span class="built_in">println!</span>(<span class="string">"nonsense"</span>);</span><br><span class="line">   &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="built_in">println!</span>(<span class="string">"less than 255 except 0"</span>);</span><br><span class="line">   &#125;</span><br><span class="line"><span class="comment">// 这种情况下的所有分支返回的数据类型必须相同，否则编译器无法确定num的类型</span></span><br><span class="line"><span class="comment">// 每一个分支中都是一个表达式，数字后面没有分号结束。</span></span><br><span class="line"><span class="keyword">let</span> num = <span class="keyword">if</span> number &gt; <span class="number">50</span> &#123; <span class="number">100</span> &#125; <span class="keyword">else</span> &#123; <span class="number">0</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h5><h6 id="loop"><a href="#loop" class="headerlink" title="loop"></a>loop</h6><p>无条件的循环执行，除非执行了break或程序中断。可以在loop循环的break语句中返回值。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> counter = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> result = <span class="keyword">loop</span> &#123;</span><br><span class="line">    counter += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> counter &gt;= <span class="number">10</span> &#123;</span><br><span class="line">        <span class="keyword">break</span> counter * <span class="number">5</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"The last counter is &#123;result&#125;"</span>);</span><br></pre></td></tr></table></figure>
+
+<h6 id="循环标签"><a href="#循环标签" class="headerlink" title="循环标签"></a>循环标签</h6><p>循环标签可以给一个循环指定一个名字，默认情况下break和continue作用于此时最内层的循环，使用标签可以让他们作用于指定的循环。标签使用<strong>‘</strong>单引号作为开始.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> counter = <span class="number">0</span>;</span><br><span class="line"><span class="symbol">'count_up</span>: <span class="keyword">loop</span> &#123;</span><br><span class="line">    counter += <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"counter = &#123;counter&#125;"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> remain = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"remain = &#123;remain&#125;"</span>);</span><br><span class="line">        <span class="keyword">if</span> remain &lt; <span class="number">5</span> &#123;</span><br><span class="line">            <span class="keyword">break</span>;  <span class="comment">// 只跳出remain的循环</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> counter == <span class="number">10</span> &#123;</span><br><span class="line">            <span class="keyword">break</span> <span class="symbol">'count_up</span>; <span class="comment">// 跳出外层循环</span></span><br><span class="line">        &#125;</span><br><span class="line">        remain -= <span class="number">1</span>;</span><br><span class="line">    &#125;         </span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"The last counter is &#123;counter&#125;"</span>);</span><br></pre></td></tr></table></figure>
+
+<h6 id="while"><a href="#while" class="headerlink" title="while"></a>while</h6><p>while和其他语言相同，条件为true执行循环</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> counter &lt; <span class="number">10</span> &#123;</span><br><span class="line">    counter += <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"counter = &#123;counter&#125;"</span>); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="for"><a href="#for" class="headerlink" title="for"></a>for</h6><p>使用<code>for x in seq</code>的方式遍历数组</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> food = [<span class="string">"breakfast"</span>, <span class="string">"lunch"</span>, <span class="string">"supper"</span>];</span><br><span class="line"><span class="keyword">for</span> meal <span class="keyword">in</span> food &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Eat at &#123;meal&#125;"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> number <span class="keyword">in</span> (<span class="number">1</span>..<span class="number">3</span>).rev() &#123; <span class="comment">// 左闭右开，rev()反转序列</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Eat time &#123;number&#125;"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="匹配"><a href="#匹配" class="headerlink" title="匹配"></a>匹配</h5><h6 id="match表达式"><a href="#match表达式" class="headerlink" title="match表达式"></a>match表达式</h6><p>由多个分支组成，类似switch语句。每个分支包含一个模式和表达式，表达式以<code>,</code>结尾。</p>
+<p>match的每个分支的表达式就是match的返回值，所以分支表达式的数据类型需要相兼容。</p>
+<p>match必须用分支覆盖所有的情况，否则会编译错误，可以使用通配符匹配所有其他情况，这个通配符可以看作一个变量名，它匹配所有的其他相同类型的值，我们可以在这个分支的表达式中使用这个匹配变量，也可以使用<code>_</code>匹配任意值，但是我们不会引用它的值，可以看作是default。</p>
+<p>模式的匹配是按编写顺序执行，所以不能把通配符分支放在前面，这样后面的分支无法被匹配。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">match</span> value &#123;</span><br><span class="line">	patten1 =&gt; expression1,</span><br><span class="line">	patten2 =&gt; expression2,</span><br><span class="line">	patten3 =&gt; expression3,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在匹配的分支中可以使用模式的部分值。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Message</span></span> &#123;</span><br><span class="line">    Quit,</span><br><span class="line">    Move &#123; x: <span class="built_in">i32</span>, y: <span class="built_in">i32</span>&#125;,</span><br><span class="line">    Write(<span class="built_in">String</span>),</span><br><span class="line">    ChangeColor(<span class="built_in">i32</span>, <span class="built_in">i32</span>, <span class="built_in">i32</span>),</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">handle_message</span></span>(msg: Message) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"match start"</span>);</span><br><span class="line">    <span class="keyword">match</span> msg &#123;</span><br><span class="line">        Message::Quit =&gt; <span class="built_in">println!</span>(<span class="string">"Quit"</span>),</span><br><span class="line">        Message::Write(val) =&gt; &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"write &#123;&#125;"</span>, val);            </span><br><span class="line">        &#125;</span><br><span class="line">        Message::Move &#123; x, y &#125; =&gt; &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"move pos &#123;&#125;,&#123;&#125;"</span>, x, y);            </span><br><span class="line">        &#125;</span><br><span class="line">        Message::ChangeColor(r, g, b) =&gt; &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"change color &#123;&#125;,&#123;&#125;,&#123;&#125;"</span>, r,g,b);            </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"match end"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> move_msg = Message::Move &#123; x: <span class="number">15</span>, y: <span class="number">20</span> &#125;;</span><br><span class="line">handle_message(move_msg);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">plus_one</span></span>(x: <span class="built_in">Option</span>&lt;<span class="built_in">i32</span>&gt;) -&gt; <span class="built_in">Option</span>&lt;<span class="built_in">i32</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">match</span> x &#123;</span><br><span class="line">        <span class="literal">None</span> =&gt; <span class="literal">None</span>,</span><br><span class="line">        <span class="literal">Some</span>(i) =&gt; <span class="literal">Some</span>(i+<span class="number">1</span>),</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> roll = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">match</span> roll &#123;</span><br><span class="line">    <span class="number">5</span> =&gt; <span class="built_in">println!</span>(<span class="string">"luck num:&#123;roll&#125;"</span>),</span><br><span class="line">    <span class="number">10</span> =&gt; <span class="built_in">println!</span>(<span class="string">"bad num:&#123;roll&#125;"</span>),</span><br><span class="line">    left =&gt; <span class="built_in">println!</span>(<span class="string">"norm num:&#123;left&#125;"</span>),<span class="comment">// left是通配符</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> config_max = <span class="literal">Some</span>(<span class="number">3u8</span>);</span><br><span class="line"><span class="keyword">match</span> config_max &#123;</span><br><span class="line">    <span class="literal">Some</span>(max) =&gt; <span class="built_in">println!</span>(<span class="string">"The max is &#123;max&#125;"</span>),</span><br><span class="line">    _ =&gt; (), <span class="comment">// 匹配所有其他值，但是不需要引用，这样没有编译警告，写法简单</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="if-let表达式"><a href="#if-let表达式" class="headerlink" title="if let表达式"></a>if let表达式</h6><p>如果只关系一种匹配的情况，而忽略其他match的分支时，可以使用<code>if let</code>简化match的写法。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> config_max = <span class="literal">Some</span>(<span class="number">3u8</span>);</span><br><span class="line"><span class="keyword">let</span> config_none: <span class="built_in">Option</span>&lt;<span class="built_in">u8</span>&gt; = <span class="literal">None</span>;</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(max) = config_max &#123; <span class="comment">// Some(max)等同于match中的模式</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"The max is &#123;max&#125;"</span>); <span class="comment">// The max is 3</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"None is input"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/learning/" rel="tag"># learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/09/25/network-proxy/" rel="next" title="Network Proxy">
+                <i class="fa fa-chevron-left"></i> Network Proxy
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2023/02/19/rust-learning/" rel="prev" title="Rust Learning">
+                Rust Learning <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST"><span class="nav-number">1.</span> <span class="nav-text">RUST</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Install"><span class="nav-number">1.1.</span> <span class="nav-text">Install</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic"><span class="nav-number">1.2.</span> <span class="nav-text">Basic</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#编译"><span class="nav-number">1.2.1.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cargo"><span class="nav-number">1.2.2.</span> <span class="nav-text">Cargo</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#依赖"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">依赖</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Cargo-lock"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">Cargo.lock</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#文档"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">文档</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#示例程序"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">示例程序</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本语法"><span class="nav-number">1.3.</span> <span class="nav-text">基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量"><span class="nav-number">1.3.1.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常量"><span class="nav-number">1.3.2.</span> <span class="nav-text">常量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隐藏（shadowing）"><span class="nav-number">1.3.3.</span> <span class="nav-text">隐藏（shadowing）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据类型"><span class="nav-number">1.3.4.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#标量-scalar"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">标量(scalar)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#复合类型-Compound-types"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">复合类型(Compound types)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#元组类型"><span class="nav-number">1.3.4.2.1.</span> <span class="nav-text">元组类型</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#数组类型"><span class="nav-number">1.3.4.2.2.</span> <span class="nav-text">数组类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数"><span class="nav-number">1.3.5.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#控制流"><span class="nav-number">1.3.6.</span> <span class="nav-text">控制流</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#条件表达式"><span class="nav-number">1.3.6.1.</span> <span class="nav-text">条件表达式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#循环"><span class="nav-number">1.3.6.2.</span> <span class="nav-text">循环</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#loop"><span class="nav-number">1.3.6.2.1.</span> <span class="nav-text">loop</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#循环标签"><span class="nav-number">1.3.6.2.2.</span> <span class="nav-text">循环标签</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#while"><span class="nav-number">1.3.6.2.3.</span> <span class="nav-text">while</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#for"><span class="nav-number">1.3.6.2.4.</span> <span class="nav-text">for</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#匹配"><span class="nav-number">1.3.6.3.</span> <span class="nav-text">匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#match表达式"><span class="nav-number">1.3.6.3.1.</span> <span class="nav-text">match表达式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#if-let表达式"><span class="nav-number">1.3.6.3.2.</span> <span class="nav-text">if let表达式</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
