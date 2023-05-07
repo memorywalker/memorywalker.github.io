@@ -12,6 +12,8 @@ tags:
 
 CMakeLists.txt是cmake的工程配置文件，一般把CMakeLists.txt文件放在工程根目录，同时新建一个Build目录，所有生成的工程文件都放在Build目录中，清除工程文件时，直接删除Build目录中的内容。
 
+文档中一个相对完整的[教程](https://cmake.org/cmake/help/book/mastering-cmake/cmake/Help/guide/tutorial/index.html)，对应的[源代码](https://cmake.org/cmake/help/latest/_downloads/b8a65b498d06de3ba4a7dc1199af2298/cmake-3.26.3-tutorial-source.zip)
+
 ### 基本步骤
 
 1. 给工程定义一个或多个CMakeLists.txt文件
@@ -97,6 +99,216 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 `CMAKE_CXX_COMPILER`指定C++的编译器
 
+#### 配置文件
+
+使用配置文件可以让cmake根据配置生成一些配置头文件供工程的源程序代码使用，例如版本号信息
+
+在工程根目录新建一个`TestConfig.h.in`的配置文件，cmake会把工程配置文件中的变量替换配置文件中的变量
+
+```cmake
+// the configured options and settings for Test, 
+// CMake configures this header file the values for 
+// @Test_VERSION_MAJOR@ and @Test_VERSION_MINOR@ will be replaced
+#define Test_VERSION_MAJOR @Test_VERSION_MAJOR@
+#define Test_VERSION_MINOR @Test_VERSION_MINOR@
+
+#cmakedefine USE_MYMATH
+```
+
+cmake会在build目录生成`TestCongfig.h`，所以如果代码中要使用这里定义的变量，需要把build目录添加到include的目录中。这三行是有顺序要求的。
+
+```cmake
+# configure a header file to pass some of the CMake settings to the source code
+configure_file(TestConfig.h.in TestConfig.h)
+
+# output and dependency
+add_executable(Test main.cpp)
+
+# add the binary tree to the search path for include files
+# so that we will find TestConfig.h
+target_include_directories(Test PUBLIC
+                           "${PROJECT_BINARY_DIR}"
+                           )
+```
+
+自动生成的`TestCongfig.h`头文件，
+
+```c++
+// the configured options and settings for Test, 
+// CMake configures this header file the values for 
+// 1 and 0 will be replaced
+#define Test_VERSION_MAJOR 1
+#define Test_VERSION_MINOR 0
+
+#define USE_MYMATH
+```
+
+可以在代码中使用这些宏或变量声明
+
+```c++
+#include "TestConfig.h"
+.....
+    if (argc < 2) 
+    {
+        // report version
+        std::cout << argv[0] << " Version " << Test_VERSION_MAJOR << "."
+                << Test_VERSION_MINOR << std::endl;
+        std::cout << "Usage: " << argv[0] << " number" << std::endl;
+        return 1;
+    } 
+```
+
+#### 使用依赖库
+
+在库的源代码目录中新增库的CMakeLists.txt文件，其中INTERFACE说明库的使用者都要include库的源代码目录，有了这个INTERFACE的声明后，就可以不用在主程序的cmake中include库的源代码目录了
+
+```cmake
+# Add a library called FunLibs
+add_library(FunLibs mysqrt.cxx)
+target_include_directories(FunLibs
+          INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
+          )
+```
+
+在应用的CMakeLists.txt文件中配置库的编译和引用，因为库声明了INTERFACE要求，所以这里不需要include库的目录了，只是说明要链接库FunLibs。
+
+```cmake
+if(USE_MYMATH)
+  add_subdirectory(FunLibs)
+  list(APPEND EXTRA_LIBS FunLibs)
+endif()
+
+# set using the lib
+target_link_libraries(Test PUBLIC ${EXTRA_LIBS})
+```
+
+#### CMAKE生成宏
+
+可以根据条件来指定工程使用系统库还是自定义的库，或者一些特殊的配置，类似条件编译
+
+1. 在cmake文件中使用`option`声明宏并定义宏的默认值
+2. 在配置文件`TestConfig.h.in`中增加一句`#cmakedefine USE_MYMATH`，用来在配置头文件中生成宏，以便在代码中使用这个宏
+3. cmake的配置文件中，可以使用这个宏来决定是否使用一些配置
+
+下面的例子声明了`USE_MYMATH`宏，这个宏的默认是开，可以在cmakelists文件中使用，当这个宏开时，使用自己实现的库，而不用系统库。
+
+同时配置文件中也会根据这里定义宏的值在`TestConfig.h`来定义宏 `#define USE_MYMATH`，
+
+当不想配置这个宏时，可以在执行`cmake .. -DUSE_MYMATH=OFF`关闭这个宏，这样生成的头文件中，`USE_MYMATH`就是未定义状态`/* #undef USE_MYMATH */`。
+
+需要注意的是宏的值会`CMakeCache.txt`被缓存，所以需要删除这个文件重新生成工程。
+
+```cmake
+# always first line
+cmake_minimum_required (VERSION 3.19)
+
+# Projcet name and version
+project(Test VERSION 1.0)
+
+# specify the C++ standard,  above the call to add_executable
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# This option will be displayed in the cmake-gui and ccmake with a default value of ON
+option(USE_MYMATH "Use tutorial provided math implementation" ON)
+
+# configure a header file to pass some of the CMake settings to the source code
+configure_file(TestConfig.h.in TestConfig.h)
+
+# add the library path
+# add_subdirectory(FunLibs)
+
+# use libs by options
+if(USE_MYMATH)
+  add_subdirectory(FunLibs)
+  list(APPEND EXTRA_LIBS FunLibs)
+  #list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/FunLibs")
+endif()
+
+set(SOURCE_FILES  
+        main.cpp
+        mode.cpp
+)
+
+# output and dependency
+add_executable(Test ${SOURCE_FILES})
+
+# set using the lib
+#target_link_libraries(Test PUBLIC FunLibs)
+target_link_libraries(Test PUBLIC ${EXTRA_LIBS})
+
+# add the binary tree to the search path for include files
+# so that we will find TestConfig.h
+target_include_directories(Test PUBLIC
+                           "${PROJECT_BINARY_DIR}"
+                           #${EXTRA_INCLUDES}
+                           )
+```
+
+c++程序
+
+```c++
+#include <cmath>
+#include <iostream>
+#include <string>
+#include "TestConfig.h"
+#include "Mode.h"
+
+#ifdef USE_MYMATH
+# include "MathFunctions.h"
+#endif
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+    if (argc < 2) 
+    {
+        // report version
+        std::cout << argv[0] << " Version " << Test_VERSION_MAJOR << "."
+                << Test_VERSION_MINOR << std::endl;
+        std::cout << "Usage: " << argv[0] << " number" << std::endl;
+        return 1;
+    }    
+
+    // convert input to double
+    const double inputValue = std::stod(argv[1]);
+
+    #ifdef USE_MYMATH
+    const double outputValue = mysqrt(inputValue);
+    #else
+    const double outputValue = sqrt(inputValue);
+    #endif
+
+    std::cout << "The square root of " << inputValue << " is " << outputValue
+                << std::endl;
+
+    CMode* mode = new CMode;
+    if (mode)
+    {
+        mode->Display();
+    }
+
+    delete mode;
+    mode = nullptr;   
+    
+    return 0;
+}
+```
+
+#### 自定义命令
+
+可以在编译完成后执行一些自定义的命令，例如在编译完成后，把生成的可执行文件拷贝到某个目录。这里的目录都需要使用绝对路径。
+
+```cmake
+add_custom_command(
+  TARGET Test
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND}
+  ARGS -E copy $<TARGET_FILE:Test> ${PROJECT_SOURCE_DIR}
+  )
+```
+
 #### 交叉编译
 
 cmake默认都是编译native的工程，交叉编译其他平台的程序时，需要额外信息告诉cmake编译器和运行库等。
@@ -178,7 +390,75 @@ pi@raspberrypi:~ $ ./Test
 The final price is: 8.4
 ```
 
+#### 单元测试
 
+在CMakeLists.txt中可以配置单元测试，编译程序后执行`ctest -C Debug -VV，对于MSVC需要指定测试的类型是Debug还是Release。对于GNU的，执行`ctest -N`或`ctest -VV`，N选项简化输出，VV选项详细输出
+
+`add_test(NAME 用例名称 COMMAND 执行的命令和参数)`添加一个测试用例
+
+还可以定义一个函数把测试的代码封装起来，下例中的`do_test`函数，其中使用了正则表达式进行匹配结果
+
+在CMakeLists.txt最后添加
+
+```cmake
+# enable testing
+enable_testing()
+
+# does the application run
+add_test(NAME Runs COMMAND Test 100)
+
+# does the usage message work?
+add_test(NAME Usage COMMAND Test)
+set_tests_properties(Usage
+    PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*number"
+    )
+
+# define a function to simplify adding tests
+function(do_test target arg result)
+    add_test(NAME Comp${arg} COMMAND ${target} ${arg})
+    set_tests_properties(Comp${arg}
+    PROPERTIES PASS_REGULAR_EXPRESSION ${result}
+    )
+endfunction(do_test)
+
+# do a bunch of result based tests
+do_test(Test 4 "4 is 2")
+do_test(Test 9 "9 is 3")
+do_test(Test 5 "5 is 2.236")
+do_test(Test 7 "7 is 2.645")
+do_test(Test 25 "25 is 5")
+do_test(Test -25 "-25 is [-nan|nan|0]")
+do_test(Test 0.0001 "0.0001 is 0.01")
+```
+
+输出如下
+
+```powershell
+PS E:\code\rust\cargo_demo\src\build> ctest -C Debug
+Test project E:/code/rust/cargo_demo/src/build
+    Start 1: Runs
+1/9 Test #1: Runs .............................   Passed    0.01 sec
+    Start 2: Usage
+2/9 Test #2: Usage ............................   Passed    0.01 sec
+    Start 3: Comp4
+3/9 Test #3: Comp4 ............................   Passed    0.01 sec
+    Start 4: Comp9
+4/9 Test #4: Comp9 ............................   Passed    0.02 sec
+    Start 5: Comp5
+5/9 Test #5: Comp5 ............................   Passed    0.01 sec
+    Start 6: Comp7
+6/9 Test #6: Comp7 ............................   Passed    0.01 sec
+    Start 7: Comp25
+7/9 Test #7: Comp25 ...........................   Passed    0.02 sec
+    Start 8: Comp-25
+8/9 Test #8: Comp-25 ..........................   Passed    0.02 sec
+    Start 9: Comp0.0001
+9/9 Test #9: Comp0.0001 .......................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 9
+
+Total Test time (real) =   0.17 sec
+```
 
 
 
