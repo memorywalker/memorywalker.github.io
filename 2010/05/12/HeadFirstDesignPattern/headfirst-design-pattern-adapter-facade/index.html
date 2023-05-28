@@ -94,13 +94,25 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="How Time Flies">
-<meta property="og:url" content="http://memorywalker.github.io/tags/rust/index.html">
+  <meta name="description" content="head first design pattern - Adapter and Facade老博客搬运计划 https://www.cnblogs.com/aquar/archive/2010/05/12/3451446.html Adapter Pattern问题： 一个信息系统需要获取医院医嘱数据，而不同医院使用的不同厂家医嘱系统，对于这个系统系统如果要获取一个病人今天的医嘱，就需要请求不同厂">
+<meta name="keywords" content="Design Pattern">
+<meta property="og:type" content="article">
+<meta property="og:title" content="head first design pattern - Adapter and Facade">
+<meta property="og:url" content="http://memorywalker.github.io/2010/05/12/HeadFirstDesignPattern/headfirst-design-pattern-adapter-facade/index.html">
 <meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="head first design pattern - Adapter and Facade老博客搬运计划 https://www.cnblogs.com/aquar/archive/2010/05/12/3451446.html Adapter Pattern问题： 一个信息系统需要获取医院医嘱数据，而不同医院使用的不同厂家医嘱系统，对于这个系统系统如果要获取一个病人今天的医嘱，就需要请求不同厂">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2010/05/12/uploads/designpattern/object_adapter.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/designpattern/object_adapter.png">
+<meta property="og:image" content="http://memorywalker.github.io/2010/05/12/uploads/designpattern/class_adapter.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/designpattern/class_adapter.png">
+<meta property="og:image" content="http://memorywalker.github.io/2010/05/12/uploads/designpattern/facade.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/designpattern/facade.png">
+<meta property="og:updated_time" content="2023-05-28T09:53:30.023Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="How Time Flies">
+<meta name="twitter:title" content="head first design pattern - Adapter and Facade">
+<meta name="twitter:description" content="head first design pattern - Adapter and Facade老博客搬运计划 https://www.cnblogs.com/aquar/archive/2010/05/12/3451446.html Adapter Pattern问题： 一个信息系统需要获取医院医嘱数据，而不同医院使用的不同厂家医嘱系统，对于这个系统系统如果要获取一个病人今天的医嘱，就需要请求不同厂">
+<meta name="twitter:image" content="http://memorywalker.github.io/2010/05/12/uploads/designpattern/object_adapter.png">
 
 
 
@@ -108,7 +120,7 @@
 
   
   
-  <link rel="canonical" href="http://memorywalker.github.io/tags/rust/">
+  <link rel="canonical" href="http://memorywalker.github.io/2010/05/12/HeadFirstDesignPattern/headfirst-design-pattern-adapter-facade/">
 
 
 
@@ -118,7 +130,7 @@
   };
 </script>
 
-  <title>标签: rust | How Time Flies</title>
+  <title>head first design pattern - Adapter and Facade | How Time Flies</title>
   
 
 
@@ -166,7 +178,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -221,7 +233,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -326,184 +338,236 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block tag">
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>rust<small>标签</small>
-        </h1>
-      </div>
-
-      
-        
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2010/05/12/HeadFirstDesignPattern/headfirst-design-pattern-adapter-facade/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2023/05/02/rust/rust-rustup/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning - Rustup</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">head first design pattern - Adapter and Facade
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-05-02T10:25:49+00:00" content="2023-05-02">
-          05-02
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2010-05-12 04:38:00" itemprop="dateCreated datePublished" datetime="2010-05-12T04:38:00+00:00">2010-05-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2023-05-28 09:53:30" itemprop="dateModified" datetime="2023-05-28T09:53:30+00:00">2023-05-28</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2023/04/01/rust/rust-trait-lifetimes/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Generic, Trait and Lifetimes</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-04-01T22:42:49+00:00" content="2023-04-01">
-          04-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
+        <h2 id="head-first-design-pattern-Adapter-and-Facade"><a href="#head-first-design-pattern-Adapter-and-Facade" class="headerlink" title="head first design pattern - Adapter and Facade"></a>head first design pattern - Adapter and Facade</h2><p>老博客搬运计划</p>
+<p><a href="https://www.cnblogs.com/aquar/archive/2010/05/12/3451446.html" target="_blank" rel="noopener">https://www.cnblogs.com/aquar/archive/2010/05/12/3451446.html</a></p>
+<h4 id="Adapter-Pattern"><a href="#Adapter-Pattern" class="headerlink" title="Adapter Pattern"></a>Adapter Pattern</h4><p><strong>问题</strong>：</p>
+<p>一个信息系统需要获取医院医嘱数据，而不同医院使用的不同厂家医嘱系统，对于这个系统系统如果要获取一个病人今天的医嘱，就需要请求不同厂家的接口。为了让自己的实现统一，需要一个适配器把不同厂家的接口统一。类似日本的电器在中国使用，需要电源适配器。</p>
+<p><strong>解决</strong>：</p>
+<p>1.客户通过目标接口调用适配器的方法对适配器发出请求。<br>2.适配器使用被适配者接口把请求转换成被适配者的一个或多个调用接口<br>3.客户接收到调用的结果，但并未察觉这一切是适配器在起转换作用。</p>
+<p><strong>适配器模式：</strong>将一个类的接口，转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作无间。</p>
+<ul>
+<li><p>对象适配器</p>
+<p>使用<strong>组合</strong>的方式，在适配器中再去调用被适配的接口；可以适配Adaptee的所有子类；更灵活；</p>
+</li>
+</ul>
+<p><img src="../../uploads/designpattern/object_adapter.png" alt="object_adapter"><br><img src="/uploads/designpattern/object_adapter.png" alt="object_adapter"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实现想要转换成的目标类型接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TurkeyAdapter</span> <span class="keyword">implements</span> <span class="title">Duck</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  Turkey turkey; <span class="comment">//组合被适配者</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">TurkeyAdapter</span><span class="params">(Turkey turkey)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.turkey = turkey;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    turkey.gobble(); <span class="comment">//把被适配者的方法进行适配，火鸡的叫声和鸭子相适配</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">      turkey.fly();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<ul>
+<li><p>类适配器</p>
+<p>使用<strong>继承</strong>的方式来调用被适配的接口；可以覆盖Adaptee的一些行为，或增加一些功能。</p>
+</li>
+</ul>
+<p><img src="../../uploads/designpattern/class_adapter.png" alt="class_adapter"><br><img src="/uploads/designpattern/class_adapter.png" alt="class_adapter"></p>
+<h4 id="Facade-Pattern"><a href="#Facade-Pattern" class="headerlink" title="Facade Pattern"></a>Facade Pattern</h4><p>/fəˈsɑːd/ 外观; (建筑物的)正面，立面; (虚假的)表面，外表;</p>
+<p>如果一个做一件事需要调用一个系统中的多个接口，可以把这些接口的调用汇总到一个接口中，这样客户端使用时就使用那个汇总的接口，简化实现。</p>
+<p><strong>外观模式(Facade-Pattern)</strong>：提供一个统一的接口，用来访问子系统中的一群接口。外观定义了一个更高层接口，让子系统更容易被使用。它由子系统组合(has-a)而成，然后工作委托给子系统执行。他不封装接口，他简化客户端的接口调用，它可以解耦客户端和被访问的子系统的一众接口。</p>
+<p>可以给一个子系统实现多个不同的facade。</p>
+<p><img src="../../uploads/designpattern/facade.png" alt="facade"><br><img src="/uploads/designpattern/facade.png" alt="facade"></p>
+<p>适配器模式的意图是改变接口符合客户的期望，而外观模式的意图是提供子系统的一个简化接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Facade</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  MallardDuck Mduck;</span><br><span class="line">  WildTurkey Wturkey; <span class="comment">//组合所有要用到的子系统</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Facade</span><span class="params">(MallardDuck Mduck, WildTurkey Wturkey)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.Mduck = Mduck;</span><br><span class="line">    <span class="keyword">this</span>.Wturkey = Wturkey;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Mduck.fly(); <span class="comment">//鸭子先飞</span></span><br><span class="line">    Wturkey.fly(); <span class="comment">//火鸡再飞，调用子系统的功能</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2023/03/18/rust/rust-learning-2-project/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning - Crates and Modules</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-03-18T16:25:49+00:00" content="2023-03-18">
-          03-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2023/03/05/rust/rust-learning-1/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning 1</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-03-05T09:25:49+00:00" content="2023-03-05">
-          03-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2023/02/19/rust/rust-learning/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-02-19T09:25:49+00:00" content="2023-02-19">
-          02-19
-        </time>
-      </div>
-
-    </header>
-  </article>
+<h4 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h4><p><strong>最少知识</strong>：减少对象之间的交互，只留下几个密友。不要让太多类耦合在一起。</p>
+<p>一个对象中只调用以下方法：</p>
+<ul>
+<li>对象自己的方法</li>
+<li>作为参数传进来对象的方法</li>
+<li>自己内部实例化对象的方法</li>
+<li>成员对象的方法</li>
+</ul>
+<p>不能级联调用获取某个对象的方法，再间接调用获取到的对象的方法，这样依赖的类就多了。例如</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getTemp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    station.getThermometer().getTemperature();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Design-Pattern/" rel="tag"># Design Pattern</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2010/05/10/HeadFirstDesignPattern/headfirst-design-pattern-Command/" rel="next" title="head first design pattern - Command">
+                <i class="fa fa-chevron-left"></i> head first design pattern - Command
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2010/07/08/readnotes/key-to-drawing/" rel="prev" title="素描的诀窍-第一章 作画步骤">
+                素描的诀窍-第一章 作画步骤 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -523,8 +587,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -739,6 +812,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#head-first-design-pattern-Adapter-and-Facade"><span class="nav-number">1.</span> <span class="nav-text">head first design pattern - Adapter and Facade</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Adapter-Pattern"><span class="nav-number">1.0.1.</span> <span class="nav-text">Adapter Pattern</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Facade-Pattern"><span class="nav-number">1.0.2.</span> <span class="nav-text">Facade Pattern</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设计原则"><span class="nav-number">1.0.3.</span> <span class="nav-text">设计原则</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -871,6 +961,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
 
   
 
@@ -886,6 +980,8 @@
 
   
 
+
+  
 
 
   
