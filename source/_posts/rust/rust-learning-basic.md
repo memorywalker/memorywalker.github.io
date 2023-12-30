@@ -1,5 +1,5 @@
 ---
-title: Rust Learning
+title: Rust Learning basic
 date: 2023-02-19 09:25:49
 categories:
 - programming
@@ -8,7 +8,7 @@ tags:
 - learning
 ---
 
-## RUST 
+## RUST Basic 
 
 [Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)](https://kaisery.github.io/trpl-zh-cn/title-page.html)
 
@@ -90,8 +90,8 @@ rand = "0.8.5"
 
 执行`cargo doc --open`可以构建本地依赖库的文档，并在浏览器中打开
 
-![image-20230219110744359](..\uploads\rust\cargo_doc.png)
-
+![cargo_doc](../../uploads/rust/cargo_doc.png)
+![cargo_doc](/uploads/rust/cargo_doc.png)
 
 
 ##### 示例程序
@@ -181,7 +181,7 @@ const SECONDS_OF_DAY: u32 = 24*60*60;
 * 整数溢出：例如给一个u8类型变量赋值256时，debug版本会出现panic错误，release版本会给变量赋值为 0，257赋值为1进行回绕。标准库提供了检查溢出的方法例如`overflowing_*`
 * 浮点型：f32, f64，默认为f64。使用`IEEE-754标准`
 * 布尔型：bool 两个值`true`，`false`
-* 字符类型：char **占4个字节，代表一个Unicode标量值**。范围U+0000~U+7DFF和U+E000~U+10FFFF在内的值。
+* 字符类型：char **占4个字节，代表一个Unicode标量值**。范围`U+0000~U+7DFF`和`U+E000~U+10FFFF`在内的值。
 
 ##### **复合类型(Compound types)**
 

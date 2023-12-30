@@ -1,5 +1,5 @@
 ---
-title: Rust Learning 1
+title: Rust Learning Owner Struct and Enum
 date: 2023-03-05 09:25:49
 categories:
 - programming
@@ -8,7 +8,7 @@ tags:
 - learning
 ---
 
-## RUST Learning 1
+## RUST Learning Owner Struct and Enum
 
 [Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)](https://kaisery.github.io/trpl-zh-cn/title-page.html)
 
@@ -87,12 +87,12 @@ fn make_copy(value: i32) {
     println!("func integer: {}", value);
 } 
 
-	let s1 = String::from("Flower");
-    take_owner(s1); // s1 moved into function
-    // s1 is not valid here
-    let x = 5; 
-    make_copy(x);  // copy for i32 type
-    println!("integer: {}", x);  // x is still valid   
+let s1 = String::from("Flower");
+take_owner(s1); // s1 moved into function
+// s1 is not valid here
+let x = 5; 
+make_copy(x);  // copy for i32 type
+println!("integer: {}", x);  // x is still valid   
 ```
 
 ##### 函数返回值
@@ -117,11 +117,11 @@ let fps = give_owner(); // 变量的所有权现在归fps
 
 ```rust
 fn cal_str_len(s: &String) -> usize {
-    s.len(); // 引用使用值，但不获取所有全，但是默认不能修改值
+    s.len() // 引用使用值，但不获取所有全，但是默认不能修改值
 }
 let s1 = String::from("Flower");
 let len = cal_str_len(&s1); //使用引用作为参数
-println!("string {} len is {}", s1, len);  // s1还有所有权
+println!("string {} len is {}", s1, len);  // s1还有所有权 string Flower len is 6
 ```
 
 ###### 可变引用
@@ -172,7 +172,7 @@ slice是一种引用，所以它没有所有权。可以引用集合中一段连
 
 ```rust
 let poem = String::from("best way to find a secret");
-let key = &poem[0..4];
+let key = &poem[0..4];  // best
 ```
 
 `[start..end]`表示从start开始，end-start长度的子集。当start为0时，可以不写，end为最后一个字符时也可以省略。
@@ -311,7 +311,7 @@ let halo_rate = 8.0;
 let halo = Game {
     game_name:String::from("HALO"),
     game_type:1,
-    rate: dbg!(halo_rate*0.9)  // [src\main.rs:195] halo_rate * 0.9 = 7.2
+    rate: dbg!(halo_rate*0.9)  // 执行这一行会输出：[src\main.rs:195] halo_rate * 0.9 = 7.2
 };
 dbg!(&halo);
 ```
@@ -328,7 +328,7 @@ impl Game {
 }
 ```
 
-第一个参数`&self`是`self: &Self`的缩写，在impl中，Self是块的类型的别名。self的传递参数时可以选择获取`self`的所有权也可以选择借用(引用)`&self`，或者可变的借用`&mut self`。
+第一个参数`&self`是`self: &Self`的缩写，在impl中，`Self`是块的类型的别名。`self`的传递参数时可以选择获取`self`的所有权也可以选择借用(引用)`&self`，或者可变的借用`&mut self`。
 
 如果想要在方法中改变调用方法的实例，需要将第一个参数改为 &mut self。通过仅仅使用 self 作为第一个参数来使方法获取实例的所有权是很少见的；这种技术通常用在当方法将 self 转换成别的实例的时，我们想要防止调用者在转换之后使用原始的实例。
 
