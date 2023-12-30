@@ -14,6 +14,15 @@ OS： ubuntu 18.04 LTS x64
 
 ### Qemu
 
+
+
+#### windows qemu
+
+https://qemu.weilnetz.de/
+
+https://qemu.weilnetz.de/w64/2023/
+
+
 #### Install
 
 需要模拟arm64平台，所以要安装aarch64版本

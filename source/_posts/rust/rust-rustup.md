@@ -68,6 +68,23 @@ rustup的安装程序会自动下载每一个组件，并在最后把cargo的bin
 
 `D:\rust\cargo\registry`目录中是当前系统中已经安装过的包。
 
+### 交叉编译
 
 
+
+1. 安装目标库
+
+   `rustup target add armv7-unknown-linux-gnueabi`
+
+   安装后的库目录为
+
+   `.\rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\armv7-unknown-linux-gnueabi`
+
+2. 配置目标的链接器
+
+   因为rust要使用目标的链接器生成二进制文件，所以如果没有配置目标链接器，会提示`error: linker `cc` not found`错误
+
+3. 交叉编译
+
+   `cargo build --target=`armv7-unknown-linux-gnueabi`
 
