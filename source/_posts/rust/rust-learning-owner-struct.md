@@ -270,20 +270,46 @@ println!("info of struct value {:?}", cod); // borrow of partially moved value: 
 
 ##### 元组结构体
 
-使用元组的方式定义结构体，可以不用给每个字段定一个名字。
+使用元组的方式定义结构体，可以不用给每个字段定一个名字。可以用在想给一个元组有个类型名字以区分不同的类型，或者以元组的方式存储数据但是又不用元组类型。
 
 ```rust
+#[derive(Debug)]
 struct Color(i32, i32, i32);
-let black = Color(0, 0, 0);
+#[derive(Debug)]
+struct Point(i32, i32, i32);
+
+fn paint_tuple(color : (i32, i32, i32)) { //使用tuple作为参数
+    println!("color r:{} g:{} b:{}", color.0, color.1, color.2);
+}
+
+fn paint(color : &Color) { // 使用color结构作为参数
+    println!("color: {:#?}", color);
+    // 可以和元组一样使用索引的方式获取成员
+    println!("color r:{} g:{} b:{}", color.0, color.1, color.2);
+}
+
+fn draw(point : &Point) { // 组成Point的元素数据类型和Color相同，但Point和Color不是相同类型
+    println!("draw point at:{:#?}", point);
+}
+
+fn main() {
+    let black = Color(0, 0, 0);
+    let origin = Point(0, 0, 0);
+    paint_tuple((100, 100, 125));
+    paint(&black);
+    draw(&origin);
+}
 ```
 
 ##### 单元结构体
 
-没有任何字段的结构体，在某个类型上实现trait但又不需要存储数据。
+没有任何字段的结构体，在某个类型上实现trait但又不需要存储数据。可以用来定义接口。
 
 ##### 派生trait增加功能
 
-通过给结构体增加外部属性`#[derive(Debug)]`，结构体就可以输出调试信息
+`println!`宏中`{}`默认使用`std::fmt:Display`来输出内容，对于基本的数据类型，系统默认已经实现了`std::fmt:Display`。
+
+`{:?}` (`{:#?} `for pretty-print) 中的`:?`表示使用名为`Debug`的格式输出内容，通过给结构体增加外部属性`#[derive(Debug)]`，结构体就可以输出调试信息
 
 ```rust
 #[derive(Debug)]
@@ -304,7 +330,7 @@ println!("info of struct value {:#?}", cod);  // 格式化打印
 
 ###### dbg!宏
 
-println!宏接受变量的引用，dbg!宏接收变量的所有权，可以打印执行宏所在的文件和行号，表达式计算结果并把结果的所有权返回。
+println!宏接受变量的引用，`dbg!`宏接收变量的所有权，可以打印执行宏所在的文件和行号，计算表达式结果并把结果的所有权返回。`dbg!`输出到`stderr`而不是`stdout`
 
 ```rust
 let halo_rate = 8.0;
@@ -313,12 +339,12 @@ let halo = Game {
     game_type:1,
     rate: dbg!(halo_rate*0.9)  // 执行这一行会输出：[src\main.rs:195] halo_rate * 0.9 = 7.2
 };
-dbg!(&halo);
+dbg!(&halo); // 将一个引用传给dbg!，最终 dbg! 会把这个引用的所有权再返回出来，后面还可以使用
 ```
 
 ##### 方法
 
-方法是定义在结构体，枚举上下文中的，他的第一个参数一定是self，表示调用该方法结构体实例。使用impl关键字开始的一个代码块来定义结构体关联的方法。
+方法是定义在结构体，枚举或trait上下文中的，他的第一个参数一定是self，表示调用该方法结构体实例。使用`impl`关键字开始的一个代码块来定义结构体关联的方法。
 
 ```rust
 impl Game {
@@ -328,9 +354,9 @@ impl Game {
 }
 ```
 
-第一个参数`&self`是`self: &Self`的缩写，在impl中，`Self`是块的类型的别名。`self`的传递参数时可以选择获取`self`的所有权也可以选择借用(引用)`&self`，或者可变的借用`&mut self`。
+第一个参数`&self`是`self: &Self`的缩写，在impl中，`Self`是结构体类型的别名。使用`self`传递参数时，可以选择获取`self`的所有权也可以选择借用(引用)`&self`，或者可变的借用`&mut self`。
 
-如果想要在方法中改变调用方法的实例，需要将第一个参数改为 &mut self。通过仅仅使用 self 作为第一个参数来使方法获取实例的所有权是很少见的；这种技术通常用在当方法将 self 转换成别的实例的时，我们想要防止调用者在转换之后使用原始的实例。
+如果想要在方法中改变调用方法的实例，需要将第一个参数改为 `&mut self`。通过仅仅使用 self 作为第一个参数来使方法获取实例的所有权是很少见的；这种技术通常用在当方法将 self 转换成别的实例的时，我们想要防止调用者在转换之后使用原始的实例。
 
 方法名称可以和字段名称相同，编译器根据方法名称后有`()`就知道是调用方法，而不是获取字段。这样可以实现getter方法。
 
@@ -354,7 +380,9 @@ println!("info of struct value {:?}", halo);
 
 #### 枚举
 
-枚举定一个了一种数据类型，可以让你列举出其中的每一个成员(variants)
+ structs give you a way of grouping together related fields and data, like a `Rectangle` with its `width` and `height`，enums give you a way of saying a value is one of a possible set of values.
+
+枚举一组数据类型的集合，可以让你列举出其中的每一种变体(variants)。其中的每一个变体之间时互斥的。
 
 ```rust
 #[derive(Debug)]
@@ -371,9 +399,9 @@ struct Game {
 }
 ```
 
-可以将数据直接附加到枚举成员上，并且每个枚举成员可以处理不同类型和数量的数据。
+可以将数据直接附加到枚举成员上，并且每个枚举成员可以处理不同类型和数量的数据，这个数据可以结构体或其他枚举类型。
 
-枚举也可以定义方法，self的作用和结构的相同，也表示调用方法的值。
+枚举也可以定义方法，self的作用和结构体的相同，也表示调用方法的实例对象。
 
 ```rust
 #[derive(Debug)]
@@ -383,6 +411,7 @@ enum Message {
     Write(String),
     ChangeColor(i32, i32, i32),
 }
+struct QuitMessage; // unit struct
 struct WriteMessage(String); //元组结构体
 struct MoveMessage {
     x:i32,
@@ -394,9 +423,9 @@ impl Message {
         println!("{:?}", self);
     }
 }
-let m = Message::Write(String::from("best game is"));
-m.call(); // Write("best game is")
-let move_msg = Message::Move { x: 15, y: 20 };
+let m = Message::Write(String::from("best game is")); // 创建一个Message的Write变体值
+m.call(); // Write("best game is")  // 调用枚举Message的call方法
+let move_msg = Message::Move { x: 15, y: 20 }; // 创建一个Message的Move变体值
 move_msg.call(); // Move { x: 15, y: 20 }
 ```
 
@@ -404,17 +433,27 @@ move_msg.call(); // Move { x: 15, y: 20 }
 
 ##### Option枚举
 
-对于rust没有null关键字，因为程序中会出现因为没有判断null导致的bug。rust使用Option表示是否有值。`Option<T>`和`T`是不同的数据类型，所以他们之间不能直接运算，这样就能避免对没有值时的异常调用。所有的计算都需要先将`Option<T>`转换为`T`类型后才能执行。所以只要一个值类型不是Option类型，就可认为他的值不会为空，增加代码安全性。
+In his 2009 presentation “Null References: The Billion Dollar Mistake,” Tony Hoare, the inventor of null, has this to say:
+
+> I call it my billion-dollar mistake. At that time, I was designing the first comprehensive type system for references in an object-oriented language. My goal was to ensure that all use of references should be absolutely safe, with checking performed automatically by the compiler. But I couldn’t resist the temptation to put in a null reference, simply because it was so easy to implement. This has led to innumerable errors, vulnerabilities, and system crashes, which have probably caused a billion dollars of pain and damage in the last forty years.
+
+对于rust没有null关键字，因为程序中会出现因为没有判断null导致的bug。rust使用Option表示是否有值，它是标准库的基础功能之一，使用这个enum不需要指定枚举名字，直接使用`Some`和`None`。`Option<T>`和`T`是不同的数据类型，所以他们之间不能直接运算，这样就能避免对没有值时的异常调用。所有的计算都需要先将`Option<T>`转换为`T`类型后才能执行。所以只要一个值类型不是Option类型，就可认为他的值肯定不会为空，增加代码安全性。如果一个值可能为空，编码时需要使用`Option<T>`来保护，如果代码中没有处理None保护，编译器会提示错误。
 
 ```rust
 enum Option<T> {
     None,
     Some(T),
 }
+struct Color(i32, i32, i32);
+
 let x : i8 = 5;
 let y: Option<i8> = Some(5);
 let null_num: Option<i32> = None;
 
 let sum = x + y; // error no implementation for `i8 + Option<i8>`
+let black = Color(0, 0, 0);
+let y = Some(black);
+let z : Option<Color> = None;
+println!("Color is :{}", z.expect("wrong color").0);  // output wrong color
 ```
 
