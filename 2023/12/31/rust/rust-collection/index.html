@@ -94,31 +94,18 @@
 
 
 
-  <meta name="description" content="RUSTUPhttps://rust-lang.github.io/rustup/index.html rustup 是一个管理 Rust 版本和相关工具的命令行工具，官方推荐使用rustup来安装和管理rust的版本和工具链。 对于rust开发，rustup不是必须安装的，对于离线安装或使用系统自带的包管理器情况，可以直接安装自己需要的版本。https://forge.rust-lang.org">
+  <meta name="description" content="RUST CollectionsRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Collection容器的数据存储在堆上，在运行时可以改变大小 VectorVec&amp;lt;T&amp;gt;使用泛型实现了列表容器，其元素顺序存储且数据类型必须相同。 基本操作 使用Vec::new()创建一个vector对象，后续再给他添加值 使用vec!宏根据初始化数">
 <meta name="keywords" content="rust,learning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Rust Learning - Rustup">
-<meta property="og:url" content="http://memorywalker.github.io/2023/05/02/rust/rust-rustup/index.html">
+<meta property="og:title" content="Rust Learning-Collections">
+<meta property="og:url" content="http://memorywalker.github.io/2023/12/31/rust/rust-collection/index.html">
 <meta property="og:site_name" content="How Time Flies">
-<meta property="og:description" content="RUSTUPhttps://rust-lang.github.io/rustup/index.html rustup 是一个管理 Rust 版本和相关工具的命令行工具，官方推荐使用rustup来安装和管理rust的版本和工具链。 对于rust开发，rustup不是必须安装的，对于离线安装或使用系统自带的包管理器情况，可以直接安装自己需要的版本。https://forge.rust-lang.org">
+<meta property="og:description" content="RUST CollectionsRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Collection容器的数据存储在堆上，在运行时可以改变大小 VectorVec&amp;lt;T&amp;gt;使用泛型实现了列表容器，其元素顺序存储且数据类型必须相同。 基本操作 使用Vec::new()创建一个vector对象，后续再给他添加值 使用vec!宏根据初始化数">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://memorywalker.github.io/2023/05/02/uploads/rust/rustup_1.png">
-<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/rustup_1.png">
-<meta property="og:image" content="http://memorywalker.github.io/2023/05/02/uploads/rust/rustup_2.png">
-<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/rustup_2.png">
-<meta property="og:image" content="http://memorywalker.github.io/2023/05/02/uploads/rust/rust_install.png">
-<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/rust_install.png">
-<meta property="og:image" content="http://memorywalker.github.io/2023/05/02/uploads/rust/cargo_bin.png">
-<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/cargo_bin.png">
-<meta property="og:image" content="http://memorywalker.github.io/2023/05/02/uploads/rust/change_rustup_path.png">
-<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/change_rustup_path.png">
-<meta property="og:image" content="http://memorywalker.github.io/2023/05/02/uploads/rust/rust_download.png">
-<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/rust_download.png">
 <meta property="og:updated_time" content="2023-12-31T09:57:27.885Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Rust Learning - Rustup">
-<meta name="twitter:description" content="RUSTUPhttps://rust-lang.github.io/rustup/index.html rustup 是一个管理 Rust 版本和相关工具的命令行工具，官方推荐使用rustup来安装和管理rust的版本和工具链。 对于rust开发，rustup不是必须安装的，对于离线安装或使用系统自带的包管理器情况，可以直接安装自己需要的版本。https://forge.rust-lang.org">
-<meta name="twitter:image" content="http://memorywalker.github.io/2023/05/02/uploads/rust/rustup_1.png">
+<meta name="twitter:title" content="Rust Learning-Collections">
+<meta name="twitter:description" content="RUST CollectionsRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Collection容器的数据存储在堆上，在运行时可以改变大小 VectorVec&amp;lt;T&amp;gt;使用泛型实现了列表容器，其元素顺序存储且数据类型必须相同。 基本操作 使用Vec::new()创建一个vector对象，后续再给他添加值 使用vec!宏根据初始化数">
 
 
 
@@ -126,7 +113,7 @@
 
   
   
-  <link rel="canonical" href="http://memorywalker.github.io/2023/05/02/rust/rust-rustup/">
+  <link rel="canonical" href="http://memorywalker.github.io/2023/12/31/rust/rust-collection/">
 
 
 
@@ -136,7 +123,7 @@
   };
 </script>
 
-  <title>Rust Learning - Rustup | How Time Flies</title>
+  <title>Rust Learning-Collections | How Time Flies</title>
   
 
 
@@ -364,7 +351,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2023/05/02/rust/rust-rustup/">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2023/12/31/rust/rust-collection/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="MemoryWalker">
@@ -381,7 +368,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Rust Learning - Rustup
+          <h1 class="post-title" itemprop="name headline">Rust Learning-Collections
 
               
             
@@ -407,24 +394,12 @@
                 
               
 
-              <time title="创建时间：2023-05-02 10:25:49" itemprop="dateCreated datePublished" datetime="2023-05-02T10:25:49+00:00">2023-05-02</time>
+              <time title="创建时间：2023-12-31 14:42:49 / 修改时间：09:57:27" itemprop="dateCreated datePublished" datetime="2023-12-31T14:42:49+00:00">2023-12-31</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2023-12-31 09:57:27" itemprop="dateModified" datetime="2023-12-31T09:57:27+00:00">2023-12-31</time>
               
             
           </span>
@@ -476,43 +451,59 @@
       
 
       
-        <h2 id="RUSTUP"><a href="#RUSTUP" class="headerlink" title="RUSTUP"></a>RUSTUP</h2><p><a href="https://rust-lang.github.io/rustup/index.html" target="_blank" rel="noopener">https://rust-lang.github.io/rustup/index.html</a></p>
-<p>rustup 是一个管理 Rust 版本和相关工具的命令行工具，官方推荐使用rustup来安装和管理rust的版本和工具链。</p>
-<p>对于rust开发，rustup不是必须安装的，对于离线安装或使用系统自带的包管理器情况，可以直接安装自己需要的版本。<a href="https://forge.rust-lang.org/infra/other-installation-methods.html提供了离线安装包。离线安装包中不包含rustup，所以对于交叉编译的场景不是很方便。" target="_blank" rel="noopener">https://forge.rust-lang.org/infra/other-installation-methods.html提供了离线安装包。离线安装包中不包含rustup，所以对于交叉编译的场景不是很方便。</a></p>
-<p>对于一般Windows平台开发下载<code>x86_64-pc-windows-msvc</code>的64位版本，rust会使用msvc的库，而<code>x86_64-pc-windows-gnu</code>的版本则会使用gnu提供的c/c++库。需要根据自己的应用程序环境决定使用哪个版本的安装包。</p>
-<p>如果选择了MSVC版本，由于rust需要使用VC的链接器和库，因此还需要安装Visual Studio，至少是2013版本之后。<a href="https://rust-lang.github.io/rustup/installation/windows-msvc.html" target="_blank" rel="noopener">详情</a></p>
-<h3 id="rustup安装rust"><a href="#rustup安装rust" class="headerlink" title="rustup安装rust"></a>rustup安装rust</h3><p>Windows上运行<code>rustup-init.exe</code>后，会议命令行交互提示的方式提示当前的安装选项</p>
-<p><img src="../../uploads/rust/rustup_1.png" alt="rustup_1"><br><img src="/uploads/rust/rustup_1.png" alt="rustup_1"></p>
-<p>通过选择2后，可以配置自己修改安装的设置</p>
-<p><img src="../../uploads/rust/rustup_2.png" alt="rustup_2"><br><img src="/uploads/rust/rustup_2.png" alt="rustup_2"></p>
-<p>继续回车后，rustup会逐个下载组件进行安装</p>
-<p><img src="../../uploads/rust/rust_install.png" alt="rust_install"><br><img src="/uploads/rust/rust_install.png" alt="rust_install"></p>
-<p>rustup会把rustc，cargo, rustup等工具程序安装在<code>.cargo\bin\</code>目录中。</p>
-<p><img src="../../uploads/rust/cargo_bin.png" alt="cargo_bin"><br><img src="/uploads/rust/cargo_bin.png" alt="cargo_bin"></p>
-<p><strong>更新</strong> <code>$rustup update</code></p>
-<p><strong>安装状态</strong> <code>$rustc --version</code>  输出 <code>rustc 1.67.1 (d5a82bbd2 2023-02-07)</code></p>
-<p><strong>查看文档</strong> <code>rustup doc</code>会自动使用默认浏览器打开安装的离线文档页面</p>
-<h4 id="自定义安装目录"><a href="#自定义安装目录" class="headerlink" title="自定义安装目录"></a>自定义安装目录</h4><p>rustup的默认安装目录是用户目录下的<code>.cargo\</code>和<code>.rustup\</code>，这两个目录在首次安装完差不多要用1G多空间，可以把这两个目录调整到其他磁盘节省C盘占用。</p>
-<p>先配置好<code>CARGO_HOME</code>和<code>RUSTUP_HOME</code>两个环境变量，再执行<code>rustup-init.exe</code>，此时交互提示中的目录会变化环境变量指定的目录。</p>
-<p><img src="../../uploads/rust/change_rustup_path.png" alt="change_rustup_path"><br><img src="/uploads/rust/change_rustup_path.png" alt="change_rustup_path"></p>
-<p>在<code>RUSTUP_HOME</code>目录中会自动创建downloads和tmp目录，以及<code>settings.toml</code>文件。</p>
-<p>rustup的安装程序会自动下载每一个组件，并在最后把cargo的bin目录加入系统path中</p>
-<p><img src="../../uploads/rust/rust_download.png" alt="rust_download"><br><img src="/uploads/rust/rust_download.png" alt="rust_download"></p>
-<p>现在所有的程序都安装到了新目录下，不用担心C盘空间。</p>
-<p><code>D:\rust\cargo\registry</code>目录中是当前系统中已经安装过的包。</p>
-<h3 id="交叉编译"><a href="#交叉编译" class="headerlink" title="交叉编译"></a>交叉编译</h3><ol>
-<li><p>安装目标库</p>
-<p><code>rustup target add armv7-unknown-linux-gnueabi</code></p>
-<p>安装后的库目录为</p>
-<p><code>.\rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\armv7-unknown-linux-gnueabi</code></p>
-</li>
-<li><p>配置目标的链接器</p>
-<p>因为rust要使用目标的链接器生成二进制文件，所以如果没有配置目标链接器，会提示<code>error: linker</code>cc<code>not found</code>错误</p>
-</li>
-<li><p>交叉编译</p>
-<p><code>cargo build --target=</code>armv7-unknown-linux-gnueabi`</p>
-</li>
+        <h2 id="RUST-Collections"><a href="#RUST-Collections" class="headerlink" title="RUST Collections"></a>RUST Collections</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h3><p>容器的数据存储在堆上，在运行时可以改变大小</p>
+<h3 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h3><p><code>Vec&lt;T&gt;</code>使用泛型实现了列表容器，其元素顺序存储且数据类型必须相同。</p>
+<h4 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h4><ul>
+<li>使用<code>Vec::new()</code>创建一个vector对象，后续再给他添加值</li>
+<li>使用<code>vec!</code>宏根据初始化数据创建一个vector对象</li>
+<li>使用<code>push</code>添加元素</li>
+<li>使用下标索引[index]获取元素</li>
+<li>使用get函数获取<code>Option&lt;&amp;T&gt;</code>，获取的Option可以用来判断是否越界访问，例如只有3个元素的vector，使用<code>get(3)</code>，就会返回None</li>
+</ul>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> values : <span class="built_in">Vec</span>&lt;<span class="built_in">i32</span>&gt; = <span class="built_in">Vec</span>::new(); <span class="comment">// 需要使用类型注解Vec&lt;i32&gt;，告诉编译器类型</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> lines = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]; <span class="comment">// 编译器根据数据推导出类型</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> num  = <span class="built_in">Vec</span>::new();  <span class="comment">// 编译器根据下面的push，知道数据类型为i32</span></span><br><span class="line">num.push(<span class="number">3</span>);</span><br><span class="line">num.push(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> first = lines[<span class="number">0</span>];  <span class="comment">// copy</span></span><br><span class="line"><span class="comment">//let first = &amp;lines[0];   // 第一个元素被不可变引用，后面push修改vector需要一个可变引用，开始第一个元素内存区域</span></span><br><span class="line"><span class="keyword">let</span> second = &amp;lines[<span class="number">1</span>];  <span class="comment">// 不知道为什么不会报错，只有第一个会报错</span></span><br><span class="line"><span class="keyword">let</span> third = lines.get(<span class="number">2</span>);  <span class="comment">// get Option&lt;&amp;T&gt; back</span></span><br><span class="line"><span class="comment">//lines.push(5); // cannot borrow `lines` as mutable because it is also borrowed as immutable</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">match</span> third &#123;</span><br><span class="line">  	<span class="literal">Some</span>(third) =&gt; <span class="built_in">println!</span>(<span class="string">"The third element is &#123;third&#125;"</span>),</span><br><span class="line">  	<span class="literal">None</span> =&gt; <span class="built_in">println!</span>(<span class="string">"There is no third element."</span>),</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"vec &#123;:?&#125; and first &#123;first&#125;"</span>, lines);</span><br></pre></td></tr></table></figure>
+
+<p>当对vector的第一个元素使用了不可变引用后，再对vector执行push方法，会提示vector已经被不可变引用了，不能再以可变引用的方式使用了。因为vector的元素连续存储，如果添加一个元素导致vector重新申请内存调整位置，之前引用的内存区域就会被释放了。</p>
+<h4 id="遍历Vector"><a href="#遍历Vector" class="headerlink" title="遍历Vector"></a>遍历Vector</h4><p>使用for遍历一个vector其中的元素可以可变或不可变两种方式引用，因此不能在循环中修改vector的大小</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> v = <span class="built_in">vec!</span>[<span class="number">100</span>, <span class="number">32</span>, <span class="number">57</span>];   </span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> &amp;<span class="keyword">mut</span> v &#123; <span class="comment">// mutable references</span></span><br><span class="line">  *i += <span class="number">50</span>; <span class="comment">// 使用* 解引用获取数值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> &amp;v &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">"&#123;i&#125;"</span>);</span><br><span class="line">  <span class="comment">//v.push(55); // error</span></span><br><span class="line">&#125;</span><br><span class="line">v.push(<span class="number">55</span>);    <span class="comment">// ok 循环变量不再引用vector了</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="enum元素"><a href="#enum元素" class="headerlink" title="enum元素"></a>enum元素</h4><p>由于vector要求其中的元素类型必须相同，但可以使用枚举的方式扩展这种限制，因为同一个枚举中的变体可以有不同的类型。但是这种方法要求编译期就知道vector中元素的种类的占用的内存大小。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">SpreadsheetCell</span></span> &#123;</span><br><span class="line">  Int(<span class="built_in">i32</span>),</span><br><span class="line">  Float(<span class="built_in">f64</span>),</span><br><span class="line">  Text(<span class="built_in">String</span>),</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> row = <span class="built_in">vec!</span>[</span><br><span class="line">  SpreadsheetCell::Int(<span class="number">3</span>),</span><br><span class="line">  SpreadsheetCell::Text(<span class="built_in">String</span>::from(<span class="string">"blue"</span>)),</span><br><span class="line">  SpreadsheetCell::Float(<span class="number">10.12</span>),</span><br><span class="line">]; </span><br><span class="line"></span><br><span class="line">row[<span class="number">0</span>] = SpreadsheetCell::Text(<span class="built_in">String</span>::from(<span class="string">"black"</span>)); <span class="comment">// 编译器知道需要多少空间</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span>  row&#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">"&#123;:?&#125;"</span>, item);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出：</span></span><br><span class="line">Text(<span class="string">"black"</span>)</span><br><span class="line">Text(<span class="string">"blue"</span>)</span><br><span class="line">Float(<span class="number">10.12</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p><code>String</code>类型在rust标准库中定义是一个可扩大、可变、可拥有的UTF8编码的字串类型。</p>
+<p><code>str</code>类型是在rust核心库中定义，用来表示字符串slice的utf8编码的字串，一般以引用<code>&amp;str</code>的方式使用</p>
+<p><code>String</code>使用vector来实现<code>Vec&lt;u8&gt;</code></p>
+<h4 id="基本操作-1"><a href="#基本操作-1" class="headerlink" title="基本操作"></a>基本操作</h4><h5 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h5><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> s = <span class="built_in">String</span>::new();</span><br><span class="line"><span class="keyword">let</span> data = <span class="string">"initial contents"</span>; <span class="comment">// data is &amp;str type</span></span><br><span class="line"><span class="keyword">let</span> s = data.to_string(); <span class="comment">// s is String type    </span></span><br><span class="line"><span class="comment">// the method also works on a literal directly:</span></span><br><span class="line"><span class="keyword">let</span> s = <span class="string">"initial contents"</span>.to_string(); <span class="comment">// s is String type</span></span><br><span class="line"><span class="keyword">let</span> s = <span class="built_in">String</span>::from(<span class="string">"initial contents"</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h5><p>使用<code>push_str(&amp;mut self, string: &amp;str)</code>在字串后追加字串</p>
+<p>使用<code>push(&amp;mut self, ch: char)</code>在字串后追加字符</p>
+<p>使用<code>+</code>操作符连接两个字符串，这个操作符本质上是<code>fn add(self, s: &amp;str) -&gt; String</code>，他的第二个参数是一个字串切片，第一个参数没有&amp;符号，所以会获取+号前的对象的所有权，同时把拼接后的字串的所有权返回出来，由于没有拷贝，所以效率会高一些。</p>
+<p>对于复杂的字符串拼接，可以使用<code>format!</code>宏，它不会获取变量的所有权</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> s1 = <span class="built_in">String</span>::from(<span class="string">"foo"</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="string">"bar"</span>;</span><br><span class="line">s1.push_str(s2);</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"s2 is &#123;s2&#125;"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> s = <span class="built_in">String</span>::from(<span class="string">"lo"</span>);</span><br><span class="line">s.push(<span class="string">'l'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">String</span>::from(<span class="string">"Hello, "</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="built_in">String</span>::from(<span class="string">"world!"</span>);</span><br><span class="line"><span class="comment">// Rust uses a deref coercion, which here turns &amp;s2 into &amp;s2[..]. </span></span><br><span class="line"><span class="comment">// 编译器会强制把String类型转换为切片类型作为参数传给add</span></span><br><span class="line"><span class="keyword">let</span> s3 = s1 + &amp;s2; <span class="comment">// note s1 has been moved here and can no longer be used</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">String</span>::from(<span class="string">"tic"</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="built_in">String</span>::from(<span class="string">"tac"</span>);</span><br><span class="line"><span class="keyword">let</span> s3 = <span class="built_in">String</span>::from(<span class="string">"toe"</span>);</span><br><span class="line"><span class="keyword">let</span> s = <span class="built_in">format!</span>(<span class="string">"&#123;s1&#125;-&#123;s2&#125;-&#123;s3&#125;"</span>); <span class="comment">// format!不会转移所有权</span></span><br><span class="line"><span class="comment">// 多个字串拼接时，后两个是引用</span></span><br><span class="line"><span class="keyword">let</span> s = s1 + <span class="string">"-"</span> + &amp;s2 + <span class="string">"-"</span> + &amp;s3;</span><br><span class="line"><span class="comment">//let s = format!("&#123;s1&#125;-&#123;s2&#125;-&#123;s3&#125;"); // s1已经不能用了</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="子串操作"><a href="#子串操作" class="headerlink" title="子串操作"></a>子串操作</h5><p>rust的string不支持直接使用索引来获取一个字串中的字符，因为utf8字节流以vector的方式存储，取其中的一个字节出来一般不是预期的字符，为了避免预期外的错误，rust就不支持这种操作了。</p>
+<p>可以使用区间操作获取一个字串切片<code>&amp;str</code>类型，但是需要保证切割的字节数刚好满足字符边界</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> hello = <span class="string">"Здравствуйте"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> s = &amp;hello[<span class="number">0</span>..<span class="number">3</span>]; <span class="comment">// 每个字符占两个字节，取前三个字节运行时会出错</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"&#123;s&#125;"</span>); </span><br><span class="line"><span class="comment">// byte index 3 is not a char boundary; it is inside 'д' (bytes 2..4) of `Здравствуйте`</span></span><br></pre></td></tr></table></figure>
+
+<p>需要根据自己需要子串的数据类型选择合适的方法，例如要获取字符，使用<code>chars()</code>，如果想获取字节数据使用<code>bytes()</code></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> hello = <span class="string">"Здравствуйте"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> c <span class="keyword">in</span> hello.chars() &#123;</span><br><span class="line">    <span class="built_in">print!</span>(<span class="string">"&#123;c&#125; "</span>); <span class="comment">// З д р а в с т в у й т е</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> b <span class="keyword">in</span> hello.bytes() &#123;</span><br><span class="line">    <span class="built_in">print!</span>(<span class="string">"&#123;b&#125; "</span>); <span class="comment">// 208 151 208 180 209 128 208 176 208 178 209 129 209 130 208 178 209 131 208 185 209 130 208 181 %</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Hash-Map"><a href="#Hash-Map" class="headerlink" title="Hash Map"></a>Hash Map</h3><p><code>HashMap&lt;K, V&gt;</code>使用hash函数计算一个键值在内存中的位置。同一个map要求所有key的类型相同，所有值的类型相同。可以修改hash函数算法，默认使用的是<em>SipHash</em></p>
+<h5 id="基本操作-2"><a href="#基本操作-2" class="headerlink" title="基本操作"></a>基本操作</h5><ul>
+<li>使用insert插入元素</li>
+<li>使用get获取key对应的值，返回<code>Option&lt;&amp;V&gt;</code></li>
+</ul>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::HashMap; </span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> scores = HashMap::new();</span><br><span class="line">scores.insert(<span class="built_in">String</span>::from(<span class="string">"Blue"</span>), <span class="number">10</span>);</span><br><span class="line">scores.insert(<span class="built_in">String</span>::from(<span class="string">"Yellow"</span>), <span class="number">50</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> name = <span class="built_in">String</span>::from(<span class="string">"Blue"</span>);</span><br><span class="line"><span class="comment">// 如果get返回为None，就返回默认值0</span></span><br><span class="line"><span class="keyword">let</span> score = scores.get(&amp;name).copied().unwrap_or(<span class="number">0</span>);</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"socre=&#123;score&#125;"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (key, value) <span class="keyword">in</span> scores &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;key&#125;, &#123;value&#125;"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="修改Map"><a href="#修改Map" class="headerlink" title="修改Map"></a>修改Map</h5><p>分三种情况:</p>
+<ol>
+<li>覆盖原有key对应的值</li>
+<li>判断如果key不存在就添加，已经存在不处理</li>
+<li>修改一个已经存在key的值</li>
 </ol>
+<p><code>HashMap</code>的<code>entry</code>方法以<code>key</code>为参数返回一个<code>Entry</code>类型的枚举，用来表示一个值是否存在。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> scores = HashMap::new();</span><br><span class="line"></span><br><span class="line">scores.insert(<span class="built_in">String</span>::from(<span class="string">"Blue"</span>), <span class="number">10</span>);</span><br><span class="line">scores.insert(<span class="built_in">String</span>::from(<span class="string">"Yellow"</span>), <span class="number">50</span>);</span><br><span class="line">scores.insert(<span class="built_in">String</span>::from(<span class="string">"Blue"</span>), <span class="number">20</span>); <span class="comment">// 1. 副高已经存在key的值</span></span><br><span class="line"></span><br><span class="line">scores.entry(<span class="built_in">String</span>::from(<span class="string">"Black"</span>)).or_insert(<span class="number">50</span>); <span class="comment">// 2. 如果不存在才添加</span></span><br><span class="line">scores.entry(<span class="built_in">String</span>::from(<span class="string">"Blue"</span>)).or_insert(<span class="number">50</span>); <span class="comment">// 如果已经存在，什么都不做</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> text = <span class="string">"hello world wonderful world"</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> map = HashMap::new();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> text.split_whitespace() &#123;</span><br><span class="line">    <span class="keyword">let</span> count = map.entry(word).or_insert(<span class="number">0</span>);</span><br><span class="line">    *count += <span class="number">1</span>; <span class="comment">// 3. 修改value的值，需要先解引用</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"&#123;:?&#125;"</span>, map); <span class="comment">// &#123;"world": 2, "hello": 1, "wonderful": 1&#125;\</span></span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -554,8 +545,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2023/04/01/rust/rust-trait-lifetimes/" rel="next" title="Rust Learning-Generic, Trait and Lifetimes">
-                <i class="fa fa-chevron-left"></i> Rust Learning-Generic, Trait and Lifetimes
+              <a href="/2023/05/07/linux/cmake-tutorial/" rel="next" title="CMake Tutorial">
+                <i class="fa fa-chevron-left"></i> CMake Tutorial
               </a>
             
           </div>
@@ -563,10 +554,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2023/05/02/linux/raspberrypi-qemu-windows/" rel="prev" title="Raspberry Pi on Windows">
-                Raspberry Pi on Windows <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -847,7 +834,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUSTUP"><span class="nav-number">1.</span> <span class="nav-text">RUSTUP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rustup安装rust"><span class="nav-number">1.1.</span> <span class="nav-text">rustup安装rust</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义安装目录"><span class="nav-number">1.1.1.</span> <span class="nav-text">自定义安装目录</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉编译"><span class="nav-number">1.2.</span> <span class="nav-text">交叉编译</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-Collections"><span class="nav-number">1.</span> <span class="nav-text">RUST Collections</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Collection"><span class="nav-number">1.1.</span> <span class="nav-text">Collection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vector"><span class="nav-number">1.2.</span> <span class="nav-text">Vector</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本操作"><span class="nav-number">1.2.1.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遍历Vector"><span class="nav-number">1.2.2.</span> <span class="nav-text">遍历Vector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#enum元素"><span class="nav-number">1.2.3.</span> <span class="nav-text">enum元素</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String"><span class="nav-number">1.3.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本操作-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#创建"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">创建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#修改"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">修改</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#子串操作"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">子串操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hash-Map"><span class="nav-number">1.4.</span> <span class="nav-text">Hash Map</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基本操作-2"><span class="nav-number">1.4.0.1.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#修改Map"><span class="nav-number">1.4.0.2.</span> <span class="nav-text">修改Map</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
