@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="RUST FunctionalRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Functional Programming函数作为一个对象，可以作为参数，返回值，给变量赋值然后执行 Closure闭包是一个匿名函数，他可以被存储在一个变量或作为另一个函数的参数。可以在一个地方定义闭包，然后再其他地方执行他，与函数不同的是，闭包在执行时可以获取">
+<meta name="keywords" content="rust,learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust Learning-Functional">
+<meta property="og:url" content="http://memorywalker.github.io/2024/01/01/rust/rust-funcional/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="RUST FunctionalRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Functional Programming函数作为一个对象，可以作为参数，返回值，给变量赋值然后执行 Closure闭包是一个匿名函数，他可以被存储在一个变量或作为另一个函数的参数。可以在一个地方定义闭包，然后再其他地方执行他，与函数不同的是，闭包在执行时可以获取">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-01-01T08:20:48.053Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust Learning-Functional">
+<meta name="twitter:description" content="RUST FunctionalRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Functional Programming函数作为一个对象，可以作为参数，返回值，给变量赋值然后执行 Closure闭包是一个匿名函数，他可以被存储在一个变量或作为另一个函数的参数。可以在一个地方定义闭包，然后再其他地方执行他，与函数不同的是，闭包在执行时可以获取">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2024/01/01/rust/rust-funcional/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Rust Learning-Functional | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/01/01/rust/rust-funcional/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust Learning-Functional
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-01-01 11:42:49 / 修改时间：08:20:48" itemprop="dateCreated datePublished" datetime="2024-01-01T11:42:49+00:00">2024-01-01</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="RUST-Functional"><a href="#RUST-Functional" class="headerlink" title="RUST Functional"></a>RUST Functional</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="Functional-Programming"><a href="#Functional-Programming" class="headerlink" title="Functional Programming"></a>Functional Programming</h3><p>函数作为一个对象，可以作为参数，返回值，给变量赋值然后执行</p>
+<h3 id="Closure"><a href="#Closure" class="headerlink" title="Closure"></a>Closure</h3><p>闭包是一个匿名函数，他可以被存储在一个变量或作为另一个函数的参数。可以在一个地方定义闭包，然后再其他地方执行他，与函数不同的是，闭包在执行时可以获取他定义时所在上下文的值。</p>
+<p>由于闭包没有名字且一般都是在很小的上下文范围内使用，编译器一般可以推断出闭包的参数类型和返回值类型</p>
+<h4 id="基本写法"><a href="#基本写法" class="headerlink" title="基本写法"></a>基本写法</h4><p>和普通函数写法类似，使用<code>||</code>传递参数，之后用大括号里面为函数体，当只有一句时，可以省略大括号。</p>
+<p>如果一个闭包没有被使用，编译器无法推断出其数据类型，这个时候就不能省略其参数类型和返回值类型。编译器只会给闭包的参数和返回值推断一种数据类型，不能像模板一样支持多个类型。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> add_one_1 = | x: <span class="built_in">u32</span>| -&gt; <span class="built_in">u32</span> &#123; x + <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">let</span> add_one_2 = | x | &#123; x + <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">let</span> add_one_3 = | x |  x + <span class="number">1</span> ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> num = <span class="number">0</span>;</span><br><span class="line">num = add_one_1(num);</span><br><span class="line">num = add_one_2(num);</span><br><span class="line">num = add_one_3(num);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> fnum = <span class="number">0.0</span>;</span><br><span class="line">fnum = add_one_2(fnum); <span class="comment">// 闭包的数据类型在前面已经被推导为u32了，这里会编译错误</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"final num:&#123;num&#125;"</span>); <span class="comment">// final num:3</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="闭包使用外部值"><a href="#闭包使用外部值" class="headerlink" title="闭包使用外部值"></a>闭包使用外部值</h4><p>在闭包中使用外部值分为三种情况（和函数参数相同）：</p>
+<ul>
+<li>作为不可变引用immutable reference</li>
+<li>作为可变引用 mutable reference</li>
+<li>获取所有权 taking ownership，在 <code>||</code>前使用<code>move</code></li>
+</ul>
+<p>编译器会根据场景使用最小的使用权。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::thread;</span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> list = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Before defining closure: &#123;:?&#125;"</span>, list);</span><br><span class="line">    <span class="comment">// 因为print只需要不可变引用，所以这里list只是不可变引用</span></span><br><span class="line">    <span class="keyword">let</span> only_borrows = || <span class="built_in">println!</span>(<span class="string">"From closure: &#123;:?&#125;"</span>, list);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Before calling closure: &#123;:?&#125;"</span>, list);</span><br><span class="line">    only_borrows();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"After calling closure: &#123;:?&#125;"</span>, list);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在此之前list只是被不可变引用，但这里会修改list，此时会变化为可变引用</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> borrows_mutably = || list.push(<span class="number">7</span>);</span><br><span class="line">    <span class="comment">// 闭包还没结束，所以list还是可变引用，这时不能作为不可变引用使用</span></span><br><span class="line">    <span class="comment">// println!("before calling closure: &#123;:?&#125;", list); // error</span></span><br><span class="line">    borrows_mutably();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"After calling closure: &#123;:?&#125;"</span>, list); <span class="comment">// 闭包结束，又可以按不可变引用使用</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 子线程中要使用list值，但是主线程main可能已经执行完了，导致list值被释放，所以要把list的所有权转移到子线程中</span></span><br><span class="line">    thread::spawn(<span class="keyword">move</span> || <span class="built_in">println!</span>(<span class="string">"From thread: &#123;:?&#125;"</span>, list))</span><br><span class="line">        .join()</span><br><span class="line">        .unwrap();</span><br><span class="line">    <span class="comment">// list已经被move到子线程中，main线程不能再使用了</span></span><br><span class="line">    <span class="comment">//println!("After calling thread: &#123;:?&#125;", list); // error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Fn-Traits"><a href="#Fn-Traits" class="headerlink" title="Fn Traits"></a>Fn Traits</h4><p>闭包体内如何对外部引用使用方法决定了闭包实现类哪种类型的<code>Fn trait</code>，而函数或结构体可以指定自己使用哪种<code>Fn trait</code>类型的闭包。闭包会<strong>自动</strong>实现三种类型的<code>Fn trait</code>，这三种类型从严格到宽松。</p>
+<ul>
+<li><code>FnOnce</code>这种闭包只能被执行一次。所有的闭包都实现了这个trait。当一个闭包把一个获取的引用移出了闭包体，这个闭包只能是<code>FnOnce</code>。</li>
+<li><code>FnMut</code> 这种闭包不会把引用值移出闭包体，但是会修改引用的值。这种闭包可以被调用多次。</li>
+<li><code>Fn</code>这种闭包不会改变引用值，就像没有从外部获取值一样。这种闭包可以被调用多次，即使在多线程时调用也不影响。</li>
+</ul>
+<p>当然普通的函数也可以实现以上三种<code>Fn traits</code>。</p>
+<p><code>Option&lt;T&gt;</code>的<code>unwrap_or_else</code>方法声明了它会使用<code>FnOnce</code>的闭包，当<code>impl&lt;T&gt;</code>的值为None时，它会调用传入的闭包<code>f</code>一次，这个闭包返回的类型为T。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">impl</span>&lt;T&gt; <span class="built_in">Option</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">unwrap_or_else</span></span>&lt;F&gt;(<span class="keyword">self</span>, f: F) -&gt; T</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        F: <span class="built_in">FnOnce</span>() -&gt; T</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">match</span> <span class="keyword">self</span> &#123;</span><br><span class="line">            <span class="literal">Some</span>(x) =&gt; x,</span><br><span class="line">            <span class="literal">None</span> =&gt; f(),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例如以下例子中，list的get返回一个Option&lt;&amp;Rectangle&gt;，如果值为None时，使用闭包输出不存在，并返回一个新的Rectangle对象。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> list = [</span><br><span class="line">  Rectangle &#123; width: <span class="number">10</span>, height: <span class="number">1</span> &#125;,</span><br><span class="line">  Rectangle &#123; width: <span class="number">3</span>, height: <span class="number">5</span> &#125;,</span><br><span class="line">  Rectangle &#123; width: <span class="number">7</span>, height: <span class="number">12</span> &#125;,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="comment">// FnOnce</span></span><br><span class="line"><span class="keyword">let</span> rect = list.get(<span class="number">3</span>).unwrap_or_else(|| &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">"cant find"</span>); </span><br><span class="line">  &amp;Rectangle &#123; width: <span class="number">0</span>, height: <span class="number">0</span> &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"&#123;:#?&#125;"</span>, rect);</span><br></pre></td></tr></table></figure>
+
+<p>对list排序的<code>sort_by_key</code>方法，就使用<code>FnMut</code>类型的闭包，因为这个闭包里面把list的一个元素作为参数传入，返回一个可以用作排序的值K。例如使用长方形的款作为排序的key，其中闭包获取一个元素r作为入参，返回r的宽度作为排序比较的key值，虽然这个方法使用的闭包不会修改任何值，但是他需要这个闭包可以被多次执行以遍历list中的所有元素，所以它使用的闭包类型定义为<code>FnMut</code>.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Rectangle</span></span> &#123;</span><br><span class="line">    width: <span class="built_in">u32</span>,</span><br><span class="line">    height: <span class="built_in">u32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> list = [</span><br><span class="line">        Rectangle &#123; width: <span class="number">10</span>, height: <span class="number">1</span> &#125;,</span><br><span class="line">        Rectangle &#123; width: <span class="number">3</span>, height: <span class="number">5</span> &#125;,</span><br><span class="line">        Rectangle &#123; width: <span class="number">7</span>, height: <span class="number">12</span> &#125;,</span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// FnMut</span></span><br><span class="line">    list.sort_by_key(|r| r.width);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;:#?&#125;"</span>, list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于只实现了<code>FnTrait</code>的闭包<code>sort_by_key</code>就不能使用。闭包体中的<code>sort_operations.push(value)</code>从外部获取value的所有权，并将所有权又传出去给了外部变量<code>sort_operations</code>，导致<strong>下一次</strong>执行这个闭包时，已经无法获取到value的所有权了。而<code>num_sort_operations</code>变量只是可变引用，可以被多次执行。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Rectangle</span></span> &#123;</span><br><span class="line">    width: <span class="built_in">u32</span>,</span><br><span class="line">    height: <span class="built_in">u32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> list = [</span><br><span class="line">        Rectangle &#123; width: <span class="number">10</span>, height: <span class="number">1</span> &#125;,</span><br><span class="line">        Rectangle &#123; width: <span class="number">3</span>, height: <span class="number">5</span> &#125;,</span><br><span class="line">        Rectangle &#123; width: <span class="number">7</span>, height: <span class="number">12</span> &#125;,</span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> sort_operations = <span class="built_in">vec!</span>[];</span><br><span class="line">    <span class="keyword">let</span> value = <span class="built_in">String</span>::from(<span class="string">"by key called"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> num_sort_operations = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    list.sort_by_key(|r| &#123;</span><br><span class="line">        <span class="comment">// cannot move out of `value`, a captured variable in an `FnMut` closure</span></span><br><span class="line">        sort_operations.push(value); <span class="comment">// error</span></span><br><span class="line">        num_sort_operations += <span class="number">1</span>; <span class="comment">// ok</span></span><br><span class="line">        r.width</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;:#?&#125;"</span>, list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="迭代器Iterator"><a href="#迭代器Iterator" class="headerlink" title="迭代器Iterator"></a>迭代器Iterator</h3><p>迭代器模式可以对一系列数据元素逐个访问。迭代器对象是懒加载的，只有消费了迭代器，它才会执行遍历。</p>
+<h4 id="迭代器Trait"><a href="#迭代器Trait" class="headerlink" title="迭代器Trait"></a>迭代器Trait</h4><p><code>Iterator</code> trait有一个<code>next()</code>方法，它返回一个<code>Option&lt;Self::Item&gt;</code>类型对象，其中的Item是这个迭代器的关联类型。当迭代器遍历完所有元素后，next返回None.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">trait</span> <span class="title">Iterator</span></span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Item</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">next</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; <span class="built_in">Option</span>&lt;Self::Item&gt;;</span><br><span class="line">    <span class="comment">// methods with default implementations elided</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> v1 = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> immut_iter = v1.iter();</span><br><span class="line"><span class="built_in">assert_eq!</span>(immut_iter.next(), <span class="literal">Some</span>(&amp;<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> mut_iter = v1.iter_mut();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> owner_iter = v1.into_iter();</span><br></pre></td></tr></table></figure>
+
+<p>一般定义的迭代器类型都是<code>mut</code>类型因为执行<code>next</code>方法会修改迭代器对象内的索引。</p>
+<ul>
+<li>使用<code>iter()</code>获取到原始列表的v1不可变引用</li>
+<li>使用<code>iter_mut()</code>获取到原始列表的v1可变引用</li>
+<li>使用<code>into_iter()</code>获取到原始列表v1的所有权</li>
+</ul>
+<h4 id="消费迭代器"><a href="#消费迭代器" class="headerlink" title="消费迭代器"></a>消费迭代器</h4><p><code>Iterator</code> trait中定义了一些方法调用next方法称为<code>consuming adaptors</code>，因为他们通过next遍历每一个元素从而用尽迭代器。例如<code>sum()</code>方法就遍历所有元素累加各个元素的和，同时它会获取迭代器的所有权。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">iterator_sum</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> v1 = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> v1_iter = v1.iter();</span><br><span class="line">    <span class="keyword">let</span> total: <span class="built_in">i32</span> = v1_iter.sum();</span><br><span class="line">    <span class="built_in">assert_eq!</span>(total, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> total: <span class="built_in">i32</span> = v1_iter.sum(); <span class="comment">// error, use of moved value: `v1_iter`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="生产迭代器"><a href="#生产迭代器" class="headerlink" title="生产迭代器"></a>生产迭代器</h4><p>有些 <code>Iterator</code> trait的方法可以以迭代器作为输入并产生变化后的迭代器，这些方法称作<em>Iterator adaptors</em> 。例如map()会对迭代器的每一个元素执行指定的闭包操作，并返回一个新的迭代器。由于这个新的迭代器是懒加载，所以需要执行collect()使其转换为一个vector。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> v1: <span class="built_in">Vec</span>&lt;<span class="built_in">i32</span>&gt; = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">let</span> v : <span class="built_in">Vec</span>&lt;_&gt;= v1.iter().map(|x| x + <span class="number">1</span>).collect();</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用闭包和迭代器"><a href="#使用闭包和迭代器" class="headerlink" title="使用闭包和迭代器"></a>使用闭包和迭代器</h4><p> <code>filter</code> 方法使用一个闭包作为参数，遍历每一个元素过程中，当闭包返回true时，就把这个元素加新生成的迭代器中，如果返回false，就丢掉。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(PartialEq, Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Shoe</span></span> &#123;</span><br><span class="line">    size: <span class="built_in">u32</span>,</span><br><span class="line">    style: <span class="built_in">String</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第一个参数获取了shoes的所有权，并返回了一个新的Vec&lt;Shoe&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">shoes_in_size</span></span>(shoes: <span class="built_in">Vec</span>&lt;Shoe&gt;, shoe_size: <span class="built_in">u32</span>) -&gt; <span class="built_in">Vec</span>&lt;Shoe&gt; &#123;</span><br><span class="line">    shoes.into_iter().filter(|s| s.size == shoe_size).collect()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> shoes = <span class="built_in">vec!</span>[</span><br><span class="line">        Shoe &#123;</span><br><span class="line">            size: <span class="number">10</span>,</span><br><span class="line">            style: <span class="built_in">String</span>::from(<span class="string">"sneaker"</span>),</span><br><span class="line">        &#125;,</span><br><span class="line">        Shoe &#123;</span><br><span class="line">            size: <span class="number">13</span>,</span><br><span class="line">            style: <span class="built_in">String</span>::from(<span class="string">"sandal"</span>),</span><br><span class="line">        &#125;,</span><br><span class="line">        Shoe &#123;</span><br><span class="line">            size: <span class="number">10</span>,</span><br><span class="line">            style: <span class="built_in">String</span>::from(<span class="string">"boot"</span>),</span><br><span class="line">        &#125;,</span><br><span class="line">    ];</span><br><span class="line">	<span class="comment">// 过滤大小为10的shoes，shoes的所有权被转移走，后续不能再使用</span></span><br><span class="line">    <span class="keyword">let</span> in_my_size_shoes = shoes_in_size(shoes, <span class="number">10</span>);</span><br><span class="line">	<span class="comment">// 新返回的shoes的vector</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;:#?&#125;"</span>,in_my_size_shoes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="迭代器性能"><a href="#迭代器性能" class="headerlink" title="迭代器性能"></a>迭代器性能</h3><p>使用迭代器虽然看似高层次的抽象，但是rust编译器最终会对代码优化，不会带来额外的运行成本，甚至可能比直接手写for循环效率高。迭代器是rust中零成本<strong>zero-cost</strong>抽象的一个特性。</p>
+<p>Bjarne Stroustrup, the original designer and implementor of C++, defines <em>zero-overhead</em> in “Foundations of C++” (2012):</p>
+<blockquote>
+<p>In general, C++ implementations obey the zero-overhead principle: What you don’t use, you don’t pay for. And further: What you do use, you couldn’t hand code any better.</p>
+</blockquote>
+<p>书中举了一个音频编码的例子，</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> buffer: &amp;<span class="keyword">mut</span> [<span class="built_in">i32</span>];</span><br><span class="line"><span class="keyword">let</span> coefficients: [<span class="built_in">i64</span>; <span class="number">12</span>];</span><br><span class="line"><span class="keyword">let</span> qlp_shift: <span class="built_in">i16</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">12</span>..buffer.len() &#123;</span><br><span class="line">    <span class="keyword">let</span> prediction = coefficients.iter()</span><br><span class="line">                                 .zip(&amp;buffer[i - <span class="number">12</span>..i])</span><br><span class="line">                                 .map(|(&amp;c, &amp;s)| c * s <span class="keyword">as</span> <span class="built_in">i64</span>)</span><br><span class="line">                                 .sum::&lt;<span class="built_in">i64</span>&gt;() &gt;&gt; qlp_shift;</span><br><span class="line">    <span class="keyword">let</span> delta = buffer[i];</span><br><span class="line">    buffer[i] = prediction <span class="keyword">as</span> <span class="built_in">i32</span> + delta;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于coefficients遍历，rust知道其中有12个元素，为了减少循环控制代码性能损耗，rust会生成12个重复的代码来优化这个循环。</p>
+<p>Rust knows that there are 12 iterations, so it “unrolls” the loop. <em>Unrolling</em> is an optimization that removes the overhead of the loop controlling code and instead generates repetitive code for each iteration of the loop.</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/learning/" rel="tag"># learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2023/12/31/rust/rust-collection/" rel="next" title="Rust Learning-Collections">
+                <i class="fa fa-chevron-left"></i> Rust Learning-Collections
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">44</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-Functional"><span class="nav-number">1.</span> <span class="nav-text">RUST Functional</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Functional-Programming"><span class="nav-number">1.1.</span> <span class="nav-text">Functional Programming</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Closure"><span class="nav-number">1.2.</span> <span class="nav-text">Closure</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本写法"><span class="nav-number">1.2.1.</span> <span class="nav-text">基本写法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#闭包使用外部值"><span class="nav-number">1.2.2.</span> <span class="nav-text">闭包使用外部值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fn-Traits"><span class="nav-number">1.2.3.</span> <span class="nav-text">Fn Traits</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#迭代器Iterator"><span class="nav-number">1.3.</span> <span class="nav-text">迭代器Iterator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#迭代器Trait"><span class="nav-number">1.3.1.</span> <span class="nav-text">迭代器Trait</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消费迭代器"><span class="nav-number">1.3.2.</span> <span class="nav-text">消费迭代器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生产迭代器"><span class="nav-number">1.3.3.</span> <span class="nav-text">生产迭代器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用闭包和迭代器"><span class="nav-number">1.3.4.</span> <span class="nav-text">使用闭包和迭代器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#迭代器性能"><span class="nav-number">1.4.</span> <span class="nav-text">迭代器性能</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
