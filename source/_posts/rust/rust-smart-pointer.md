@@ -175,5 +175,78 @@ println!("CustomSmartPointer dropped before the end of main.");
 
 ### Rc<T>
 
+Rc是引用计数的缩写，用来处理一个对象有多个使用者的场景，当一个引用者退出生命周期，引用计数会减少1。它只能在单线程中使用。
+
+通过使用`Rc::new`来创建一个`Rc<T>`的类型，使用`Rc::clone(&a)`的方式来增加a的引用计数，而不是使用`a.clone()`，这是为了让程序代码更可读，直接可以看出来是引用计数的浅拷贝，而不是clone的深拷贝。
+
+```rust
+enum List {
+    Cons(i32, Rc<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    println!("Current count of a = {}", Rc::strong_count(&a)); // 1
+    let b = Cons(3, Rc::clone(&a));
+    println!("Current count of a = {}", Rc::strong_count(&a)); // 2
+    {
+        let c = Cons(8, Rc::clone(&a));
+        println!("Current count of a = {}", Rc::strong_count(&a)); // 3
+    }
+    println!("Current count of a = {}", Rc::strong_count(&a)); // 2
+}
+```
+
+
+
 ### RefCell<T>
+
+有些时候，编译器的编译期无法判断程序代码是否正确的满足了借用规则，但是如果严格写满足编译规则的代码，编程又会不方便，所以rust允许开发人员在自己保证借用规则正确的前提下，有一些unsafe的代码。
+
+Interior mutability*内部可变性是rust的一种设计模式，它允许修改一个不可变引用内部的数据。例如一个trait参数是不可变引用，但是在一些特殊场景又需要修改这个参数的内部数据，例如单元测试时修改用于测试的假数据。
+
+RefCell<T>只能有一个引用。可以支持可变引用和不可变引用，且在运行时检查规则。由于它支持运行时检查规则，所以就可以修改一个不可变引用RefCell<T>内部的值。
+
+Box<T>运行在编译期检查可变引用和不可变引用使用是否正确
+
+Rc<T>只能作为不可变引用，并在编译期检查正确性
+
+ `RefCell<T>`的 `borrow` 方法返回 `Ref<T>`不可变智能指针，`borrow_mut` 返回可变的智能指针`RefMut<T>`.  `RefCell<T>`会记录当前有多少个 `Ref<T>` 和 `RefMut<T>` 的智能指针，从而保证可以有多个不可变指针和一个可变指针，这个检查在运行时判断，如果不满足引用规则，就会产生panic。 `RefCell<T>`只能在一个线程中使用，`Mutex<T>`是它的多线程版本。
+
+例如在一个作用域内创建两个可变可变智能指针程序在编译时不会出错，但是运行时就会报错。使用 `RefCell<T>`可能会把错误漏出到程序的生产环境中，而不是在编译期提前发现同时还增加了运行时的负担，但是能增加程序实现的灵活性。
+
+```rust
+#[derive(Debug)]
+enum List {
+    Cons(Rc<RefCell<i32>>, Rc<List>), // List的值从普通的int变为可以修改值的引用
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::{rc::Rc, cell::RefCell};
+
+fn main() {
+    let value = Rc::new(RefCell::new(5));
+
+    let a = Rc::new(Cons(Rc::clone(&value), Rc::new(Nil)));
+    let b = Cons(Rc::new(RefCell::new(3)), Rc::clone(&a));
+    let c = Cons(Rc::new(RefCell::new(4)), Rc::clone(&a));
+  
+    let mut val1 = value.borrow_mut();
+    let mut val2 = value.borrow_mut();//already borrowed: BorrowMutError如果在获取一次可变引用就会在运行时出错，编译不会报错。
+
+    *value.borrow_mut() +=10; // 通过连续解引用最后获取到值的可变引用
+  
+
+    println!(" a = {:?}", a); //  a = Cons(RefCell { value: 15 }, Nil)
+    println!(" b = {:?}", b); //  b = Cons(RefCell { value: 3 }, Cons(RefCell { value: 15 }, Nil))
+    println!(" c = {:?}", c); //  c = Cons(RefCell { value: 4 }, Cons(RefCell { value: 15 }, Nil))
+}
+```
+
+
 
