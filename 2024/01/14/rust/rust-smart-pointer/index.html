@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="How Time Flies">
 <meta property="og:description" content="RUST Smart PointersRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 智能指针rust中的智能指针和C++的一样，它包了一个指针同时带了一起基本功能和属性，例如引用计数。其实String和Vec&amp;lt;T&amp;gt;也是智能指针，因为他们也拥有一块可以操作的内存。 引用Borrow它指向的数据，引用不能改变所有权。智能指针拥有它指">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2024-01-14T10:57:56.669Z">
+<meta property="og:updated_time" content="2024-01-21T09:27:00.607Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rust Learning-Smart Pointers">
 <meta name="twitter:description" content="RUST Smart PointersRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 智能指针rust中的智能指针和C++的一样，它包了一个指针同时带了一起基本功能和属性，例如引用计数。其实String和Vec&amp;lt;T&amp;gt;也是智能指针，因为他们也拥有一块可以操作的内存。 引用Borrow它指向的数据，引用不能改变所有权。智能指针拥有它指">
@@ -394,12 +394,24 @@
                 
               
 
-              <time title="创建时间：2024-01-14 15:42:49 / 修改时间：10:57:56" itemprop="dateCreated datePublished" datetime="2024-01-14T15:42:49+00:00">2024-01-14</time>
+              <time title="创建时间：2024-01-14 15:42:49" itemprop="dateCreated datePublished" datetime="2024-01-14T15:42:49+00:00">2024-01-14</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-01-21 09:27:00" itemprop="dateModified" datetime="2024-01-21T09:27:00+00:00">2024-01-21</time>
               
             
           </span>
@@ -491,7 +503,20 @@
 <h4 id="强制调用Drop"><a href="#强制调用Drop" class="headerlink" title="强制调用Drop"></a>强制调用Drop</h4><p>有时需要在出作用域之前提前释放资源，就需要提前执行drop，例如多线程使用的lock，需要在函数执行结束前就释放。但是rust不支持显式调用drop，主要为了避免多次释放资源，此时需要使用<code>std::mem::drop</code>函数。</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> c = CustomSmartPointer &#123;</span><br><span class="line">        data: <span class="built_in">String</span>::from(<span class="string">"my stuff"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"CustomSmartPointer created."</span>);</span><br><span class="line"><span class="built_in">drop</span>(c);</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"CustomSmartPointer dropped before the end of main."</span>);</span><br></pre></td></tr></table></figure>
 
-<h3 id="Rc"><a href="#Rc" class="headerlink" title="Rc"></a>Rc<t></t></h3><h3 id="RefCell"><a href="#RefCell" class="headerlink" title="RefCell"></a>RefCell<t></t></h3>
+<h3 id="Rc"><a href="#Rc" class="headerlink" title="Rc"></a>Rc<t></t></h3><p>Rc是引用计数的缩写，用来处理一个对象有多个使用者的场景，当一个引用者退出生命周期，引用计数会减少1。它只能在单线程中使用。</p>
+<p>通过使用<code>Rc::new</code>来创建一个<code>Rc&lt;T&gt;</code>的类型，使用<code>Rc::clone(&amp;a)</code>的方式来增加a的引用计数，而不是使用<code>a.clone()</code>，这是为了让程序代码更可读，直接可以看出来是引用计数的浅拷贝，而不是clone的深拷贝。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, Rc&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> a = Rc::new(Cons(<span class="number">5</span>, Rc::new(Cons(<span class="number">10</span>, Rc::new(Nil)))));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">let</span> b = Cons(<span class="number">3</span>, Rc::clone(&amp;a));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 2</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> c = Cons(<span class="number">8</span>, Rc::clone(&amp;a));</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 3</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="RefCell"><a href="#RefCell" class="headerlink" title="RefCell"></a>RefCell<t></t></h3><p>有些时候，编译器的编译期无法判断程序代码是否正确的满足了借用规则，但是如果严格写满足编译规则的代码，编程又会不方便，所以rust允许开发人员在自己保证借用规则正确的前提下，有一些unsafe的代码。</p>
+<p>Interior mutability*内部可变性是rust的一种设计模式，它允许修改一个不可变引用内部的数据。例如一个trait参数是不可变引用，但是在一些特殊场景又需要修改这个参数的内部数据，例如单元测试时修改用于测试的假数据。</p>
+<p>RefCell<t>只能有一个引用。可以支持可变引用和不可变引用，且在运行时检查规则。由于它支持运行时检查规则，所以就可以修改一个不可变引用RefCell<t>内部的值。</t></t></p>
+<p>Box<t>运行在编译期检查可变引用和不可变引用使用是否正确</t></p>
+<p>Rc<t>只能作为不可变引用，并在编译期检查正确性</t></p>
+<p> <code>RefCell&lt;T&gt;</code>的 <code>borrow</code> 方法返回 <code>Ref&lt;T&gt;</code>不可变智能指针，<code>borrow_mut</code> 返回可变的智能指针<code>RefMut&lt;T&gt;</code>.  <code>RefCell&lt;T&gt;</code>会记录当前有多少个 <code>Ref&lt;T&gt;</code> 和 <code>RefMut&lt;T&gt;</code> 的智能指针，从而保证可以有多个不可变指针和一个可变指针，这个检查在运行时判断，如果不满足引用规则，就会产生panic。 <code>RefCell&lt;T&gt;</code>只能在一个线程中使用，<code>Mutex&lt;T&gt;</code>是它的多线程版本。</p>
+<p>例如在一个作用域内创建两个可变可变智能指针程序在编译时不会出错，但是运行时就会报错。使用 <code>RefCell&lt;T&gt;</code>可能会把错误漏出到程序的生产环境中，而不是在编译期提前发现同时还增加了运行时的负担，但是能增加程序实现的灵活性。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(Rc&lt;RefCell&lt;<span class="built_in">i32</span>&gt;&gt;, Rc&lt;List&gt;), <span class="comment">// List的值从普通的int变为可以修改值的引用</span></span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::&#123;rc::Rc, cell::RefCell&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> value = Rc::new(RefCell::new(<span class="number">5</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> a = Rc::new(Cons(Rc::clone(&amp;value), Rc::new(Nil)));</span><br><span class="line">    <span class="keyword">let</span> b = Cons(Rc::new(RefCell::new(<span class="number">3</span>)), Rc::clone(&amp;a));</span><br><span class="line">    <span class="keyword">let</span> c = Cons(Rc::new(RefCell::new(<span class="number">4</span>)), Rc::clone(&amp;a));</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> val1 = value.borrow_mut();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> val2 = value.borrow_mut();<span class="comment">//already borrowed: BorrowMutError如果在获取一次可变引用就会在运行时出错，编译不会报错。</span></span><br><span class="line"></span><br><span class="line">    *value.borrow_mut() +=<span class="number">10</span>; <span class="comment">// 通过连续解引用最后获取到值的可变引用</span></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" a = &#123;:?&#125;"</span>, a); <span class="comment">//  a = Cons(RefCell &#123; value: 15 &#125;, Nil)</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" b = &#123;:?&#125;"</span>, b); <span class="comment">//  b = Cons(RefCell &#123; value: 3 &#125;, Cons(RefCell &#123; value: 15 &#125;, Nil))</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" c = &#123;:?&#125;"</span>, c); <span class="comment">//  c = Cons(RefCell &#123; value: 4 &#125;, Cons(RefCell &#123; value: 15 &#125;, Nil))</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
 
