@@ -94,13 +94,18 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="How Time Flies">
-<meta property="og:url" content="http://memorywalker.github.io/tags/cmcc/index.html">
+  <meta name="description" content="RUST Error HandlingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 错误处理rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。 Panicrust中使用panic!宏来处理不可恢复的错误，出现p">
+<meta name="keywords" content="rust,learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust Learning-Errors">
+<meta property="og:url" content="http://memorywalker.github.io/2024/01/21/rust/rust-errors/index.html">
 <meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="RUST Error HandlingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 错误处理rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。 Panicrust中使用panic!宏来处理不可恢复的错误，出现p">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-01-21T15:08:54.676Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="How Time Flies">
+<meta name="twitter:title" content="Rust Learning-Errors">
+<meta name="twitter:description" content="RUST Error HandlingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 错误处理rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。 Panicrust中使用panic!宏来处理不可恢复的错误，出现p">
 
 
 
@@ -108,7 +113,7 @@
 
   
   
-  <link rel="canonical" href="http://memorywalker.github.io/tags/cmcc/">
+  <link rel="canonical" href="http://memorywalker.github.io/2024/01/21/rust/rust-errors/">
 
 
 
@@ -118,7 +123,7 @@
   };
 </script>
 
-  <title>标签: cmcc | How Time Flies</title>
+  <title>Rust Learning-Errors | How Time Flies</title>
   
 
 
@@ -166,7 +171,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -221,7 +226,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -326,80 +331,221 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>cmcc<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/01/21/rust/rust-errors/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2020/07/12/cmcc-tvbox/" itemprop="url">
-            
-              <span itemprop="name">CMCC 宽带</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Rust Learning-Errors
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2020-07-12T17:25:49+00:00" content="2020-07-12">
-          07-12
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-01-21 21:42:49 / 修改时间：15:08:54" itemprop="dateCreated datePublished" datetime="2024-01-21T21:42:49+00:00">2024-01-21</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="RUST-Error-Handling"><a href="#RUST-Error-Handling" class="headerlink" title="RUST Error Handling"></a>RUST Error Handling</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。</p>
+<h3 id="Panic"><a href="#Panic" class="headerlink" title="Panic"></a>Panic</h3><p>rust中使用<code>panic!</code>宏来处理不可恢复的错误，出现panic后，程序会打印错误信息，清理函数栈然后退出程序。默认情况下，程序panic退出前，反向遍历每一个函数栈，释放其中的数据，然后再退出，这个过程需要一定时间，所以可以再release版本的程序中配置为直接退出程序，让操作系统来释放程序运行过程中申请的资源。</p>
+<p>在项目的 <em>Cargo.toml</em>文件中增加以下代码，在release版本可以减少程序退出占用的时间：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[profile.release]</span></span><br><span class="line"><span class="attr">panic</span> = <span class="string">'abort'</span></span><br></pre></td></tr></table></figure>
+
+<p>可以直接调用<code>panic!</code>宏退出程序</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">panic!</span>(<span class="string">"I will be dead..."</span>);</span><br><span class="line"><span class="comment">// 程序会输出</span></span><br><span class="line"><span class="comment">//thread 'main' panicked at src\main.rs:17:5:</span></span><br><span class="line"><span class="comment">//I will be dead...</span></span><br></pre></td></tr></table></figure>
+
+<p>在C语言中访问数组越界时，程序还是会按实际的地址访问内存空间中的数据，只是错误是未定义的，这样会导致偶发不可预期的故障。rust中只要访问越界，就会panic，并明确告诉错误的原因。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> v = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">v[<span class="number">100</span>]; <span class="comment">// thread 'main' panicked at src\main.rs:18:6:</span></span><br><span class="line"><span class="comment">// index out of bounds: the len is 3 but the index is 100</span></span><br></pre></td></tr></table></figure>
+
+<p>通过在执行程序时设置<code>RUST_BACKTRACE=1</code> 环境变量，就可以把出错时的调用栈打印出来。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> RUST_BACKTRACE=1 cargo run</span></span><br><span class="line">或者</span><br><span class="line">E:\dev\rust\cargo_demo\target\release&gt;set RUST_BACKTRACE=1</span><br><span class="line"></span><br><span class="line">E:\dev\rust\cargo_demo\target\release&gt;cargo_demo.exe</span><br><span class="line">thread 'main' panicked at src\main.rs:18:6:</span><br><span class="line">index out of bounds: the len is 3 but the index is 100</span><br><span class="line">stack backtrace:</span><br><span class="line">   0: std::panicking::begin_panic_handler</span><br><span class="line">             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library\std\src\panicking.rs:645</span><br><span class="line">   1: core::panicking::panic_fmt</span><br><span class="line">   ......</span><br></pre></td></tr></table></figure>
+
+<h3 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h3><p>enum Result有两种值，Ok用来表示成功返回值，Err表示失败时的返回值。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Result</span></span>&lt;T, E&gt; &#123;</span><br><span class="line">    <span class="literal">Ok</span>(T),</span><br><span class="line">    <span class="literal">Err</span>(E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例如以下代码打开一个文件，它的返回值为  <code>Result&lt;File, Error&gt;</code>  ，然后可以使用match来处理两种情况，当Ok的时候，就把其中的file变量返回出去，如果失败了，就打印错误信息</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file_result = File::open(<span class="string">"hello.txt"</span>);</span><br><span class="line">    <span class="keyword">let</span> greeting_file = <span class="keyword">match</span> greeting_file_result &#123;</span><br><span class="line">        <span class="literal">Ok</span>(file) =&gt; file,  <span class="comment">// Result是系统预置类型，所以不需要Resulat::前缀</span></span><br><span class="line">        <span class="literal">Err</span>(error)=&gt; <span class="built_in">panic!</span>(<span class="string">"Open file failed: &#123;:?&#125;"</span>, error),</span><br><span class="line">        <span class="comment">//Open file failed: Os &#123; code: 2, kind: NotFound, message: "The system cannot find the file specified." &#125;</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3>
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/learning/" rel="tag"># learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/01/14/rust/rust-smart-pointer/" rel="next" title="Rust Learning-Smart Pointers">
+                <i class="fa fa-chevron-left"></i> Rust Learning-Smart Pointers
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -419,8 +565,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -637,6 +792,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-Error-Handling"><span class="nav-number">1.</span> <span class="nav-text">RUST Error Handling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#错误处理"><span class="nav-number">1.1.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Panic"><span class="nav-number">1.2.</span> <span class="nav-text">Panic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Result"><span class="nav-number">1.3.</span> <span class="nav-text">Result</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Summary"><span class="nav-number">1.4.</span> <span class="nav-text">Summary</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -769,6 +941,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
 
   
 
@@ -784,6 +960,8 @@
 
   
 
+
+  
 
 
   
