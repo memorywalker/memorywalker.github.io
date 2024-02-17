@@ -157,9 +157,9 @@ s f85bd96 add h2 style
 > remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.
 > remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.
 
-现在github不再使用用户名密码作为验证，而使用token，这个token在` [Personal Access Tokens (github.com)](https://github.com/settings/tokens) `生成，在生成的页面会显示一次，需要自己保存好，每一个token可以有不同的权限和有效期设置
+现在github不再使用用户名密码作为验证，而使用token，这个token在`Settings->Developer Settings`  [Personal Access Tokens (github.com)](https://github.com/settings/tokens) 生成，在生成的页面会显示一次，需要自己保存好，每一个token可以有不同的权限和有效期设置
 
-本地push时，输入用户名后，提示输入密码要用这个新生成的token（一串字符）
+本地push时，输入用户名后，提示输入密码要用这个新生成的token（一串字符）作为密码登陆
 
 #### issue
 
