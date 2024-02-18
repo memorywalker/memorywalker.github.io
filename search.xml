@@ -112,6 +112,109 @@
       </tags>
   </entry>
   <entry>
+    <title>Github study</title>
+    <url>/2020/02/07/Github/</url>
+    <content><![CDATA[<h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><p>当多人合作时，可以每个人各自创建一个分支，每个分支都有明确的名称，做完自己的开发后，合并到一起</p>
+<h3 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h3><p>远端仓库是存在远端服务器或PC上的git仓库，可以使用URL或文件系统的路径来访问一个远程仓库</p>
+<p>可以把本地的repo的分支同步到remote repo，一个本地的repo可以关联多个远端repo</p>
+<h3 id="remote"><a href="#remote" class="headerlink" title="remote"></a>remote</h3><p><code>git remote</code>可以查看当前关联的remote repo的路径，一般使用origin作为主干的remote repo的名称</p>
+<p>关联一个remote repo，在本地的repo目录下，执行</p>
+<p><code>git remote add origin https://github.com/memorywalker/workflow.git</code></p>
+<p>其中的origin只是一个惯例，也可以使用任意一个名称来代表远端repo，然后使用</p>
+<p><code>git remote -v</code>查看当前关联的remote repo是否正确</p>
+<p><code>git remote rename newname oldname</code>更改一个remote repo的别名</p>
+<h3 id="push"><a href="#push" class="headerlink" title="push"></a>push</h3><p><code>git push origin master</code>把本地的master分支发送到名为origin的远端repo，会在远端创建一个master分支</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">To https://github.com/memorywalker/workflow.git</span><br><span class="line"> * [new branch]      master -&gt; master</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>git log --oneline --all</code>可以看到当前本地更新的远端分支在哪个commit上，其中的<code>origin/master</code>称作追踪分支，表示一个远端分支当前指向当前的哪个commit</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">0f40286 (HEAD -&gt; master, origin/master, backup) change call of duty</span><br></pre></td></tr></table></figure>
+
+<h3 id="pull"><a href="#pull" class="headerlink" title="pull"></a>pull</h3><p><code>git pull origin hexo</code>从名为origin的远端更新hexo分支的commit到本地，pull会合并远端分支的更改到本地</p>
+<h3 id="fetch"><a href="#fetch" class="headerlink" title="fetch"></a>fetch</h3><p>当本地的更改和远端的commit有冲突时，可能不需要git自动合并remote的更改到本地，此时需要先把远端的更改下载到本地，在本地手动合并冲突后，再把本地的push到远端</p>
+<p><code>git fetch origin master</code>从名为origin的远端下载master分支到本地，但是不合并到本地的master分支</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span> git log --oneline --all</span><br><span class="line">f85bd96 (origin/master) add h2 style</span><br><span class="line">0f40286 (HEAD -&gt; master, backup) change call of duty</span><br></pre></td></tr></table></figure>
+
+<p>如果要把已经下载下来的合并到本地分支，需要本地执行merge命令</p>
+<p><code>git merge origin/master</code>,在本地把冲突处理</p>
+<h3 id="shortlog"><a href="#shortlog" class="headerlink" title="shortlog"></a>shortlog</h3><p><code>git shortlog</code>可以查看每一个提交者提交了多少次以及每次提交信息，默认使用作者的名称字母顺序，可以增加<code>-n</code>安提交次数降序排列，<code>-s</code>只显示提交次数，不显示提交信息</p>
+<h3 id="log"><a href="#log" class="headerlink" title="log"></a>log</h3><p><code>git log --author=xxx</code>只显示作者名字以xxx开始提交的日志，如果名字中有空格，需要使用””包住</p>
+<p><code>git log --grep=bug</code>和<code>git log --grep bug</code>过滤commit的信息中有bug的commit，这里grep的规则和shell的grep相同，如果有空格也需要””包住</p>
+<h3 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h3><p>rebase可以把多个commit合并到一起，如果和多人一起工作，不要把已经push过的commit执行rebase，这样会导致其他人本地的和库里面的不一致，合并起来很麻烦。</p>
+<p><code>git rebase -i HEAD~3</code>从<code>HEAD~3</code>的位置重新创建一个base，这个commit之后的会合并到一起，之后<code>git log</code>不会看见已经合并的这些commit，<code>-i</code>标识交互的方式进行rebase</p>
+<p>在执行rebase之前可以先创建一个backup分支，避免rebase之后被合并的commit被删除了无法恢复</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">*   c4f25cd (HEAD -&gt; backup, master) change h2 style</span><br><span class="line">|\</span><br><span class="line">| * f85bd96 (origin/master) add h2 style</span><br><span class="line">* | ff309fe add h2 style local</span><br><span class="line">|/</span><br><span class="line">* 0f40286 change call of duty</span><br><span class="line">* 65d78c2 Revert "change title"</span><br><span class="line">* ee4190c change title</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>git rebase -i HEAD~3</code>后</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pick 0f40286 change call of duty</span><br><span class="line">pick ff309fe add h2 style local</span><br><span class="line">pick f85bd96 add h2 style</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Rebase 65d78c2..c4f25cd onto 65d78c2 (3 commands)</span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span> Commands:</span><br><span class="line"><span class="meta">#</span> p, pick &lt;commit&gt; = use commit</span><br><span class="line"><span class="meta">#</span> r, reword &lt;commit&gt; = use commit, but edit the commit message</span><br><span class="line"><span class="meta">#</span> e, edit &lt;commit&gt; = use commit, but stop for amending</span><br><span class="line"><span class="meta">#</span> s, squash &lt;commit&gt; = use commit, but meld into previous commit</span><br><span class="line"><span class="meta">#</span> f, fixup &lt;commit&gt; = like "squash", but discard this commit's log message</span><br><span class="line"><span class="meta">#</span> x, exec &lt;command&gt; = run command (the rest of the line) using shell</span><br><span class="line"><span class="meta">#</span> b, break = stop here (continue rebase later with 'git rebase --continue')</span><br><span class="line"><span class="meta">#</span> d, drop &lt;commit&gt; = remove commit</span><br><span class="line"><span class="meta">#</span> l, label &lt;label&gt; = label current HEAD with a name</span><br><span class="line"><span class="meta">#</span> t, reset &lt;label&gt; = reset HEAD to a label</span><br><span class="line"><span class="meta">#</span> m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]</span><br></pre></td></tr></table></figure>
+
+<p>修改其中的内容，从下向上依次是最早的commit，前缀改为s，说明要把这个commit合并到它的上一个commit，而r对这次提交重新写commit信息，作为最后rebase的新的commit的信息</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">r 0f40286 change call of duty</span><br><span class="line">s ff309fe add h2 style local</span><br><span class="line">s f85bd96 add h2 style</span><br></pre></td></tr></table></figure>
+
+<p>保存文件后，会提示编辑commit信息</p>
+<p>合并后65d78c2现在是master的base，中间的其他commit都没有了，不过backup分支还有备份</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">* fc0772e (HEAD -&gt; master) add h2 style</span><br><span class="line">| * 9848bbf (readme) add readme file</span><br><span class="line">| *   c4f25cd (backup) change h2 style</span><br><span class="line">| |\</span><br><span class="line">| | * f85bd96 (origin/master) add h2 style</span><br><span class="line">| * | ff309fe add h2 style local</span><br><span class="line">| |/</span><br><span class="line">| * 0f40286 change call of duty</span><br><span class="line">|/</span><br><span class="line">* 65d78c2 Revert &quot;change title&quot;</span><br><span class="line">* ee4190c change title</span><br></pre></td></tr></table></figure>
+
+<h3 id="Github-1"><a href="#Github-1" class="headerlink" title="Github"></a>Github</h3><h4 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h4><p>拷贝一份其他人的repo到自己的账户</p>
+<h4 id="push-1"><a href="#push-1" class="headerlink" title="push"></a>push</h4><blockquote>
+<p>remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.<br>remote: Please see <a href="https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/" target="_blank" rel="noopener">https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/</a> for more information.</p>
+</blockquote>
+<p>现在github不再使用用户名密码作为验证，而使用token，这个token在<code>Settings-&gt;Developer Settings</code>  <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Personal Access Tokens (github.com)</a> 生成，在生成的页面会显示一次，需要自己保存好，每一个token可以有不同的权限和有效期设置</p>
+<p>本地push时，输入用户名后，提示输入密码要用这个新生成的token（一串字符）作为密码登陆</p>
+<h4 id="issue"><a href="#issue" class="headerlink" title="issue"></a>issue</h4><p>如果要给公共库提交更改，要先查看库的贡献说明文档；查看issue列表是否有类似的问题，咨询库的所有者是否有人在处理这个问题、自己是否可以处理，避免浪费工作时间；是不要提交一个issue来追溯这个更改</p>
+<p>github的issue不只是bug，可以是项目相关的任何问题，可以把一个issue指派给一个人或一个版本，一个issue下面可以评论，你也可以订阅这个issue，只要有变化，你都会收到通知</p>
+<p>如果一个项目有<code>CONTRIBUTING.md</code>这个文件，在给项目新建issue时，会在页面的最下提示Remember, contributions to this repository should follow its <a href="https://github.com/memorywalker/workflow/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">contributing guidelines</a>. 链接到项目的贡献说明文档</p>
+<p>master分支作为默认的分支一般用来放所有的commit，而更改一个故障可以创建一个topic分支，分支的命就可以是bug-xxx之类，不要在master分支做自己的更改</p>
+<p>尽量经常提交小的commit，一个commit的更改一定不能太多，比如十几个文件，几百行代码，因为管理者在合并你的代码时，可能会觉得其中的一部分时合适的，而另一部分不合适，如果全部放在一个commit里，无法单独更改</p>
+<p>做了更改之后，不要忘记更多readme文件</p>
+<h4 id="pull-request"><a href="#pull-request" class="headerlink" title="pull request"></a>pull request</h4><p>当你在forked的项目上修改了一个故障，此时需要原始的项目维护者从你forked的项目pull这个更改到原始的项目上时，做的一个request</p>
+<p>常规流程：</p>
+<ol>
+<li>fork一个原始项目AA到自己的账户下</li>
+<li>把forked的项目下载到本地，并创建一个topic分支进行更改</li>
+<li>把topic分支的更改push到自己的账户</li>
+<li>在GitHub创建一个pull request并选择更改的topic分支</li>
+</ol>
+<h4 id="watch-amp-amp-star"><a href="#watch-amp-amp-star" class="headerlink" title="watch &amp;&amp; star"></a>watch &amp;&amp; star</h4><p>watch:当项目有任何的变化都会通知到你的邮箱，如果你是项目的维护者，需要这个</p>
+<p>star:在自己的主页可以看到项目的更改，但是不会主动通知</p>
+<h4 id="与源项目同步"><a href="#与源项目同步" class="headerlink" title="与源项目同步"></a>与源项目同步</h4><p>fork的项目在本地更改后，原始的项目可能已经更新了内容，但是还是需要把源项目的更改同步过来的</p>
+<ol>
+<li><p>在本地的项目中增加源项目作物一个remote repo</p>
+<p><code>git remote add upstream https://github.com/udacity/course-collaboration-travel-plans.git</code></p>
+<p><code>upstream</code>通常作为原始项目的remote的别名</p>
+</li>
+<li><p><code>git remote -v</code>查看本地的项目应该是关联了两个remote的repo</p>
+</li>
+<li><p><code>git fetch upstream master</code>从源项目获取最新的更改</p>
+</li>
+<li><p><code>git checkout master</code>本地的分支切换到master分支</p>
+</li>
+<li><p><code>git merge upstream/master</code>合并远端upstream的master分支到本地的master分支</p>
+</li>
+<li><p><code>git push origin master</code>把最新的master推到自己的GitHub的项目的master上</p>
+</li>
+</ol>
+<h4 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h4><ul>
+<li><p>git push origin 提示 <code>OpenSSL SSL_read: Connection was reset, errno 10054</code></p>
+<p>网络原因导致失败，可以多试几次，也可以关闭ssl验证</p>
+<p><code>git config --global http.sslVerify &quot;false&quot;</code></p>
+</li>
+</ul>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="http://www.firsttimersonly.com/" target="_blank" rel="noopener">http://www.firsttimersonly.com/</a></p>
+<p><a href="https://up-for-grabs.net/#/" target="_blank" rel="noopener">up for grabs</a></p>
+<h3 id="Vocabulary"><a href="#Vocabulary" class="headerlink" title="Vocabulary"></a>Vocabulary</h3><p> defacto  事实上; 事实; 事实上的; 实际上; 实际上的 </p>
+<p> substantial  大量的; 价值巨大的; 重大的; 大而坚固的; 结实的; 牢固的 </p>
+<p> <code>a11y</code> stands for “accessibility”. In the word “accessibility”, there are eleven letters between the <code>a</code> and the <code>y</code>, so it gets shortened to just <code>a11y</code> </p>
+<p> squash  压软(或挤软、压坏、压扁等); 把…压(或挤)变形; (使) 挤进; 塞入; 打断; 制止; 去除; 粉碎;  墙网球; 壁球; 果汁饮料; 南瓜小果 </p>
+]]></content>
+      <categories>
+        <category>git</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+        <tag>github</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git study</title>
     <url>/2020/02/05/Git/</url>
     <content><![CDATA[<h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p>/git/ </p>
@@ -358,109 +461,6 @@
       <tags>
         <tag>git</tag>
         <tag>gitlab</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Github study</title>
-    <url>/2020/02/07/Github/</url>
-    <content><![CDATA[<h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><p>当多人合作时，可以每个人各自创建一个分支，每个分支都有明确的名称，做完自己的开发后，合并到一起</p>
-<h3 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h3><p>远端仓库是存在远端服务器或PC上的git仓库，可以使用URL或文件系统的路径来访问一个远程仓库</p>
-<p>可以把本地的repo的分支同步到remote repo，一个本地的repo可以关联多个远端repo</p>
-<h3 id="remote"><a href="#remote" class="headerlink" title="remote"></a>remote</h3><p><code>git remote</code>可以查看当前关联的remote repo的路径，一般使用origin作为主干的remote repo的名称</p>
-<p>关联一个remote repo，在本地的repo目录下，执行</p>
-<p><code>git remote add origin https://github.com/memorywalker/workflow.git</code></p>
-<p>其中的origin只是一个惯例，也可以使用任意一个名称来代表远端repo，然后使用</p>
-<p><code>git remote -v</code>查看当前关联的remote repo是否正确</p>
-<p><code>git remote rename newname oldname</code>更改一个remote repo的别名</p>
-<h3 id="push"><a href="#push" class="headerlink" title="push"></a>push</h3><p><code>git push origin master</code>把本地的master分支发送到名为origin的远端repo，会在远端创建一个master分支</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">To https://github.com/memorywalker/workflow.git</span><br><span class="line"> * [new branch]      master -&gt; master</span><br></pre></td></tr></table></figure>
-
-<p>执行<code>git log --oneline --all</code>可以看到当前本地更新的远端分支在哪个commit上，其中的<code>origin/master</code>称作追踪分支，表示一个远端分支当前指向当前的哪个commit</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">0f40286 (HEAD -&gt; master, origin/master, backup) change call of duty</span><br></pre></td></tr></table></figure>
-
-<h3 id="pull"><a href="#pull" class="headerlink" title="pull"></a>pull</h3><p><code>git pull origin hexo</code>从名为origin的远端更新hexo分支的commit到本地，pull会合并远端分支的更改到本地</p>
-<h3 id="fetch"><a href="#fetch" class="headerlink" title="fetch"></a>fetch</h3><p>当本地的更改和远端的commit有冲突时，可能不需要git自动合并remote的更改到本地，此时需要先把远端的更改下载到本地，在本地手动合并冲突后，再把本地的push到远端</p>
-<p><code>git fetch origin master</code>从名为origin的远端下载master分支到本地，但是不合并到本地的master分支</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span> git log --oneline --all</span><br><span class="line">f85bd96 (origin/master) add h2 style</span><br><span class="line">0f40286 (HEAD -&gt; master, backup) change call of duty</span><br></pre></td></tr></table></figure>
-
-<p>如果要把已经下载下来的合并到本地分支，需要本地执行merge命令</p>
-<p><code>git merge origin/master</code>,在本地把冲突处理</p>
-<h3 id="shortlog"><a href="#shortlog" class="headerlink" title="shortlog"></a>shortlog</h3><p><code>git shortlog</code>可以查看每一个提交者提交了多少次以及每次提交信息，默认使用作者的名称字母顺序，可以增加<code>-n</code>安提交次数降序排列，<code>-s</code>只显示提交次数，不显示提交信息</p>
-<h3 id="log"><a href="#log" class="headerlink" title="log"></a>log</h3><p><code>git log --author=xxx</code>只显示作者名字以xxx开始提交的日志，如果名字中有空格，需要使用””包住</p>
-<p><code>git log --grep=bug</code>和<code>git log --grep bug</code>过滤commit的信息中有bug的commit，这里grep的规则和shell的grep相同，如果有空格也需要””包住</p>
-<h3 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h3><p>rebase可以把多个commit合并到一起，如果和多人一起工作，不要把已经push过的commit执行rebase，这样会导致其他人本地的和库里面的不一致，合并起来很麻烦。</p>
-<p><code>git rebase -i HEAD~3</code>从<code>HEAD~3</code>的位置重新创建一个base，这个commit之后的会合并到一起，之后<code>git log</code>不会看见已经合并的这些commit，<code>-i</code>标识交互的方式进行rebase</p>
-<p>在执行rebase之前可以先创建一个backup分支，避免rebase之后被合并的commit被删除了无法恢复</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">*   c4f25cd (HEAD -&gt; backup, master) change h2 style</span><br><span class="line">|\</span><br><span class="line">| * f85bd96 (origin/master) add h2 style</span><br><span class="line">* | ff309fe add h2 style local</span><br><span class="line">|/</span><br><span class="line">* 0f40286 change call of duty</span><br><span class="line">* 65d78c2 Revert "change title"</span><br><span class="line">* ee4190c change title</span><br></pre></td></tr></table></figure>
-
-<p>执行<code>git rebase -i HEAD~3</code>后</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pick 0f40286 change call of duty</span><br><span class="line">pick ff309fe add h2 style local</span><br><span class="line">pick f85bd96 add h2 style</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Rebase 65d78c2..c4f25cd onto 65d78c2 (3 commands)</span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span> Commands:</span><br><span class="line"><span class="meta">#</span> p, pick &lt;commit&gt; = use commit</span><br><span class="line"><span class="meta">#</span> r, reword &lt;commit&gt; = use commit, but edit the commit message</span><br><span class="line"><span class="meta">#</span> e, edit &lt;commit&gt; = use commit, but stop for amending</span><br><span class="line"><span class="meta">#</span> s, squash &lt;commit&gt; = use commit, but meld into previous commit</span><br><span class="line"><span class="meta">#</span> f, fixup &lt;commit&gt; = like "squash", but discard this commit's log message</span><br><span class="line"><span class="meta">#</span> x, exec &lt;command&gt; = run command (the rest of the line) using shell</span><br><span class="line"><span class="meta">#</span> b, break = stop here (continue rebase later with 'git rebase --continue')</span><br><span class="line"><span class="meta">#</span> d, drop &lt;commit&gt; = remove commit</span><br><span class="line"><span class="meta">#</span> l, label &lt;label&gt; = label current HEAD with a name</span><br><span class="line"><span class="meta">#</span> t, reset &lt;label&gt; = reset HEAD to a label</span><br><span class="line"><span class="meta">#</span> m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]</span><br></pre></td></tr></table></figure>
-
-<p>修改其中的内容，从下向上依次是最早的commit，前缀改为s，说明要把这个commit合并到它的上一个commit，而r对这次提交重新写commit信息，作为最后rebase的新的commit的信息</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">r 0f40286 change call of duty</span><br><span class="line">s ff309fe add h2 style local</span><br><span class="line">s f85bd96 add h2 style</span><br></pre></td></tr></table></figure>
-
-<p>保存文件后，会提示编辑commit信息</p>
-<p>合并后65d78c2现在是master的base，中间的其他commit都没有了，不过backup分支还有备份</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">* fc0772e (HEAD -&gt; master) add h2 style</span><br><span class="line">| * 9848bbf (readme) add readme file</span><br><span class="line">| *   c4f25cd (backup) change h2 style</span><br><span class="line">| |\</span><br><span class="line">| | * f85bd96 (origin/master) add h2 style</span><br><span class="line">| * | ff309fe add h2 style local</span><br><span class="line">| |/</span><br><span class="line">| * 0f40286 change call of duty</span><br><span class="line">|/</span><br><span class="line">* 65d78c2 Revert &quot;change title&quot;</span><br><span class="line">* ee4190c change title</span><br></pre></td></tr></table></figure>
-
-<h3 id="Github-1"><a href="#Github-1" class="headerlink" title="Github"></a>Github</h3><h4 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h4><p>拷贝一份其他人的repo到自己的账户</p>
-<h4 id="push-1"><a href="#push-1" class="headerlink" title="push"></a>push</h4><blockquote>
-<p>remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.<br>remote: Please see <a href="https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/" target="_blank" rel="noopener">https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/</a> for more information.</p>
-</blockquote>
-<p>现在github不再使用用户名密码作为验证，而使用token，这个token在<code>Settings-&gt;Developer Settings</code>  <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Personal Access Tokens (github.com)</a> 生成，在生成的页面会显示一次，需要自己保存好，每一个token可以有不同的权限和有效期设置</p>
-<p>本地push时，输入用户名后，提示输入密码要用这个新生成的token（一串字符）作为密码登陆</p>
-<h4 id="issue"><a href="#issue" class="headerlink" title="issue"></a>issue</h4><p>如果要给公共库提交更改，要先查看库的贡献说明文档；查看issue列表是否有类似的问题，咨询库的所有者是否有人在处理这个问题、自己是否可以处理，避免浪费工作时间；是不要提交一个issue来追溯这个更改</p>
-<p>github的issue不只是bug，可以是项目相关的任何问题，可以把一个issue指派给一个人或一个版本，一个issue下面可以评论，你也可以订阅这个issue，只要有变化，你都会收到通知</p>
-<p>如果一个项目有<code>CONTRIBUTING.md</code>这个文件，在给项目新建issue时，会在页面的最下提示Remember, contributions to this repository should follow its <a href="https://github.com/memorywalker/workflow/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">contributing guidelines</a>. 链接到项目的贡献说明文档</p>
-<p>master分支作为默认的分支一般用来放所有的commit，而更改一个故障可以创建一个topic分支，分支的命就可以是bug-xxx之类，不要在master分支做自己的更改</p>
-<p>尽量经常提交小的commit，一个commit的更改一定不能太多，比如十几个文件，几百行代码，因为管理者在合并你的代码时，可能会觉得其中的一部分时合适的，而另一部分不合适，如果全部放在一个commit里，无法单独更改</p>
-<p>做了更改之后，不要忘记更多readme文件</p>
-<h4 id="pull-request"><a href="#pull-request" class="headerlink" title="pull request"></a>pull request</h4><p>当你在forked的项目上修改了一个故障，此时需要原始的项目维护者从你forked的项目pull这个更改到原始的项目上时，做的一个request</p>
-<p>常规流程：</p>
-<ol>
-<li>fork一个原始项目AA到自己的账户下</li>
-<li>把forked的项目下载到本地，并创建一个topic分支进行更改</li>
-<li>把topic分支的更改push到自己的账户</li>
-<li>在GitHub创建一个pull request并选择更改的topic分支</li>
-</ol>
-<h4 id="watch-amp-amp-star"><a href="#watch-amp-amp-star" class="headerlink" title="watch &amp;&amp; star"></a>watch &amp;&amp; star</h4><p>watch:当项目有任何的变化都会通知到你的邮箱，如果你是项目的维护者，需要这个</p>
-<p>star:在自己的主页可以看到项目的更改，但是不会主动通知</p>
-<h4 id="与源项目同步"><a href="#与源项目同步" class="headerlink" title="与源项目同步"></a>与源项目同步</h4><p>fork的项目在本地更改后，原始的项目可能已经更新了内容，但是还是需要把源项目的更改同步过来的</p>
-<ol>
-<li><p>在本地的项目中增加源项目作物一个remote repo</p>
-<p><code>git remote add upstream https://github.com/udacity/course-collaboration-travel-plans.git</code></p>
-<p><code>upstream</code>通常作为原始项目的remote的别名</p>
-</li>
-<li><p><code>git remote -v</code>查看本地的项目应该是关联了两个remote的repo</p>
-</li>
-<li><p><code>git fetch upstream master</code>从源项目获取最新的更改</p>
-</li>
-<li><p><code>git checkout master</code>本地的分支切换到master分支</p>
-</li>
-<li><p><code>git merge upstream/master</code>合并远端upstream的master分支到本地的master分支</p>
-</li>
-<li><p><code>git push origin master</code>把最新的master推到自己的GitHub的项目的master上</p>
-</li>
-</ol>
-<h4 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h4><ul>
-<li><p>git push origin 提示 <code>OpenSSL SSL_read: Connection was reset, errno 10054</code></p>
-<p>网络原因导致失败，可以多试几次，也可以关闭ssl验证</p>
-<p><code>git config --global http.sslVerify &quot;false&quot;</code></p>
-</li>
-</ul>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="http://www.firsttimersonly.com/" target="_blank" rel="noopener">http://www.firsttimersonly.com/</a></p>
-<p><a href="https://up-for-grabs.net/#/" target="_blank" rel="noopener">up for grabs</a></p>
-<h3 id="Vocabulary"><a href="#Vocabulary" class="headerlink" title="Vocabulary"></a>Vocabulary</h3><p> defacto  事实上; 事实; 事实上的; 实际上; 实际上的 </p>
-<p> substantial  大量的; 价值巨大的; 重大的; 大而坚固的; 结实的; 牢固的 </p>
-<p> <code>a11y</code> stands for “accessibility”. In the word “accessibility”, there are eleven letters between the <code>a</code> and the <code>y</code>, so it gets shortened to just <code>a11y</code> </p>
-<p> squash  压软(或挤软、压坏、压扁等); 把…压(或挤)变形; (使) 挤进; 塞入; 打断; 制止; 去除; 粉碎;  墙网球; 壁球; 果汁饮料; 南瓜小果 </p>
-]]></content>
-      <categories>
-        <category>git</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-        <tag>github</tag>
       </tags>
   </entry>
   <entry>
@@ -714,31 +714,6 @@
 <h3 id="Vocabulary"><a href="#Vocabulary" class="headerlink" title="Vocabulary"></a>Vocabulary</h3>]]></content>
       <tags>
         <tag>code review</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2016/03/29/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>demo</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-        <tag>demo</tag>
       </tags>
   </entry>
   <entry>
@@ -1011,6 +986,31 @@
       </tags>
   </entry>
   <entry>
+    <title>Hello World</title>
+    <url>/2016/03/29/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>demo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>demo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>IBM Cloud Usage</title>
     <url>/2020/06/22/ibmcloud/</url>
     <content><![CDATA[<h2 id="IBM-Cloud-Usage"><a href="#IBM-Cloud-Usage" class="headerlink" title="IBM Cloud Usage"></a>IBM Cloud Usage</h2><p>IBM Cloud 提供了256M的免费运行空间</p>
@@ -1155,6 +1155,57 @@
       </tags>
   </entry>
   <entry>
+    <title>MarkDown学习</title>
+    <url>/2016/03/29/markdown-study/</url>
+    <content><![CDATA[<h2 id="MarkDown学习"><a href="#MarkDown学习" class="headerlink" title="MarkDown学习"></a>MarkDown学习</h2><p>2013/9/16 23:46:13 </p>
+<p>网上总结的几个优点：</p>
+<ul>
+<li>纯文本，意味着别人可以简单的修改编辑，关键是可以放到github上用版本管理工具管理起来</li>
+<li>语法简单，如果只是简单的写作，不写科技论文，你需要知道的就那么几个常用标记</li>
+<li>专心写作，这个优点需要因人而异，没有了word里面各种排版格式设置，你只需要把自己想到的用文字写下来</li>
+<li>格式转换，可以转换为HTML格式，互联网时代，HTML格式就是个万能格式，大家都能懂，还可以转换到其他格式</li>
+</ul>
+<p>本文参考主要来自<a href="http://jianshu.io/p/q81RER" title="献给写作者的 Markdown 新手指南" target="_blank" rel="noopener">献给写作者的 Markdown 新手指南</a></p>
+<p>段落 直接回车换行，一行或多行一个效果</p>
+<p><strong>粗体</strong></p>
+<p><em>斜体</em></p>
+<p><em>标题用#的个数来表示</em></p>
+<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><p><em>列表</em></p>
+<p>无序列表用 “*” 、 “-”</p>
+<ul>
+<li>中文</li>
+<li>英文</li>
+<li>日文</li>
+</ul>
+<p>有序列表用 数字+.  如</p>
+<ol>
+<li>早晨</li>
+<li>中午</li>
+<li>下午</li>
+<li>傍晚</li>
+<li>夜晚</li>
+</ol>
+<p>引用</p>
+<blockquote>
+<p>子曾经曰：“学而时习之，不亦乐乎”</p>
+</blockquote>
+<p>强制换行<br>最后一个问题?<br>爱过</p>
+<p>超链接<a href="链接地址">显示文本</a></p>
+<p><a href="http://www.google.com" target="_blank" rel="noopener">Google主页</a></p>
+<p>图片<br>女汉子<br><img src="http://img4.duitang.com/uploads/item/201306/03/20130603151306_2rRmB.thumb.600_0.jpeg" alt="三笠女汉子"></p>
+<p>国内网站<a href="(http://jianshu.io/)">简书</a></p>
+<p>我在使用的软件<a href="http://www.markdownpad.com/" title="markdownpad" target="_blank" rel="noopener">markdownpad</a></p>
+<p><a href="http://jianshu.io/p/txFRad" target="_blank" rel="noopener">本文预览</a></p>
+]]></content>
+      <categories>
+        <category>tech</category>
+      </categories>
+      <tags>
+        <tag>tech</tag>
+        <tag>markdown</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>内存管理</title>
     <url>/2020/03/06/memory-manage/</url>
     <content><![CDATA[<h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><p>虚拟内存管理的最小单位为<strong>页</strong>，一个页可以是4K或8K</p>
@@ -1207,57 +1258,6 @@
         <tag>linux</tag>
         <tag>memory</tag>
         <tag>malloc</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MarkDown学习</title>
-    <url>/2016/03/29/markdown-study/</url>
-    <content><![CDATA[<h2 id="MarkDown学习"><a href="#MarkDown学习" class="headerlink" title="MarkDown学习"></a>MarkDown学习</h2><p>2013/9/16 23:46:13 </p>
-<p>网上总结的几个优点：</p>
-<ul>
-<li>纯文本，意味着别人可以简单的修改编辑，关键是可以放到github上用版本管理工具管理起来</li>
-<li>语法简单，如果只是简单的写作，不写科技论文，你需要知道的就那么几个常用标记</li>
-<li>专心写作，这个优点需要因人而异，没有了word里面各种排版格式设置，你只需要把自己想到的用文字写下来</li>
-<li>格式转换，可以转换为HTML格式，互联网时代，HTML格式就是个万能格式，大家都能懂，还可以转换到其他格式</li>
-</ul>
-<p>本文参考主要来自<a href="http://jianshu.io/p/q81RER" title="献给写作者的 Markdown 新手指南" target="_blank" rel="noopener">献给写作者的 Markdown 新手指南</a></p>
-<p>段落 直接回车换行，一行或多行一个效果</p>
-<p><strong>粗体</strong></p>
-<p><em>斜体</em></p>
-<p><em>标题用#的个数来表示</em></p>
-<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><p><em>列表</em></p>
-<p>无序列表用 “*” 、 “-”</p>
-<ul>
-<li>中文</li>
-<li>英文</li>
-<li>日文</li>
-</ul>
-<p>有序列表用 数字+.  如</p>
-<ol>
-<li>早晨</li>
-<li>中午</li>
-<li>下午</li>
-<li>傍晚</li>
-<li>夜晚</li>
-</ol>
-<p>引用</p>
-<blockquote>
-<p>子曾经曰：“学而时习之，不亦乐乎”</p>
-</blockquote>
-<p>强制换行<br>最后一个问题?<br>爱过</p>
-<p>超链接<a href="链接地址">显示文本</a></p>
-<p><a href="http://www.google.com" target="_blank" rel="noopener">Google主页</a></p>
-<p>图片<br>女汉子<br><img src="http://img4.duitang.com/uploads/item/201306/03/20130603151306_2rRmB.thumb.600_0.jpeg" alt="三笠女汉子"></p>
-<p>国内网站<a href="(http://jianshu.io/)">简书</a></p>
-<p>我在使用的软件<a href="http://www.markdownpad.com/" title="markdownpad" target="_blank" rel="noopener">markdownpad</a></p>
-<p><a href="http://jianshu.io/p/txFRad" target="_blank" rel="noopener">本文预览</a></p>
-]]></content>
-      <categories>
-        <category>tech</category>
-      </categories>
-      <tags>
-        <tag>tech</tag>
-        <tag>markdown</tag>
       </tags>
   </entry>
   <entry>
@@ -1319,144 +1319,6 @@
         <tag>network</tag>
         <tag>clash</tag>
         <tag>proxy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python 基础笔记</title>
-    <url>/2021/08/08/python-basic/</url>
-    <content><![CDATA[<h3 id="Python-Crash-Course-2nd"><a href="#Python-Crash-Course-2nd" class="headerlink" title="Python Crash Course 2nd"></a>Python Crash Course 2nd</h3><p>基于Python 3.7</p>
-<p>python之禅 <code>import this</code></p>
-<h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><p>字符串可以使用<code>&quot;&quot;</code>或<code>&#39;&#39;</code>，所以在子串中可以嵌套子串例如</p>
-<p>‘Messi is the “VIP” winner’。对于字符串还是统一使用<code>&quot;&quot;</code>来表示，因为有些句子中有<code>&#39;s</code>会导致字串匹配错误。</p>
-<h5 id="格式化子串"><a href="#格式化子串" class="headerlink" title="格式化子串"></a>格式化子串</h5><p>python 3.6支持<strong>f</strong>开始的字串格式化语法，与以前的<code>full_name = &quot;{} {}&quot;.format(first_name, last_name)</code>等价</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">first_name = <span class="string">"ada"</span></span><br><span class="line">last_name = <span class="string">"lovelace"</span></span><br><span class="line">full_name = <span class="string">f"<span class="subst">&#123;first_name.title()&#125;</span> <span class="subst">&#123;last_name.title()&#125;</span>"</span></span><br></pre></td></tr></table></figure>
-
-<h5 id="空白符操作"><a href="#空白符操作" class="headerlink" title="空白符操作"></a>空白符操作</h5><p><code>&quot;Languages:\n\tPython\n\tC\n\tJavaScript&quot;</code>在一句字串中增加换行或tab</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">favorite_language.rstrip() <span class="comment"># 去掉右侧空白</span></span><br><span class="line">favorite_language.lstrip()</span><br><span class="line">favorite_language.strip()  <span class="comment"># 去掉两侧空白</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h4><p>指数运算 <code>3**2</code> 的值为9</p>
-<p>Python在所有需要用到float的地方都会自动转换为float，例如两个整数相除得到的是float</p>
-<p>可以在数字间以下划线连接，例如<code>1_000</code>，和1000是等价的。(3.6+)</p>
-<p>多个变量同时赋值 <code>x, y, z = 0, 0, 0</code></p>
-<h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><p>动态数组，使用[]表示</p>
-<p>可以使用负数索引倒序获取列表中的值，例如mylist[-1]，表示获取倒数第一个元素</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">motorcycles = []</span><br><span class="line">motorcycles[<span class="number">0</span>] = <span class="string">'ducati'</span> <span class="comment"># 修改一个元素</span></span><br><span class="line">motorcycles.append(<span class="string">'ducati'</span>) <span class="comment">#添加一个元素</span></span><br><span class="line">motorcycles.insert(<span class="number">0</span>, <span class="string">'ducati'</span>) <span class="comment">#插入一个元素</span></span><br><span class="line"><span class="keyword">del</span> motorcycles[<span class="number">1</span>]  <span class="comment">#删除一个元素</span></span><br><span class="line">popped_motorcycle = motorcycles.pop() <span class="comment">#弹出最后一个元素，并将这个元素赋值给变量</span></span><br><span class="line">first_owned = motorcycles.pop(<span class="number">0</span>)  <span class="comment"># 弹出指定位置的一个元素</span></span><br><span class="line">motorcycles.remove(<span class="string">'ducati'</span>)  <span class="comment"># 按值删除第一个元素</span></span><br><span class="line"></span><br><span class="line">cars = [<span class="string">'bmw'</span>, <span class="string">'audi'</span>, <span class="string">'toyota'</span>, <span class="string">'subaru'</span>]</span><br><span class="line">cars.sort() <span class="comment"># 对一个列表升序排序</span></span><br><span class="line">cars.sort(reverse=<span class="literal">True</span>) <span class="comment"># 逆序排序</span></span><br><span class="line">sorted(cars) <span class="comment">#对于一个排序，并不改变原来列表的顺序，而是返回一个临时列表</span></span><br><span class="line">cars.reverse() <span class="comment"># 反转列表中所有元素的顺序</span></span><br><span class="line">len(cars) <span class="comment"># 元素个数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#遍历一个列表</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> list_of_items:</span><br><span class="line">    print(item)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 数字序列</span></span><br><span class="line">range(<span class="number">5</span>)  <span class="comment"># 0-4  </span></span><br><span class="line">range(<span class="number">1</span>, <span class="number">5</span>) <span class="comment"># [1, 2, 3, 4]</span></span><br><span class="line">range(<span class="number">2</span>, <span class="number">11</span>, <span class="number">2</span>) <span class="comment"># 从2开始，步长为2，到11结束，不包括11</span></span><br><span class="line">even_numbers = list(range(<span class="number">2</span>, <span class="number">11</span>, <span class="number">2</span>)) <span class="comment"># 序列转列表</span></span><br><span class="line"></span><br><span class="line">digits = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">0</span>]</span><br><span class="line">min(digits) <span class="comment"># 最小元素</span></span><br><span class="line">max(digits) <span class="comment"># 最大元素</span></span><br><span class="line">sum(digits) <span class="comment"># 元素求和 45</span></span><br></pre></td></tr></table></figure>
-
-<h5 id="list-comprehension"><a href="#list-comprehension" class="headerlink" title="list comprehension"></a>list comprehension</h5><p>通过一个列表表达式生成一个列表</p>
-<p><code>squares = [value**2 for value in range(1, 11)]</code>得到</p>
-<p><code>[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]</code></p>
-<h5 id="列表切片"><a href="#列表切片" class="headerlink" title="列表切片"></a>列表切片</h5><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">players[<span class="number">1</span>:<span class="number">4</span>] <span class="comment"># 获取player列表的1，2，3这3个元素的子集</span></span><br><span class="line">players[:<span class="number">4</span>] <span class="comment"># 从0开始的元素子集</span></span><br><span class="line">players[<span class="number">2</span>:] <span class="comment"># 从2开始到结束的元素子集</span></span><br><span class="line">players[<span class="number">-3</span>:] <span class="comment"># 最后3个元素的子集</span></span><br><span class="line">mylist = list(range(<span class="number">1</span>, <span class="number">11</span>))</span><br><span class="line">print(mylist[<span class="number">1</span>:<span class="number">8</span>:<span class="number">3</span>]) <span class="comment"># 第三个参数为步长，[2, 5, 8]</span></span><br><span class="line">friend_foods = my_foods[:] <span class="comment"># 拷贝一个新列表，不能用friend_foods = my_foods，这样只是指向同一个列表的另一个别名</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h4><p>不可变<strong>immutable</strong> 的列表，<code>dimensions = (200, 50)</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">my_t = (<span class="number">3</span>,)  <span class="comment"># 定义只有一个元素的元组需要多加一个，号</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h4><h5 id="boolean表达式"><a href="#boolean表达式" class="headerlink" title="boolean表达式"></a>boolean表达式</h5><p>关键字 <strong>True</strong>   <strong>False</strong></p>
-<p>逻辑与 <code>and</code>  <code>(age_0 &gt;= 21) and (age_1 &gt;= 21)</code></p>
-<p>逻辑或 <code>or</code> <code>age_0 &gt;= 21 or age_1 &gt;= 21</code></p>
-<p>列表中有某一个元素 <code>&#39;mushrooms&#39; in requested_toppings</code></p>
-<p>列表中没有某一个元素 <code>&#39;mushrooms&#39; not in requested_toppings</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> a <span class="keyword">not</span> <span class="keyword">in</span> words:</span><br><span class="line">    print(a)</span><br><span class="line"><span class="keyword">elif</span> b <span class="keyword">in</span> words:</span><br><span class="line">    print(b)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"xxx"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用if可以直接判断一个list是否为空</span></span><br><span class="line">requested_toppings = []</span><br><span class="line"><span class="keyword">if</span> requested_toppings:</span><br><span class="line">    print(requested_toppings[<span class="number">0</span>])</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"Empty list"</span>)</span><br></pre></td></tr></table></figure>
-
-<h4 id="编程规范"><a href="#编程规范" class="headerlink" title="编程规范"></a>编程规范</h4><p>Python Enhancement Proposal (PEP)  </p>
-<p>PEP 8  说明了编码规范 <a href="https://python.org/dev/peps/pep-0008/" target="_blank" rel="noopener">https://python.org/dev/peps/pep-0008/</a>  </p>
-<p>变量一般小写和下划线组成</p>
-<p>常量全大写</p>
-<p>indent使用空格，不用tab</p>
-<p>不要写多余的indent，否则可能出现非预期的结果</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">magicians = [<span class="string">'alice'</span>, <span class="string">'david'</span>, <span class="string">'carolina'</span>]</span><br><span class="line"><span class="keyword">for</span> magician <span class="keyword">in</span> magicians:</span><br><span class="line">	print(<span class="string">f"<span class="subst">&#123;magician.title()&#125;</span>, that was a great trick!"</span>)</span><br><span class="line">	</span><br><span class="line">	print(<span class="string">"Thank you everyone!"</span>) <span class="comment"># 这一行也会被每次循环输出</span></span><br></pre></td></tr></table></figure>
-
-<p>操作符前后各加一个空格<code>a == b</code></p>
-<h4 id="Django"><a href="#Django" class="headerlink" title="Django"></a>Django</h4><p><a href="https://djangoproject.com/" target="_blank" rel="noopener">https://djangoproject.com/</a>  </p>
-<p><strong>开始一个项目之前，一定要写一个项目描述书，包括项目的具体目标，功能，用户交互流程和界面。这样可以保障项目不会偏离，从而正常完成。</strong></p>
-<p>本书中的例子是建立一个学习日志的管理系统</p>
-<h5 id="设置开发环境"><a href="#设置开发环境" class="headerlink" title="设置开发环境"></a>设置开发环境</h5><ul>
-<li>配置一个独立的Python虚拟环境</li>
-</ul>
-<p><code>python -m venv py38</code> 会在当前目录下创建一个名为py38的目录，其中是独立的一个python运行环境</p>
-<ul>
-<li><p>激活一个虚拟环境</p>
-<ul>
-<li>windows <code>py38\Scripts\Activate</code>  </li>
-<li>Linux <code>source py38/bin/activate</code></li>
-</ul>
-</li>
-<li><p>安装Django程序库<code>pip install Django</code></p>
-</li>
-</ul>
-<h5 id="Django工程"><a href="#Django工程" class="headerlink" title="Django工程"></a>Django工程</h5><ol>
-<li>新建一个目录djangoweb，在虚拟环境的终端中，进入这个用来放置工程的目录</li>
-<li><code>(py38) E:\djangoweb&gt;django-admin startproject demo .</code>在当前目录下新建一个名为demo的工程，注意当前目录的<code>.</code>一定要有。</li>
-<li>此时会有一个demo工程目录和一个<code>manage.py</code>文件在当前目录下</li>
-<li>创建数据库 在当前目录下执行<code>(py38) E:\djangoweb&gt;python manage.py migrate</code></li>
-<li>测试服务<code>python manage.py runserver 8000</code></li>
-</ol>
-<p>manager.py：用来处理管理工程的各种命令，例如迁移数据库，运行服务等</p>
-<p>settings.py：django如何与系统交互和管理工程</p>
-<p>urls.py：处理URL请求的转发</p>
-<p>wsgi.py：web server gateway interfae 用来服务Django创建的文件</p>
-<ul>
-<li>修改数据库这里都称作migrating the database. 第一次执行migrate命令让django确保数据库和当前工程的状态是匹配的，同时django还会创建一个SQLite数据库文件。</li>
-</ul>
-<h5 id="app应用"><a href="#app应用" class="headerlink" title="app应用"></a>app应用</h5><p>一个Django工程由多个独立的app组成。</p>
-<p>重新打开一个虚拟环境终端，切换到工程目录下即manage.py所在的目录，执行</p>
-<p><code>python manage.py startapp demoapp</code> 创建一个名称为demoapp的应用。系统会创建这个应用使用的model/view/admin.py文件。</p>
-<p>在demo工程目录下settings.py中管理了当前所有应用，在其中可以启用我们自定义的应用</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    <span class="string">'demoapp'</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="string">'django.contrib.admin'</span>,</span><br><span class="line">    <span class="string">'django.contrib.auth'</span>,</span><br><span class="line">    <span class="string">'django.contrib.contenttypes'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions'</span>,</span><br><span class="line">    <span class="string">'django.contrib.messages'</span>,</span><br><span class="line">    <span class="string">'django.contrib.staticfiles'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-
-<p>自己的app要写在系统默认app之前，可以让自己的app的功能覆盖默认的app的功能。</p>
-<h5 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h5><p>模型表示数据抽象，和数据库中的一个表对应，例如一本书，它有书名和作者。</p>
-<p>一个应用目录中的models.py定义了这个应用的模型。</p>
-<h6 id="增加模型"><a href="#增加模型" class="headerlink" title="增加模型"></a>增加模型</h6><p>需要在models.py中定义模型的类</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Create your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Topic</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">"""A topic"""</span></span><br><span class="line">    <span class="comment"># 少量文字的字段使用CharField，长度限制为200个字符</span></span><br><span class="line">    text = models.CharField(max_length=<span class="number">200</span>)</span><br><span class="line">    <span class="comment"># 使用当前时间作为添加一个Topic的添加时间</span></span><br><span class="line">    date_added = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line">	<span class="comment"># 这个模型显示时的文字描述信息</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""Return a string representation of the mdoel."""</span></span><br><span class="line">        <span class="keyword">return</span> self.text</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Entry</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">"""Something specific learned about a topic"""</span></span><br><span class="line">    <span class="comment"># 定义一个外键和Topic关联，删除一个Topic时，关联的所有Entry也级联删除</span></span><br><span class="line">    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)</span><br><span class="line">    text = models.TextField()</span><br><span class="line">    date_added = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line">	</span><br><span class="line">    <span class="comment"># 额外的一些信息用来管理一个模型</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        <span class="comment">#告诉Django使用entries来表示多个Entry，如果没有定义这个Django会默认使用Entrys</span></span><br><span class="line">        verbose_name_plural = <span class="string">'entries'</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span> -&gt; str:</span></span><br><span class="line">        <span class="string">"""Return a string representation of the model"""</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">f"<span class="subst">&#123;self.text[:<span class="number">50</span>]&#125;</span>..."</span></span><br></pre></td></tr></table></figure>
-
-<p>这里Topic和Entry作为模型，分别对应了两个数据库表，其中一个Topic和多个Entry关联</p>
-<h6 id="更新模型"><a href="#更新模型" class="headerlink" title="更新模型"></a>更新模型</h6><p>只要对模型有所修改，即数据表有更改，都需要让Django更新数据表，并进行同步数据库文件。依次执行以下两步：</p>
-<ol>
-<li><code>python manage.py makemigrations demoapp</code> 会生成类似<code>demoapp\migrations\0001_initial.py</code>文件，其中是数据表创建的实现代码</li>
-<li><code>python manage.py migrate</code>按照数据表的创建代码，更新工程实际的数据库，创建模型对应的数据表</li>
-</ol>
-<h5 id="Django-管理站点"><a href="#Django-管理站点" class="headerlink" title="Django  管理站点"></a>Django  管理站点</h5><p>自动生成的管理员站点，可以管理工程的数据表。需要先创建一个管理员帐号</p>
-<p><code>python manage.py createsuperuser</code>执行后，会提示输入用户名和密码，而且密码还有长度要求，但是我输入了123虽然不安全，还是可以继续执行。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(py38) E:\code\python\djangoweb&gt;python manage.py createsuperuser</span><br><span class="line">Username (leave blank to use 'edison'):</span><br><span class="line">Email address:</span><br><span class="line">Password:</span><br><span class="line">Password (again):</span><br><span class="line">Error: Blank passwords aren't allowed.</span><br><span class="line">Password:</span><br><span class="line">Password (again):</span><br><span class="line">This password is too short. It must contain at least 8 characters.</span><br><span class="line">This password is too common.</span><br><span class="line">This password is entirely numeric.</span><br><span class="line">Bypass password validation and create user anyway? [y/N]: y</span><br><span class="line">Superuser created successfully.</span><br></pre></td></tr></table></figure>
-
-<p>打开 <a href="http://127.0.0.1:8000/admin/" target="_blank" rel="noopener">http://127.0.0.1:8000/admin/</a> 使用用户名和密码登录后，就可以看到管理页面，默认会有users和groups两个表. 在这个界面可以直接修改数据表的数据</p>
-<h6 id="添加模型到管理站点"><a href="#添加模型到管理站点" class="headerlink" title="添加模型到管理站点"></a>添加模型到管理站点</h6><p>在应用的admin.py中增加自己定义的模型</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Register your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当前目录下model模块的Topic和Entry模型</span></span><br><span class="line"><span class="keyword">from</span> .models <span class="keyword">import</span> Topic, Entry</span><br><span class="line"></span><br><span class="line">admin.site.register(Topic)</span><br><span class="line">admin.site.register(Entry)</span><br></pre></td></tr></table></figure>
-
-<h5 id="URL映射"><a href="#URL映射" class="headerlink" title="URL映射"></a>URL映射</h5><p>用户访问的url地址通过映射表转给对应的view处理。可以给每个app单独设置一个url映射表。</p>
-<p>如果出现<code>ModuleNotFoundError: No module named</code>的错误提示，需要把服务器重新启动一下。</p>
-<p>在主工程目录的urls.py中增加app的urls的映射</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"><span class="keyword">from</span> django.urls.conf <span class="keyword">import</span> include</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">'admin/'</span>, admin.site.urls),</span><br><span class="line">	<span class="comment"># demoapp应用的urls映射，第一个为空，说明从根路径转换</span></span><br><span class="line">    path(<span class="string">''</span>, include(<span class="string">'demoapp.urls'</span>)),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-
-<p>在demoapp的目录中新增一个urls.py文件</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">"""Defines URL patterns for demoapp."""</span></span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path <span class="comment"># 映射url到views需要用到</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">app_name = <span class="string">'demoapp'</span>  <span class="comment"># Django用来区分同一个工程不同应用的urls.py的文件</span></span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    <span class="comment"># Home page，第一个参数匹配url相对路径，第二个参数指定调用views.py中的函数，第三个参数给这个url地址起了名字，以便其他地方的代码可以转到这个地址，这样不用写完整的url地址</span></span><br><span class="line">    path(<span class="string">''</span>, views.index, name=<span class="string">'index'</span>),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-
-<h5 id="view视图"><a href="#view视图" class="headerlink" title="view视图"></a>view视图</h5><p>一个视图函数获取request中的参数信息，处理数据后，将产生的数据发送回浏览器。通常结合模板，将一个页面发送给浏览器。</p>
-<p>实现views.py中的index函数</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create your views here.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">"""The home page for Demo App."""</span></span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">'demoapp/index.html'</span>)</span><br></pre></td></tr></table></figure>
-
-<h5 id="Template模板"><a href="#Template模板" class="headerlink" title="Template模板"></a>Template模板</h5><p>模板定义了页面的显示方式，Django把数据填入模板对应的代码片段中。</p>
-<p>在demoapp中创建以下目录并创建<code>index.html</code>文件<code>template/demoapp/index.html</code>这样和view中函数的相对路径保持一致。</p>
-<h6 id="模板继承"><a href="#模板继承" class="headerlink" title="模板继承"></a>模板继承</h6><p>对于每个页面都有的元素，可以通过定义一个父模板，其中实现通用的界面显示部分，在子模板中继承父模板即可。</p>
-<ul>
-<li>定义一个父模板<code>base.html</code> 其中<code>xxx</code>是为了解决Hexo的nunjunks erro，实际代码不需要</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123; % url 'demoapp:index' % &#125;"</span>&gt;</span>Index<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">// 定义了一个名为content的block，用来给子模板占位</span><br><span class="line">&#123; % block content % &#125; &#123; % endblock content % &#125;</span><br></pre></td></tr></table></figure>
-
-<p>``{% %}<code>定义了一个</code>Template tag`.这个代码片段用来生成显示在页面上的信息。</p>
-<p><code> {% url 'demoapp:index' %} </code>生成一个URL与<code>demoapp/urls.py</code>中的名称为index的url映射匹配，其中的demoapp就是urls.py中定义的<strong>app_name</strong></p>
-<ul>
-<li>定义子模板index.html</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">&#123; % extends "demoapp/base.html" % &#125;</span><br><span class="line"></span><br><span class="line">&#123; % block content % &#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Learning Log helps you keep track of your learning, for any topic you're</span><br><span class="line">    learning about.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">&#123; % endblock content % &#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>Django</tag>
       </tags>
   </entry>
   <entry>
@@ -1609,6 +1471,144 @@
         <tag>linux</tag>
         <tag>qemu</tag>
         <tag>kernel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python 基础笔记</title>
+    <url>/2021/08/08/python-basic/</url>
+    <content><![CDATA[<h3 id="Python-Crash-Course-2nd"><a href="#Python-Crash-Course-2nd" class="headerlink" title="Python Crash Course 2nd"></a>Python Crash Course 2nd</h3><p>基于Python 3.7</p>
+<p>python之禅 <code>import this</code></p>
+<h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><p>字符串可以使用<code>&quot;&quot;</code>或<code>&#39;&#39;</code>，所以在子串中可以嵌套子串例如</p>
+<p>‘Messi is the “VIP” winner’。对于字符串还是统一使用<code>&quot;&quot;</code>来表示，因为有些句子中有<code>&#39;s</code>会导致字串匹配错误。</p>
+<h5 id="格式化子串"><a href="#格式化子串" class="headerlink" title="格式化子串"></a>格式化子串</h5><p>python 3.6支持<strong>f</strong>开始的字串格式化语法，与以前的<code>full_name = &quot;{} {}&quot;.format(first_name, last_name)</code>等价</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">first_name = <span class="string">"ada"</span></span><br><span class="line">last_name = <span class="string">"lovelace"</span></span><br><span class="line">full_name = <span class="string">f"<span class="subst">&#123;first_name.title()&#125;</span> <span class="subst">&#123;last_name.title()&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="空白符操作"><a href="#空白符操作" class="headerlink" title="空白符操作"></a>空白符操作</h5><p><code>&quot;Languages:\n\tPython\n\tC\n\tJavaScript&quot;</code>在一句字串中增加换行或tab</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">favorite_language.rstrip() <span class="comment"># 去掉右侧空白</span></span><br><span class="line">favorite_language.lstrip()</span><br><span class="line">favorite_language.strip()  <span class="comment"># 去掉两侧空白</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h4><p>指数运算 <code>3**2</code> 的值为9</p>
+<p>Python在所有需要用到float的地方都会自动转换为float，例如两个整数相除得到的是float</p>
+<p>可以在数字间以下划线连接，例如<code>1_000</code>，和1000是等价的。(3.6+)</p>
+<p>多个变量同时赋值 <code>x, y, z = 0, 0, 0</code></p>
+<h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><p>动态数组，使用[]表示</p>
+<p>可以使用负数索引倒序获取列表中的值，例如mylist[-1]，表示获取倒数第一个元素</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">motorcycles = []</span><br><span class="line">motorcycles[<span class="number">0</span>] = <span class="string">'ducati'</span> <span class="comment"># 修改一个元素</span></span><br><span class="line">motorcycles.append(<span class="string">'ducati'</span>) <span class="comment">#添加一个元素</span></span><br><span class="line">motorcycles.insert(<span class="number">0</span>, <span class="string">'ducati'</span>) <span class="comment">#插入一个元素</span></span><br><span class="line"><span class="keyword">del</span> motorcycles[<span class="number">1</span>]  <span class="comment">#删除一个元素</span></span><br><span class="line">popped_motorcycle = motorcycles.pop() <span class="comment">#弹出最后一个元素，并将这个元素赋值给变量</span></span><br><span class="line">first_owned = motorcycles.pop(<span class="number">0</span>)  <span class="comment"># 弹出指定位置的一个元素</span></span><br><span class="line">motorcycles.remove(<span class="string">'ducati'</span>)  <span class="comment"># 按值删除第一个元素</span></span><br><span class="line"></span><br><span class="line">cars = [<span class="string">'bmw'</span>, <span class="string">'audi'</span>, <span class="string">'toyota'</span>, <span class="string">'subaru'</span>]</span><br><span class="line">cars.sort() <span class="comment"># 对一个列表升序排序</span></span><br><span class="line">cars.sort(reverse=<span class="literal">True</span>) <span class="comment"># 逆序排序</span></span><br><span class="line">sorted(cars) <span class="comment">#对于一个排序，并不改变原来列表的顺序，而是返回一个临时列表</span></span><br><span class="line">cars.reverse() <span class="comment"># 反转列表中所有元素的顺序</span></span><br><span class="line">len(cars) <span class="comment"># 元素个数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#遍历一个列表</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> list_of_items:</span><br><span class="line">    print(item)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 数字序列</span></span><br><span class="line">range(<span class="number">5</span>)  <span class="comment"># 0-4  </span></span><br><span class="line">range(<span class="number">1</span>, <span class="number">5</span>) <span class="comment"># [1, 2, 3, 4]</span></span><br><span class="line">range(<span class="number">2</span>, <span class="number">11</span>, <span class="number">2</span>) <span class="comment"># 从2开始，步长为2，到11结束，不包括11</span></span><br><span class="line">even_numbers = list(range(<span class="number">2</span>, <span class="number">11</span>, <span class="number">2</span>)) <span class="comment"># 序列转列表</span></span><br><span class="line"></span><br><span class="line">digits = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">0</span>]</span><br><span class="line">min(digits) <span class="comment"># 最小元素</span></span><br><span class="line">max(digits) <span class="comment"># 最大元素</span></span><br><span class="line">sum(digits) <span class="comment"># 元素求和 45</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="list-comprehension"><a href="#list-comprehension" class="headerlink" title="list comprehension"></a>list comprehension</h5><p>通过一个列表表达式生成一个列表</p>
+<p><code>squares = [value**2 for value in range(1, 11)]</code>得到</p>
+<p><code>[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]</code></p>
+<h5 id="列表切片"><a href="#列表切片" class="headerlink" title="列表切片"></a>列表切片</h5><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">players[<span class="number">1</span>:<span class="number">4</span>] <span class="comment"># 获取player列表的1，2，3这3个元素的子集</span></span><br><span class="line">players[:<span class="number">4</span>] <span class="comment"># 从0开始的元素子集</span></span><br><span class="line">players[<span class="number">2</span>:] <span class="comment"># 从2开始到结束的元素子集</span></span><br><span class="line">players[<span class="number">-3</span>:] <span class="comment"># 最后3个元素的子集</span></span><br><span class="line">mylist = list(range(<span class="number">1</span>, <span class="number">11</span>))</span><br><span class="line">print(mylist[<span class="number">1</span>:<span class="number">8</span>:<span class="number">3</span>]) <span class="comment"># 第三个参数为步长，[2, 5, 8]</span></span><br><span class="line">friend_foods = my_foods[:] <span class="comment"># 拷贝一个新列表，不能用friend_foods = my_foods，这样只是指向同一个列表的另一个别名</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h4><p>不可变<strong>immutable</strong> 的列表，<code>dimensions = (200, 50)</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">my_t = (<span class="number">3</span>,)  <span class="comment"># 定义只有一个元素的元组需要多加一个，号</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h4><h5 id="boolean表达式"><a href="#boolean表达式" class="headerlink" title="boolean表达式"></a>boolean表达式</h5><p>关键字 <strong>True</strong>   <strong>False</strong></p>
+<p>逻辑与 <code>and</code>  <code>(age_0 &gt;= 21) and (age_1 &gt;= 21)</code></p>
+<p>逻辑或 <code>or</code> <code>age_0 &gt;= 21 or age_1 &gt;= 21</code></p>
+<p>列表中有某一个元素 <code>&#39;mushrooms&#39; in requested_toppings</code></p>
+<p>列表中没有某一个元素 <code>&#39;mushrooms&#39; not in requested_toppings</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> a <span class="keyword">not</span> <span class="keyword">in</span> words:</span><br><span class="line">    print(a)</span><br><span class="line"><span class="keyword">elif</span> b <span class="keyword">in</span> words:</span><br><span class="line">    print(b)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"xxx"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用if可以直接判断一个list是否为空</span></span><br><span class="line">requested_toppings = []</span><br><span class="line"><span class="keyword">if</span> requested_toppings:</span><br><span class="line">    print(requested_toppings[<span class="number">0</span>])</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"Empty list"</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="编程规范"><a href="#编程规范" class="headerlink" title="编程规范"></a>编程规范</h4><p>Python Enhancement Proposal (PEP)  </p>
+<p>PEP 8  说明了编码规范 <a href="https://python.org/dev/peps/pep-0008/" target="_blank" rel="noopener">https://python.org/dev/peps/pep-0008/</a>  </p>
+<p>变量一般小写和下划线组成</p>
+<p>常量全大写</p>
+<p>indent使用空格，不用tab</p>
+<p>不要写多余的indent，否则可能出现非预期的结果</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">magicians = [<span class="string">'alice'</span>, <span class="string">'david'</span>, <span class="string">'carolina'</span>]</span><br><span class="line"><span class="keyword">for</span> magician <span class="keyword">in</span> magicians:</span><br><span class="line">	print(<span class="string">f"<span class="subst">&#123;magician.title()&#125;</span>, that was a great trick!"</span>)</span><br><span class="line">	</span><br><span class="line">	print(<span class="string">"Thank you everyone!"</span>) <span class="comment"># 这一行也会被每次循环输出</span></span><br></pre></td></tr></table></figure>
+
+<p>操作符前后各加一个空格<code>a == b</code></p>
+<h4 id="Django"><a href="#Django" class="headerlink" title="Django"></a>Django</h4><p><a href="https://djangoproject.com/" target="_blank" rel="noopener">https://djangoproject.com/</a>  </p>
+<p><strong>开始一个项目之前，一定要写一个项目描述书，包括项目的具体目标，功能，用户交互流程和界面。这样可以保障项目不会偏离，从而正常完成。</strong></p>
+<p>本书中的例子是建立一个学习日志的管理系统</p>
+<h5 id="设置开发环境"><a href="#设置开发环境" class="headerlink" title="设置开发环境"></a>设置开发环境</h5><ul>
+<li>配置一个独立的Python虚拟环境</li>
+</ul>
+<p><code>python -m venv py38</code> 会在当前目录下创建一个名为py38的目录，其中是独立的一个python运行环境</p>
+<ul>
+<li><p>激活一个虚拟环境</p>
+<ul>
+<li>windows <code>py38\Scripts\Activate</code>  </li>
+<li>Linux <code>source py38/bin/activate</code></li>
+</ul>
+</li>
+<li><p>安装Django程序库<code>pip install Django</code></p>
+</li>
+</ul>
+<h5 id="Django工程"><a href="#Django工程" class="headerlink" title="Django工程"></a>Django工程</h5><ol>
+<li>新建一个目录djangoweb，在虚拟环境的终端中，进入这个用来放置工程的目录</li>
+<li><code>(py38) E:\djangoweb&gt;django-admin startproject demo .</code>在当前目录下新建一个名为demo的工程，注意当前目录的<code>.</code>一定要有。</li>
+<li>此时会有一个demo工程目录和一个<code>manage.py</code>文件在当前目录下</li>
+<li>创建数据库 在当前目录下执行<code>(py38) E:\djangoweb&gt;python manage.py migrate</code></li>
+<li>测试服务<code>python manage.py runserver 8000</code></li>
+</ol>
+<p>manager.py：用来处理管理工程的各种命令，例如迁移数据库，运行服务等</p>
+<p>settings.py：django如何与系统交互和管理工程</p>
+<p>urls.py：处理URL请求的转发</p>
+<p>wsgi.py：web server gateway interfae 用来服务Django创建的文件</p>
+<ul>
+<li>修改数据库这里都称作migrating the database. 第一次执行migrate命令让django确保数据库和当前工程的状态是匹配的，同时django还会创建一个SQLite数据库文件。</li>
+</ul>
+<h5 id="app应用"><a href="#app应用" class="headerlink" title="app应用"></a>app应用</h5><p>一个Django工程由多个独立的app组成。</p>
+<p>重新打开一个虚拟环境终端，切换到工程目录下即manage.py所在的目录，执行</p>
+<p><code>python manage.py startapp demoapp</code> 创建一个名称为demoapp的应用。系统会创建这个应用使用的model/view/admin.py文件。</p>
+<p>在demo工程目录下settings.py中管理了当前所有应用，在其中可以启用我们自定义的应用</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    <span class="string">'demoapp'</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="string">'django.contrib.admin'</span>,</span><br><span class="line">    <span class="string">'django.contrib.auth'</span>,</span><br><span class="line">    <span class="string">'django.contrib.contenttypes'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions'</span>,</span><br><span class="line">    <span class="string">'django.contrib.messages'</span>,</span><br><span class="line">    <span class="string">'django.contrib.staticfiles'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>自己的app要写在系统默认app之前，可以让自己的app的功能覆盖默认的app的功能。</p>
+<h5 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h5><p>模型表示数据抽象，和数据库中的一个表对应，例如一本书，它有书名和作者。</p>
+<p>一个应用目录中的models.py定义了这个应用的模型。</p>
+<h6 id="增加模型"><a href="#增加模型" class="headerlink" title="增加模型"></a>增加模型</h6><p>需要在models.py中定义模型的类</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Create your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Topic</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">"""A topic"""</span></span><br><span class="line">    <span class="comment"># 少量文字的字段使用CharField，长度限制为200个字符</span></span><br><span class="line">    text = models.CharField(max_length=<span class="number">200</span>)</span><br><span class="line">    <span class="comment"># 使用当前时间作为添加一个Topic的添加时间</span></span><br><span class="line">    date_added = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line">	<span class="comment"># 这个模型显示时的文字描述信息</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""Return a string representation of the mdoel."""</span></span><br><span class="line">        <span class="keyword">return</span> self.text</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Entry</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">"""Something specific learned about a topic"""</span></span><br><span class="line">    <span class="comment"># 定义一个外键和Topic关联，删除一个Topic时，关联的所有Entry也级联删除</span></span><br><span class="line">    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)</span><br><span class="line">    text = models.TextField()</span><br><span class="line">    date_added = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line">	</span><br><span class="line">    <span class="comment"># 额外的一些信息用来管理一个模型</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        <span class="comment">#告诉Django使用entries来表示多个Entry，如果没有定义这个Django会默认使用Entrys</span></span><br><span class="line">        verbose_name_plural = <span class="string">'entries'</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span> -&gt; str:</span></span><br><span class="line">        <span class="string">"""Return a string representation of the model"""</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">f"<span class="subst">&#123;self.text[:<span class="number">50</span>]&#125;</span>..."</span></span><br></pre></td></tr></table></figure>
+
+<p>这里Topic和Entry作为模型，分别对应了两个数据库表，其中一个Topic和多个Entry关联</p>
+<h6 id="更新模型"><a href="#更新模型" class="headerlink" title="更新模型"></a>更新模型</h6><p>只要对模型有所修改，即数据表有更改，都需要让Django更新数据表，并进行同步数据库文件。依次执行以下两步：</p>
+<ol>
+<li><code>python manage.py makemigrations demoapp</code> 会生成类似<code>demoapp\migrations\0001_initial.py</code>文件，其中是数据表创建的实现代码</li>
+<li><code>python manage.py migrate</code>按照数据表的创建代码，更新工程实际的数据库，创建模型对应的数据表</li>
+</ol>
+<h5 id="Django-管理站点"><a href="#Django-管理站点" class="headerlink" title="Django  管理站点"></a>Django  管理站点</h5><p>自动生成的管理员站点，可以管理工程的数据表。需要先创建一个管理员帐号</p>
+<p><code>python manage.py createsuperuser</code>执行后，会提示输入用户名和密码，而且密码还有长度要求，但是我输入了123虽然不安全，还是可以继续执行。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(py38) E:\code\python\djangoweb&gt;python manage.py createsuperuser</span><br><span class="line">Username (leave blank to use 'edison'):</span><br><span class="line">Email address:</span><br><span class="line">Password:</span><br><span class="line">Password (again):</span><br><span class="line">Error: Blank passwords aren't allowed.</span><br><span class="line">Password:</span><br><span class="line">Password (again):</span><br><span class="line">This password is too short. It must contain at least 8 characters.</span><br><span class="line">This password is too common.</span><br><span class="line">This password is entirely numeric.</span><br><span class="line">Bypass password validation and create user anyway? [y/N]: y</span><br><span class="line">Superuser created successfully.</span><br></pre></td></tr></table></figure>
+
+<p>打开 <a href="http://127.0.0.1:8000/admin/" target="_blank" rel="noopener">http://127.0.0.1:8000/admin/</a> 使用用户名和密码登录后，就可以看到管理页面，默认会有users和groups两个表. 在这个界面可以直接修改数据表的数据</p>
+<h6 id="添加模型到管理站点"><a href="#添加模型到管理站点" class="headerlink" title="添加模型到管理站点"></a>添加模型到管理站点</h6><p>在应用的admin.py中增加自己定义的模型</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Register your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当前目录下model模块的Topic和Entry模型</span></span><br><span class="line"><span class="keyword">from</span> .models <span class="keyword">import</span> Topic, Entry</span><br><span class="line"></span><br><span class="line">admin.site.register(Topic)</span><br><span class="line">admin.site.register(Entry)</span><br></pre></td></tr></table></figure>
+
+<h5 id="URL映射"><a href="#URL映射" class="headerlink" title="URL映射"></a>URL映射</h5><p>用户访问的url地址通过映射表转给对应的view处理。可以给每个app单独设置一个url映射表。</p>
+<p>如果出现<code>ModuleNotFoundError: No module named</code>的错误提示，需要把服务器重新启动一下。</p>
+<p>在主工程目录的urls.py中增加app的urls的映射</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"><span class="keyword">from</span> django.urls.conf <span class="keyword">import</span> include</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">'admin/'</span>, admin.site.urls),</span><br><span class="line">	<span class="comment"># demoapp应用的urls映射，第一个为空，说明从根路径转换</span></span><br><span class="line">    path(<span class="string">''</span>, include(<span class="string">'demoapp.urls'</span>)),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>在demoapp的目录中新增一个urls.py文件</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">"""Defines URL patterns for demoapp."""</span></span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path <span class="comment"># 映射url到views需要用到</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">app_name = <span class="string">'demoapp'</span>  <span class="comment"># Django用来区分同一个工程不同应用的urls.py的文件</span></span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    <span class="comment"># Home page，第一个参数匹配url相对路径，第二个参数指定调用views.py中的函数，第三个参数给这个url地址起了名字，以便其他地方的代码可以转到这个地址，这样不用写完整的url地址</span></span><br><span class="line">    path(<span class="string">''</span>, views.index, name=<span class="string">'index'</span>),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="view视图"><a href="#view视图" class="headerlink" title="view视图"></a>view视图</h5><p>一个视图函数获取request中的参数信息，处理数据后，将产生的数据发送回浏览器。通常结合模板，将一个页面发送给浏览器。</p>
+<p>实现views.py中的index函数</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create your views here.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">"""The home page for Demo App."""</span></span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">'demoapp/index.html'</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="Template模板"><a href="#Template模板" class="headerlink" title="Template模板"></a>Template模板</h5><p>模板定义了页面的显示方式，Django把数据填入模板对应的代码片段中。</p>
+<p>在demoapp中创建以下目录并创建<code>index.html</code>文件<code>template/demoapp/index.html</code>这样和view中函数的相对路径保持一致。</p>
+<h6 id="模板继承"><a href="#模板继承" class="headerlink" title="模板继承"></a>模板继承</h6><p>对于每个页面都有的元素，可以通过定义一个父模板，其中实现通用的界面显示部分，在子模板中继承父模板即可。</p>
+<ul>
+<li>定义一个父模板<code>base.html</code> 其中<code>xxx</code>是为了解决Hexo的nunjunks erro，实际代码不需要</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123; % url 'demoapp:index' % &#125;"</span>&gt;</span>Index<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">// 定义了一个名为content的block，用来给子模板占位</span><br><span class="line">&#123; % block content % &#125; &#123; % endblock content % &#125;</span><br></pre></td></tr></table></figure>
+
+<p>``{% %}<code>定义了一个</code>Template tag`.这个代码片段用来生成显示在页面上的信息。</p>
+<p><code> {% url 'demoapp:index' %} </code>生成一个URL与<code>demoapp/urls.py</code>中的名称为index的url映射匹配，其中的demoapp就是urls.py中定义的<strong>app_name</strong></p>
+<ul>
+<li>定义子模板index.html</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">&#123; % extends "demoapp/base.html" % &#125;</span><br><span class="line"></span><br><span class="line">&#123; % block content % &#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Learning Log helps you keep track of your learning, for any topic you're</span><br><span class="line">    learning about.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">&#123; % endblock content % &#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>Django</tag>
       </tags>
   </entry>
   <entry>
@@ -2084,31 +2084,6 @@
       </tags>
   </entry>
   <entry>
-    <title>head first design pattern - Observer</title>
-    <url>/2010/05/03/HeadFirstDesignPattern/headfirst-design-pattern-observer/</url>
-    <content><![CDATA[<h2 id="head-first-design-pattern-Observer"><a href="#head-first-design-pattern-Observer" class="headerlink" title="head first design pattern - Observer"></a>head first design pattern - Observer</h2><p>老博客搬运计划</p>
-<p><a href="https://www.cnblogs.com/aquar/archive/2010/05/03/3451441.html" target="_blank" rel="noopener">https://www.cnblogs.com/aquar/archive/2010/05/03/3451441.html</a></p>
-<h4 id="Observer-Pattern"><a href="#Observer-Pattern" class="headerlink" title="Observer Pattern"></a>Observer Pattern</h4><p>有一些<strong>观察者对象</strong>依赖于<strong>主题对象</strong>，主题对象管理一些数据，并将数据发送给观察者对象，观察者可以添加或删除。就像订阅报纸，每个读者就是一个观察者，可以向报社(主题)订阅报纸，也可以取消订阅(报社就不在给该读者发送报纸)。</p>
-<p><strong>观察者模式</strong>：定义了对象之间的一对多依赖，当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。主题(可观察者)用一个共同的接口来更新观察者，观察者和可观察者之间用松耦合的方式结合，互不知道对方的具体细节，只是知道接口。这样其他开发者可以采用添加或删除自己另外定义的观察者。</p>
-<p>采用“推”或“拉”的方式都可以，一般认为推更正确。</p>
-<p>有多个观察者时，不可以依赖特定的通知次序，在JavaBean、RMI、GUI中都用到该模式。</p>
-<p><strong>设计原则</strong>：为了交互对象之间的松耦合设计而努力。一个对象的改变并不影响交互的对象。</p>
-<p>当两个对象之间松耦合，它们依然可以交互，但是不太清楚彼此的细节。对于观察者的一切，主题只知道观察者实现了某个接口(observer interface)，主题不知道观察者的具体类是谁，做了些什么等细节。任何时候都可以增加新的观察者，因为主题依赖的是一个实现observer接口的对象的列表。</p>
-<p>在Java中内置了观察者模式，只需要实现java.util.Observer观察者接口，然后调用任何Observable对象的addObserver()方法，不想当观察者时，deleteObserver(). 主题在此改称为可观察者，需要继承java.util.Observable类，先调用setChange()方法，标记状态已经改变的事实，通过该方法可以设置在什么条件下才发送数据进行后面的notifObservers()。然后调用notifObservers()or notifyObservers(Object arg). </p>
-<p>无参数的表明需要观察者从被观察者中拉数据，有参数的只是被观察者向观察者推数据。各有优缺点。观察者的update(Observable o, Object arg),第一个参数指明是哪个主题通知他的，第二个参数给出主题推出的数据对象。<br>java.util.Observable实现了它自己的notifyObservers()方法，<strong>导致通知观察者的次序会不同于自己定义的次序，在通知时需要一次遍历观察者列表中的每个观察者，但是不同的实现，遍历的方式可能会不同</strong>。如果次序很重要的话就会出现错误。可观察者是一个类，而不是一个接口，因此只能设计一个类继承他，如果这个类又想有另一个超类的行为就需要多重继承，但java中不支持多重继承。同时由于它不是一个接口也不能有自己的实现。</p>
-<p>Java swing中的ActionListener也是一个观察者的实现，ActionListener倾听可能发生在按钮上的动作。</p>
-<p>观察值模式UML：</p>
-<p><img src="../../uploads/designpattern/observer.png" alt="observer"><br><img src="/uploads/designpattern/observer.png" alt="observer"></p>
-<p>具体问题的实现UML：</p>
-<p><img src="../../uploads/designpattern/observer_weather.png" alt="observer"><br><img src="/uploads/designpattern/observer_weather.png" alt="observer"></p>
-<p>Java中内置的观察者模式：</p>
-<p><img src="../../uploads/designpattern/observer_in_java.png" alt="observer"><br><img src="/uploads/designpattern/observer_in_java.png" alt="observer"></p>
-]]></content>
-      <tags>
-        <tag>Design Pattern</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>head first design pattern - Adapter and Facade</title>
     <url>/2010/05/12/HeadFirstDesignPattern/headfirst-design-pattern-adapter-facade/</url>
     <content><![CDATA[<h2 id="head-first-design-pattern-Adapter-and-Facade"><a href="#head-first-design-pattern-Adapter-and-Facade" class="headerlink" title="head first design pattern - Adapter and Facade"></a>head first design pattern - Adapter and Facade</h2><p>老博客搬运计划</p>
@@ -2151,6 +2126,31 @@
 <p>不能级联调用获取某个对象的方法，再间接调用获取到的对象的方法，这样依赖的类就多了。例如</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getTemp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    station.getThermometer().getTemperature();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>head first design pattern - Observer</title>
+    <url>/2010/05/03/HeadFirstDesignPattern/headfirst-design-pattern-observer/</url>
+    <content><![CDATA[<h2 id="head-first-design-pattern-Observer"><a href="#head-first-design-pattern-Observer" class="headerlink" title="head first design pattern - Observer"></a>head first design pattern - Observer</h2><p>老博客搬运计划</p>
+<p><a href="https://www.cnblogs.com/aquar/archive/2010/05/03/3451441.html" target="_blank" rel="noopener">https://www.cnblogs.com/aquar/archive/2010/05/03/3451441.html</a></p>
+<h4 id="Observer-Pattern"><a href="#Observer-Pattern" class="headerlink" title="Observer Pattern"></a>Observer Pattern</h4><p>有一些<strong>观察者对象</strong>依赖于<strong>主题对象</strong>，主题对象管理一些数据，并将数据发送给观察者对象，观察者可以添加或删除。就像订阅报纸，每个读者就是一个观察者，可以向报社(主题)订阅报纸，也可以取消订阅(报社就不在给该读者发送报纸)。</p>
+<p><strong>观察者模式</strong>：定义了对象之间的一对多依赖，当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。主题(可观察者)用一个共同的接口来更新观察者，观察者和可观察者之间用松耦合的方式结合，互不知道对方的具体细节，只是知道接口。这样其他开发者可以采用添加或删除自己另外定义的观察者。</p>
+<p>采用“推”或“拉”的方式都可以，一般认为推更正确。</p>
+<p>有多个观察者时，不可以依赖特定的通知次序，在JavaBean、RMI、GUI中都用到该模式。</p>
+<p><strong>设计原则</strong>：为了交互对象之间的松耦合设计而努力。一个对象的改变并不影响交互的对象。</p>
+<p>当两个对象之间松耦合，它们依然可以交互，但是不太清楚彼此的细节。对于观察者的一切，主题只知道观察者实现了某个接口(observer interface)，主题不知道观察者的具体类是谁，做了些什么等细节。任何时候都可以增加新的观察者，因为主题依赖的是一个实现observer接口的对象的列表。</p>
+<p>在Java中内置了观察者模式，只需要实现java.util.Observer观察者接口，然后调用任何Observable对象的addObserver()方法，不想当观察者时，deleteObserver(). 主题在此改称为可观察者，需要继承java.util.Observable类，先调用setChange()方法，标记状态已经改变的事实，通过该方法可以设置在什么条件下才发送数据进行后面的notifObservers()。然后调用notifObservers()or notifyObservers(Object arg). </p>
+<p>无参数的表明需要观察者从被观察者中拉数据，有参数的只是被观察者向观察者推数据。各有优缺点。观察者的update(Observable o, Object arg),第一个参数指明是哪个主题通知他的，第二个参数给出主题推出的数据对象。<br>java.util.Observable实现了它自己的notifyObservers()方法，<strong>导致通知观察者的次序会不同于自己定义的次序，在通知时需要一次遍历观察者列表中的每个观察者，但是不同的实现，遍历的方式可能会不同</strong>。如果次序很重要的话就会出现错误。可观察者是一个类，而不是一个接口，因此只能设计一个类继承他，如果这个类又想有另一个超类的行为就需要多重继承，但java中不支持多重继承。同时由于它不是一个接口也不能有自己的实现。</p>
+<p>Java swing中的ActionListener也是一个观察者的实现，ActionListener倾听可能发生在按钮上的动作。</p>
+<p>观察值模式UML：</p>
+<p><img src="../../uploads/designpattern/observer.png" alt="observer"><br><img src="/uploads/designpattern/observer.png" alt="observer"></p>
+<p>具体问题的实现UML：</p>
+<p><img src="../../uploads/designpattern/observer_weather.png" alt="observer"><br><img src="/uploads/designpattern/observer_weather.png" alt="observer"></p>
+<p>Java中内置的观察者模式：</p>
+<p><img src="../../uploads/designpattern/observer_in_java.png" alt="observer"><br><img src="/uploads/designpattern/observer_in_java.png" alt="observer"></p>
 ]]></content>
       <tags>
         <tag>Design Pattern</tag>
@@ -2423,35 +2423,6 @@
       </tags>
   </entry>
   <entry>
-    <title>《达·芬奇的广博与创新》笔记</title>
-    <url>/2010/07/08/readnotes/decode-daVinci/</url>
-    <content><![CDATA[<h1 id="达·芬奇的广博与创新"><a href="#达·芬奇的广博与创新" class="headerlink" title="达·芬奇的广博与创新"></a>达·芬奇的广博与创新</h1><p><a href="https://www.cnblogs.com/aquar/archive/2010/07/30/3451419.html" target="_blank" rel="noopener">https://www.cnblogs.com/aquar/archive/2010/07/30/3451419.html</a></p>
-<blockquote>
-<p>《达·芬奇的广博与创新》 晓玲 编著 北京：东方出版社，2008，11</p>
-</blockquote>
-<p>达·芬奇（1452-1519）是一位思想深邃、学识渊博、多才多艺的艺术大师、科学巨匠、文艺理论家、哲学家、诗人、音乐家、工程师、解剖学实习生和发明家。</p>
-<p>由于是私生子，从小就被父亲皮耶罗抛弃与母亲一起生活，他不愿称她为母亲。后来父亲把他带到佛罗伦萨14岁跟随维罗基奥学习绘画。后来在佛罗伦萨不顺利，给米兰大公路德维克写了自荐信，开始了在米兰的辉煌时刻。</p>
-<p>金字塔型构图有恋母情节，有研究说梦那丽莎的微笑正是他母亲的微笑，所以绘画了四年时间。为了让画中人物能坚持坐在那里，他请来乐师取了模特。</p>
-<p>同性恋，终身未婚，和两个男孩有不正常的亲密关系。他十分不喜欢女性，所以有关女性的很少，也只是头部和脸部的绘画。在佛罗伦萨，他的故乡曾和米开朗基罗有过一段矛盾。左撇子，书写顺序刚好与我们相反，写出的手稿要从镜子里反着看。最有名的“莱彻斯特手稿”被Bill Gates购得。死于法国，他把蒙娜丽莎等几幅画总是带在身边，所以这些画现存在法国。</p>
-<p>作品：《受胎告知》《持花圣母》《圣哲罗姆和狮子》《博士来拜》（未完成）《岩间圣母》《斯福查骑马塑像》（未完成）《抱貂的女子》《女子肖像》《利塔圣母》《最后的晚餐》（米兰玛丽亚·格雷契修道院食堂）《蒙娜丽莎》（49岁）《安加利之战》《丽达与天鹅》《圣安娜与圣母子》《维特鲁威人》《自画像》《纺纱圣母》《施洗者圣约翰》</p>
-<p>杨·凡·爱克与他的哥哥胡伯特·凡·爱克并称为油画之父。</p>
-<p>梵高（1853-1890）不到十年的绘画生涯中共有850件油画作品和几乎同样数目的素描。</p>
-<p>笔记：</p>
-<p>愿望比现实更甜蜜。在树上显得甜蜜的果子，到了嘴里常常变得苦涩难尝。既然我们无法取得我们所希望的东西，那么，就让我们取得所能得到的东西吧。</p>
-<p>生命是神圣的。正因为我们没有力量创造生命，所以我们无权毁灭生命。剥夺任何生物多的生命，都是一种极端万恶的行为，灵魂不希望凶暴毁灭生命。</p>
-<p>不看重生命的人就不配享有生命。</p>
-<p>享乐之时，别忘了伴随享乐而来的痛苦和悔恨。</p>
-<p>人有很强的说话能力，但是他的大部分话都是空洞的，骗人的。动物只有一小点点的说话能力，但是那一小点点却是有用的，真实的。宁可少一点，准确一点，也不要大量的虚伪。</p>
-<p>总的来说，女人的欲望与男人相反，她希望男人的器官尽可能的大，而男人对女人生殖器的期望则正好相反。</p>
-]]></content>
-      <categories>
-        <category>read</category>
-      </categories>
-      <tags>
-        <tag>draw</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>素描的诀窍-第一章 作画步骤</title>
     <url>/2010/07/08/readnotes/key-to-drawing/</url>
     <content><![CDATA[<h1 id="素描的诀窍-第一章-作画步骤"><a href="#素描的诀窍-第一章-作画步骤" class="headerlink" title="素描的诀窍-第一章 作画步骤"></a>素描的诀窍-第一章 作画步骤</h1><p>绘画的书我也写了读书笔记Orz，想起来自己收集过很多绘画书籍</p>
@@ -2479,6 +2450,35 @@
 ]]></content>
       <categories>
         <category>art</category>
+      </categories>
+      <tags>
+        <tag>draw</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《达·芬奇的广博与创新》笔记</title>
+    <url>/2010/07/08/readnotes/decode-daVinci/</url>
+    <content><![CDATA[<h1 id="达·芬奇的广博与创新"><a href="#达·芬奇的广博与创新" class="headerlink" title="达·芬奇的广博与创新"></a>达·芬奇的广博与创新</h1><p><a href="https://www.cnblogs.com/aquar/archive/2010/07/30/3451419.html" target="_blank" rel="noopener">https://www.cnblogs.com/aquar/archive/2010/07/30/3451419.html</a></p>
+<blockquote>
+<p>《达·芬奇的广博与创新》 晓玲 编著 北京：东方出版社，2008，11</p>
+</blockquote>
+<p>达·芬奇（1452-1519）是一位思想深邃、学识渊博、多才多艺的艺术大师、科学巨匠、文艺理论家、哲学家、诗人、音乐家、工程师、解剖学实习生和发明家。</p>
+<p>由于是私生子，从小就被父亲皮耶罗抛弃与母亲一起生活，他不愿称她为母亲。后来父亲把他带到佛罗伦萨14岁跟随维罗基奥学习绘画。后来在佛罗伦萨不顺利，给米兰大公路德维克写了自荐信，开始了在米兰的辉煌时刻。</p>
+<p>金字塔型构图有恋母情节，有研究说梦那丽莎的微笑正是他母亲的微笑，所以绘画了四年时间。为了让画中人物能坚持坐在那里，他请来乐师取了模特。</p>
+<p>同性恋，终身未婚，和两个男孩有不正常的亲密关系。他十分不喜欢女性，所以有关女性的很少，也只是头部和脸部的绘画。在佛罗伦萨，他的故乡曾和米开朗基罗有过一段矛盾。左撇子，书写顺序刚好与我们相反，写出的手稿要从镜子里反着看。最有名的“莱彻斯特手稿”被Bill Gates购得。死于法国，他把蒙娜丽莎等几幅画总是带在身边，所以这些画现存在法国。</p>
+<p>作品：《受胎告知》《持花圣母》《圣哲罗姆和狮子》《博士来拜》（未完成）《岩间圣母》《斯福查骑马塑像》（未完成）《抱貂的女子》《女子肖像》《利塔圣母》《最后的晚餐》（米兰玛丽亚·格雷契修道院食堂）《蒙娜丽莎》（49岁）《安加利之战》《丽达与天鹅》《圣安娜与圣母子》《维特鲁威人》《自画像》《纺纱圣母》《施洗者圣约翰》</p>
+<p>杨·凡·爱克与他的哥哥胡伯特·凡·爱克并称为油画之父。</p>
+<p>梵高（1853-1890）不到十年的绘画生涯中共有850件油画作品和几乎同样数目的素描。</p>
+<p>笔记：</p>
+<p>愿望比现实更甜蜜。在树上显得甜蜜的果子，到了嘴里常常变得苦涩难尝。既然我们无法取得我们所希望的东西，那么，就让我们取得所能得到的东西吧。</p>
+<p>生命是神圣的。正因为我们没有力量创造生命，所以我们无权毁灭生命。剥夺任何生物多的生命，都是一种极端万恶的行为，灵魂不希望凶暴毁灭生命。</p>
+<p>不看重生命的人就不配享有生命。</p>
+<p>享乐之时，别忘了伴随享乐而来的痛苦和悔恨。</p>
+<p>人有很强的说话能力，但是他的大部分话都是空洞的，骗人的。动物只有一小点点的说话能力，但是那一小点点却是有用的，真实的。宁可少一点，准确一点，也不要大量的虚伪。</p>
+<p>总的来说，女人的欲望与男人相反，她希望男人的器官尽可能的大，而男人对女人生殖器的期望则正好相反。</p>
+]]></content>
+      <categories>
+        <category>read</category>
       </categories>
       <tags>
         <tag>draw</tag>
@@ -2608,71 +2608,6 @@
 <li>PendingReviewPost对象执行它特有的approve方法，返回一个Post对象</li>
 </ol>
 <figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Post</span></span> &#123;</span><br><span class="line">    content: <span class="built_in">String</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">DraftPost</span></span> &#123;</span><br><span class="line">    content: <span class="built_in">String</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Post &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>() -&gt; DraftPost &#123;</span><br><span class="line">        DraftPost &#123;</span><br><span class="line">            content: <span class="built_in">String</span>::new(),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">content</span></span>(&amp;<span class="keyword">self</span>) -&gt; &amp;<span class="built_in">str</span> &#123;</span><br><span class="line">        &amp;<span class="keyword">self</span>.content</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> DraftPost &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">add_text</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, text: &amp;<span class="built_in">str</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.content.push_str(text);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">request_review</span></span>(<span class="keyword">self</span>) -&gt; PendingReviewPost &#123;</span><br><span class="line">        PendingReviewPost &#123;</span><br><span class="line">            content: <span class="keyword">self</span>.content,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">PendingReviewPost</span></span> &#123;</span><br><span class="line">    content: <span class="built_in">String</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> PendingReviewPost &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">approve</span></span>(<span class="keyword">self</span>) -&gt; Post &#123;</span><br><span class="line">        Post &#123;</span><br><span class="line">            content: <span class="keyword">self</span>.content,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> post = Post::new();</span><br><span class="line"></span><br><span class="line">    post.add_text(<span class="string">"I ate a salad for lunch today"</span>);</span><br><span class="line">	<span class="comment">// 所有权转移了，所以需要新的变量</span></span><br><span class="line">    <span class="keyword">let</span> post = post.request_review();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> post = post.approve();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="string">"I ate a salad for lunch today"</span>, post.content());</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"All works done!!!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>programming</category>
-      </categories>
-      <tags>
-        <tag>rust</tag>
-        <tag>learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Rust Learning-Errors</title>
-    <url>/2024/01/21/rust/rust-errors/</url>
-    <content><![CDATA[<h2 id="RUST-Error-Handling"><a href="#RUST-Error-Handling" class="headerlink" title="RUST Error Handling"></a>RUST Error Handling</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
-<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。</p>
-<h3 id="Panic"><a href="#Panic" class="headerlink" title="Panic"></a>Panic</h3><p>rust中使用<code>panic!</code>宏来处理不可恢复的错误，出现panic后，程序会打印错误信息，清理函数栈然后退出程序。默认情况下，程序panic退出前，反向遍历每一个函数栈，释放其中的数据，然后再退出，这个过程需要一定时间，所以可以再release版本的程序中配置为直接退出程序，让操作系统来释放程序运行过程中申请的资源。</p>
-<p>在项目的 <em>Cargo.toml</em>文件中增加以下代码，在release版本可以减少程序退出占用的时间：</p>
-<figure class="highlight toml"><table><tr><td class="code"><pre><span class="line"><span class="section">[profile.release]</span></span><br><span class="line"><span class="attr">panic</span> = <span class="string">'abort'</span></span><br></pre></td></tr></table></figure>
-
-<p>可以直接调用<code>panic!</code>宏退出程序</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="built_in">panic!</span>(<span class="string">"I will be dead..."</span>);</span><br><span class="line"><span class="comment">// 程序会输出</span></span><br><span class="line"><span class="comment">//thread 'main' panicked at src\main.rs:17:5:</span></span><br><span class="line"><span class="comment">//I will be dead...</span></span><br></pre></td></tr></table></figure>
-
-<p>在C语言中访问数组越界时，程序还是会按实际的地址访问内存空间中的数据，只是错误是未定义的，这样会导致偶发不可预期的故障。rust中只要访问越界，就会panic，并明确告诉错误的原因。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> v = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">v[<span class="number">100</span>]; <span class="comment">// thread 'main' panicked at src\main.rs:18:6:</span></span><br><span class="line"><span class="comment">// index out of bounds: the len is 3 but the index is 100</span></span><br></pre></td></tr></table></figure>
-
-<p>通过在执行程序时设置<code>RUST_BACKTRACE=1</code> 环境变量，就可以把出错时的调用栈打印出来。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> RUST_BACKTRACE=1 cargo run</span></span><br><span class="line">或者</span><br><span class="line">E:\dev\rust\cargo_demo\target\release&gt;set RUST_BACKTRACE=1</span><br><span class="line"></span><br><span class="line">E:\dev\rust\cargo_demo\target\release&gt;cargo_demo.exe</span><br><span class="line">thread 'main' panicked at src\main.rs:18:6:</span><br><span class="line">index out of bounds: the len is 3 but the index is 100</span><br><span class="line">stack backtrace:</span><br><span class="line">   0: std::panicking::begin_panic_handler</span><br><span class="line">             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library\std\src\panicking.rs:645</span><br><span class="line">   1: core::panicking::panic_fmt</span><br><span class="line">   ......</span><br></pre></td></tr></table></figure>
-
-<h3 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h3><p>enum Result有两种值，Ok用来表示成功返回值，Err表示失败时的返回值。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Result</span></span>&lt;T, E&gt; &#123;</span><br><span class="line">    <span class="literal">Ok</span>(T),</span><br><span class="line">    <span class="literal">Err</span>(E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>例如以下代码打开一个文件，它的返回值为  <code>Result&lt;File, Error&gt;</code>  ，然后可以使用match来处理两种情况，当Ok的时候，就把其中的file变量返回出去，如果失败了，就打印错误信息</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::ErrorKind;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file_result = File::open(<span class="string">"hello.txt"</span>);</span><br><span class="line">    <span class="keyword">let</span> greeting_file = <span class="keyword">match</span> greeting_file_result &#123;</span><br><span class="line">        <span class="literal">Ok</span>(file) =&gt; file, <span class="comment">// Result是系统预置类型，所以不需要Result::前缀</span></span><br><span class="line">        <span class="literal">Err</span>(error) =&gt; <span class="keyword">match</span> error.kind() &#123;</span><br><span class="line">            ErrorKind::NotFound =&gt; <span class="keyword">match</span> File::create(<span class="string">"hello.txt"</span>) &#123;</span><br><span class="line">                <span class="literal">Ok</span>(fc) =&gt; fc, <span class="comment">// 打不开文件后，创建文件</span></span><br><span class="line">                <span class="literal">Err</span>(e) =&gt; <span class="built_in">panic!</span>(<span class="string">"Problem creating the file: &#123;:?&#125;"</span>, e),</span><br><span class="line">            &#125;,</span><br><span class="line">            other_error =&gt; &#123;</span><br><span class="line">              	<span class="comment">// 让程序退出</span></span><br><span class="line">                <span class="built_in">panic!</span>(<span class="string">"Problem opening the file: &#123;:?&#125;"</span>, other_error);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="unwrap"><a href="#unwrap" class="headerlink" title="unwrap"></a>unwrap</h4><p><code>Result&lt;T, E&gt;</code> 的unwrap()方法简化错误处理，它内部实现了Ok时返回结果，错误时调用默认的panic。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="comment">// called `Result::unwrap()` on an `Err` value: </span></span><br><span class="line">    <span class="comment">// Os &#123; code: 2, kind: NotFound, message: "The system cannot find the file specified." &#125;</span></span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>).unwrap();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="expect"><a href="#expect" class="headerlink" title="expect"></a>expect</h4><p><code>Result&lt;T, E&gt;</code>的expect()方法它内部实现了Ok时返回结果，错误时可以指定的panic的信息</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)</span><br><span class="line">        .expect(<span class="string">"hello.txt should be included in this project"</span>);</span><br><span class="line">    <span class="comment">//thread 'main' panicked at src\main.rs:5:10:</span></span><br><span class="line">    <span class="comment">//hello.txt should be included in this project: </span></span><br><span class="line">    <span class="comment">//Os &#123; code: 2, kind: NotFound, message: "The system cannot find the file specified." &#125;       </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="传播错误"><a href="#传播错误" class="headerlink" title="传播错误"></a>传播错误</h4><p>把函数执行过程中的错误返回给调用者，这样调用者可以看情况处理错误。可以使用match来直接返回错误</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::&#123;<span class="keyword">self</span>, Read&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt;&#123;</span><br><span class="line">    <span class="keyword">let</span> username_file_result = File::open(<span class="string">"hello.txt"</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username_file = <span class="keyword">match</span> username_file_result &#123;</span><br><span class="line">        <span class="literal">Ok</span>(file) =&gt; file,</span><br><span class="line">        <span class="literal">Err</span>(e) =&gt; <span class="keyword">return</span> <span class="literal">Err</span>(e), <span class="comment">// 直接返回错误</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    <span class="keyword">match</span> username_file.read_to_string(&amp;<span class="keyword">mut</span> username) &#123;</span><br><span class="line">        <span class="literal">Ok</span>(_) =&gt; <span class="literal">Ok</span>(username),</span><br><span class="line">        <span class="literal">Err</span>(e) =&gt; <span class="literal">Err</span>(e), <span class="comment">// 返回错误状态</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>为了简化match语句返回错误，rust支持使用<code>?</code>操作符来提前返回错误。在一个函数调用结束时使用？，如果函数返回错误，就直接返回错误，不用写match。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username_file = File::open(<span class="string">"hello.txt"</span>)?;<span class="comment">// 直接返回错误或正常返回文件句柄</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    username_file.read_to_string(&amp;<span class="keyword">mut</span> username)?;</span><br><span class="line">    <span class="literal">Ok</span>(username)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> <code>?</code> 会调用实现了<code>From</code>Trait的结构体的<code>from</code>方法，把调用函数返回的错误类型转换为当前？所在函数返回的错误类型。</p>
-<p>使用 <code>?</code> 后，可以方便的写链式调用。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    File::open(<span class="string">"hello.txt"</span>)?.read_to_string(&amp;<span class="keyword">mut</span> username)?;</span><br><span class="line">    <span class="literal">Ok</span>(username)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> <code>?</code> 操作符只能用于返回 <code>Result</code> 或 <code>Option</code> (或其他类型实现了 <code>FromResidual</code>)的函数，例如上面的函数返回值为Result.例如下面的会有编译错误，因为main的返回值类型为<code>()</code></p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)?;</span><br><span class="line">  <span class="comment">//the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>main可以返回任何实现了<code>std::process::Termination</code> trait的类型</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::error::Error;</span><br><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() -&gt; <span class="built_in">Result</span>&lt;(), <span class="built_in">Box</span>&lt;<span class="keyword">dyn</span> Error&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)?;</span><br><span class="line"></span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> <code>Box&lt;dyn Error&gt;</code> 表示任何类型的错误，所以这个main函数中可以用<code>?</code>返回任何类型的错误.</p>
-<p> <code>?</code> 返回Option类型时，如果时none会提前返回None，否则会返回Some中的值。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">last_char_of_first_line</span></span>(text: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Option</span>&lt;<span class="built_in">char</span>&gt; &#123;</span><br><span class="line">    text.lines().next()?.chars().last()<span class="comment">// 返回文本的第一行的最后一个字符</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>painic用在程序出现不可恢复的错误。当在开发例子程序，原型程序或测试程序时，使用unwrap或expect产生painic可以简化错误处理，提前发现错误，等后续正式的程序中进行错误处理让程序更健壮。</p>
-<p>当程序执行的前提假设，约定或内存已经被破坏，或者使用了无效数据，这些错误程序已经无法控制，此时需要panic来提醒程序员强制处理这些问题。</p>
-<p>result用在错误时符合预期的，但还是恢复的场景或程序还能处理，例如请求超时。</p>
-<p>通过封装结构体，来确保数据的正确性，例如下面例子中获取一个1-100之间的数字，只要这个对象可以创建出来，它就一定满足1-100这个范围约定。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Guess</span></span> &#123;</span><br><span class="line">    value: <span class="built_in">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> Guess &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(value: <span class="built_in">i32</span>) -&gt; Guess &#123;</span><br><span class="line">        <span class="keyword">if</span> value &lt; <span class="number">1</span> || value &gt; <span class="number">100</span> &#123;</span><br><span class="line">            <span class="built_in">panic!</span>(<span class="string">"Guess value must be between 1 and 100, got &#123;&#125;."</span>, value);</span><br><span class="line">        &#125;</span><br><span class="line">        Guess &#123; value &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">value</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="built_in">i32</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.value</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>
@@ -2834,6 +2769,116 @@
       </tags>
   </entry>
   <entry>
+    <title>Rust Learning-Errors</title>
+    <url>/2024/01/21/rust/rust-errors/</url>
+    <content><![CDATA[<h2 id="RUST-Error-Handling"><a href="#RUST-Error-Handling" class="headerlink" title="RUST Error Handling"></a>RUST Error Handling</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。</p>
+<h3 id="Panic"><a href="#Panic" class="headerlink" title="Panic"></a>Panic</h3><p>rust中使用<code>panic!</code>宏来处理不可恢复的错误，出现panic后，程序会打印错误信息，清理函数栈然后退出程序。默认情况下，程序panic退出前，反向遍历每一个函数栈，释放其中的数据，然后再退出，这个过程需要一定时间，所以可以再release版本的程序中配置为直接退出程序，让操作系统来释放程序运行过程中申请的资源。</p>
+<p>在项目的 <em>Cargo.toml</em>文件中增加以下代码，在release版本可以减少程序退出占用的时间：</p>
+<figure class="highlight toml"><table><tr><td class="code"><pre><span class="line"><span class="section">[profile.release]</span></span><br><span class="line"><span class="attr">panic</span> = <span class="string">'abort'</span></span><br></pre></td></tr></table></figure>
+
+<p>可以直接调用<code>panic!</code>宏退出程序</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="built_in">panic!</span>(<span class="string">"I will be dead..."</span>);</span><br><span class="line"><span class="comment">// 程序会输出</span></span><br><span class="line"><span class="comment">//thread 'main' panicked at src\main.rs:17:5:</span></span><br><span class="line"><span class="comment">//I will be dead...</span></span><br></pre></td></tr></table></figure>
+
+<p>在C语言中访问数组越界时，程序还是会按实际的地址访问内存空间中的数据，只是错误是未定义的，这样会导致偶发不可预期的故障。rust中只要访问越界，就会panic，并明确告诉错误的原因。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> v = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">v[<span class="number">100</span>]; <span class="comment">// thread 'main' panicked at src\main.rs:18:6:</span></span><br><span class="line"><span class="comment">// index out of bounds: the len is 3 but the index is 100</span></span><br></pre></td></tr></table></figure>
+
+<p>通过在执行程序时设置<code>RUST_BACKTRACE=1</code> 环境变量，就可以把出错时的调用栈打印出来。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> RUST_BACKTRACE=1 cargo run</span></span><br><span class="line">或者</span><br><span class="line">E:\dev\rust\cargo_demo\target\release&gt;set RUST_BACKTRACE=1</span><br><span class="line"></span><br><span class="line">E:\dev\rust\cargo_demo\target\release&gt;cargo_demo.exe</span><br><span class="line">thread 'main' panicked at src\main.rs:18:6:</span><br><span class="line">index out of bounds: the len is 3 but the index is 100</span><br><span class="line">stack backtrace:</span><br><span class="line">   0: std::panicking::begin_panic_handler</span><br><span class="line">             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library\std\src\panicking.rs:645</span><br><span class="line">   1: core::panicking::panic_fmt</span><br><span class="line">   ......</span><br></pre></td></tr></table></figure>
+
+<h3 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h3><p>enum Result有两种值，Ok用来表示成功返回值，Err表示失败时的返回值。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Result</span></span>&lt;T, E&gt; &#123;</span><br><span class="line">    <span class="literal">Ok</span>(T),</span><br><span class="line">    <span class="literal">Err</span>(E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例如以下代码打开一个文件，它的返回值为  <code>Result&lt;File, Error&gt;</code>  ，然后可以使用match来处理两种情况，当Ok的时候，就把其中的file变量返回出去，如果失败了，就打印错误信息</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::ErrorKind;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file_result = File::open(<span class="string">"hello.txt"</span>);</span><br><span class="line">    <span class="keyword">let</span> greeting_file = <span class="keyword">match</span> greeting_file_result &#123;</span><br><span class="line">        <span class="literal">Ok</span>(file) =&gt; file, <span class="comment">// Result是系统预置类型，所以不需要Result::前缀</span></span><br><span class="line">        <span class="literal">Err</span>(error) =&gt; <span class="keyword">match</span> error.kind() &#123;</span><br><span class="line">            ErrorKind::NotFound =&gt; <span class="keyword">match</span> File::create(<span class="string">"hello.txt"</span>) &#123;</span><br><span class="line">                <span class="literal">Ok</span>(fc) =&gt; fc, <span class="comment">// 打不开文件后，创建文件</span></span><br><span class="line">                <span class="literal">Err</span>(e) =&gt; <span class="built_in">panic!</span>(<span class="string">"Problem creating the file: &#123;:?&#125;"</span>, e),</span><br><span class="line">            &#125;,</span><br><span class="line">            other_error =&gt; &#123;</span><br><span class="line">              	<span class="comment">// 让程序退出</span></span><br><span class="line">                <span class="built_in">panic!</span>(<span class="string">"Problem opening the file: &#123;:?&#125;"</span>, other_error);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="unwrap"><a href="#unwrap" class="headerlink" title="unwrap"></a>unwrap</h4><p><code>Result&lt;T, E&gt;</code> 的unwrap()方法简化错误处理，它内部实现了Ok时返回结果，错误时调用默认的panic。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="comment">// called `Result::unwrap()` on an `Err` value: </span></span><br><span class="line">    <span class="comment">// Os &#123; code: 2, kind: NotFound, message: "The system cannot find the file specified." &#125;</span></span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>).unwrap();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="expect"><a href="#expect" class="headerlink" title="expect"></a>expect</h4><p><code>Result&lt;T, E&gt;</code>的expect()方法它内部实现了Ok时返回结果，错误时可以指定的panic的信息</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)</span><br><span class="line">        .expect(<span class="string">"hello.txt should be included in this project"</span>);</span><br><span class="line">    <span class="comment">//thread 'main' panicked at src\main.rs:5:10:</span></span><br><span class="line">    <span class="comment">//hello.txt should be included in this project: </span></span><br><span class="line">    <span class="comment">//Os &#123; code: 2, kind: NotFound, message: "The system cannot find the file specified." &#125;       </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="传播错误"><a href="#传播错误" class="headerlink" title="传播错误"></a>传播错误</h4><p>把函数执行过程中的错误返回给调用者，这样调用者可以看情况处理错误。可以使用match来直接返回错误</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::&#123;<span class="keyword">self</span>, Read&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt;&#123;</span><br><span class="line">    <span class="keyword">let</span> username_file_result = File::open(<span class="string">"hello.txt"</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username_file = <span class="keyword">match</span> username_file_result &#123;</span><br><span class="line">        <span class="literal">Ok</span>(file) =&gt; file,</span><br><span class="line">        <span class="literal">Err</span>(e) =&gt; <span class="keyword">return</span> <span class="literal">Err</span>(e), <span class="comment">// 直接返回错误</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    <span class="keyword">match</span> username_file.read_to_string(&amp;<span class="keyword">mut</span> username) &#123;</span><br><span class="line">        <span class="literal">Ok</span>(_) =&gt; <span class="literal">Ok</span>(username),</span><br><span class="line">        <span class="literal">Err</span>(e) =&gt; <span class="literal">Err</span>(e), <span class="comment">// 返回错误状态</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了简化match语句返回错误，rust支持使用<code>?</code>操作符来提前返回错误。在一个函数调用结束时使用？，如果函数返回错误，就直接返回错误，不用写match。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username_file = File::open(<span class="string">"hello.txt"</span>)?;<span class="comment">// 直接返回错误或正常返回文件句柄</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    username_file.read_to_string(&amp;<span class="keyword">mut</span> username)?;</span><br><span class="line">    <span class="literal">Ok</span>(username)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> <code>?</code> 会调用实现了<code>From</code>Trait的结构体的<code>from</code>方法，把调用函数返回的错误类型转换为当前？所在函数返回的错误类型。</p>
+<p>使用 <code>?</code> 后，可以方便的写链式调用。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    File::open(<span class="string">"hello.txt"</span>)?.read_to_string(&amp;<span class="keyword">mut</span> username)?;</span><br><span class="line">    <span class="literal">Ok</span>(username)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> <code>?</code> 操作符只能用于返回 <code>Result</code> 或 <code>Option</code> (或其他类型实现了 <code>FromResidual</code>)的函数，例如上面的函数返回值为Result.例如下面的会有编译错误，因为main的返回值类型为<code>()</code></p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)?;</span><br><span class="line">  <span class="comment">//the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>main可以返回任何实现了<code>std::process::Termination</code> trait的类型</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::error::Error;</span><br><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() -&gt; <span class="built_in">Result</span>&lt;(), <span class="built_in">Box</span>&lt;<span class="keyword">dyn</span> Error&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)?;</span><br><span class="line"></span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> <code>Box&lt;dyn Error&gt;</code> 表示任何类型的错误，所以这个main函数中可以用<code>?</code>返回任何类型的错误.</p>
+<p> <code>?</code> 返回Option类型时，如果时none会提前返回None，否则会返回Some中的值。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">last_char_of_first_line</span></span>(text: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Option</span>&lt;<span class="built_in">char</span>&gt; &#123;</span><br><span class="line">    text.lines().next()?.chars().last()<span class="comment">// 返回文本的第一行的最后一个字符</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>painic用在程序出现不可恢复的错误。当在开发例子程序，原型程序或测试程序时，使用unwrap或expect产生painic可以简化错误处理，提前发现错误，等后续正式的程序中进行错误处理让程序更健壮。</p>
+<p>当程序执行的前提假设，约定或内存已经被破坏，或者使用了无效数据，这些错误程序已经无法控制，此时需要panic来提醒程序员强制处理这些问题。</p>
+<p>result用在错误时符合预期的，但还是恢复的场景或程序还能处理，例如请求超时。</p>
+<p>通过封装结构体，来确保数据的正确性，例如下面例子中获取一个1-100之间的数字，只要这个对象可以创建出来，它就一定满足1-100这个范围约定。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Guess</span></span> &#123;</span><br><span class="line">    value: <span class="built_in">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> Guess &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(value: <span class="built_in">i32</span>) -&gt; Guess &#123;</span><br><span class="line">        <span class="keyword">if</span> value &lt; <span class="number">1</span> || value &gt; <span class="number">100</span> &#123;</span><br><span class="line">            <span class="built_in">panic!</span>(<span class="string">"Guess value must be between 1 and 100, got &#123;&#125;."</span>, value);</span><br><span class="line">        &#125;</span><br><span class="line">        Guess &#123; value &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">value</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="built_in">i32</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.value</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>programming</category>
+      </categories>
+      <tags>
+        <tag>rust</tag>
+        <tag>learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Rust Learning-Patterns and Matching</title>
+    <url>/2024/02/18/rust/rust-pattern-match/</url>
+    <content><![CDATA[<h2 id="RUST-Patterns-and-Matching"><a href="#RUST-Patterns-and-Matching" class="headerlink" title="RUST Patterns and Matching"></a>RUST Patterns and Matching</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h3><p>Pattern是一种语法，用来匹配类型中的结构，和match配合使用。模式由以下几种类型组成：</p>
+<ol>
+<li>Literals 字面值，写死的字串或数字</li>
+<li>结构的数组，枚举，结构体或元组</li>
+<li>变量</li>
+<li>通配符</li>
+<li>占位符</li>
+</ol>
+<h4 id="模式使用场景"><a href="#模式使用场景" class="headerlink" title="模式使用场景"></a>模式使用场景</h4><h5 id="match分支"><a href="#match分支" class="headerlink" title="match分支"></a>match分支</h5><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">match</span> VALUE &#123;</span><br><span class="line">    PATTERN =&gt; EXPRESSION,</span><br><span class="line">    PATTERN =&gt; EXPRESSION,</span><br><span class="line">    PATTERN =&gt; EXPRESSION,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>match表达式所有可能值都必须被处理。一种确保处理所有情况的方法是在最后一个分支使用可以匹配所有情况的模式，如使用<code>_</code>模式匹配所有情况。</p>
+<h5 id="if-let条件"><a href="#if-let条件" class="headerlink" title="if let条件"></a>if let条件</h5><p>if let用来处理简单匹配一种情况的场景，当然也可以使用else来处理其他情况。if let, else if, else if let的条件可以是不相关的。编译器不会对if let的所有情况是否都覆盖了进行检查。if let可以和match一样使用覆盖变量 shadowed variables ，例如 <code>if let Ok(age) = age</code> 引入了一个新的shadowed <code>age</code> 变量，它包含了Ok变量中的值，它的作用域从if let的大括号的范围开始，所以<code>age &gt; 30</code>中的age只能在if let代码块的内部有效。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> age: <span class="built_in">Result</span>&lt;<span class="built_in">u8</span>, _&gt; = <span class="string">"34"</span>.parse();</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Ok</span>(age) = age &#123;</span><br><span class="line">        <span class="keyword">if</span> age &gt; <span class="number">30</span> &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"Using purple as the background color"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"Using orange as the background color"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="while-let条件"><a href="#while-let条件" class="headerlink" title="while let条件"></a>while let条件</h5><p>只要while let后面的模式始终匹配，循环就一直执行。下面例子中只有pop返回了None的时候才会结束循环</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> stack = <span class="built_in">Vec</span>::new();</span><br><span class="line"></span><br><span class="line">stack.push(<span class="number">1</span>);</span><br><span class="line">stack.push(<span class="number">2</span>);</span><br><span class="line">stack.push(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">let</span> <span class="literal">Some</span>(top) = stack.pop() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125;"</span>, top);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h5><p>for之后的值就是pattern，例如<code>for x in y</code>中,x就是一个模式。 <code>enumerate</code>  方法返回值和索引，一起放在一个元组中，例如第一次执行返回  <code>(0, &#39;a&#39;)</code>，所以可以使用  <code>(index, value)</code> 来解构元组中的元素。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> v = <span class="built_in">vec!</span>[<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (index, value) <span class="keyword">in</span> v.iter().enumerate() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125; is at index &#123;&#125;"</span>, value, index);</span><br><span class="line">&#125;</span><br><span class="line">a is at index <span class="number">0</span></span><br><span class="line">b is at index <span class="number">1</span></span><br><span class="line">c is at index <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="let语句"><a href="#let语句" class="headerlink" title="let语句"></a>let语句</h5><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> PATTERN = EXPRESSION;</span><br></pre></td></tr></table></figure>
+
+<p>例如<code>let x = 5</code>中x就是一种模式，它表示把所有匹配到的值绑定到变量x的模式。下面的元组匹配更直观的提现了模式匹配，三个数字分别匹配到对应的xyz.</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> (x, y, z) = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="keyword">let</span> (x, y) = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>); <span class="comment">// error</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h5><p>函数参数和let语句类似，形参变量就是模式，下面的实参 <code>&amp;(3, 5)</code> 匹配模式 <code>&amp;(x, y)</code> </p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_coordinates</span></span>(&amp;(x, y): &amp;(<span class="built_in">i32</span>, <span class="built_in">i32</span>)) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current location: (&#123;&#125;, &#123;&#125;)"</span>, x, y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> point = (<span class="number">3</span>, <span class="number">5</span>);</span><br><span class="line">    print_coordinates(&amp;point);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="模式匹配的可反驳性"><a href="#模式匹配的可反驳性" class="headerlink" title="模式匹配的可反驳性"></a>模式匹配的可反驳性</h3><p>模式有两种形式 <strong>refutable</strong>可反驳的和<strong>irrefutable</strong>不可反驳的 。</p>
+<p>不会出现匹配失败，可以匹配所有可能值的模式为不可反驳的，，例如<code>let x = 5</code>中x可以匹配所有值不会匹配失败</p>
+<p>可能匹配失败的模式为可反驳的，例如 <code>if let Some(x) = a_value</code> ，如果值为None，Some(x)模式就会匹配失败。</p>
+<p>函数参数、let语句、for循环只能接受不可反驳的模式，因为他们不能处理模式匹配失败的情况。对于if let、while let表达式可以接受不可反驳模式和可反驳模式，但是对于不可反驳模式由于模式不会失败，没有实际意义，所以编译器会提示编译警告。</p>
+<h3 id="模式语法"><a href="#模式语法" class="headerlink" title="模式语法"></a>模式语法</h3>]]></content>
+      <categories>
+        <category>programming</category>
+      </categories>
+      <tags>
+        <tag>rust</tag>
+        <tag>learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Rust Learning basic</title>
     <url>/2023/02/19/rust/rust-learning-basic/</url>
     <content><![CDATA[<h2 id="RUST-Basic"><a href="#RUST-Basic" class="headerlink" title="RUST Basic"></a>RUST Basic</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
@@ -2938,55 +2983,6 @@
 <h6 id="if-let表达式"><a href="#if-let表达式" class="headerlink" title="if let表达式"></a>if let表达式</h6><p>如果只关系一种匹配的情况，而忽略其他match的分支时，可以使用<code>if let</code>简化match的写法。</p>
 <figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> config_max = <span class="literal">Some</span>(<span class="number">3u8</span>);</span><br><span class="line"><span class="keyword">let</span> config_none: <span class="built_in">Option</span>&lt;<span class="built_in">u8</span>&gt; = <span class="literal">None</span>;</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(max) = config_max &#123; <span class="comment">// Some(max)等同于match中的模式</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"The max is &#123;max&#125;"</span>); <span class="comment">// The max is 3</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"None is input"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-]]></content>
-      <categories>
-        <category>programming</category>
-      </categories>
-      <tags>
-        <tag>rust</tag>
-        <tag>learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Rust Learning - Rustup</title>
-    <url>/2023/05/02/rust/rust-rustup/</url>
-    <content><![CDATA[<h2 id="RUSTUP"><a href="#RUSTUP" class="headerlink" title="RUSTUP"></a>RUSTUP</h2><p><a href="https://rust-lang.github.io/rustup/index.html" target="_blank" rel="noopener">https://rust-lang.github.io/rustup/index.html</a></p>
-<p>rustup 是一个管理 Rust 版本和相关工具的命令行工具，官方推荐使用rustup来安装和管理rust的版本和工具链。</p>
-<p>对于rust开发，rustup不是必须安装的，对于离线安装或使用系统自带的包管理器情况，可以直接安装自己需要的版本。<a href="https://forge.rust-lang.org/infra/other-installation-methods.html提供了离线安装包。离线安装包中不包含rustup，所以对于交叉编译的场景不是很方便。" target="_blank" rel="noopener">https://forge.rust-lang.org/infra/other-installation-methods.html提供了离线安装包。离线安装包中不包含rustup，所以对于交叉编译的场景不是很方便。</a></p>
-<p>对于一般Windows平台开发下载<code>x86_64-pc-windows-msvc</code>的64位版本，rust会使用msvc的库，而<code>x86_64-pc-windows-gnu</code>的版本则会使用gnu提供的c/c++库。需要根据自己的应用程序环境决定使用哪个版本的安装包。</p>
-<p>如果选择了MSVC版本，由于rust需要使用VC的链接器和库，因此还需要安装Visual Studio，至少是2013版本之后。<a href="https://rust-lang.github.io/rustup/installation/windows-msvc.html" target="_blank" rel="noopener">详情</a></p>
-<h3 id="rustup安装rust"><a href="#rustup安装rust" class="headerlink" title="rustup安装rust"></a>rustup安装rust</h3><p>Windows上运行<code>rustup-init.exe</code>后，会议命令行交互提示的方式提示当前的安装选项</p>
-<p><img src="../../uploads/rust/rustup_1.png" alt="rustup_1"><br><img src="/uploads/rust/rustup_1.png" alt="rustup_1"></p>
-<p>通过选择2后，可以配置自己修改安装的设置</p>
-<p><img src="../../uploads/rust/rustup_2.png" alt="rustup_2"><br><img src="/uploads/rust/rustup_2.png" alt="rustup_2"></p>
-<p>继续回车后，rustup会逐个下载组件进行安装</p>
-<p><img src="../../uploads/rust/rust_install.png" alt="rust_install"><br><img src="/uploads/rust/rust_install.png" alt="rust_install"></p>
-<p>rustup会把rustc，cargo, rustup等工具程序安装在<code>.cargo\bin\</code>目录中。</p>
-<p><img src="../../uploads/rust/cargo_bin.png" alt="cargo_bin"><br><img src="/uploads/rust/cargo_bin.png" alt="cargo_bin"></p>
-<p><strong>更新</strong> <code>$rustup update</code></p>
-<p><strong>安装状态</strong> <code>$rustc --version</code>  输出 <code>rustc 1.67.1 (d5a82bbd2 2023-02-07)</code></p>
-<p><strong>查看文档</strong> <code>rustup doc</code>会自动使用默认浏览器打开安装的离线文档页面</p>
-<h4 id="自定义安装目录"><a href="#自定义安装目录" class="headerlink" title="自定义安装目录"></a>自定义安装目录</h4><p>rustup的默认安装目录是用户目录下的<code>.cargo\</code>和<code>.rustup\</code>，这两个目录在首次安装完差不多要用1G多空间，可以把这两个目录调整到其他磁盘节省C盘占用。</p>
-<p>先配置好<code>CARGO_HOME</code>和<code>RUSTUP_HOME</code>两个环境变量，再执行<code>rustup-init.exe</code>，此时交互提示中的目录会变化环境变量指定的目录。</p>
-<p><img src="../../uploads/rust/change_rustup_path.png" alt="change_rustup_path"><br><img src="/uploads/rust/change_rustup_path.png" alt="change_rustup_path"></p>
-<p>在<code>RUSTUP_HOME</code>目录中会自动创建downloads和tmp目录，以及<code>settings.toml</code>文件。</p>
-<p>rustup的安装程序会自动下载每一个组件，并在最后把cargo的bin目录加入系统path中</p>
-<p><img src="../../uploads/rust/rust_download.png" alt="rust_download"><br><img src="/uploads/rust/rust_download.png" alt="rust_download"></p>
-<p>现在所有的程序都安装到了新目录下，不用担心C盘空间。</p>
-<p><code>D:\rust\cargo\registry</code>目录中是当前系统中已经安装过的包。</p>
-<h3 id="交叉编译"><a href="#交叉编译" class="headerlink" title="交叉编译"></a>交叉编译</h3><ol>
-<li><p>安装目标库</p>
-<p><code>rustup target add armv7-unknown-linux-gnueabi</code></p>
-<p>安装后的库目录为</p>
-<p><code>.\rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\armv7-unknown-linux-gnueabi</code></p>
-</li>
-<li><p>配置目标的链接器</p>
-<p>因为rust要使用目标的链接器生成二进制文件，所以如果没有配置目标链接器，会提示<code>error: linker</code>cc<code>not found</code>错误</p>
-</li>
-<li><p>交叉编译</p>
-<p><code>cargo build --target=</code>armv7-unknown-linux-gnueabi`</p>
-</li>
-</ol>
 ]]></content>
       <categories>
         <category>programming</category>
@@ -3126,61 +3122,45 @@
       </tags>
   </entry>
   <entry>
-    <title>Rust Learning-Smart Pointers</title>
-    <url>/2024/01/14/rust/rust-smart-pointer/</url>
-    <content><![CDATA[<h2 id="RUST-Smart-Pointers"><a href="#RUST-Smart-Pointers" class="headerlink" title="RUST Smart Pointers"></a>RUST Smart Pointers</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
-<h3 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h3><p>rust中的智能指针和C++的一样，它包了一个指针同时带了一起基本功能和属性，例如引用计数。其实<code>String</code>和<code>Vec&lt;T&gt;</code>也是智能指针，因为他们也拥有一块可以操作的内存。</p>
-<p>引用Borrow它指向的数据，引用不能改变所有权。智能指针拥有它指向的数据</p>
-<p>智能指针也使用struct来实现，只是会实现<code>Deref</code>和<code>Drop</code>两个traits。</p>
-<h3 id="Box"><a href="#Box" class="headerlink" title="Box"></a>Box<t></t></h3><p><code>Box&lt;T&gt;</code>指向堆上的数据的智能指针。使用<code>Box&lt;T&gt;</code>有三种场景</p>
-<ul>
-<li>编译期无法获取数据大小的数据类型</li>
-<li>大块的数据转移所有权，但又不想拷贝这些数据，提高性能</li>
-<li>拥有一个数据时，只关心它实现的traits而不是具体的什么类型</li>
-</ul>
-<h4 id="Cons-List"><a href="#Cons-List" class="headerlink" title="Cons List"></a>Cons List</h4><p>cons list是来源于Lisp语言的链表数据结构，这个链表中有两个元素，第一个元素是数据，第二个是下一个链表的元素。这个名字来源于<code>cons function(construct function)</code>在Lisp使用两个参数构造(cons)一对值(pair)，这两个参数又分别是值和另一个pair。</p>
-<p>例如<code>(1, (2, (3, Nil)))</code>就是有三个元素的链表。linux中的<code>struct list</code>其实和这个一样，都是在list的结构中包含了下一个list的元素。</p>
-<p>例如定义一个链表枚举</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, List),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> list = Cons(<span class="number">1</span>, Cons(<span class="number">2</span>, Cons(<span class="number">3</span>, Nil)));</span><br></pre></td></tr></table></figure>
-
-<p>当定义一个<code>let list = Cons(1, Cons(2, Cons(3, Nil)));</code>这样的链表时，由于链表中元素的第二个成员是另一个list，而下一个list里面又包含了一个list，编译器无法推导出这个list变量到底占用多少空间，会提示错误。此时可以将第二个成员改为Box类型，把数据放在堆上，因为Box的大小是固定的，所以编译器就可以推导出list变量占用大小。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, <span class="built_in">Box</span>&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> list = Cons(<span class="number">1</span>, <span class="built_in">Box</span>::new(Cons(<span class="number">2</span>, <span class="built_in">Box</span>::new(Nil))));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Deref-Trait"><a href="#Deref-Trait" class="headerlink" title="Deref Trait"></a>Deref Trait</h3><p><code>Deref</code>定义了智能指针解引用的行为。一个常规的引用类型可以看作指向存储在某个地方的值的指针。我们可以使用<code>*</code>来获取引用指向的值。使用<code>Box&lt;T&gt;</code>可以达到和引用相同的效果</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> x = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> y = &amp;x; <span class="comment">// y的类型是&amp;i32</span></span><br><span class="line">    <span class="keyword">let</span> z = <span class="built_in">Box</span>::new(x); <span class="comment">// z的类型是Box&lt;i32&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, x);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, *y); <span class="comment">// 使用*获取y指向的值</span></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, *z); <span class="comment">// 使用*获取z指向的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="自定义deref"><a href="#自定义deref" class="headerlink" title="自定义deref"></a>自定义deref</h4><p>对于自定义类型，可以通过实现<code>Deref</code>让rust使用<code>*</code>解引用一个数据。rust会把<code>*y</code>替换为<code>*(y.deref())</code>，这里的<code>*</code>替换只会工作一次，而不会把替换后的<code>*</code>再次进行替换。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Deref;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyBox</span></span>&lt;T&gt;(T); <span class="comment">// 只包含了一个值的元组结构</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; MyBox&lt;T&gt; &#123;</span><br><span class="line">   <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(x: T) -&gt; MyBox&lt;T&gt; &#123; <span class="comment">// new 方法创建一个对象</span></span><br><span class="line">        MyBox(x)</span><br><span class="line">   &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; Deref <span class="keyword">for</span> MyBox&lt;T&gt; &#123; <span class="comment">// 实现Deref Trait</span></span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Target</span></span> = T; <span class="comment">// 声明一个T的关联类型</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">deref</span></span>(&amp;<span class="keyword">self</span>) -&gt; &amp;Self::Target &#123; </span><br><span class="line">        &amp;<span class="keyword">self</span>.<span class="number">0</span> <span class="comment">// 这里返回的是引用而不是值，使用0获取元组结构的第一个值，同时不把这个值从结构中移出去move</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> x = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> y = MyBox::new(x);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, x);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, *y); <span class="comment">// 如果不实现Deref，会编译错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="函数和方法中的隐式解引用规则"><a href="#函数和方法中的隐式解引用规则" class="headerlink" title="函数和方法中的隐式解引用规则"></a>函数和方法中的隐式解引用规则</h4><p><em>Deref coercion</em>t特性可以把一个实现了<code>Deref</code> trait的引用类型转换为另一个类型的引用。例如把一个<code>&amp;String</code>类型的参数值传递给一个需要<code>&amp;str</code>的函数，因为<code>&amp;String</code>的<code>Deref</code> 返回一个<code>&amp;str</code>，所以这种调用就是可行的。这样函数和方法中的传入参数就不需要明确写<code>*</code>或<code>&amp;</code>.当一个类型实现了<code>Deref</code> trait，rust编译器会调用调用尽可能多次的<code>Deref::deref</code>来让传入的参数引用去匹配函数需要的参数类型，这个执行过程在编译期完成，所以不会有性能影响。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">hello</span></span>(name: &amp;<span class="built_in">str</span>) &#123;<span class="comment">// 以&amp;str为参数的函数</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Hello, &#123;name&#125;!!!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> m = MyBox::new(<span class="built_in">String</span>::from(<span class="string">"world"</span>));</span><br><span class="line">hello(&amp;m); <span class="comment">// MyBox&lt;String&gt;的引用会自动Deref为&amp;String，编译器会再次调用Deref把&amp;String转换为&amp;str</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="可变引用的解引用"><a href="#可变引用的解引用" class="headerlink" title="可变引用的解引用"></a>可变引用的解引用</h4><p>使用<code>DerefMut</code> trait来实现<em>mutable</em>引用的解引用</p>
-<h4 id="基本规则"><a href="#基本规则" class="headerlink" title="基本规则"></a>基本规则</h4><ul>
-<li>当T实现了<code>Deref</code>trait返回<code>&amp;U</code>类型，那么编译器会把 <code>&amp;T</code> 转变为 <code>&amp;U</code> </li>
-<li>当T实现了<code>DerefMut</code>trait返回<code>&amp;mut U</code>类型，那么编译器会把  <code>&amp;mut T</code>转变为 <code>&amp;mut U</code></li>
-<li>当T只实现了<code>Deref</code>trait返回<code>&amp;U</code>类型，那么编译器会把 <code>&amp;mut T</code>  转变为 <code>&amp;U</code> </li>
-</ul>
-<h3 id="Drop-Trait"><a href="#Drop-Trait" class="headerlink" title="Drop Trait"></a>Drop Trait</h3><p>当一个变量执行出它的作用域后，会执行这个类型的<code>Drop</code> trait。例如<code>Box&lt;T&gt;</code>类型的变量越过它的作用域后，就会释放堆上的数据。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">CustomSmartPointer</span></span> &#123;</span><br><span class="line">    data: <span class="built_in">String</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="built_in">Drop</span> <span class="keyword">for</span> CustomSmartPointer &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">drop</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"Dropping CustomSmartPointer with data `&#123;&#125;`!"</span>, <span class="keyword">self</span>.data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> c = CustomSmartPointer &#123;</span><br><span class="line">        data: <span class="built_in">String</span>::from(<span class="string">"my stuff"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">let</span> d = CustomSmartPointer &#123;</span><br><span class="line">        data: <span class="built_in">String</span>::from(<span class="string">"other stuff"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"CustomSmartPointers created."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在main函数执行结束时，会先输出变量d的Drop，再输出变量c的Drop。</p>
-<h4 id="强制调用Drop"><a href="#强制调用Drop" class="headerlink" title="强制调用Drop"></a>强制调用Drop</h4><p>有时需要在出作用域之前提前释放资源，就需要提前执行drop，例如多线程使用的lock，需要在函数执行结束前就释放。但是rust不支持显式调用drop，主要为了避免多次释放资源，此时需要使用<code>std::mem::drop</code>函数。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> c = CustomSmartPointer &#123;</span><br><span class="line">        data: <span class="built_in">String</span>::from(<span class="string">"my stuff"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"CustomSmartPointer created."</span>);</span><br><span class="line"><span class="built_in">drop</span>(c);</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"CustomSmartPointer dropped before the end of main."</span>);</span><br></pre></td></tr></table></figure>
-
-<h3 id="Rc"><a href="#Rc" class="headerlink" title="Rc"></a>Rc<t></t></h3><p>Rc是引用计数的缩写，用来处理一个对象有多个使用者的场景，当一个引用者退出生命周期，引用计数会减少1。它只能在单线程中使用。</p>
-<p>通过使用<code>Rc::new</code>来创建一个<code>Rc&lt;T&gt;</code>的类型，使用<code>Rc::clone(&amp;a)</code>的方式来增加a的引用计数，而不是使用<code>a.clone()</code>，这是为了让程序代码更可读，直接可以看出来是引用计数的浅拷贝，而不是clone的深拷贝。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, Rc&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> a = Rc::new(Cons(<span class="number">5</span>, Rc::new(Cons(<span class="number">10</span>, Rc::new(Nil)))));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">let</span> b = Cons(<span class="number">3</span>, Rc::clone(&amp;a));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 2</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> c = Cons(<span class="number">8</span>, Rc::clone(&amp;a));</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 3</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="RefCell"><a href="#RefCell" class="headerlink" title="RefCell"></a>RefCell<t></t></h3><p>有些时候，编译器的编译期无法判断程序代码是否正确的满足了借用规则，但是如果严格写满足编译规则的代码，编程又会不方便，所以rust允许开发人员在自己保证借用规则正确的前提下，有一些unsafe的代码。</p>
-<p>Interior mutability*内部可变性是rust的一种设计模式，它允许修改一个不可变引用内部的数据。例如一个trait参数是不可变引用，但是在一些特殊场景又需要修改这个参数的内部数据，例如单元测试时修改用于测试的假数据。</p>
-<p>RefCell<t>只能有一个引用。可以支持可变引用和不可变引用，且在运行时检查规则。由于它支持运行时检查规则，所以就可以修改一个不可变引用RefCell<t>内部的值。</t></t></p>
-<p>Box<t>运行在编译期检查可变引用和不可变引用使用是否正确</t></p>
-<p>Rc<t>只能作为不可变引用，并在编译期检查正确性</t></p>
-<p> <code>RefCell&lt;T&gt;</code>的 <code>borrow</code> 方法返回 <code>Ref&lt;T&gt;</code>不可变智能指针，<code>borrow_mut</code> 返回可变的智能指针<code>RefMut&lt;T&gt;</code>.  <code>RefCell&lt;T&gt;</code>会记录当前有多少个 <code>Ref&lt;T&gt;</code> 和 <code>RefMut&lt;T&gt;</code> 的智能指针，从而保证可以有多个不可变指针和一个可变指针，这个检查在运行时判断，如果不满足引用规则，就会产生panic。 <code>RefCell&lt;T&gt;</code>只能在一个线程中使用，<code>Mutex&lt;T&gt;</code>是它的多线程版本。</p>
-<p>例如在一个作用域内创建两个可变可变智能指针程序在编译时不会出错，但是运行时就会报错。使用 <code>RefCell&lt;T&gt;</code>可能会把错误漏出到程序的生产环境中，而不是在编译期提前发现同时还增加了运行时的负担，但是能增加程序实现的灵活性。</p>
-<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(Rc&lt;RefCell&lt;<span class="built_in">i32</span>&gt;&gt;, Rc&lt;List&gt;), <span class="comment">// List的值从普通的int变为可以修改值的引用</span></span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::&#123;rc::Rc, cell::RefCell&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> value = Rc::new(RefCell::new(<span class="number">5</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> a = Rc::new(Cons(Rc::clone(&amp;value), Rc::new(Nil)));</span><br><span class="line">    <span class="keyword">let</span> b = Cons(Rc::new(RefCell::new(<span class="number">3</span>)), Rc::clone(&amp;a));</span><br><span class="line">    <span class="keyword">let</span> c = Cons(Rc::new(RefCell::new(<span class="number">4</span>)), Rc::clone(&amp;a));</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> val1 = value.borrow_mut();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> val2 = value.borrow_mut();<span class="comment">//already borrowed: BorrowMutError如果在获取一次可变引用就会在运行时出错，编译不会报错。</span></span><br><span class="line"></span><br><span class="line">    *value.borrow_mut() +=<span class="number">10</span>; <span class="comment">// 通过连续解引用最后获取到值的可变引用</span></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" a = &#123;:?&#125;"</span>, a); <span class="comment">//  a = Cons(RefCell &#123; value: 15 &#125;, Nil)</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" b = &#123;:?&#125;"</span>, b); <span class="comment">//  b = Cons(RefCell &#123; value: 3 &#125;, Cons(RefCell &#123; value: 15 &#125;, Nil))</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" c = &#123;:?&#125;"</span>, c); <span class="comment">//  c = Cons(RefCell &#123; value: 4 &#125;, Cons(RefCell &#123; value: 15 &#125;, Nil))</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+    <title>Rust Learning - Rustup</title>
+    <url>/2023/05/02/rust/rust-rustup/</url>
+    <content><![CDATA[<h2 id="RUSTUP"><a href="#RUSTUP" class="headerlink" title="RUSTUP"></a>RUSTUP</h2><p><a href="https://rust-lang.github.io/rustup/index.html" target="_blank" rel="noopener">https://rust-lang.github.io/rustup/index.html</a></p>
+<p>rustup 是一个管理 Rust 版本和相关工具的命令行工具，官方推荐使用rustup来安装和管理rust的版本和工具链。</p>
+<p>对于rust开发，rustup不是必须安装的，对于离线安装或使用系统自带的包管理器情况，可以直接安装自己需要的版本。<a href="https://forge.rust-lang.org/infra/other-installation-methods.html提供了离线安装包。离线安装包中不包含rustup，所以对于交叉编译的场景不是很方便。" target="_blank" rel="noopener">https://forge.rust-lang.org/infra/other-installation-methods.html提供了离线安装包。离线安装包中不包含rustup，所以对于交叉编译的场景不是很方便。</a></p>
+<p>对于一般Windows平台开发下载<code>x86_64-pc-windows-msvc</code>的64位版本，rust会使用msvc的库，而<code>x86_64-pc-windows-gnu</code>的版本则会使用gnu提供的c/c++库。需要根据自己的应用程序环境决定使用哪个版本的安装包。</p>
+<p>如果选择了MSVC版本，由于rust需要使用VC的链接器和库，因此还需要安装Visual Studio，至少是2013版本之后。<a href="https://rust-lang.github.io/rustup/installation/windows-msvc.html" target="_blank" rel="noopener">详情</a></p>
+<h3 id="rustup安装rust"><a href="#rustup安装rust" class="headerlink" title="rustup安装rust"></a>rustup安装rust</h3><p>Windows上运行<code>rustup-init.exe</code>后，会议命令行交互提示的方式提示当前的安装选项</p>
+<p><img src="../../uploads/rust/rustup_1.png" alt="rustup_1"><br><img src="/uploads/rust/rustup_1.png" alt="rustup_1"></p>
+<p>通过选择2后，可以配置自己修改安装的设置</p>
+<p><img src="../../uploads/rust/rustup_2.png" alt="rustup_2"><br><img src="/uploads/rust/rustup_2.png" alt="rustup_2"></p>
+<p>继续回车后，rustup会逐个下载组件进行安装</p>
+<p><img src="../../uploads/rust/rust_install.png" alt="rust_install"><br><img src="/uploads/rust/rust_install.png" alt="rust_install"></p>
+<p>rustup会把rustc，cargo, rustup等工具程序安装在<code>.cargo\bin\</code>目录中。</p>
+<p><img src="../../uploads/rust/cargo_bin.png" alt="cargo_bin"><br><img src="/uploads/rust/cargo_bin.png" alt="cargo_bin"></p>
+<p><strong>更新</strong> <code>$rustup update</code></p>
+<p><strong>安装状态</strong> <code>$rustc --version</code>  输出 <code>rustc 1.67.1 (d5a82bbd2 2023-02-07)</code></p>
+<p><strong>查看文档</strong> <code>rustup doc</code>会自动使用默认浏览器打开安装的离线文档页面</p>
+<h4 id="自定义安装目录"><a href="#自定义安装目录" class="headerlink" title="自定义安装目录"></a>自定义安装目录</h4><p>rustup的默认安装目录是用户目录下的<code>.cargo\</code>和<code>.rustup\</code>，这两个目录在首次安装完差不多要用1G多空间，可以把这两个目录调整到其他磁盘节省C盘占用。</p>
+<p>先配置好<code>CARGO_HOME</code>和<code>RUSTUP_HOME</code>两个环境变量，再执行<code>rustup-init.exe</code>，此时交互提示中的目录会变化环境变量指定的目录。</p>
+<p><img src="../../uploads/rust/change_rustup_path.png" alt="change_rustup_path"><br><img src="/uploads/rust/change_rustup_path.png" alt="change_rustup_path"></p>
+<p>在<code>RUSTUP_HOME</code>目录中会自动创建downloads和tmp目录，以及<code>settings.toml</code>文件。</p>
+<p>rustup的安装程序会自动下载每一个组件，并在最后把cargo的bin目录加入系统path中</p>
+<p><img src="../../uploads/rust/rust_download.png" alt="rust_download"><br><img src="/uploads/rust/rust_download.png" alt="rust_download"></p>
+<p>现在所有的程序都安装到了新目录下，不用担心C盘空间。</p>
+<p><code>D:\rust\cargo\registry</code>目录中是当前系统中已经安装过的包。</p>
+<h3 id="交叉编译"><a href="#交叉编译" class="headerlink" title="交叉编译"></a>交叉编译</h3><ol>
+<li><p>安装目标库</p>
+<p><code>rustup target add armv7-unknown-linux-gnueabi</code></p>
+<p>安装后的库目录为</p>
+<p><code>.\rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\armv7-unknown-linux-gnueabi</code></p>
+</li>
+<li><p>配置目标的链接器</p>
+<p>因为rust要使用目标的链接器生成二进制文件，所以如果没有配置目标链接器，会提示<code>error: linker</code>cc<code>not found</code>错误</p>
+</li>
+<li><p>交叉编译</p>
+<p><code>cargo build --target=</code>armv7-unknown-linux-gnueabi`</p>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>programming</category>
@@ -3344,6 +3324,71 @@
 <figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> s: &amp;<span class="symbol">'static</span> <span class="built_in">str</span> = <span class="string">"life time as application"</span>;</span><br></pre></td></tr></table></figure>
 
 <h4 id="综合使用例子"><a href="#综合使用例子" class="headerlink" title="综合使用例子"></a>综合使用例子</h4><figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 同时使用了泛型参数T和生命周期泛型'a</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">longest_with_output</span></span>&lt;<span class="symbol">'a</span>, T&gt;(x: &amp;<span class="symbol">'a</span> <span class="built_in">str</span>, y: &amp;<span class="symbol">'a</span> <span class="built_in">str</span>, ann: T) -&gt; &amp;<span class="symbol">'a</span> <span class="built_in">str</span></span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    T: Display,  <span class="comment">// 要求ann的类型必须实现了Display</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Output: &#123;&#125;"</span>, ann);</span><br><span class="line">    <span class="keyword">if</span> x.len() &gt; y.len() &#123;</span><br><span class="line">        x</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        y</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> str1 = <span class="built_in">String</span>::from(<span class="string">"best"</span>);    </span><br><span class="line"><span class="keyword">let</span> str2 = <span class="built_in">String</span>::from(<span class="string">"better"</span>);</span><br><span class="line"><span class="keyword">let</span> result = longest_with_output(&amp;str1, &amp;str2, <span class="string">"best wishes"</span>);</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>programming</category>
+      </categories>
+      <tags>
+        <tag>rust</tag>
+        <tag>learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Rust Learning-Smart Pointers</title>
+    <url>/2024/01/14/rust/rust-smart-pointer/</url>
+    <content><![CDATA[<h2 id="RUST-Smart-Pointers"><a href="#RUST-Smart-Pointers" class="headerlink" title="RUST Smart Pointers"></a>RUST Smart Pointers</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h3><p>rust中的智能指针和C++的一样，它包了一个指针同时带了一起基本功能和属性，例如引用计数。其实<code>String</code>和<code>Vec&lt;T&gt;</code>也是智能指针，因为他们也拥有一块可以操作的内存。</p>
+<p>引用Borrow它指向的数据，引用不能改变所有权。智能指针拥有它指向的数据</p>
+<p>智能指针也使用struct来实现，只是会实现<code>Deref</code>和<code>Drop</code>两个traits。</p>
+<h3 id="Box"><a href="#Box" class="headerlink" title="Box"></a>Box<t></t></h3><p><code>Box&lt;T&gt;</code>指向堆上的数据的智能指针。使用<code>Box&lt;T&gt;</code>有三种场景</p>
+<ul>
+<li>编译期无法获取数据大小的数据类型</li>
+<li>大块的数据转移所有权，但又不想拷贝这些数据，提高性能</li>
+<li>拥有一个数据时，只关心它实现的traits而不是具体的什么类型</li>
+</ul>
+<h4 id="Cons-List"><a href="#Cons-List" class="headerlink" title="Cons List"></a>Cons List</h4><p>cons list是来源于Lisp语言的链表数据结构，这个链表中有两个元素，第一个元素是数据，第二个是下一个链表的元素。这个名字来源于<code>cons function(construct function)</code>在Lisp使用两个参数构造(cons)一对值(pair)，这两个参数又分别是值和另一个pair。</p>
+<p>例如<code>(1, (2, (3, Nil)))</code>就是有三个元素的链表。linux中的<code>struct list</code>其实和这个一样，都是在list的结构中包含了下一个list的元素。</p>
+<p>例如定义一个链表枚举</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, List),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> list = Cons(<span class="number">1</span>, Cons(<span class="number">2</span>, Cons(<span class="number">3</span>, Nil)));</span><br></pre></td></tr></table></figure>
+
+<p>当定义一个<code>let list = Cons(1, Cons(2, Cons(3, Nil)));</code>这样的链表时，由于链表中元素的第二个成员是另一个list，而下一个list里面又包含了一个list，编译器无法推导出这个list变量到底占用多少空间，会提示错误。此时可以将第二个成员改为Box类型，把数据放在堆上，因为Box的大小是固定的，所以编译器就可以推导出list变量占用大小。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, <span class="built_in">Box</span>&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> list = Cons(<span class="number">1</span>, <span class="built_in">Box</span>::new(Cons(<span class="number">2</span>, <span class="built_in">Box</span>::new(Nil))));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Deref-Trait"><a href="#Deref-Trait" class="headerlink" title="Deref Trait"></a>Deref Trait</h3><p><code>Deref</code>定义了智能指针解引用的行为。一个常规的引用类型可以看作指向存储在某个地方的值的指针。我们可以使用<code>*</code>来获取引用指向的值。使用<code>Box&lt;T&gt;</code>可以达到和引用相同的效果</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> x = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> y = &amp;x; <span class="comment">// y的类型是&amp;i32</span></span><br><span class="line">    <span class="keyword">let</span> z = <span class="built_in">Box</span>::new(x); <span class="comment">// z的类型是Box&lt;i32&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, x);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, *y); <span class="comment">// 使用*获取y指向的值</span></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, *z); <span class="comment">// 使用*获取z指向的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="自定义deref"><a href="#自定义deref" class="headerlink" title="自定义deref"></a>自定义deref</h4><p>对于自定义类型，可以通过实现<code>Deref</code>让rust使用<code>*</code>解引用一个数据。rust会把<code>*y</code>替换为<code>*(y.deref())</code>，这里的<code>*</code>替换只会工作一次，而不会把替换后的<code>*</code>再次进行替换。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Deref;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyBox</span></span>&lt;T&gt;(T); <span class="comment">// 只包含了一个值的元组结构</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; MyBox&lt;T&gt; &#123;</span><br><span class="line">   <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(x: T) -&gt; MyBox&lt;T&gt; &#123; <span class="comment">// new 方法创建一个对象</span></span><br><span class="line">        MyBox(x)</span><br><span class="line">   &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; Deref <span class="keyword">for</span> MyBox&lt;T&gt; &#123; <span class="comment">// 实现Deref Trait</span></span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Target</span></span> = T; <span class="comment">// 声明一个T的关联类型</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">deref</span></span>(&amp;<span class="keyword">self</span>) -&gt; &amp;Self::Target &#123; </span><br><span class="line">        &amp;<span class="keyword">self</span>.<span class="number">0</span> <span class="comment">// 这里返回的是引用而不是值，使用0获取元组结构的第一个值，同时不把这个值从结构中移出去move</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> x = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> y = MyBox::new(x);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, x);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, *y); <span class="comment">// 如果不实现Deref，会编译错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="函数和方法中的隐式解引用规则"><a href="#函数和方法中的隐式解引用规则" class="headerlink" title="函数和方法中的隐式解引用规则"></a>函数和方法中的隐式解引用规则</h4><p><em>Deref coercion</em>t特性可以把一个实现了<code>Deref</code> trait的引用类型转换为另一个类型的引用。例如把一个<code>&amp;String</code>类型的参数值传递给一个需要<code>&amp;str</code>的函数，因为<code>&amp;String</code>的<code>Deref</code> 返回一个<code>&amp;str</code>，所以这种调用就是可行的。这样函数和方法中的传入参数就不需要明确写<code>*</code>或<code>&amp;</code>.当一个类型实现了<code>Deref</code> trait，rust编译器会调用调用尽可能多次的<code>Deref::deref</code>来让传入的参数引用去匹配函数需要的参数类型，这个执行过程在编译期完成，所以不会有性能影响。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">hello</span></span>(name: &amp;<span class="built_in">str</span>) &#123;<span class="comment">// 以&amp;str为参数的函数</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Hello, &#123;name&#125;!!!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> m = MyBox::new(<span class="built_in">String</span>::from(<span class="string">"world"</span>));</span><br><span class="line">hello(&amp;m); <span class="comment">// MyBox&lt;String&gt;的引用会自动Deref为&amp;String，编译器会再次调用Deref把&amp;String转换为&amp;str</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="可变引用的解引用"><a href="#可变引用的解引用" class="headerlink" title="可变引用的解引用"></a>可变引用的解引用</h4><p>使用<code>DerefMut</code> trait来实现<em>mutable</em>引用的解引用</p>
+<h4 id="基本规则"><a href="#基本规则" class="headerlink" title="基本规则"></a>基本规则</h4><ul>
+<li>当T实现了<code>Deref</code>trait返回<code>&amp;U</code>类型，那么编译器会把 <code>&amp;T</code> 转变为 <code>&amp;U</code> </li>
+<li>当T实现了<code>DerefMut</code>trait返回<code>&amp;mut U</code>类型，那么编译器会把  <code>&amp;mut T</code>转变为 <code>&amp;mut U</code></li>
+<li>当T只实现了<code>Deref</code>trait返回<code>&amp;U</code>类型，那么编译器会把 <code>&amp;mut T</code>  转变为 <code>&amp;U</code> </li>
+</ul>
+<h3 id="Drop-Trait"><a href="#Drop-Trait" class="headerlink" title="Drop Trait"></a>Drop Trait</h3><p>当一个变量执行出它的作用域后，会执行这个类型的<code>Drop</code> trait。例如<code>Box&lt;T&gt;</code>类型的变量越过它的作用域后，就会释放堆上的数据。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">CustomSmartPointer</span></span> &#123;</span><br><span class="line">    data: <span class="built_in">String</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="built_in">Drop</span> <span class="keyword">for</span> CustomSmartPointer &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">drop</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"Dropping CustomSmartPointer with data `&#123;&#125;`!"</span>, <span class="keyword">self</span>.data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> c = CustomSmartPointer &#123;</span><br><span class="line">        data: <span class="built_in">String</span>::from(<span class="string">"my stuff"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">let</span> d = CustomSmartPointer &#123;</span><br><span class="line">        data: <span class="built_in">String</span>::from(<span class="string">"other stuff"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"CustomSmartPointers created."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在main函数执行结束时，会先输出变量d的Drop，再输出变量c的Drop。</p>
+<h4 id="强制调用Drop"><a href="#强制调用Drop" class="headerlink" title="强制调用Drop"></a>强制调用Drop</h4><p>有时需要在出作用域之前提前释放资源，就需要提前执行drop，例如多线程使用的lock，需要在函数执行结束前就释放。但是rust不支持显式调用drop，主要为了避免多次释放资源，此时需要使用<code>std::mem::drop</code>函数。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> c = CustomSmartPointer &#123;</span><br><span class="line">        data: <span class="built_in">String</span>::from(<span class="string">"my stuff"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"CustomSmartPointer created."</span>);</span><br><span class="line"><span class="built_in">drop</span>(c);</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"CustomSmartPointer dropped before the end of main."</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Rc"><a href="#Rc" class="headerlink" title="Rc"></a>Rc<t></t></h3><p>Rc是引用计数的缩写，用来处理一个对象有多个使用者的场景，当一个引用者退出生命周期，引用计数会减少1。它只能在单线程中使用。</p>
+<p>通过使用<code>Rc::new</code>来创建一个<code>Rc&lt;T&gt;</code>的类型，使用<code>Rc::clone(&amp;a)</code>的方式来增加a的引用计数，而不是使用<code>a.clone()</code>，这是为了让程序代码更可读，直接可以看出来是引用计数的浅拷贝，而不是clone的深拷贝。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, Rc&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> a = Rc::new(Cons(<span class="number">5</span>, Rc::new(Cons(<span class="number">10</span>, Rc::new(Nil)))));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">let</span> b = Cons(<span class="number">3</span>, Rc::clone(&amp;a));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 2</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> c = Cons(<span class="number">8</span>, Rc::clone(&amp;a));</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 3</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current count of a = &#123;&#125;"</span>, Rc::strong_count(&amp;a)); <span class="comment">// 2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="RefCell"><a href="#RefCell" class="headerlink" title="RefCell"></a>RefCell<t></t></h3><p>有些时候，编译器的编译期无法判断程序代码是否正确的满足了借用规则，但是如果严格写满足编译规则的代码，编程又会不方便，所以rust允许开发人员在自己保证借用规则正确的前提下，有一些unsafe的代码。</p>
+<p>Interior mutability*内部可变性是rust的一种设计模式，它允许修改一个不可变引用内部的数据。例如一个trait参数是不可变引用，但是在一些特殊场景又需要修改这个参数的内部数据，例如单元测试时修改用于测试的假数据。</p>
+<p>RefCell<t>只能有一个引用。可以支持可变引用和不可变引用，且在运行时检查规则。由于它支持运行时检查规则，所以就可以修改一个不可变引用RefCell<t>内部的值。</t></t></p>
+<p>Box<t>运行在编译期检查可变引用和不可变引用使用是否正确</t></p>
+<p>Rc<t>只能作为不可变引用，并在编译期检查正确性</t></p>
+<p> <code>RefCell&lt;T&gt;</code>的 <code>borrow</code> 方法返回 <code>Ref&lt;T&gt;</code>不可变智能指针，<code>borrow_mut</code> 返回可变的智能指针<code>RefMut&lt;T&gt;</code>.  <code>RefCell&lt;T&gt;</code>会记录当前有多少个 <code>Ref&lt;T&gt;</code> 和 <code>RefMut&lt;T&gt;</code> 的智能指针，从而保证可以有多个不可变指针和一个可变指针，这个检查在运行时判断，如果不满足引用规则，就会产生panic。 <code>RefCell&lt;T&gt;</code>只能在一个线程中使用，<code>Mutex&lt;T&gt;</code>是它的多线程版本。</p>
+<p>例如在一个作用域内创建两个可变可变智能指针程序在编译时不会出错，但是运行时就会报错。使用 <code>RefCell&lt;T&gt;</code>可能会把错误漏出到程序的生产环境中，而不是在编译期提前发现同时还增加了运行时的负担，但是能增加程序实现的灵活性。</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(Rc&lt;RefCell&lt;<span class="built_in">i32</span>&gt;&gt;, Rc&lt;List&gt;), <span class="comment">// List的值从普通的int变为可以修改值的引用</span></span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::&#123;rc::Rc, cell::RefCell&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> value = Rc::new(RefCell::new(<span class="number">5</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> a = Rc::new(Cons(Rc::clone(&amp;value), Rc::new(Nil)));</span><br><span class="line">    <span class="keyword">let</span> b = Cons(Rc::new(RefCell::new(<span class="number">3</span>)), Rc::clone(&amp;a));</span><br><span class="line">    <span class="keyword">let</span> c = Cons(Rc::new(RefCell::new(<span class="number">4</span>)), Rc::clone(&amp;a));</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> val1 = value.borrow_mut();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> val2 = value.borrow_mut();<span class="comment">//already borrowed: BorrowMutError如果在获取一次可变引用就会在运行时出错，编译不会报错。</span></span><br><span class="line"></span><br><span class="line">    *value.borrow_mut() +=<span class="number">10</span>; <span class="comment">// 通过连续解引用最后获取到值的可变引用</span></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" a = &#123;:?&#125;"</span>, a); <span class="comment">//  a = Cons(RefCell &#123; value: 15 &#125;, Nil)</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" b = &#123;:?&#125;"</span>, b); <span class="comment">//  b = Cons(RefCell &#123; value: 3 &#125;, Cons(RefCell &#123; value: 15 &#125;, Nil))</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">" c = &#123;:?&#125;"</span>, c); <span class="comment">//  c = Cons(RefCell &#123; value: 4 &#125;, Cons(RefCell &#123; value: 15 &#125;, Nil))</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>

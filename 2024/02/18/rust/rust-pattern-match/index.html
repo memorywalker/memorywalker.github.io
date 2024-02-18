@@ -94,13 +94,18 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="How Time Flies">
-<meta property="og:url" content="http://memorywalker.github.io/tags/rust/index.html">
+  <meta name="description" content="RUST Patterns and MatchingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 模式Pattern是一种语法，用来匹配类型中的结构，和match配合使用。模式由以下几种类型组成：  Literals 字面值，写死的字串或数字 结构的数组，枚举，结构体或元组 变量 通配符 占位符  模式使用场景match分支12345mat">
+<meta name="keywords" content="rust,learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust Learning-Patterns and Matching">
+<meta property="og:url" content="http://memorywalker.github.io/2024/02/18/rust/rust-pattern-match/index.html">
 <meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="RUST Patterns and MatchingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 模式Pattern是一种语法，用来匹配类型中的结构，和match配合使用。模式由以下几种类型组成：  Literals 字面值，写死的字串或数字 结构的数组，枚举，结构体或元组 变量 通配符 占位符  模式使用场景match分支12345mat">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-02-18T04:39:48.308Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="How Time Flies">
+<meta name="twitter:title" content="Rust Learning-Patterns and Matching">
+<meta name="twitter:description" content="RUST Patterns and MatchingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 模式Pattern是一种语法，用来匹配类型中的结构，和match配合使用。模式由以下几种类型组成：  Literals 字面值，写死的字串或数字 结构的数组，枚举，结构体或元组 变量 通配符 占位符  模式使用场景match分支12345mat">
 
 
 
@@ -108,7 +113,7 @@
 
   
   
-  <link rel="canonical" href="http://memorywalker.github.io/tags/rust/">
+  <link rel="canonical" href="http://memorywalker.github.io/2024/02/18/rust/rust-pattern-match/">
 
 
 
@@ -118,7 +123,7 @@
   };
 </script>
 
-  <title>标签: rust | How Time Flies</title>
+  <title>Rust Learning-Patterns and Matching | How Time Flies</title>
   
 
 
@@ -166,7 +171,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -221,7 +226,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -326,318 +331,233 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block tag">
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>rust<small>标签</small>
-        </h1>
-      </div>
-
-      
-        
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/02/18/rust/rust-pattern-match/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2024/02/18/rust/rust-pattern-match/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Patterns and Matching</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Rust Learning-Patterns and Matching
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2024-02-18T10:42:49+00:00" content="2024-02-18">
-          02-18
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-02-18 10:42:49 / 修改时间：04:39:48" itemprop="dateCreated datePublished" datetime="2024-02-18T10:42:49+00:00">2024-02-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2024/02/17/rust/rust-OOP/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Object Oriented Programming</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2024-02-17T09:42:49+00:00" content="2024-02-17">
-          02-17
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
+        <h2 id="RUST-Patterns-and-Matching"><a href="#RUST-Patterns-and-Matching" class="headerlink" title="RUST Patterns and Matching"></a>RUST Patterns and Matching</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h3><p>Pattern是一种语法，用来匹配类型中的结构，和match配合使用。模式由以下几种类型组成：</p>
+<ol>
+<li>Literals 字面值，写死的字串或数字</li>
+<li>结构的数组，枚举，结构体或元组</li>
+<li>变量</li>
+<li>通配符</li>
+<li>占位符</li>
+</ol>
+<h4 id="模式使用场景"><a href="#模式使用场景" class="headerlink" title="模式使用场景"></a>模式使用场景</h4><h5 id="match分支"><a href="#match分支" class="headerlink" title="match分支"></a>match分支</h5><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">match</span> VALUE &#123;</span><br><span class="line">    PATTERN =&gt; EXPRESSION,</span><br><span class="line">    PATTERN =&gt; EXPRESSION,</span><br><span class="line">    PATTERN =&gt; EXPRESSION,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<p>match表达式所有可能值都必须被处理。一种确保处理所有情况的方法是在最后一个分支使用可以匹配所有情况的模式，如使用<code>_</code>模式匹配所有情况。</p>
+<h5 id="if-let条件"><a href="#if-let条件" class="headerlink" title="if let条件"></a>if let条件</h5><p>if let用来处理简单匹配一种情况的场景，当然也可以使用else来处理其他情况。if let, else if, else if let的条件可以是不相关的。编译器不会对if let的所有情况是否都覆盖了进行检查。if let可以和match一样使用覆盖变量 shadowed variables ，例如 <code>if let Ok(age) = age</code> 引入了一个新的shadowed <code>age</code> 变量，它包含了Ok变量中的值，它的作用域从if let的大括号的范围开始，所以<code>age &gt; 30</code>中的age只能在if let代码块的内部有效。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> age: <span class="built_in">Result</span>&lt;<span class="built_in">u8</span>, _&gt; = <span class="string">"34"</span>.parse();</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Ok</span>(age) = age &#123;</span><br><span class="line">        <span class="keyword">if</span> age &gt; <span class="number">30</span> &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"Using purple as the background color"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"Using orange as the background color"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2024/01/21/rust/rust-errors/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Errors</span>
-            
-          </a>
-        
-      </h2>
+<h5 id="while-let条件"><a href="#while-let条件" class="headerlink" title="while let条件"></a>while let条件</h5><p>只要while let后面的模式始终匹配，循环就一直执行。下面例子中只有pop返回了None的时候才会结束循环</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut</span> stack = <span class="built_in">Vec</span>::new();</span><br><span class="line"></span><br><span class="line">stack.push(<span class="number">1</span>);</span><br><span class="line">stack.push(<span class="number">2</span>);</span><br><span class="line">stack.push(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">let</span> <span class="literal">Some</span>(top) = stack.pop() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125;"</span>, top);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2024-01-21T21:42:49+00:00" content="2024-01-21">
-          01-21
-        </time>
-      </div>
+<h5 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h5><p>for之后的值就是pattern，例如<code>for x in y</code>中,x就是一个模式。 <code>enumerate</code>  方法返回值和索引，一起放在一个元组中，例如第一次执行返回  <code>(0, &#39;a&#39;)</code>，所以可以使用  <code>(index, value)</code> 来解构元组中的元素。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> v = <span class="built_in">vec!</span>[<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (index, value) <span class="keyword">in</span> v.iter().enumerate() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125; is at index &#123;&#125;"</span>, value, index);</span><br><span class="line">&#125;</span><br><span class="line">a is at index <span class="number">0</span></span><br><span class="line">b is at index <span class="number">1</span></span><br><span class="line">c is at index <span class="number">2</span></span><br></pre></td></tr></table></figure>
 
-    </header>
-  </article>
+<h5 id="let语句"><a href="#let语句" class="headerlink" title="let语句"></a>let语句</h5><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> PATTERN = EXPRESSION;</span><br></pre></td></tr></table></figure>
 
+<p>例如<code>let x = 5</code>中x就是一种模式，它表示把所有匹配到的值绑定到变量x的模式。下面的元组匹配更直观的提现了模式匹配，三个数字分别匹配到对应的xyz.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> (x, y, z) = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="keyword">let</span> (x, y) = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>); <span class="comment">// error</span></span><br></pre></td></tr></table></figure>
 
-      
-        
+<h5 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h5><p>函数参数和let语句类似，形参变量就是模式，下面的实参 <code>&amp;(3, 5)</code> 匹配模式 <code>&amp;(x, y)</code> </p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_coordinates</span></span>(&amp;(x, y): &amp;(<span class="built_in">i32</span>, <span class="built_in">i32</span>)) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Current location: (&#123;&#125;, &#123;&#125;)"</span>, x, y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> point = (<span class="number">3</span>, <span class="number">5</span>);</span><br><span class="line">    print_coordinates(&amp;point);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2024/01/14/rust/rust-smart-pointer/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Smart Pointers</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2024-01-14T15:42:49+00:00" content="2024-01-14">
-          01-14
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2024/01/07/rust/rust-threads/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Threads</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2024-01-07T09:42:49+00:00" content="2024-01-07">
-          01-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2024/01/01/rust/rust-funcional/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Functional</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2024-01-01T11:42:49+00:00" content="2024-01-01">
-          01-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2023/12/31/rust/rust-collection/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Collections</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-12-31T14:42:49+00:00" content="2023-12-31">
-          12-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2023/05/02/rust/rust-rustup/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning - Rustup</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-05-02T10:25:49+00:00" content="2023-05-02">
-          05-02
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2023/04/01/rust/rust-trait-lifetimes/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning-Generic, Trait and Lifetimes</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-04-01T22:42:49+00:00" content="2023-04-01">
-          04-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2023/03/18/rust/rust-learning-2-project/" itemprop="url">
-            
-              <span itemprop="name">Rust Learning - Crates and Modules</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-03-18T16:25:49+00:00" content="2023-03-18">
-          03-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+<h3 id="模式匹配的可反驳性"><a href="#模式匹配的可反驳性" class="headerlink" title="模式匹配的可反驳性"></a>模式匹配的可反驳性</h3><p>模式有两种形式 <strong>refutable</strong>可反驳的和<strong>irrefutable</strong>不可反驳的 。</p>
+<p>不会出现匹配失败，可以匹配所有可能值的模式为不可反驳的，，例如<code>let x = 5</code>中x可以匹配所有值不会匹配失败</p>
+<p>可能匹配失败的模式为可反驳的，例如 <code>if let Some(x) = a_value</code> ，如果值为None，Some(x)模式就会匹配失败。</p>
+<p>函数参数、let语句、for循环只能接受不可反驳的模式，因为他们不能处理模式匹配失败的情况。对于if let、while let表达式可以接受不可反驳模式和可反驳模式，但是对于不可反驳模式由于模式不会失败，没有实际意义，所以编译器会提示编译警告。</p>
+<h3 id="模式语法"><a href="#模式语法" class="headerlink" title="模式语法"></a>模式语法</h3>
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/learning/" rel="tag"># learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/02/17/rust/rust-OOP/" rel="next" title="Rust Learning-Object Oriented Programming">
+                <i class="fa fa-chevron-left"></i> Rust Learning-Object Oriented Programming
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/tags/rust/page/2/">2</a><a class="extend next" rel="next" href="/tags/rust/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+  </article>
 
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -657,8 +577,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -875,6 +804,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-Patterns-and-Matching"><span class="nav-number">1.</span> <span class="nav-text">RUST Patterns and Matching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模式"><span class="nav-number">1.1.</span> <span class="nav-text">模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#模式使用场景"><span class="nav-number">1.1.1.</span> <span class="nav-text">模式使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#match分支"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">match分支</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#if-let条件"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">if let条件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#while-let条件"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">while let条件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#for循环"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">for循环</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#let语句"><span class="nav-number">1.1.1.5.</span> <span class="nav-text">let语句</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#函数参数"><span class="nav-number">1.1.1.6.</span> <span class="nav-text">函数参数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模式匹配的可反驳性"><span class="nav-number">1.2.</span> <span class="nav-text">模式匹配的可反驳性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模式语法"><span class="nav-number">1.3.</span> <span class="nav-text">模式语法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -1007,6 +953,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
 
   
 
@@ -1022,6 +972,8 @@
 
   
 
+
+  
 
 
   
