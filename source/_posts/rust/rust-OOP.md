@@ -167,3 +167,215 @@ where
 
 ### rust实现面向对象设计模式
 
+#### 状态模式
+
+状态模式在状态内部封装数据，数据或行为会根据状态而不同。每一个状态只处理自己支持的行为和如何切换到其他状态。状态对象的拥有者不需要知道状态如何切换。当业务发生变化时，只需要更新状态内部的代码或增加新的状态，而不用更改拥有状态的业务代码。
+
+一个博客文章分为草稿、审阅、发布几个阶段，每个阶段有自己可以支持的操作，不同的阶段之间可以转换。
+
+1.  一个博客文章Post有内容和当前的状态
+2. Post默认为空的草稿状态
+3. Post添加内容后，直到发布前外部看到都是空内容，所以通过状态来确定Post的Content是什么
+
+使用到的技术要点：
+
+1. 使用new方法来创建对象，并进行基本的初始化
+2. state trait的方法使用`Box<Self>`作为参数，并返回一个trait object`Box<dyn State>`
+3. post使用state来处理返回的content时，把post作为引用传入方法，但是返回值又是post的成员，需要使用生命周期注解说明返回值的生命周期和入参post的生命周期相关
+
+```rust
+pub struct Post {
+    state: Option<Box<dyn State>>,
+    content: String,
+}
+
+impl Post {
+    pub fn new() -> Post {
+        Post {
+            state: Some(Box::new(Draft {})),// 默认创建一个空的草稿状态
+            content: String::new(),
+        }
+    }
+    // 添加内容
+    pub fn add_text(&mut self, text: &str) {
+        self.content.push_str(text);
+    }
+    
+    pub fn content(&self) -> &str {
+        // as_ref()返回Option<&Box<dyn State>>使用引用，因为不能把state的所有权从post结构 move走
+        self.state.as_ref().unwrap().content(self)
+    }
+    
+    pub fn request_review(&mut self) {
+        if let Some(s) = self.state.take() {
+            // 调用当前状态的request_review，request_review方法会获取s的所有权
+            // rust要求结构体的成员必须有值，所以使用request_review返回的状态
+            // 重新赋值给Post的state，达到状态的切换
+            self.state = Some(s.request_review())
+        }
+    }
+    
+    pub fn approve(&mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.approve())
+        }
+    }
+}
+
+// 所有状态支持的行为
+trait State {
+    // self的类型为Box<Self>，只有在一个Box<T>类型对象上调用这个方法才有效，
+    // 这个参数的所有权传入方法，并返回一个新的相同类型的状态对象 
+    fn request_review(self: Box<Self>) -> Box<dyn State>;
+    
+    fn approve(self: Box<Self>) -> Box<dyn State>;
+    // 默认实现返回空
+    // 这里使用了声明周期注解，因为post作为引用传入方法，但是方法的返回值
+    // 又是post这个引用的成员，所以需要告诉编译器返回值的生命周期和入参
+    // post的一致
+    fn content<'a>(&self, post: &'a Post) -> &'a str {
+        ""
+    }
+}
+
+struct Draft {}
+
+impl State for Draft {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        Box::new(PendingReview {})
+    }
+    
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+}
+
+struct PendingReview {}
+
+impl State for PendingReview {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+    // 审阅后的文章转换为发布状态
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        Box::new(Published {})
+    }
+}
+
+struct Published {}
+
+impl State for Published {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+    
+    fn content<'a>(&self, post: &'a Post) -> &'a str {
+        &post.content
+    }
+}
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+    assert_eq!("", post.content());
+
+    post.request_review();
+    assert_eq!("", post.content());
+
+    post.approve();
+    assert_eq!("I ate a salad for lunch today", post.content());
+    
+    println!("All work done!!!");
+}
+```
+
+#### 利弊
+
+优点：
+
+1. 方便扩展新的状态，例如增加一个驳回操作，或者需要两次审阅才能发布
+2. 不需要很多的match分支判断
+
+缺点：
+
+1. 状态之间存在依赖，一个状态切换下一个状态的规则
+2. 状态实现了公共接口Trait重复的代码
+3. Post需要委派相同的方法给state，例如 approve 方法
+
+#### 状态和行为定义为类型
+
+除了使用面相对象的方式实现一个功能，还可以利用rust语言的特有机制实现相同的功能，面相对象不是唯一的方案。
+
+rust编译器的类型检查可以帮助我们检查一个对象支持哪些操作，例如草稿状态下不能返回内容，只能进行审阅。
+
+rust的所有权转移可以通过方法调用让一个类型转换为另一个类型的对象，例如：
+
+1. Post默认new出来的是DraftPost对象
+2. DraftPost对象有添加内容方法和请求审阅方法，请求审阅方法会返回一个PendingReviewPost对象
+3. PendingReviewPost对象执行它特有的approve方法，返回一个Post对象
+
+```rust
+pub struct Post {
+    content: String,
+}
+
+pub struct DraftPost {
+    content: String,
+}
+
+impl Post {
+    pub fn new() -> DraftPost {
+        DraftPost {
+            content: String::new(),
+        }
+    }
+
+    pub fn content(&self) -> &str {
+        &self.content
+    }
+}
+
+impl DraftPost {
+    pub fn add_text(&mut self, text: &str) {
+        self.content.push_str(text);
+    }
+    
+    pub fn request_review(self) -> PendingReviewPost {
+        PendingReviewPost {
+            content: self.content,
+        }
+    }
+}
+
+pub struct PendingReviewPost {
+    content: String,
+}
+
+impl PendingReviewPost {
+    pub fn approve(self) -> Post {
+        Post {
+            content: self.content,
+        }
+    }
+}
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+	// 所有权转移了，所以需要新的变量
+    let post = post.request_review();
+
+    let post = post.approve();
+
+    assert_eq!("I ate a salad for lunch today", post.content());
+    
+    println!("All works done!!!");
+}
+```
+
