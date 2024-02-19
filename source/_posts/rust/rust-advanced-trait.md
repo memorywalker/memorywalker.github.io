@@ -1,5 +1,5 @@
 ---
-title: Rust Learning-Advanced Trait
+title: Rust Learning-Advanced Traits and Types
 date: 2024-02-19 11:36:49
 categories:
 - programming
@@ -8,7 +8,7 @@ tags:
 - learning
 ---
 
-## Advance Trait
+## Advance Traits
 
 [Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)](https://kaisery.github.io/trpl-zh-cn/title-page.html)
 
@@ -240,6 +240,8 @@ fn main() {
 *************
 ```
 
+## Advanced Types
+
 ###  **newtype 模式** 
 
 #### 在外部类型上实现外部Trait
@@ -266,3 +268,106 @@ fn main() {
 ```
 
 在实现Display时，使用了`self.0`来访问元组结构体的唯一一个成员。这种方法的缺点是由于封装了一层新类型，我们无法直接访问原来vec的所有方法，只能通过重新对封装来实现相同的方法，来委派给内部的类型。如果封装类需要所有内部类型的方法，可以通过实现 `Deref` trait  来获取内部的类型，直接调用内部类型的方法。
+
+#### newtype其他用途
+
+* 静态的标识一个值不会被混淆或标识值的单位，例如下面的类型作为函数参数就可以保证有类型检查
+
+```rust
+struct Millimeters(u32);
+struct Meters(u32);
+```
+
+* 通过newtype包装内部的数据类型，可以只暴露一些公共的方法给外部使用
+
+### 类型别名
+
+类型别名的作用和C++的typedef类似，它不会定一个一个新类型，只是给同一个类型多了一个名字。当类型的名字比较长时，可以使用这个比较短的名字作为类型名。别名的声明使用**type**关键字
+
+例如有个很长的类型`Box<dyn Fn() + Send + 'static>` 可以给他起个别名为Trunk
+
+```rust
+type Thunk = Box<dyn Fn() + Send + 'static>;
+let f: Thunk = Box::new(|| println!("hi"));
+fn takes_long_type(f: Thunk) {
+        // --snip--
+}
+```
+
+ 别名通常 和`Result<T, E>`  配合使用，减少重复的代码。在标准库的std::io中也使用了别名
+
+```rust
+type Result<T> = std::result::Result<T, std::io::Error>;
+pub trait Write {
+    // fn write(&mut self, buf: &[u8]) -> Result<usize, Error>;
+    fn write(&mut self, buf: &[u8]) -> Result<usize>; 
+    // fn flush(&mut self) -> Result<(), Error>;
+    fn flush(&mut self) -> Result<()>;
+}
+```
+
+### Never Type
+
+rust中`!`被称为never type，因为它可以用来标识一个函数永远不会执行完。目前`!`只能用在函数返回值，标识这个函数是一个发散函数永远不会返回。
+
+`!`和 `panic!` 配合使用，由于后者不会返回一个值，它会直接结束程序，所以也是一种不会返回状态。
+
+```rust
+fn foo() -> ! {
+    panic!("This call never returns.");
+}
+
+extern "C" {
+    pub fn no_return_extern_func() -> !;
+}
+```
+
+`!`作为一个没有值类型还可以作为match的一个分支的表达式。match语句要求所有分支的返回类型都必须相同，在下面的例子中，第一个分支返回一个u32的数字，如果第二个分支返回字串，会直接报错。但是如果使用`continue`，由于它有一个`!`值，所以编译器会认为第二个分支没有值，就用第一个分支的返回值类型u32作为match的返回类型。
+
+
+```rust
+let guess: u32 = match guess.trim().parse() {
+    Ok(num) => num,
+    Err(_) => continue,
+};
+```
+
+无限loop循环不会结束，所以这个表达式的值为`!`
+
+```rust
+fn foo() -> ! {
+    loop {
+        print!("and ever ");
+    }
+}
+```
+
+### 动态大小类型和Sized Trait
+
+ *dynamically sized types*(*DSTs*) 或*unsized types* 是只有在运行时才能获取值实际占用空间的类型。
+
+例如`str`类型就是动态类型大小的，因为只有运行时才知道这个字符串的大小。因此我们不能创建一个str类型的变量，因为编译器不知道给这个变量在内存分配多大的内存空间。rust提供了字串切片类型`&str`，它存储了这个字串的地址和字串的长度，所以`&str`类型的大小是固定已知的，可以定义`&str`类型的变量。
+
+动态大小类型需要和一个指针配合使用，让指针类型指向动态类型数据的地址，例如使用智能指针或`&`引用。
+
+trait也是一个动态大小类型，所以trait object需要放在一个指针中，例如`&dyn Trait`或者`Box<dyn Trait>`
+
+rust提供了`Sized` trait来判断一个类型的大小在编译期是否是已知的。它会被每一个可以获取到大小的类型自动实现。
+
+rust隐含的给每一个泛型函数的都使用`Sized` trait类型，泛型类型T的类型必须是已知大小的
+
+```rust
+fn generic<T: Sized>(t: T) {
+    // --snip--
+}
+```
+
+我们可以修改这种默认的声明，让T可以是一个不定大小的，但是参数的类型需要调整为&T，因为T的类型大小未知。
+
+```rust
+fn generic<T: ?Sized>(t: &T) {
+    // --snip--
+}
+```
+
+ trait bound  `?Sized` 意味着类型 `T` 可能是`Sized`也可能无法知道size。 问号修饰Trait的用法 `?Trait` 只能用在 `Sized`之前，不能用在其他trait之前. 
