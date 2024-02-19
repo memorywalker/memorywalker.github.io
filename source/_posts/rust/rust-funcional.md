@@ -181,6 +181,63 @@ fn main() {
 }
 ```
 
+#### 返回闭包
+
+闭包可以看做是一种trait，所以不能直接返回它，因为trait的大小是未知的。但是可以通过trait object方式返回闭包。即给闭包增加一个指针。
+
+```rust
+fn returns_closure() -> Box<dyn Fn(i32) -> i32> {
+    Box::new(|x| x + 1)
+}
+```
+
+### 函数指针
+
+函数也可以作为参数传递给另一个函数。`fn`类型称作函数指针。使用函数指针可以复用已经实现过的函数。
+
+例如已经有了一个实现整数加1的函数，我们想实现整数加一操作执行多次，就可以在新的函数中调用已经实现的函数。
+
+```rust
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+
+fn do_repeat(f: fn(i32) -> i32, arg: i32, time: i32) -> i32 {
+    let mut val = 0;
+    for _i in 0..time {
+        val = val + f(arg); // 调用函数指针
+    }
+    val
+}
+
+fn main() {
+    let answer = do_repeat(add_one, 2, 5);
+    println!("The answer is: {}", answer);// The answer is: 15
+}
+```
+
+函数指针实现了三种类型的闭包，所以可以使用闭包的地方，都可以使用函数指针。
+
+```rust
+let list_of_numbers = vec![1, 2, 3];
+let list_of_strings: Vec<String> =
+    list_of_numbers.iter().map(|i| i.to_string()).collect();// 使用闭包
+let list_of_strings: Vec<String> =
+    list_of_numbers.iter().map(ToString::to_string).collect(); // 使用函数指针
+```
+
+枚举的每个变量名也是一个初始化函数，所以这个变量名也是函数指针。
+
+```rust
+enum Status {
+    Value(u32),
+    Stop,
+}
+// 使用Status::Value(u32)来对每一个从0到20的u32类型的数值创建Status::Value实例
+let list_of_statuses: Vec<Status> = (0u32..20).map(Status::Value).collect(); 
+```
+
+
 ### 迭代器Iterator
 
 迭代器模式可以对一系列数据元素逐个访问。迭代器对象是懒加载的，只有消费了迭代器，它才会执行遍历。
