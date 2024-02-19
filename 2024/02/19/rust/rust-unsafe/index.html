@@ -94,21 +94,18 @@
 
 
 
-  <meta name="description" content="head first design pattern - Command老博客搬运计划 https://www.cnblogs.com/aquar/archive/2010/05/10/3451444.html Command Pattern客户在餐厅点单后，服务员把订单转给厨师，厨师按订单制作饭菜。其中服务员和厨师之间没有依赖关系，厨师根据订单就知道要做什么饭。  客户创建一个命令对象  客户利用">
-<meta name="keywords" content="Design Pattern">
+  <meta name="description" content="Unsafe RustRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Unsafe Rustunsafe rust不会强制保证内存安全，但是可以提供更强大的功能。通过使用unsafe标识，可以方便确认程序中可能有问题的代码块。 编译器有时无法判断程序正确性，所以会严格按语法规范编译失败，这时可要告诉编译器我们自己来保证程序的正确性。 使用un">
+<meta name="keywords" content="rust,learning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="head first design pattern - Command">
-<meta property="og:url" content="http://memorywalker.github.io/2010/05/10/HeadFirstDesignPattern/headfirst-design-pattern-Command/index.html">
+<meta property="og:title" content="Rust Learning-Unsafe Rust">
+<meta property="og:url" content="http://memorywalker.github.io/2024/02/19/rust/rust-unsafe/index.html">
 <meta property="og:site_name" content="How Time Flies">
-<meta property="og:description" content="head first design pattern - Command老博客搬运计划 https://www.cnblogs.com/aquar/archive/2010/05/10/3451444.html Command Pattern客户在餐厅点单后，服务员把订单转给厨师，厨师按订单制作饭菜。其中服务员和厨师之间没有依赖关系，厨师根据订单就知道要做什么饭。  客户创建一个命令对象  客户利用">
+<meta property="og:description" content="Unsafe RustRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Unsafe Rustunsafe rust不会强制保证内存安全，但是可以提供更强大的功能。通过使用unsafe标识，可以方便确认程序中可能有问题的代码块。 编译器有时无法判断程序正确性，所以会严格按语法规范编译失败，这时可要告诉编译器我们自己来保证程序的正确性。 使用un">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://memorywalker.github.io/2010/05/10/uploads/designpattern/command.png">
-<meta property="og:image" content="http://memorywalker.github.io/uploads/designpattern/command.png">
 <meta property="og:updated_time" content="2024-02-19T03:23:19.856Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="head first design pattern - Command">
-<meta name="twitter:description" content="head first design pattern - Command老博客搬运计划 https://www.cnblogs.com/aquar/archive/2010/05/10/3451444.html Command Pattern客户在餐厅点单后，服务员把订单转给厨师，厨师按订单制作饭菜。其中服务员和厨师之间没有依赖关系，厨师根据订单就知道要做什么饭。  客户创建一个命令对象  客户利用">
-<meta name="twitter:image" content="http://memorywalker.github.io/2010/05/10/uploads/designpattern/command.png">
+<meta name="twitter:title" content="Rust Learning-Unsafe Rust">
+<meta name="twitter:description" content="Unsafe RustRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Unsafe Rustunsafe rust不会强制保证内存安全，但是可以提供更强大的功能。通过使用unsafe标识，可以方便确认程序中可能有问题的代码块。 编译器有时无法判断程序正确性，所以会严格按语法规范编译失败，这时可要告诉编译器我们自己来保证程序的正确性。 使用un">
 
 
 
@@ -116,7 +113,7 @@
 
   
   
-  <link rel="canonical" href="http://memorywalker.github.io/2010/05/10/HeadFirstDesignPattern/headfirst-design-pattern-Command/">
+  <link rel="canonical" href="http://memorywalker.github.io/2024/02/19/rust/rust-unsafe/">
 
 
 
@@ -126,7 +123,7 @@
   };
 </script>
 
-  <title>head first design pattern - Command | How Time Flies</title>
+  <title>Rust Learning-Unsafe Rust | How Time Flies</title>
   
 
 
@@ -354,7 +351,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2010/05/10/HeadFirstDesignPattern/headfirst-design-pattern-Command/">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/02/19/rust/rust-unsafe/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="MemoryWalker">
@@ -371,7 +368,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">head first design pattern - Command
+          <h1 class="post-title" itemprop="name headline">Rust Learning-Unsafe Rust
 
               
             
@@ -397,28 +394,34 @@
                 
               
 
-              <time title="创建时间：2010-05-10 04:38:00" itemprop="dateCreated datePublished" datetime="2010-05-10T04:38:00+00:00">2010-05-10</time>
+              <time title="创建时间：2024-02-19 08:58:49 / 修改时间：03:23:19" itemprop="dateCreated datePublished" datetime="2024-02-19T08:58:49+00:00">2024-02-19</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-02-19 03:23:19" itemprop="dateModified" datetime="2024-02-19T03:23:19+00:00">2024-02-19</time>
               
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -448,22 +451,55 @@
       
 
       
-        <h2 id="head-first-design-pattern-Command"><a href="#head-first-design-pattern-Command" class="headerlink" title="head first design pattern - Command"></a>head first design pattern - Command</h2><p>老博客搬运计划</p>
-<p><a href="https://www.cnblogs.com/aquar/archive/2010/05/10/3451444.html" target="_blank" rel="noopener">https://www.cnblogs.com/aquar/archive/2010/05/10/3451444.html</a></p>
-<h4 id="Command-Pattern"><a href="#Command-Pattern" class="headerlink" title="Command Pattern"></a>Command Pattern</h4><p>客户在餐厅点单后，服务员把订单转给厨师，厨师按订单制作饭菜。其中服务员和厨师之间没有依赖关系，厨师根据订单就知道要做什么饭。</p>
+        <h2 id="Unsafe-Rust"><a href="#Unsafe-Rust" class="headerlink" title="Unsafe Rust"></a>Unsafe Rust</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="Unsafe-Rust-1"><a href="#Unsafe-Rust-1" class="headerlink" title="Unsafe Rust"></a>Unsafe Rust</h3><p>unsafe rust不会强制保证内存安全，但是可以提供更强大的功能。通过使用unsafe标识，可以方便确认程序中可能有问题的代码块。</p>
+<p>编译器有时无法判断程序正确性，所以会严格按语法规范编译失败，这时可要告诉编译器我们自己来保证程序的正确性。</p>
+<p>使用<strong>unsafe</strong>关键字开始一个代码块，其中的代码可以是unsafe的，在其中可以进行以下操作：</p>
+<ul>
+<li>解引用一个原始指针</li>
+<li>调用一个unsafe的函数或方法</li>
+<li>访问或修改不可变静态变量</li>
+<li>实现unsafe的trait</li>
+<li>访问union S的字段</li>
+</ul>
+<h4 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h4><h5 id="原始指针raw-pointer"><a href="#原始指针raw-pointer" class="headerlink" title="原始指针raw pointer"></a>原始指针raw pointer</h5><p>原始指针分为可变<code>*mut T</code>和不可变两种 <code>*const T</code>  ，其中的<code>*</code>号是数据类型名称的一部分，不是解引用操作。它与引用或智能指针的差异：</p>
+<ul>
+<li>可变和不可变原始指针可以指向同一个内存地址，不需要考虑借用规则</li>
+<li>不保证指向的内存地址是有效，可以访问的</li>
+<li>指针的值可以是null</li>
+<li>没有自动释放机制</li>
+</ul>
+<p>原始指针主要用在提高程序性能，与其他语言交互或者操作硬件时。</p>
+<p>使用<strong>as</strong>关键字把一个引用转换为对应的原始指针类型. rust编译器不会检查指针指向地址的有效性，两个变量同时指向同一个地址可能出现数据竞争的多线程问题。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="comment">// 定义原始指针不解引用，代码都是safe的</span></span><br><span class="line">    <span class="keyword">let</span> address = <span class="number">0x012345usize</span>;</span><br><span class="line">    <span class="keyword">let</span> r = address <span class="keyword">as</span> *<span class="keyword">const</span> <span class="built_in">i32</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> num = <span class="number">5</span>;</span><br><span class="line">    <span class="comment">// 可以同时指向相同的变量地址</span></span><br><span class="line">    <span class="keyword">let</span> r1 = &amp;num <span class="keyword">as</span> *<span class="keyword">const</span> <span class="built_in">i32</span>;</span><br><span class="line">    <span class="keyword">let</span> r2 = &amp;<span class="keyword">mut</span> num <span class="keyword">as</span> *<span class="keyword">mut</span> <span class="built_in">i32</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsafe</span> &#123;</span><br><span class="line">        <span class="comment">// 只能在unsafe代码块中解引用原始指针</span></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"r2 is: &#123;&#125;"</span>, *r2);</span><br><span class="line">        *r2 = <span class="number">10</span>;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"r1 is: &#123;&#125;"</span>, *r1);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//r2 is: 5</span></span><br><span class="line"><span class="comment">//r1 is: 10</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="unsafe函数"><a href="#unsafe函数" class="headerlink" title="unsafe函数"></a>unsafe函数</h5><p>使用unsafe关键字开头修饰的函数或方法只能在unsafe代码块中被调用</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsafe</span> <span class="function"><span class="keyword">fn</span> <span class="title">dangerous</span></span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="comment">//dangerous(); </span></span><br><span class="line">    <span class="keyword">unsafe</span> &#123;</span><br><span class="line">        dangerous();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用safe抽象来包装unsafe代码"><a href="#使用safe抽象来包装unsafe代码" class="headerlink" title="使用safe抽象来包装unsafe代码"></a>使用safe抽象来包装unsafe代码</h5><p>如果一个函数中的部分代码是unsafe的，不一定要求这个函数式unsafe的。实现一个功能时需要使用unsafe的代码，例如下面的例子中从指定的索引位置分割一个数组。如果直接使用<code>(&amp;mut values[..mid], &amp;mut values[mid..])</code>来返回分割的两个部分数据，编译器会认为我们同时创建了values的两个可变引用，导致出错。这时可以使用unsafe的原始指针来分割这个values的可变引用。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::slice;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">split_at_mut</span></span>(values: &amp;<span class="keyword">mut</span> [<span class="built_in">i32</span>], mid: <span class="built_in">usize</span>) -&gt; (&amp;<span class="keyword">mut</span> [<span class="built_in">i32</span>], &amp;<span class="keyword">mut</span> [<span class="built_in">i32</span>]) &#123;</span><br><span class="line">    <span class="keyword">let</span> len = values.len();</span><br><span class="line">    <span class="keyword">let</span> ptr = values.as_mut_ptr(); <span class="comment">// 获取slice的原始指针，这里的类型为*mut i32</span></span><br><span class="line">    <span class="built_in">assert!</span>(mid &lt;= len); <span class="comment">// 确保数据合法</span></span><br><span class="line">    <span class="keyword">unsafe</span> &#123;</span><br><span class="line">        (<span class="comment">// 返回的元组</span></span><br><span class="line">            <span class="comment">// 这是个unsafe方法，需要发在unsafe代码块中，第一个参数是slice的raw point，创建一个新的slice</span></span><br><span class="line">            slice::from_raw_parts_mut(ptr, mid), </span><br><span class="line">            slice::from_raw_parts_mut(ptr.add(mid), len - mid),</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> v = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</span><br><span class="line">    <span class="keyword">let</span> r = &amp;<span class="keyword">mut</span> v[..];</span><br><span class="line">    <span class="keyword">let</span> (a, b) = split_at_mut(r, <span class="number">3</span>);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(a, &amp;<span class="keyword">mut</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(b, &amp;<span class="keyword">mut</span> [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用其他程序语言接口"><a href="#使用其他程序语言接口" class="headerlink" title="使用其他程序语言接口"></a>使用其他程序语言接口</h5><p>rust使用<strong>extern</strong>关键字来创建和使用外部函数接口Foreign Function Interface(EFI).</p>
+<p>调用外部接口时，需要在extern后面定义外部接口使用的应用二进制接口application binary interface(ABI).ABI定义了在汇编层次如何调用一个函数接口。例子中<code>&quot;C&quot;</code>就说明了使用C语言的ABI。</p>
+<p>使用extern的函数都是unsafe的，因为rust无法保证外部接口的安全性。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">abs</span></span>(input: <span class="built_in">i32</span>) -&gt; <span class="built_in">i32</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">unsafe</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"Absolute value of -3 according to C: &#123;&#125;"</span>, abs(-<span class="number">3</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="提供外部语言使用的rust接口"><a href="#提供外部语言使用的rust接口" class="headerlink" title="提供外部语言使用的rust接口"></a>提供外部语言使用的rust接口</h5><p>同理可以让外部语言使用rust实现的接口。<code>#[no_mangle]</code>用来让编译器不要对函数名进行混淆，避免外部调用时在库中找不到函数，同样也需要用extern关键字后加ABI类型指明调用的接口类型。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[no_mangle]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">extern</span> <span class="string">"C"</span> <span class="function"><span class="keyword">fn</span> <span class="title">call_from_c</span></span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Just called a Rust function from C!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="访问或修改可变静态变量"><a href="#访问或修改可变静态变量" class="headerlink" title="访问或修改可变静态变量"></a>访问或修改可变静态变量</h5><p>rust中的全局变量称为静态变量。静态变量和常量类似，也使用 <code>SCREAMING_SNAKE_CASE</code>  命名习惯。使用<strong>static</strong>关键字修饰，rust编译器可以明确静态变量的声明周期。</p>
+<p>静态变量和常量的差异：</p>
 <ol>
-<li>客户创建一个命令对象 </li>
-<li>客户利用setCommand()将命令对象储存在调用者中 </li>
-<li>客户要求调用者执行命令。</li>
+<li>静态变量在内存中有固定的地址，静态变量也可以定义为可变的</li>
+<li>常量在使用的地方都有一份复制</li>
 </ol>
-<p><strong>命令模式</strong>：将请求封装成对象，以便使用不同的请求、队列或日志来参数化其他对象。命令模式也支持可撤销的操作。命令模式可以把请求一个行为的对象和执行行为的对象解耦开来。</p>
-<p>一个命令对象通过在特定接收者上绑定一组动作来封装一个请求，将动作和接收者包进对象中，这个对象只暴露出一个<code>execute()</code>方法，当方法<code>execute()</code>调用的时候，接收者在<code>execute()</code>中处理对应的请求或动作，对于外部客户不知道里面具体的动作怎么实现。</p>
-<p>例如一个遥控器有开和关，对于台灯和电视，都可以实现一个开关命令接口，来做对应的开灯或开电视行为。</p>
-<p><img src="../../uploads/designpattern/command.png" alt="command"><br><img src="/uploads/designpattern/command.png" alt="command"></p>
-<p>命令对象可以将运算块打包(一个接收者和一组动作)，然后将它传来传去，就像是一般的对象一样。调用者可以接受命令当做参数，甚至在运行时动态的进行。</p>
-<p>命令可以支持撤销，做法是实现一个<code>undo()</code>方法来回到<code>execute()</code>被执行前的状态。在命令的接收对象中缓存一个上一次执行的命令对象的拷贝，当需要执行回退时，只需要执行这个缓存命令对象的<code>undo()</code></p>
-<p>宏命令是命令的一种简单延伸，允许调用多个命令。可以创建一个命令对象时，将一组命令按顺序传入这个宏命令对象中，宏命令对象依次调用每一个子命令。</p>
-<p>命令可以用来实现日志和事务系统。抛给一个线程的所有消息对象都可以看作是命令，他们有序的在消息队列中被执行。服务器的远程调用命令也是如此。</p>
+<p>访问不可变静态变量是safe的，但是读或写可变静态变量都是不安全的，都需要在unsafe代码块中，因为可能存在多线程的数据竞争问题。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">mut</span> COUNTER: <span class="built_in">u32</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">add_to_count</span></span>(inc: <span class="built_in">u32</span>) &#123;</span><br><span class="line">    <span class="keyword">unsafe</span> &#123;</span><br><span class="line">        COUNTER += inc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    add_to_count(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">unsafe</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"COUNTER: &#123;&#125;"</span>, COUNTER);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Unsafe-Trait"><a href="#Unsafe-Trait" class="headerlink" title="Unsafe Trait"></a>Unsafe Trait</h5><p>一个Trait中的方法如果有编译器无法验证的不变体，这个Trait就是不安全的，实现这个trait时也需要声明unsafe。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsafe</span> <span class="class"><span class="keyword">trait</span> <span class="title">Foo</span></span> &#123;</span><br><span class="line">    <span class="comment">// methods go here</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsafe</span> <span class="keyword">impl</span> Foo <span class="keyword">for</span> <span class="built_in">i32</span> &#123;</span><br><span class="line">    <span class="comment">// method implementations go here</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="联合体中的字段"><a href="#联合体中的字段" class="headerlink" title="联合体中的字段"></a>联合体中的字段</h5><p>rust的中联合体和C中的类似，一个时刻只能使用union中定义的一个字段，主要也是为了和C语言交互使用的，但是rust编译器无法确定当前union中的成员具体的数据是什么样的，所以访问union中的字段也是不安全的。</p>
 
       
     </div>
@@ -490,7 +526,9 @@
         
         <div class="post-tags">
           
-            <a href="/tags/Design-Pattern/" rel="tag"># Design Pattern</a>
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/learning/" rel="tag"># learning</a>
           
         </div>
       
@@ -503,8 +541,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2010/05/04/HeadFirstDesignPattern/headfirst-design-pattern-Decorator/" rel="next" title="head first design pattern - Decorator">
-                <i class="fa fa-chevron-left"></i> head first design pattern - Decorator
+              <a href="/2024/02/18/life/web-resource/" rel="next" title="Web Resource">
+                <i class="fa fa-chevron-left"></i> Web Resource
               </a>
             
           </div>
@@ -512,10 +550,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2010/05/12/HeadFirstDesignPattern/headfirst-design-pattern-adapter-facade/" rel="prev" title="head first design pattern - Adapter and Facade">
-                head first design pattern - Adapter and Facade <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -804,7 +838,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#head-first-design-pattern-Command"><span class="nav-number">1.</span> <span class="nav-text">head first design pattern - Command</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Command-Pattern"><span class="nav-number">1.0.1.</span> <span class="nav-text">Command Pattern</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Unsafe-Rust"><span class="nav-number">1.</span> <span class="nav-text">Unsafe Rust</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unsafe-Rust-1"><span class="nav-number">1.1.</span> <span class="nav-text">Unsafe Rust</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本用法"><span class="nav-number">1.1.1.</span> <span class="nav-text">基本用法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#原始指针raw-pointer"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">原始指针raw pointer</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#unsafe函数"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">unsafe函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用safe抽象来包装unsafe代码"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">使用safe抽象来包装unsafe代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用其他程序语言接口"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">使用其他程序语言接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#提供外部语言使用的rust接口"><span class="nav-number">1.1.1.5.</span> <span class="nav-text">提供外部语言使用的rust接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#访问或修改可变静态变量"><span class="nav-number">1.1.1.6.</span> <span class="nav-text">访问或修改可变静态变量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Unsafe-Trait"><span class="nav-number">1.1.1.7.</span> <span class="nav-text">Unsafe Trait</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#联合体中的字段"><span class="nav-number">1.1.1.8.</span> <span class="nav-text">联合体中的字段</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
