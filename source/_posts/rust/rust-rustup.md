@@ -68,6 +68,22 @@ rustup的安装程序会自动下载每一个组件，并在最后把cargo的bin
 
 `D:\rust\cargo\registry`目录中是当前系统中已经安装过的包。
 
+#### 配置rust库的安装源
+
+在` $CARGO_HOME` 目录下新建一个config文件，内容如下
+
+```ini
+[source.crates-io]
+replace-with = 'ustc'
+
+[source.ustc]
+registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+```
+
+就可以使用中科大镜像源了，速度快很多。
+
+ [Rust Crates 源使用帮助 — USTC Mirror Help 文档](https://mirrors.ustc.edu.cn/help/crates.io-index.html) 
+
 ### 交叉编译
 
 
