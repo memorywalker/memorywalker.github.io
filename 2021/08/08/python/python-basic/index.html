@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Python Crash Course 2nd基于Python 3.7 python之禅 import this 字符串字符串可以使用&amp;quot;&amp;quot;或&amp;#39;&amp;#39;，所以在子串中可以嵌套子串例如 ‘Messi is the “VIP” winner’。对于字符串还是统一使用&amp;quot;&amp;quot;来表示，因为有些句子中有&amp;#39;s会导致字串匹配错误。 格式化子串python 3.">
+<meta name="keywords" content="python,Django">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 基础笔记">
+<meta property="og:url" content="http://memorywalker.github.io/2021/08/08/python/python-basic/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="Python Crash Course 2nd基于Python 3.7 python之禅 import this 字符串字符串可以使用&amp;quot;&amp;quot;或&amp;#39;&amp;#39;，所以在子串中可以嵌套子串例如 ‘Messi is the “VIP” winner’。对于字符串还是统一使用&amp;quot;&amp;quot;来表示，因为有些句子中有&amp;#39;s会导致字串匹配错误。 格式化子串python 3.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-02-23T01:29:40.948Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python 基础笔记">
+<meta name="twitter:description" content="Python Crash Course 2nd基于Python 3.7 python之禅 import this 字符串字符串可以使用&amp;quot;&amp;quot;或&amp;#39;&amp;#39;，所以在子串中可以嵌套子串例如 ‘Messi is the “VIP” winner’。对于字符串还是统一使用&amp;quot;&amp;quot;来表示，因为有些句子中有&amp;#39;s会导致字串匹配错误。 格式化子串python 3.">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2021/08/08/python/python-basic/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Python 基础笔记 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2021/08/08/python/python-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python 基础笔记
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2021-08-08 09:25:49" itemprop="dateCreated datePublished" datetime="2021-08-08T09:25:49+00:00">2021-08-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-02-23 01:29:40" itemprop="dateModified" datetime="2024-02-23T01:29:40+00:00">2024-02-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Python-Crash-Course-2nd"><a href="#Python-Crash-Course-2nd" class="headerlink" title="Python Crash Course 2nd"></a>Python Crash Course 2nd</h3><p>基于Python 3.7</p>
+<p>python之禅 <code>import this</code></p>
+<h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><p>字符串可以使用<code>&quot;&quot;</code>或<code>&#39;&#39;</code>，所以在子串中可以嵌套子串例如</p>
+<p>‘Messi is the “VIP” winner’。对于字符串还是统一使用<code>&quot;&quot;</code>来表示，因为有些句子中有<code>&#39;s</code>会导致字串匹配错误。</p>
+<h5 id="格式化子串"><a href="#格式化子串" class="headerlink" title="格式化子串"></a>格式化子串</h5><p>python 3.6支持<strong>f</strong>开始的字串格式化语法，与以前的<code>full_name = &quot;{} {}&quot;.format(first_name, last_name)</code>等价</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">first_name = <span class="string">"ada"</span></span><br><span class="line">last_name = <span class="string">"lovelace"</span></span><br><span class="line">full_name = <span class="string">f"<span class="subst">&#123;first_name.title()&#125;</span> <span class="subst">&#123;last_name.title()&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="空白符操作"><a href="#空白符操作" class="headerlink" title="空白符操作"></a>空白符操作</h5><p><code>&quot;Languages:\n\tPython\n\tC\n\tJavaScript&quot;</code>在一句字串中增加换行或tab</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">favorite_language.rstrip() <span class="comment"># 去掉右侧空白</span></span><br><span class="line">favorite_language.lstrip()</span><br><span class="line">favorite_language.strip()  <span class="comment"># 去掉两侧空白</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h4><p>指数运算 <code>3**2</code> 的值为9</p>
+<p>Python在所有需要用到float的地方都会自动转换为float，例如两个整数相除得到的是float</p>
+<p>可以在数字间以下划线连接，例如<code>1_000</code>，和1000是等价的。(3.6+)</p>
+<p>多个变量同时赋值 <code>x, y, z = 0, 0, 0</code></p>
+<h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><p>动态数组，使用[]表示</p>
+<p>可以使用负数索引倒序获取列表中的值，例如mylist[-1]，表示获取倒数第一个元素</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">motorcycles = []</span><br><span class="line">motorcycles[<span class="number">0</span>] = <span class="string">'ducati'</span> <span class="comment"># 修改一个元素</span></span><br><span class="line">motorcycles.append(<span class="string">'ducati'</span>) <span class="comment">#添加一个元素</span></span><br><span class="line">motorcycles.insert(<span class="number">0</span>, <span class="string">'ducati'</span>) <span class="comment">#插入一个元素</span></span><br><span class="line"><span class="keyword">del</span> motorcycles[<span class="number">1</span>]  <span class="comment">#删除一个元素</span></span><br><span class="line">popped_motorcycle = motorcycles.pop() <span class="comment">#弹出最后一个元素，并将这个元素赋值给变量</span></span><br><span class="line">first_owned = motorcycles.pop(<span class="number">0</span>)  <span class="comment"># 弹出指定位置的一个元素</span></span><br><span class="line">motorcycles.remove(<span class="string">'ducati'</span>)  <span class="comment"># 按值删除第一个元素</span></span><br><span class="line"></span><br><span class="line">cars = [<span class="string">'bmw'</span>, <span class="string">'audi'</span>, <span class="string">'toyota'</span>, <span class="string">'subaru'</span>]</span><br><span class="line">cars.sort() <span class="comment"># 对一个列表升序排序</span></span><br><span class="line">cars.sort(reverse=<span class="literal">True</span>) <span class="comment"># 逆序排序</span></span><br><span class="line">sorted(cars) <span class="comment">#对于一个排序，并不改变原来列表的顺序，而是返回一个临时列表</span></span><br><span class="line">cars.reverse() <span class="comment"># 反转列表中所有元素的顺序</span></span><br><span class="line">len(cars) <span class="comment"># 元素个数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#遍历一个列表</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> list_of_items:</span><br><span class="line">    print(item)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 数字序列</span></span><br><span class="line">range(<span class="number">5</span>)  <span class="comment"># 0-4  </span></span><br><span class="line">range(<span class="number">1</span>, <span class="number">5</span>) <span class="comment"># [1, 2, 3, 4]</span></span><br><span class="line">range(<span class="number">2</span>, <span class="number">11</span>, <span class="number">2</span>) <span class="comment"># 从2开始，步长为2，到11结束，不包括11</span></span><br><span class="line">even_numbers = list(range(<span class="number">2</span>, <span class="number">11</span>, <span class="number">2</span>)) <span class="comment"># 序列转列表</span></span><br><span class="line"></span><br><span class="line">digits = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">0</span>]</span><br><span class="line">min(digits) <span class="comment"># 最小元素</span></span><br><span class="line">max(digits) <span class="comment"># 最大元素</span></span><br><span class="line">sum(digits) <span class="comment"># 元素求和 45</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="list-comprehension"><a href="#list-comprehension" class="headerlink" title="list comprehension"></a>list comprehension</h5><p>通过一个列表表达式生成一个列表</p>
+<p><code>squares = [value**2 for value in range(1, 11)]</code>得到</p>
+<p><code>[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]</code></p>
+<h5 id="列表切片"><a href="#列表切片" class="headerlink" title="列表切片"></a>列表切片</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">players[<span class="number">1</span>:<span class="number">4</span>] <span class="comment"># 获取player列表的1，2，3这3个元素的子集</span></span><br><span class="line">players[:<span class="number">4</span>] <span class="comment"># 从0开始的元素子集</span></span><br><span class="line">players[<span class="number">2</span>:] <span class="comment"># 从2开始到结束的元素子集</span></span><br><span class="line">players[<span class="number">-3</span>:] <span class="comment"># 最后3个元素的子集</span></span><br><span class="line">mylist = list(range(<span class="number">1</span>, <span class="number">11</span>))</span><br><span class="line">print(mylist[<span class="number">1</span>:<span class="number">8</span>:<span class="number">3</span>]) <span class="comment"># 第三个参数为步长，[2, 5, 8]</span></span><br><span class="line">friend_foods = my_foods[:] <span class="comment"># 拷贝一个新列表，不能用friend_foods = my_foods，这样只是指向同一个列表的另一个别名</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h4><p>不可变<strong>immutable</strong> 的列表，<code>dimensions = (200, 50)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">my_t = (<span class="number">3</span>,)  <span class="comment"># 定义只有一个元素的元组需要多加一个，号</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h4><h5 id="boolean表达式"><a href="#boolean表达式" class="headerlink" title="boolean表达式"></a>boolean表达式</h5><p>关键字 <strong>True</strong>   <strong>False</strong></p>
+<p>逻辑与 <code>and</code>  <code>(age_0 &gt;= 21) and (age_1 &gt;= 21)</code></p>
+<p>逻辑或 <code>or</code> <code>age_0 &gt;= 21 or age_1 &gt;= 21</code></p>
+<p>列表中有某一个元素 <code>&#39;mushrooms&#39; in requested_toppings</code></p>
+<p>列表中没有某一个元素 <code>&#39;mushrooms&#39; not in requested_toppings</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> a <span class="keyword">not</span> <span class="keyword">in</span> words:</span><br><span class="line">    print(a)</span><br><span class="line"><span class="keyword">elif</span> b <span class="keyword">in</span> words:</span><br><span class="line">    print(b)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"xxx"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用if可以直接判断一个list是否为空</span></span><br><span class="line">requested_toppings = []</span><br><span class="line"><span class="keyword">if</span> requested_toppings:</span><br><span class="line">    print(requested_toppings[<span class="number">0</span>])</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"Empty list"</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="编程规范"><a href="#编程规范" class="headerlink" title="编程规范"></a>编程规范</h4><p>Python Enhancement Proposal (PEP)  </p>
+<p>PEP 8  说明了编码规范 <a href="https://python.org/dev/peps/pep-0008/" target="_blank" rel="noopener">https://python.org/dev/peps/pep-0008/</a>  </p>
+<p>变量一般小写和下划线组成</p>
+<p>常量全大写</p>
+<p>indent使用空格，不用tab</p>
+<p>不要写多余的indent，否则可能出现非预期的结果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">magicians = [<span class="string">'alice'</span>, <span class="string">'david'</span>, <span class="string">'carolina'</span>]</span><br><span class="line"><span class="keyword">for</span> magician <span class="keyword">in</span> magicians:</span><br><span class="line">	print(<span class="string">f"<span class="subst">&#123;magician.title()&#125;</span>, that was a great trick!"</span>)</span><br><span class="line">	</span><br><span class="line">	print(<span class="string">"Thank you everyone!"</span>) <span class="comment"># 这一行也会被每次循环输出</span></span><br></pre></td></tr></table></figure>
+
+<p>操作符前后各加一个空格<code>a == b</code></p>
+<h4 id="Django"><a href="#Django" class="headerlink" title="Django"></a>Django</h4><p><a href="https://djangoproject.com/" target="_blank" rel="noopener">https://djangoproject.com/</a>  </p>
+<p><strong>开始一个项目之前，一定要写一个项目描述书，包括项目的具体目标，功能，用户交互流程和界面。这样可以保障项目不会偏离，从而正常完成。</strong></p>
+<p>本书中的例子是建立一个学习日志的管理系统</p>
+<h5 id="设置开发环境"><a href="#设置开发环境" class="headerlink" title="设置开发环境"></a>设置开发环境</h5><ul>
+<li>配置一个独立的Python虚拟环境</li>
+</ul>
+<p><code>python -m venv py38</code> 会在当前目录下创建一个名为py38的目录，其中是独立的一个python运行环境</p>
+<ul>
+<li><p>激活一个虚拟环境</p>
+<ul>
+<li>windows <code>py38\Scripts\Activate</code>  </li>
+<li>Linux <code>source py38/bin/activate</code></li>
+</ul>
+</li>
+<li><p>安装Django程序库<code>pip install Django</code></p>
+</li>
+</ul>
+<h5 id="Django工程"><a href="#Django工程" class="headerlink" title="Django工程"></a>Django工程</h5><ol>
+<li>新建一个目录djangoweb，在虚拟环境的终端中，进入这个用来放置工程的目录</li>
+<li><code>(py38) E:\djangoweb&gt;django-admin startproject demo .</code>在当前目录下新建一个名为demo的工程，注意当前目录的<code>.</code>一定要有。</li>
+<li>此时会有一个demo工程目录和一个<code>manage.py</code>文件在当前目录下</li>
+<li>创建数据库 在当前目录下执行<code>(py38) E:\djangoweb&gt;python manage.py migrate</code></li>
+<li>测试服务<code>python manage.py runserver 8000</code></li>
+</ol>
+<p>manager.py：用来处理管理工程的各种命令，例如迁移数据库，运行服务等</p>
+<p>settings.py：django如何与系统交互和管理工程</p>
+<p>urls.py：处理URL请求的转发</p>
+<p>wsgi.py：web server gateway interfae 用来服务Django创建的文件</p>
+<ul>
+<li>修改数据库这里都称作migrating the database. 第一次执行migrate命令让django确保数据库和当前工程的状态是匹配的，同时django还会创建一个SQLite数据库文件。</li>
+</ul>
+<h5 id="app应用"><a href="#app应用" class="headerlink" title="app应用"></a>app应用</h5><p>一个Django工程由多个独立的app组成。</p>
+<p>重新打开一个虚拟环境终端，切换到工程目录下即manage.py所在的目录，执行</p>
+<p><code>python manage.py startapp demoapp</code> 创建一个名称为demoapp的应用。系统会创建这个应用使用的model/view/admin.py文件。</p>
+<p>在demo工程目录下settings.py中管理了当前所有应用，在其中可以启用我们自定义的应用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    <span class="string">'demoapp'</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="string">'django.contrib.admin'</span>,</span><br><span class="line">    <span class="string">'django.contrib.auth'</span>,</span><br><span class="line">    <span class="string">'django.contrib.contenttypes'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions'</span>,</span><br><span class="line">    <span class="string">'django.contrib.messages'</span>,</span><br><span class="line">    <span class="string">'django.contrib.staticfiles'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>自己的app要写在系统默认app之前，可以让自己的app的功能覆盖默认的app的功能。</p>
+<h5 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h5><p>模型表示数据抽象，和数据库中的一个表对应，例如一本书，它有书名和作者。</p>
+<p>一个应用目录中的models.py定义了这个应用的模型。</p>
+<h6 id="增加模型"><a href="#增加模型" class="headerlink" title="增加模型"></a>增加模型</h6><p>需要在models.py中定义模型的类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Create your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Topic</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">"""A topic"""</span></span><br><span class="line">    <span class="comment"># 少量文字的字段使用CharField，长度限制为200个字符</span></span><br><span class="line">    text = models.CharField(max_length=<span class="number">200</span>)</span><br><span class="line">    <span class="comment"># 使用当前时间作为添加一个Topic的添加时间</span></span><br><span class="line">    date_added = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line">	<span class="comment"># 这个模型显示时的文字描述信息</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""Return a string representation of the mdoel."""</span></span><br><span class="line">        <span class="keyword">return</span> self.text</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Entry</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="string">"""Something specific learned about a topic"""</span></span><br><span class="line">    <span class="comment"># 定义一个外键和Topic关联，删除一个Topic时，关联的所有Entry也级联删除</span></span><br><span class="line">    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)</span><br><span class="line">    text = models.TextField()</span><br><span class="line">    date_added = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line">	</span><br><span class="line">    <span class="comment"># 额外的一些信息用来管理一个模型</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        <span class="comment">#告诉Django使用entries来表示多个Entry，如果没有定义这个Django会默认使用Entrys</span></span><br><span class="line">        verbose_name_plural = <span class="string">'entries'</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span> -&gt; str:</span></span><br><span class="line">        <span class="string">"""Return a string representation of the model"""</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">f"<span class="subst">&#123;self.text[:<span class="number">50</span>]&#125;</span>..."</span></span><br></pre></td></tr></table></figure>
+
+<p>这里Topic和Entry作为模型，分别对应了两个数据库表，其中一个Topic和多个Entry关联</p>
+<h6 id="更新模型"><a href="#更新模型" class="headerlink" title="更新模型"></a>更新模型</h6><p>只要对模型有所修改，即数据表有更改，都需要让Django更新数据表，并进行同步数据库文件。依次执行以下两步：</p>
+<ol>
+<li><code>python manage.py makemigrations demoapp</code> 会生成类似<code>demoapp\migrations\0001_initial.py</code>文件，其中是数据表创建的实现代码</li>
+<li><code>python manage.py migrate</code>按照数据表的创建代码，更新工程实际的数据库，创建模型对应的数据表</li>
+</ol>
+<h5 id="Django-管理站点"><a href="#Django-管理站点" class="headerlink" title="Django  管理站点"></a>Django  管理站点</h5><p>自动生成的管理员站点，可以管理工程的数据表。需要先创建一个管理员帐号</p>
+<p><code>python manage.py createsuperuser</code>执行后，会提示输入用户名和密码，而且密码还有长度要求，但是我输入了123虽然不安全，还是可以继续执行。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">(py38) E:\code\python\djangoweb&gt;python manage.py createsuperuser</span><br><span class="line">Username (leave blank to use 'edison'):</span><br><span class="line">Email address:</span><br><span class="line">Password:</span><br><span class="line">Password (again):</span><br><span class="line">Error: Blank passwords aren't allowed.</span><br><span class="line">Password:</span><br><span class="line">Password (again):</span><br><span class="line">This password is too short. It must contain at least 8 characters.</span><br><span class="line">This password is too common.</span><br><span class="line">This password is entirely numeric.</span><br><span class="line">Bypass password validation and create user anyway? [y/N]: y</span><br><span class="line">Superuser created successfully.</span><br></pre></td></tr></table></figure>
+
+<p>打开 <a href="http://127.0.0.1:8000/admin/" target="_blank" rel="noopener">http://127.0.0.1:8000/admin/</a> 使用用户名和密码登录后，就可以看到管理页面，默认会有users和groups两个表. 在这个界面可以直接修改数据表的数据</p>
+<h6 id="添加模型到管理站点"><a href="#添加模型到管理站点" class="headerlink" title="添加模型到管理站点"></a>添加模型到管理站点</h6><p>在应用的admin.py中增加自己定义的模型</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Register your models here.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当前目录下model模块的Topic和Entry模型</span></span><br><span class="line"><span class="keyword">from</span> .models <span class="keyword">import</span> Topic, Entry</span><br><span class="line"></span><br><span class="line">admin.site.register(Topic)</span><br><span class="line">admin.site.register(Entry)</span><br></pre></td></tr></table></figure>
+
+<h5 id="URL映射"><a href="#URL映射" class="headerlink" title="URL映射"></a>URL映射</h5><p>用户访问的url地址通过映射表转给对应的view处理。可以给每个app单独设置一个url映射表。</p>
+<p>如果出现<code>ModuleNotFoundError: No module named</code>的错误提示，需要把服务器重新启动一下。</p>
+<p>在主工程目录的urls.py中增加app的urls的映射</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"><span class="keyword">from</span> django.urls.conf <span class="keyword">import</span> include</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">'admin/'</span>, admin.site.urls),</span><br><span class="line">	<span class="comment"># demoapp应用的urls映射，第一个为空，说明从根路径转换</span></span><br><span class="line">    path(<span class="string">''</span>, include(<span class="string">'demoapp.urls'</span>)),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>在demoapp的目录中新增一个urls.py文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""Defines URL patterns for demoapp."""</span></span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path <span class="comment"># 映射url到views需要用到</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">app_name = <span class="string">'demoapp'</span>  <span class="comment"># Django用来区分同一个工程不同应用的urls.py的文件</span></span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    <span class="comment"># Home page，第一个参数匹配url相对路径，第二个参数指定调用views.py中的函数，第三个参数给这个url地址起了名字，以便其他地方的代码可以转到这个地址，这样不用写完整的url地址</span></span><br><span class="line">    path(<span class="string">''</span>, views.index, name=<span class="string">'index'</span>),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="view视图"><a href="#view视图" class="headerlink" title="view视图"></a>view视图</h5><p>一个视图函数获取request中的参数信息，处理数据后，将产生的数据发送回浏览器。通常结合模板，将一个页面发送给浏览器。</p>
+<p>实现views.py中的index函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create your views here.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="string">"""The home page for Demo App."""</span></span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">'demoapp/index.html'</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="Template模板"><a href="#Template模板" class="headerlink" title="Template模板"></a>Template模板</h5><p>模板定义了页面的显示方式，Django把数据填入模板对应的代码片段中。</p>
+<p>在demoapp中创建以下目录并创建<code>index.html</code>文件<code>template/demoapp/index.html</code>这样和view中函数的相对路径保持一致。</p>
+<h6 id="模板继承"><a href="#模板继承" class="headerlink" title="模板继承"></a>模板继承</h6><p>对于每个页面都有的元素，可以通过定义一个父模板，其中实现通用的界面显示部分，在子模板中继承父模板即可。</p>
+<ul>
+<li>定义一个父模板<code>base.html</code> 其中<code>xxx</code>是为了解决Hexo的nunjunks erro，实际代码不需要</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123; % url 'demoapp:index' % &#125;"</span>&gt;</span>Index<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">// 定义了一个名为content的block，用来给子模板占位</span><br><span class="line">&#123; % block content % &#125; &#123; % endblock content % &#125;</span><br></pre></td></tr></table></figure>
+
+<p>``{% %}<code>定义了一个</code>Template tag`.这个代码片段用来生成显示在页面上的信息。</p>
+<p><code> {% url 'demoapp:index' %} </code>生成一个URL与<code>demoapp/urls.py</code>中的名称为index的url映射匹配，其中的demoapp就是urls.py中定义的<strong>app_name</strong></p>
+<ul>
+<li>定义子模板index.html</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123; % extends "demoapp/base.html" % &#125;</span><br><span class="line"></span><br><span class="line">&#123; % block content % &#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Learning Log helps you keep track of your learning, for any topic you're</span><br><span class="line">    learning about.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">&#123; % endblock content % &#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/12/program/function-stack-size/" rel="next" title="函数栈大小分析">
+                <i class="fa fa-chevron-left"></i> 函数栈大小分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/02/09/android/android-service/" rel="prev" title="Android Service">
+                Android Service <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">50</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Python-Crash-Course-2nd"><span class="nav-number">1.</span> <span class="nav-text">Python Crash Course 2nd</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#字符串"><span class="nav-number">1.1.</span> <span class="nav-text">字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#格式化子串"><span class="nav-number">1.1.1.</span> <span class="nav-text">格式化子串</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#空白符操作"><span class="nav-number">1.1.2.</span> <span class="nav-text">空白符操作</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数字"><span class="nav-number">1.2.</span> <span class="nav-text">数字</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#列表"><span class="nav-number">1.3.</span> <span class="nav-text">列表</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#list-comprehension"><span class="nav-number">1.3.1.</span> <span class="nav-text">list comprehension</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#列表切片"><span class="nav-number">1.3.2.</span> <span class="nav-text">列表切片</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#元组"><span class="nav-number">1.4.</span> <span class="nav-text">元组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#表达式"><span class="nav-number">1.5.</span> <span class="nav-text">表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#boolean表达式"><span class="nav-number">1.5.1.</span> <span class="nav-text">boolean表达式</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编程规范"><span class="nav-number">1.6.</span> <span class="nav-text">编程规范</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Django"><span class="nav-number">1.7.</span> <span class="nav-text">Django</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#设置开发环境"><span class="nav-number">1.7.1.</span> <span class="nav-text">设置开发环境</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Django工程"><span class="nav-number">1.7.2.</span> <span class="nav-text">Django工程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#app应用"><span class="nav-number">1.7.3.</span> <span class="nav-text">app应用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#模型"><span class="nav-number">1.7.4.</span> <span class="nav-text">模型</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#增加模型"><span class="nav-number">1.7.4.1.</span> <span class="nav-text">增加模型</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#更新模型"><span class="nav-number">1.7.4.2.</span> <span class="nav-text">更新模型</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Django-管理站点"><span class="nav-number">1.7.5.</span> <span class="nav-text">Django  管理站点</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#添加模型到管理站点"><span class="nav-number">1.7.5.1.</span> <span class="nav-text">添加模型到管理站点</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#URL映射"><span class="nav-number">1.7.6.</span> <span class="nav-text">URL映射</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#view视图"><span class="nav-number">1.7.7.</span> <span class="nav-text">view视图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Template模板"><span class="nav-number">1.7.8.</span> <span class="nav-text">Template模板</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#模板继承"><span class="nav-number">1.7.8.1.</span> <span class="nav-text">模板继承</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

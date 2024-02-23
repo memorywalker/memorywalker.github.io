@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="OS： ubuntu 18.04 LTS x64 Qemuwindows qemuhttps://qemu.weilnetz.de/ https://qemu.weilnetz.de/w64/2023/ Install需要模拟arm64平台，所以要安装aarch64版本sudo apt-get install qemu-system-aarch64 Cross-compile安装交叉编译工具链，需">
+<meta name="keywords" content="arm,linux,qemu,kernel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qemu下模拟ARM64搭建GDB Server调试环境">
+<meta property="og:url" content="http://memorywalker.github.io/2019/06/22/linux/qemu-aarch64-gdbserver/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="OS： ubuntu 18.04 LTS x64 Qemuwindows qemuhttps://qemu.weilnetz.de/ https://qemu.weilnetz.de/w64/2023/ Install需要模拟arm64平台，所以要安装aarch64版本sudo apt-get install qemu-system-aarch64 Cross-compile安装交叉编译工具链，需">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-02-23T01:29:40.948Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qemu下模拟ARM64搭建GDB Server调试环境">
+<meta name="twitter:description" content="OS： ubuntu 18.04 LTS x64 Qemuwindows qemuhttps://qemu.weilnetz.de/ https://qemu.weilnetz.de/w64/2023/ Install需要模拟arm64平台，所以要安装aarch64版本sudo apt-get install qemu-system-aarch64 Cross-compile安装交叉编译工具链，需">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2019/06/22/linux/qemu-aarch64-gdbserver/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Qemu下模拟ARM64搭建GDB Server调试环境 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2019/06/22/linux/qemu-aarch64-gdbserver/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Qemu下模拟ARM64搭建GDB Server调试环境
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-22 16:42:43" itemprop="dateCreated datePublished" datetime="2019-06-22T16:42:43+00:00">2019-06-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-02-23 01:29:40" itemprop="dateModified" datetime="2024-02-23T01:29:40+00:00">2024-02-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/tech/" itemprop="url" rel="index"><span itemprop="name">tech</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>OS： ubuntu 18.04 LTS x64</p>
+<h3 id="Qemu"><a href="#Qemu" class="headerlink" title="Qemu"></a>Qemu</h3><h4 id="windows-qemu"><a href="#windows-qemu" class="headerlink" title="windows qemu"></a>windows qemu</h4><p><a href="https://qemu.weilnetz.de/" target="_blank" rel="noopener">https://qemu.weilnetz.de/</a></p>
+<p><a href="https://qemu.weilnetz.de/w64/2023/" target="_blank" rel="noopener">https://qemu.weilnetz.de/w64/2023/</a></p>
+<h4 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h4><p>需要模拟arm64平台，所以要安装aarch64版本<br><code>sudo apt-get install qemu-system-aarch64</code></p>
+<h3 id="Cross-compile"><a href="#Cross-compile" class="headerlink" title="Cross-compile"></a>Cross-compile</h3><p>安装交叉编译工具链，需要把一些依赖的其他库安装好</p>
+<p><code>sudo apt-get install flex bison build-essential pkg-config libglib2.0-dev libpixman-1-dev libssl-dev</code></p>
+<p>这里不使用系统仓库自带的<code>gcc-aarch64-linux-gnu</code>，仓库里面的gcc版本不好调整为自己需要的，所以直接下载<a href="http://releases.linaro.org/components/toolchain/binaries/7.4-2019.02/" target="_blank" rel="noopener">Linaro网站</a>的.</p>
+<p>Linaro网站提供了多个平台的交叉编译工具，也一直有更新，ubuntu 64位的系统选择<code>x86_64_aarch64-linux-gnu</code>版本，我用的是<br><code>gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu</code></p>
+<p>下载到开发目录arm下后，解压</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> arm</span><br><span class="line">$ tar -xvf gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu.tar.xz</span><br></pre></td></tr></table></figure>
+
+<h3 id="Busy-Box"><a href="#Busy-Box" class="headerlink" title="Busy Box"></a>Busy Box</h3><p>下载busybox代码也到arm目录下，解压</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> arm</span><br><span class="line">$ tar -xvf busybox-1.23.1.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>进入busybox根目录，先配置当前的环境变量为arm64</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">export</span> ARCH=arm64</span><br><span class="line">$ <span class="built_in">export</span> CROSS_COMPILE=/home/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>make menuconfig</code>打开编译配置菜单，其中做以下配置</p>
+<ul>
+<li>勾选静态编译 <code>Settings-&gt;Build static binary (no shared lib)</code></li>
+<li>指定交叉编译器为：<code>/home/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-</code></li>
+<li>General Configuration –&gt; Dont use /usr</li>
+<li>Busybox Libary Tuning–&gt; 勾选：[*]Username completion、[*]Fancy shell prompts 、[*]Query  cursor  position  from  terminal </li>
+</ul>
+<p>保存配置后，会更新<code>.config</code>编译配置文件，可以打开确认编译信息的正确性</p>
+<p>开始编译<code>make -j4</code></p>
+<p>最后执行<code>make install</code>在busybox根目录生成<code>_install</code>目录</p>
+<h3 id="Linux-kernel"><a href="#Linux-kernel" class="headerlink" title="Linux kernel"></a>Linux kernel</h3><h4 id="Linux-Kernel下载"><a href="#Linux-Kernel下载" class="headerlink" title="Linux Kernel下载"></a>Linux Kernel下载</h4><p><a href="https://www.kernel.org/" target="_blank" rel="noopener">Kernel官网</a>下载4.9.11版本的内核，不能下载太旧的版本，例如3.19和最新的gcc7.4不兼容，编译总是失败，提示COMPILE版本的错误信息。最好选择长期支持的版本，这样功能更稳定一些。</p>
+<p>解压内核后配置环境变量后，可以对内核进行配置</p>
+<p>在执行<code>make menuconfig</code>时会遇到</p>
+<blockquote>
+<p>In file included from scripts/kconfig/mconf.c:23:0:<br>scripts/kconfig/lxdialog/dialog.h:38:20: fatal error: curses.h: No such file or directory<br> include CURSES_LOC<br>compilation terminated.<br>make[1]: <strong>* [scripts/kconfig/mconf.o] Error 1<br>make: *</strong> [menuconfig] Error 2</p>
+</blockquote>
+<p>此时需要安装<strong>ncurses devel</strong> <code>sudo apt-get install libncurses5-dev</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf linux-4.19.11.tar</span><br><span class="line"><span class="built_in">cd</span> linux-4.19.11</span><br><span class="line"><span class="comment"># 配置环境变量为arm64</span></span><br><span class="line"><span class="built_in">export</span> ARCH=arm64</span><br><span class="line"><span class="comment"># 配置交叉工具链</span></span><br><span class="line"><span class="built_in">export</span> CROSS_COMPILE=/home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-</span><br><span class="line"><span class="comment"># 根据当前的环境变量的arch类型，到内核的arch目录中把arch/arm64/configs/中的配置作为模板</span></span><br><span class="line">make defconfig</span><br><span class="line"><span class="comment"># 打开配置菜单界面，此时配置菜单中可以看到当前的目标类型和工具链类型</span></span><br><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置Kernel"><a href="#配置Kernel" class="headerlink" title="配置Kernel"></a>配置Kernel</h4><p>根据需要把支持的设备勾选，不想支持的就不要勾选，否则编译时间太长.可以第一次多裁减一些，如果需要，后面在配置增加功能，把每一次修改的<code>.config</code>文件版本管理起来</p>
+<p>Platform Selection只选择<code>ARMv8 based Freescale Layerscape SoC family</code>和<code>ARMv8 software model (Versatile Express)</code></p>
+<p>Device Driver中普通程序不要支持的也可删除</p>
+<p>因为要通过内存镜像启动内核，还需要配置使用内存文件系统</p>
+<p><code>General setup-&gt;Initial RAM filesystem and RAM disk (initramfs/initrd) support</code></p>
+<p><code>Device Drivers-&gt;Block devices-&gt;&lt;*&gt; RAM block device support</code>，其中配置1个block<code>(1)     Default number of RAM disks</code>内存大小为128M<code>(131072) Default RAM disk size (kbytes)</code></p>
+<p>如果需要调试内核，需要打开调试信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kernel hacking--&gt;</span><br><span class="line">    [*]compile the kernel with debug info</span><br></pre></td></tr></table></figure>
+
+<p>配置完成后，执行<code>make -j12</code> 开始编译内核，时间需要1个多小时</p>
+<h3 id="Run-kernel"><a href="#Run-kernel" class="headerlink" title="Run kernel"></a>Run kernel</h3><h4 id="创建根文件系统"><a href="#创建根文件系统" class="headerlink" title="创建根文件系统"></a>创建根文件系统</h4><p>在编译内核的过程中，可以准备内核启动的根文件系统，这里参考了<a href="https://www.cnblogs.com/pengdonglin137/p/6431234.html" target="_blank" rel="noopener">摩斯电码</a>的脚本文件，做了简单修改</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">sudo rm -rf rootfs</span><br><span class="line">sudo rm -rf tmpfs</span><br><span class="line">sudo rm -rf ramdisk*</span><br><span class="line"><span class="comment"># 创建根文件系统目录</span></span><br><span class="line">sudo mkdir rootfs</span><br><span class="line"><span class="comment"># 把busybox拷贝到这里 _install 里面就2个目录和1个文件`bin\  linuxrc  sbin\`</span></span><br><span class="line">sudo cp ../busybox-1.23.1/_install/*  rootfs/ -raf</span><br><span class="line"><span class="comment"># 初始化根目录结构</span></span><br><span class="line">sudo mkdir -p rootfs/proc/</span><br><span class="line">sudo mkdir -p rootfs/sys/</span><br><span class="line">sudo mkdir -p rootfs/tmp/</span><br><span class="line">sudo mkdir -p rootfs/root/</span><br><span class="line">sudo mkdir -p rootfs/var/</span><br><span class="line">sudo mkdir -p rootfs/mnt/</span><br><span class="line"><span class="comment"># 系统配置目录</span></span><br><span class="line">sudo cp etc rootfs/ -arf</span><br><span class="line"><span class="comment"># 公共库目录</span></span><br><span class="line">sudo mkdir -p rootfs/lib</span><br><span class="line"><span class="comment"># 后续编译程序也要依赖同样的库文件</span></span><br><span class="line">sudo cp -arf ../gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib/* rootfs/lib/</span><br><span class="line"><span class="comment"># 删除静态库，文件太大</span></span><br><span class="line">sudo rm rootfs/lib/*.a</span><br><span class="line"><span class="comment"># strip减小so体积</span></span><br><span class="line">sudo ../gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-strip rootfs/lib/*</span><br><span class="line"><span class="comment"># 初始化的设备</span></span><br><span class="line">sudo mkdir -p rootfs/dev/</span><br><span class="line">sudo mknod rootfs/dev/tty1 c 4 1</span><br><span class="line">sudo mknod rootfs/dev/tty2 c 4 2</span><br><span class="line">sudo mknod rootfs/dev/tty3 c 4 3</span><br><span class="line">sudo mknod rootfs/dev/tty4 c 4 4</span><br><span class="line">sudo mknod rootfs/dev/console c 5 1</span><br><span class="line">sudo mknod rootfs/dev/null c 1 3</span><br><span class="line"><span class="comment"># dd Copy a file, converting and formatting according to the operands.</span></span><br><span class="line"><span class="comment"># if 输入文件 /dev/zero 表示一个尽量满足需要的无限大的文件，且文件内容都初始化为0</span></span><br><span class="line"><span class="comment"># of 输出文件 bs : block size  count : num of blocks</span></span><br><span class="line"><span class="comment"># 这里的块数量需要根据rootfs目录文件大小调整，目前我的是57M</span></span><br><span class="line">sudo dd <span class="keyword">if</span>=/dev/zero of=ramdisk bs=1M count=64</span><br><span class="line"><span class="comment"># mkfs.ext4 will create a file system for use with ext4</span></span><br><span class="line">sudo mkfs.ext4 -F ramdisk</span><br><span class="line"></span><br><span class="line">sudo mkdir -p tmpfs</span><br><span class="line"><span class="comment"># -t : fs type -o : option loop : loop device</span></span><br><span class="line"><span class="comment"># 把文件系统镜像文件挂载到一个loop device上，从而可以把roofs的文件拷贝进去</span></span><br><span class="line">sudo mount -t ext4 ramdisk ./tmpfs/ -o loop</span><br><span class="line"></span><br><span class="line">sudo cp -raf rootfs/*  tmpfs/</span><br><span class="line">sudo umount tmpfs</span><br><span class="line"></span><br><span class="line">sudo gzip --best -c ramdisk &gt; ramdisk.gz</span><br><span class="line"><span class="comment"># 创建镜像文件</span></span><br><span class="line">sudo mkimage -n <span class="string">"ramdisk"</span> -A arm64 -O linux -T ramdisk -C gzip -d ramdisk.gz ramdisk.img</span><br></pre></td></tr></table></figure>
+
+<p>The <strong>loop  device</strong> is a block device that maps its data blocks not to a<br>physical device such as a hard disk or optical disk drive, but  to  the<br>blocks  of  a  regular file in a filesystem or to another block device. This can be useful for example to provide a block device for a filesystem image stored in a file, so that it can be mounted with the mount(8)<br>command</p>
+<p>其中etc目录结构如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">etc</span><br><span class="line">├── init.d   <span class="comment">#初始脚本目录</span></span><br><span class="line">|   └── rcS  <span class="comment">#启动时默认执行脚本</span></span><br><span class="line">├── sysconfig  </span><br><span class="line">|   └── HOSTNAME  <span class="comment">#登陆后的主机名保存在这里</span></span><br><span class="line">├── fstab      <span class="comment"># fs mount</span></span><br><span class="line">├── inittab    <span class="comment"># init</span></span><br><span class="line">└── profile    <span class="comment"># shell环境变量</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>/etc/init.d/rcS</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin</span><br><span class="line">runlevel=S</span><br><span class="line">prevlevel=N</span><br><span class="line"><span class="built_in">umask</span> 022</span><br><span class="line"><span class="built_in">export</span> PATH runlevel prevlevel</span><br><span class="line"></span><br><span class="line">mount -a</span><br><span class="line">mkdir -p /dev/pts</span><br><span class="line">mount -t devpts devpts /dev/pts</span><br><span class="line"><span class="comment">#mount -n -t usbfs none /proc/bus/usb</span></span><br><span class="line"><span class="built_in">echo</span> /sbin/mdev &gt; /proc/sys/kernel/hotplug</span><br><span class="line">mdev -s</span><br><span class="line">mkdir -p /var/lock</span><br><span class="line"></span><br><span class="line">ifconfig lo 127.0.0.1</span><br><span class="line">ifconfig eth0 192.168.43.202 netmask 255.255.255.0 broadcast 192.168.43.255</span><br><span class="line"></span><br><span class="line">/bin/hostname -F /etc/sysconfig/HOSTNAME</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/etc/sysconfig/HOSTNAME</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aarch64</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/etc/fstab</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#device		mount-point	type	options		dump	fsck order</span></span><br><span class="line">proc		/proc		proc	defaults		0	0</span><br><span class="line">tmpfs		/tmp		tmpfs	defaults		0	0</span><br><span class="line">sysfs		/sys		sysfs	defaults		0	0</span><br><span class="line">tmpfs		/dev		tmpfs	defaults		0	0</span><br><span class="line">var		    /dev		tmpfs	defaults		0	0</span><br><span class="line">ramfs		/dev		ramfs	defaults		0	0</span><br><span class="line">debugfs		/sys/kernel/debug	debugfs		defaults	0	0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/etc/inittab</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /etc/inittab</span></span><br><span class="line">::sysinit:/etc/init.d/rcS</span><br><span class="line">console::askfirst:-/bin/sh</span><br><span class="line">::ctrlaltdel:/sbin/reboot</span><br><span class="line">::shutdown:/bin/umount -a -r</span><br><span class="line">::restart:/sbin/init</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/etc/profile</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">USER=<span class="string">"root"</span></span><br><span class="line">LOGNAME=<span class="variable">$USER</span></span><br><span class="line"><span class="built_in">export</span> HOSTNAME=`/bin/hostname`</span><br><span class="line"><span class="built_in">export</span> USER=root</span><br><span class="line"><span class="built_in">export</span> HOME=/root</span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">"[<span class="variable">$USER</span>@<span class="variable">$HOSTNAME</span> \W]\# "</span></span><br><span class="line">PATH=/bin:/sbin:/usr/bin:/usr/sbin</span><br><span class="line">LD_LIBRARY_PATH=/lib:/usr/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH LD_LIBRARY_PATH</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>对于生成的image文件可以通过<code>mkimage -l ramdisk.img</code>查看文件信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Image Name:   ramdisk</span><br><span class="line">Created:      Sun Jun 23 21:18:57 2019</span><br><span class="line">Image Type:   AArch64 Linux RAMDisk Image (gzip compressed)</span><br><span class="line">Data Size:    15885428 Bytes = 15513.11 kB = 15.15 MB</span><br><span class="line">Load Address: 00000000</span><br><span class="line">Entry Point:  00000000</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用Qemu运行"><a href="#使用Qemu运行" class="headerlink" title="使用Qemu运行"></a>使用Qemu运行</h4><ul>
+<li>run.sh<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-aarch64 \</span><br><span class="line">    -M  virt \</span><br><span class="line">    -cpu cortex-a53 \</span><br><span class="line">    -smp 2 \</span><br><span class="line">    -m 1024M \</span><br><span class="line">    -kernel ./linux-4.19.11/arch/arm64/boot/Image \</span><br><span class="line">    -nographic \</span><br><span class="line">    -append <span class="string">"root=/dev/ram0 rw rootfstype=ext4 console=ttyAMA0 init=/linuxrc ignore_loglevel"</span> \</span><br><span class="line">    -initrd ./rootfs/ramdisk.img \</span><br><span class="line">    -netdev tap,helper=/usr/lib/qemu/qemu-bridge-helper,id=hn0 -device virtio-net-pci,netdev=hn0,id=nic1 \</span><br><span class="line">    -fsdev <span class="built_in">local</span>,security_model=passthrough,id=fsdev0,path=/home/edison/develop/arm/nfsroot \</span><br><span class="line">    -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="共享目录"><a href="#共享目录" class="headerlink" title="共享目录"></a>共享目录</h3><p>使用9p共享目录，内核在编译时默认是支持的<br>新建目录<br><code>mkdir nfsroot</code></p>
+<p>启动时这两个选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-fsdev local,security_model=passthrough,id=fsdev0,path=/home/edison/arm/nfsroot \</span><br><span class="line">-device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare</span><br></pre></td></tr></table></figure>
+
+<p>指明了共享目录的位置</p>
+<p>在内核启动起来之后，把共享目录挂载上来，就可以看到文件了<br>也可以把这个mount添加到内核启动程序中，不用每次都执行一遍</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@aarch64 ]# mount -t 9p -o trans=virtio,version=9p2000.L hostshare /mnt</span><br><span class="line">[root@aarch64 ]# ls /mnt/</span><br><span class="line">code</span><br></pre></td></tr></table></figure>
+
+<h3 id="Network-with-Qemu"><a href="#Network-with-Qemu" class="headerlink" title="Network with Qemu"></a>Network with Qemu</h3><p>使用网桥方式，可以让qemu和host主机之间直接进行网络通信</p>
+<ol>
+<li>安装网桥工具<br><code>sudo apt install bridge-utils</code> 和 <code>sudo apt install uml-utilities</code></li>
+<li>新建一个网桥 <code>sudo brctl addbr br0</code> 网桥会在重启后消失</li>
+<li>启用此网桥 <code>sudo ip link set br0 up</code> </li>
+<li>确认<code>/etc/qemu/bridge.conf</code>中<code>allow br0</code></li>
+<li>给帮助程序权限<code>sudo chmod u+s /usr/lib/qemu/qemu-bridge-helper</code></li>
+<li>qemu 启动时增加<code>-netdev tap,helper=/usr/lib/qemu/qemu-bridge-helper,id=hn0 -device virtio-net-pci,netdev=hn0,id=nic1</code></li>
+<li>qemu 启动后会自动在host主机上新建一个tap0的网卡</li>
+<li>使用<code>brctl show</code>查看br0和tap0已经关联上了</li>
+<li>把host主机的一个网卡也和br0关联起来，主机wifi的网卡由于是dhcp获取的ip，无法与br0绑定，需要使用有线网卡绑定<code>sudo brctl addif br0 enp5s0</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bridge name	bridge id		STP enabled	interfaces</span><br><span class="line">br0		8000.3860773ac46e	no		enp5s0</span><br><span class="line">							tap0</span><br></pre></td></tr></table></figure>
+
+<ol start="10">
+<li>host设置各个网卡和网桥的ip，<strong>此处需要注意先设置br0的ip和tap0的ip，再设置host网卡的ip，否则guest里面无法ping外部主机的ip，最终使br0的mac和tap0的mac地址相同</strong>，具体原因还没来及查<br><code>sudo ifconfig br0 192.168.43.210 netmask 255.255.255.0</code><br><code>sudo ifconfig tap0 192.168.43.51 netmask 255.255.255.0</code><br><code>sudo ifconfig enp5s0 192.168.43.50 netmask 255.255.255.0</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">br0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.43.210  netmask 255.255.255.0  broadcast 192.168.43.255</span><br><span class="line">        inet6 fe80::1429:b3ff:fe07:5f92  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether fe:16:30:37:22:4f  txqueuelen 1000  (Ethernet)</span><br><span class="line"></span><br><span class="line">tap0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.43.51  netmask 255.255.255.0  broadcast 192.168.43.255</span><br><span class="line">        inet6 fe80::fc16:30ff:fe37:224f  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether fe:16:30:37:22:4f  txqueuelen 1000  (Ethernet)</span><br><span class="line"></span><br><span class="line">enp5s0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.43.50  netmask 255.255.255.0  broadcast 192.168.43.255</span><br><span class="line">        ether 38:xx:xx:xx:xx:xx  txqueuelen 1000  (Ethernet)</span><br></pre></td></tr></table></figure>
+
+<ol start="11">
+<li>guest设置eth0的ip 与br0的ip在一个网段内 例如 192.168.43.202</li>
+</ol>
+<p><code>qemu-bridge-helper</code>使用<code>/etc/qemu-ifup</code>和<code>/etc/qemu-ifdown</code>来控制虚拟虚拟机网卡tap0启动</p>
+<ul>
+<li>如果想使用其他定义的网桥, <code>/etc/qemu/bridge.conf</code>中添加<code>allow qemubr0</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">qemu linux.img </span><br><span class="line">-netdev tap,helper=&quot;/usr/local/libexec/qemu-bridge-helper --br=qemubr0&quot;,id=hn0 -device virtio-net-pci,netdev=hn0,id=nic1</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="Gdbserver"><a href="#Gdbserver" class="headerlink" title="Gdbserver"></a>Gdbserver</h3><p>到GDB网站下载gdb的源码，其中gdbserver在里面的子目录gdbserver中，进入gdbserver的源码目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/develop/arm/gdb-8.3/gdb/gdbserver</span><br><span class="line">$ <span class="built_in">export</span> CC=/home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc</span><br><span class="line">$ <span class="built_in">export</span> CXX=/home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-g++</span><br><span class="line"></span><br><span class="line">$ ./configure --target=aarch64-linux-gnu --host=aarch64-linux-gnu</span><br></pre></td></tr></table></figure>
+
+<p>把编译出来的gdbserver放到共享目录</p>
+<p>qemu 作为客户机执行</p>
+<p><code>#./gdbserver 192.168.43.202:10000 all</code> </p>
+<p>192.168.43.202 is guest ip address<br>output:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Process /mnt/code/all created; pid = 1066</span><br><span class="line">Listening on port 10000</span><br><span class="line">Remote debugging from host 192.168.43.210, port 51730</span><br></pre></td></tr></table></figure>
+
+<p>主机host run:</p>
+<p><code>/home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gdb all</code></p>
+<p>in gdb console, connect to the guest gdbserver:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">(gdb) target remote 192.168.43.202:10000</span><br><span class="line">Reading /lib/ld-linux-aarch64.so.1 from remote target...</span><br><span class="line">warning: File transfers from remote targets can be slow. Use <span class="string">"set sysroot"</span> to access files locally instead.</span><br><span class="line">Reading /lib/ld-linux-aarch64.so.1 from remote target...</span><br><span class="line">Reading symbols from target:/lib/ld-linux-aarch64.so.1...(no debugging symbols found)...<span class="keyword">done</span>.</span><br><span class="line">0x0000ffffbf6d3d00 <span class="keyword">in</span> ?? () from target:/lib/ld-linux-aarch64.so.1</span><br><span class="line"><span class="comment"># 设置一个目录，否则看不到库函数</span></span><br><span class="line">(gdb) <span class="built_in">set</span> sysroot /home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/</span><br><span class="line">warning: .dynamic section <span class="keyword">for</span> <span class="string">"/home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib/ld-linux-aarch64.so.1"</span> is not at the expected address (wrong library or version mismatch?)</span><br><span class="line">Reading symbols from /home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib/ld-linux-aarch64.so.1...done.</span><br><span class="line">Reading symbols from /home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib/ld-linux-aarch64.so.1...done.</span><br><span class="line">(gdb) b main</span><br><span class="line">Breakpoint 1 at 0x4005f4: file main.cpp, line 7.</span><br><span class="line">(gdb) b func(int) </span><br><span class="line">Breakpoint 2 at 0x400630: file main.cpp, line 16.</span><br><span class="line">(gdb) r</span><br><span class="line">The <span class="string">"remote"</span> target does not support <span class="string">"run"</span>.  Try <span class="string">"help target"</span> or <span class="string">"continue"</span>.</span><br><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 1, main () at main.cpp:7</span><br><span class="line">7	  int i = 25;</span><br><span class="line">(gdb) list</span><br><span class="line">2	 </span><br><span class="line">3	int func(int i);</span><br><span class="line">4	 </span><br><span class="line">5	int main(void)</span><br><span class="line">6	&#123;</span><br><span class="line">7	  int i = 25;</span><br><span class="line">8	  int v = func(i);</span><br><span class="line">9	  <span class="built_in">printf</span>(<span class="string">"value is %d\n"</span>, v);</span><br><span class="line">10	  getchar();</span><br><span class="line">11	  <span class="built_in">return</span> 0;</span><br><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 2, func (i=25) at main.cpp:16</span><br><span class="line">16	  int a = 2;</span><br><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line">[Inferior 1 (process 1066) exited normally]</span><br></pre></td></tr></table></figure>
+
+<h4 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> i)</span></span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> i = <span class="number">25</span>;</span><br><span class="line">  <span class="keyword">int</span> v = func(i);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"value is %d\n"</span>, v);</span><br><span class="line">  getchar();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> a = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">return</span> a * i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>简单的makefile<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># marcros</span></span><br><span class="line">CROSS_COMPILE := /home/edison/develop/arm/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-</span><br><span class="line"></span><br><span class="line">CC		:= <span class="variable">$(CROSS_COMPILE)</span>gcc</span><br><span class="line">LD		:= <span class="variable">$(CC)</span> -nostdlib</span><br><span class="line">CPP		:= <span class="variable">$(CC)</span> -E</span><br><span class="line"></span><br><span class="line">CCFLAGS := -Wall</span><br><span class="line">DBGFLAG := -g</span><br><span class="line">CCOBJFLAG := <span class="variable">$(CCFLAG)</span> -c</span><br><span class="line"></span><br><span class="line"><span class="comment"># Path</span></span><br><span class="line"></span><br><span class="line">BIN_PATH := bin</span><br><span class="line">OBJ_PATH := obj</span><br><span class="line">SRC_PATH := src</span><br><span class="line">DBG_PATH := debug</span><br><span class="line"></span><br><span class="line"><span class="comment"># compile </span></span><br><span class="line">TARGET_NAME := main</span><br><span class="line"></span><br><span class="line">TARGET := <span class="variable">$(BIN_PATH)</span>/<span class="variable">$(TARGET_NAME)</span></span><br><span class="line">TARGET_DEBUG := <span class="variable">$(DBG_PATH)</span>/<span class="variable">$(TARGET_NAME)</span></span><br><span class="line"></span><br><span class="line"><span class="section">all: main.o</span></span><br><span class="line">	<span class="variable">$(CC)</span> -o <span class="variable">$@</span> <span class="variable">$^</span></span><br><span class="line"></span><br><span class="line"><span class="section">main.o: main.cpp</span></span><br><span class="line">	<span class="variable">$(CC)</span> <span class="variable">$(CCOBJFLAG)</span> <span class="variable">$(DBGFLAG)</span> <span class="variable">$^</span></span><br><span class="line">    </span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -rf *.o all</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="启动运行信息"><a href="#启动运行信息" class="headerlink" title="启动运行信息"></a>启动运行信息</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br></pre></td><td class="code"><pre><span class="line">[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]</span><br><span class="line">[    0.000000] Linux version 4.19.11 (edison@aquarius) (gcc version 7.4.1 20181213 [linaro-7.4-2019.02 revision 56ec6f6b99cc167ff0c2f8e1a2eed33b1edc85d4] (Linaro GCC 7.4-2019.02)) <span class="comment">#3 SMP PREEMPT Sat Jun 15 12:02:57 CST 2019</span></span><br><span class="line">[    0.000000] Machine model: linux,dummy-virt</span><br><span class="line">[    0.000000] debug: ignoring loglevel setting.</span><br><span class="line">[    0.000000] efi: Getting EFI parameters from FDT:</span><br><span class="line">[    0.000000] efi: UEFI not found.</span><br><span class="line">[    0.000000] cma: Reserved 32 MiB at 0x000000007e000000</span><br><span class="line">[    0.000000] NUMA: No NUMA configuration found</span><br><span class="line">[    0.000000] NUMA: Faking a node at [mem 0x0000000000000000-0x000000007fffffff]</span><br><span class="line">[    0.000000] NUMA: NODE_DATA [mem 0x7dfea700-0x7dfebebf]</span><br><span class="line">[    0.000000] Zone ranges:</span><br><span class="line">[    0.000000]   DMA32    [mem 0x0000000040000000-0x000000007fffffff]</span><br><span class="line">[    0.000000]   Normal   empty</span><br><span class="line">[    0.000000] Movable zone start <span class="keyword">for</span> each node</span><br><span class="line">[    0.000000] Early memory node ranges</span><br><span class="line">[    0.000000]   node   0: [mem 0x0000000040000000-0x000000007fffffff]</span><br><span class="line">[    0.000000] Initmem setup node 0 [mem 0x0000000040000000-0x000000007fffffff]</span><br><span class="line">[    0.000000] On node 0 totalpages: 262144</span><br><span class="line">[    0.000000]   DMA32 zone: 4096 pages used <span class="keyword">for</span> memmap</span><br><span class="line">[    0.000000]   DMA32 zone: 0 pages reserved</span><br><span class="line">[    0.000000]   DMA32 zone: 262144 pages, LIFO batch:63</span><br><span class="line">[    0.000000] psci: probing <span class="keyword">for</span> conduit method from DT.</span><br><span class="line">[    0.000000] psci: PSCIv0.2 detected <span class="keyword">in</span> firmware.</span><br><span class="line">[    0.000000] psci: Using standard PSCI v0.2 <span class="keyword">function</span> IDs</span><br><span class="line">[    0.000000] psci: Trusted OS migration not required</span><br><span class="line">[    0.000000] random: get_random_bytes called from start_kernel+0xa8/0x418 with crng_init=0</span><br><span class="line">[    0.000000] percpu: Embedded 23 pages/cpu @(____ptrval____) s56984 r8192 d29032 u94208</span><br><span class="line">[    0.000000] pcpu-alloc: s56984 r8192 d29032 u94208 alloc=23*4096</span><br><span class="line">[    0.000000] pcpu-alloc: [0] 0 [0] 1 </span><br><span class="line">[    0.000000] Detected VIPT I-cache on CPU0</span><br><span class="line">[    0.000000] CPU features: enabling workaround <span class="keyword">for</span> ARM erratum 843419</span><br><span class="line">[    0.000000] CPU features: enabling workaround <span class="keyword">for</span> ARM erratum 845719</span><br><span class="line">[    0.000000] CPU features: detected: Kernel page table isolation (KPTI)</span><br><span class="line">[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 258048</span><br><span class="line">[    0.000000] Policy zone: DMA32</span><br><span class="line">[    0.000000] Kernel <span class="built_in">command</span> line: root=/dev/ram0 rw rootfstype=ext4 console=ttyAMA0 init=/linuxrc ignore_loglevel</span><br><span class="line">[    0.000000] Memory: 969596K/1048576K available (9020K kernel code, 610K rwdata, 3008K rodata, 768K init, 359K bss, 46212K reserved, 32768K cma-reserved)</span><br><span class="line">[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=2, Nodes=1</span><br><span class="line">[    0.000000] rcu: Preemptible hierarchical RCU implementation.</span><br><span class="line">[    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=2.</span><br><span class="line">[    0.000000] 	Tasks RCU enabled.</span><br><span class="line">[    0.000000] rcu: Adjusting geometry <span class="keyword">for</span> rcu_fanout_leaf=16, nr_cpu_ids=2</span><br><span class="line">[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0</span><br><span class="line">[    0.000000] GICv2m: range[mem 0x08020000-0x08020fff], SPI[80:143]</span><br><span class="line">[    0.000000] arch_timer: cp15 timer(s) running at 62.50MHz (virt).</span><br><span class="line">[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x1cd42e208c, max_idle_ns: 881590405314 ns</span><br><span class="line">[    0.000185] sched_clock: 56 bits at 62MHz, resolution 16ns, wraps every 4398046511096ns</span><br><span class="line">[    0.007286] Console: colour dummy device 80x25</span><br><span class="line">[    0.009634] Calibrating delay loop (skipped), value calculated using timer frequency.. 125.00 BogoMIPS (lpj=250000)</span><br><span class="line">[    0.009828] pid_max: default: 32768 minimum: 301</span><br><span class="line">[    0.011320] Security Framework initialized</span><br><span class="line">[    0.013353] Dentry cache <span class="built_in">hash</span> table entries: 131072 (order: 8, 1048576 bytes)</span><br><span class="line">[    0.014631] Inode-cache <span class="built_in">hash</span> table entries: 65536 (order: 7, 524288 bytes)</span><br><span class="line">[    0.014987] Mount-cache <span class="built_in">hash</span> table entries: 2048 (order: 2, 16384 bytes)</span><br><span class="line">[    0.015139] Mountpoint-cache <span class="built_in">hash</span> table entries: 2048 (order: 2, 16384 bytes)</span><br><span class="line">[    0.072332] ASID allocator initialised with 32768 entries</span><br><span class="line">[    0.079862] rcu: Hierarchical SRCU implementation.</span><br><span class="line">[    0.102195] EFI services will not be available.</span><br><span class="line">[    0.111945] smp: Bringing up secondary CPUs ...</span><br><span class="line">[    0.150710] Detected VIPT I-cache on CPU1</span><br><span class="line">[    0.152735] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]</span><br><span class="line">[    0.158057] smp: Brought up 1 node, 2 CPUs</span><br><span class="line">[    0.158170] SMP: Total of 2 processors activated.</span><br><span class="line">[    0.158288] CPU features: detected: 32-bit EL0 Support</span><br><span class="line">[    0.185724] CPU: All CPU(s) started at EL1</span><br><span class="line">[    0.186917] alternatives: patching kernel code</span><br><span class="line">[    0.205598] devtmpfs: initialized</span><br><span class="line">[    0.234248] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns</span><br><span class="line">[    0.234617] futex <span class="built_in">hash</span> table entries: 512 (order: 3, 32768 bytes)</span><br><span class="line">[    0.245880] pinctrl core: initialized pinctrl subsystem</span><br><span class="line">[    0.275845] DMI not present or invalid.</span><br><span class="line">[    0.285543] NET: Registered protocol family 16</span><br><span class="line">[    0.289290] audit: initializing netlink subsys (disabled)</span><br><span class="line">[    0.292277] audit: <span class="built_in">type</span>=2000 audit(0.252:1): state=initialized audit_enabled=0 res=1</span><br><span class="line">[    0.311872] cpuidle: using governor menu</span><br><span class="line">[    0.314254] vdso: 2 pages (1 code @ (____ptrval____), 1 data @ (____ptrval____))</span><br><span class="line">[    0.314476] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.</span><br><span class="line">[    0.325699] DMA: preallocated 256 KiB pool <span class="keyword">for</span> atomic allocations</span><br><span class="line">[    0.328282] Serial: AMBA PL011 UART driver</span><br><span class="line">[    0.401940] 9000000.pl011: ttyAMA0 at MMIO 0x9000000 (irq = 39, base_baud = 0) is a PL011 rev1</span><br><span class="line">[    0.433798] console [ttyAMA0] enabled</span><br><span class="line">[    0.727257] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages</span><br><span class="line">[    0.733955] cryptd: max_cpu_qlen <span class="built_in">set</span> to 1000</span><br><span class="line">[    0.744142] ACPI: Interpreter disabled.</span><br><span class="line">[    0.760164] vgaarb: loaded</span><br><span class="line">[    0.765256] SCSI subsystem initialized</span><br><span class="line">[    0.773399] libata version 3.00 loaded.</span><br><span class="line">[    0.785663] usbcore: registered new interface driver usbfs</span><br><span class="line">[    0.787906] usbcore: registered new interface driver hub</span><br><span class="line">[    0.789752] usbcore: registered new device driver usb</span><br><span class="line">[    0.794877] pps_core: LinuxPPS API ver. 1 registered</span><br><span class="line">[    0.795307] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti &lt;giometti@linux.it&gt;</span><br><span class="line">[    0.796439] PTP clock support registered</span><br><span class="line">[    0.806539] EDAC MC: Ver: 3.0.0</span><br><span class="line">[    0.828166] Advanced Linux Sound Architecture Driver Initialized.</span><br><span class="line">[    0.849084] clocksource: Switched to clocksource arch_sys_counter</span><br><span class="line">[    0.851823] VFS: Disk quotas dquot_6.6.0</span><br><span class="line">[    0.854846] VFS: Dquot-cache <span class="built_in">hash</span> table entries: 512 (order 0, 4096 bytes)</span><br><span class="line">[    0.858595] pnp: PnP ACPI: disabled</span><br><span class="line">[    1.017342] NET: Registered protocol family 2</span><br><span class="line">[    1.031887] tcp_listen_portaddr_hash <span class="built_in">hash</span> table entries: 512 (order: 1, 8192 bytes)</span><br><span class="line">[    1.033022] TCP established <span class="built_in">hash</span> table entries: 8192 (order: 4, 65536 bytes)</span><br><span class="line">[    1.034055] TCP <span class="built_in">bind</span> <span class="built_in">hash</span> table entries: 8192 (order: 5, 131072 bytes)</span><br><span class="line">[    1.034752] TCP: Hash tables configured (established 8192 <span class="built_in">bind</span> 8192)</span><br><span class="line">[    1.038780] UDP <span class="built_in">hash</span> table entries: 512 (order: 2, 16384 bytes)</span><br><span class="line">[    1.039445] UDP-Lite <span class="built_in">hash</span> table entries: 512 (order: 2, 16384 bytes)</span><br><span class="line">[    1.042094] NET: Registered protocol family 1</span><br><span class="line">[    1.050677] RPC: Registered named UNIX socket transport module.</span><br><span class="line">[    1.051236] RPC: Registered udp transport module.</span><br><span class="line">[    1.051576] RPC: Registered tcp transport module.</span><br><span class="line">[    1.051922] RPC: Registered tcp NFSv4.1 backchannel transport module.</span><br><span class="line">[    1.053121] PCI: CLS 0 bytes, default 64</span><br><span class="line">[    1.058331] Trying to unpack rootfs image as initramfs...</span><br><span class="line">[    1.071951] rootfs image is not initramfs (no cpio magic); looks like an initrd</span><br><span class="line">[    1.219963] Freeing initrd memory: 15512K</span><br><span class="line">[    1.225178] hw perfevents: enabled with armv8_pmuv3 PMU driver, 1 counters available</span><br><span class="line">[    1.227220] kvm [1]: HYP mode not available</span><br><span class="line">[    1.290935] Initialise system trusted keyrings</span><br><span class="line">[    1.295592] workingset: timestamp_bits=44 max_order=18 bucket_order=0</span><br><span class="line">[    1.563944] squashfs: version 4.0 (2009/01/31) Phillip Lougher</span><br><span class="line">[    1.620068] NFS: Registering the id_resolver key <span class="built_in">type</span></span><br><span class="line">[    1.626786] Key <span class="built_in">type</span> id_resolver registered</span><br><span class="line">[    1.627912] Key <span class="built_in">type</span> id_legacy registered</span><br><span class="line">[    1.630868] nfs4filelayout_init: NFSv4 File Layout Driver Registering...</span><br><span class="line">[    1.652401] 9p: Installing v9fs 9p2000 file system support</span><br><span class="line">[    1.664508] pstore: using deflate compression</span><br><span class="line">[    1.817988] Key <span class="built_in">type</span> asymmetric registered</span><br><span class="line">[    1.819643] Asymmetric key parser <span class="string">'x509'</span> registered</span><br><span class="line">[    1.823133] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)</span><br><span class="line">[    1.827632] io scheduler noop registered</span><br><span class="line">[    1.828884] io scheduler deadline registered</span><br><span class="line">[    1.834561] io scheduler cfq registered (default)</span><br><span class="line">[    1.836114] io scheduler mq-deadline registered</span><br><span class="line">[    1.837955] io scheduler kyber registered</span><br><span class="line">[    1.926575] pl061_gpio 9030000.pl061: PL061 GPIO chip @0x0000000009030000 registered</span><br><span class="line">[    1.944322] pci-host-generic 3f000000.pcie: host bridge /pcie@10000000 ranges:</span><br><span class="line">[    1.950902] pci-host-generic 3f000000.pcie:    IO 0x3eff0000..0x3effffff -&gt; 0x00000000</span><br><span class="line">[    1.957916] pci-host-generic 3f000000.pcie:   MEM 0x10000000..0x3efeffff -&gt; 0x10000000</span><br><span class="line">[    1.962099] pci-host-generic 3f000000.pcie:   MEM 0x8000000000..0xffffffffff -&gt; 0x8000000000</span><br><span class="line">[    1.969611] pci-host-generic 3f000000.pcie: ECAM at [mem 0x3f000000-0x3fffffff] <span class="keyword">for</span> [bus 00-0f]</span><br><span class="line">[    1.983121] pci-host-generic 3f000000.pcie: PCI host bridge to bus 0000:00</span><br><span class="line">[    1.987641] pci_bus 0000:00: root bus resource [bus 00-0f]</span><br><span class="line">[    1.992250] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]</span><br><span class="line">[    1.995159] pci_bus 0000:00: root bus resource [mem 0x10000000-0x3efeffff]</span><br><span class="line">[    1.998891] pci_bus 0000:00: root bus resource [mem 0x8000000000-0xffffffffff]</span><br><span class="line">[    2.010065] pci 0000:00:00.0: [1b36:0008] <span class="built_in">type</span> 00 class 0x060000</span><br><span class="line">[    2.038555] pci 0000:00:01.0: [1af4:1000] <span class="built_in">type</span> 00 class 0x020000</span><br><span class="line">[    2.042423] pci 0000:00:01.0: reg 0x10: [io  0x0000-0x001f]</span><br><span class="line">[    2.044329] pci 0000:00:01.0: reg 0x14: [mem 0x00000000-0x00000fff]</span><br><span class="line">[    2.047344] pci 0000:00:01.0: reg 0x20: [mem 0x00000000-0x00003fff 64bit pref]</span><br><span class="line">[    2.050395] pci 0000:00:01.0: reg 0x30: [mem 0x00000000-0x0007ffff pref]</span><br><span class="line">[    2.066248] pci 0000:00:02.0: [1af4:1009] <span class="built_in">type</span> 00 class 0x000200</span><br><span class="line">[    2.069640] pci 0000:00:02.0: reg 0x10: [io  0x0000-0x003f]</span><br><span class="line">[    2.072306] pci 0000:00:02.0: reg 0x14: [mem 0x00000000-0x00000fff]</span><br><span class="line">[    2.075211] pci 0000:00:02.0: reg 0x20: [mem 0x00000000-0x00003fff 64bit pref]</span><br><span class="line">[    2.103755] pci 0000:00:01.0: BAR 6: assigned [mem 0x10000000-0x1007ffff pref]</span><br><span class="line">[    2.109717] pci 0000:00:01.0: BAR 4: assigned [mem 0x8000000000-0x8000003fff 64bit pref]</span><br><span class="line">[    2.113851] pci 0000:00:02.0: BAR 4: assigned [mem 0x8000004000-0x8000007fff 64bit pref]</span><br><span class="line">[    2.115820] pci 0000:00:01.0: BAR 1: assigned [mem 0x10080000-0x10080fff]</span><br><span class="line">[    2.118111] pci 0000:00:02.0: BAR 1: assigned [mem 0x10081000-0x10081fff]</span><br><span class="line">[    2.119817] pci 0000:00:02.0: BAR 0: assigned [io  0x1000-0x103f]</span><br><span class="line">[    2.122333] pci 0000:00:01.0: BAR 0: assigned [io  0x1040-0x105f]</span><br><span class="line">[    2.211197] EINJ: ACPI disabled.</span><br><span class="line">[    2.330390] virtio-pci 0000:00:01.0: enabling device (0000 -&gt; 0003)</span><br><span class="line">[    2.354839] virtio-pci 0000:00:02.0: enabling device (0000 -&gt; 0003)</span><br><span class="line">[    2.512241] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled</span><br><span class="line">[    2.593580] cacheinfo: Unable to detect cache hierarchy <span class="keyword">for</span> CPU 0</span><br><span class="line">[    2.638856] brd: module loaded</span><br><span class="line">[    2.756131] loop: module loaded</span><br><span class="line">[    2.834762] libphy: Fixed MDIO Bus: probed</span><br><span class="line">[    2.844183] tun: Universal TUN/TAP device driver, 1.6</span><br><span class="line">[    2.909715] thunder_xcv, ver 1.0</span><br><span class="line">[    2.911181] thunder_bgx, ver 1.0</span><br><span class="line">[    2.912558] nicpf, ver 1.0</span><br><span class="line">[    2.921499] e1000e: Intel(R) PRO/1000 Network Driver - 3.2.6-k</span><br><span class="line">[    2.922236] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.</span><br><span class="line">[    2.925385] igb: Intel(R) Gigabit Ethernet Network Driver - version 5.4.0-k</span><br><span class="line">[    2.926237] igb: Copyright (c) 2007-2014 Intel Corporation.</span><br><span class="line">[    2.928072] igbvf: Intel(R) Gigabit Virtual Function Network Driver - version 2.4.0-k</span><br><span class="line">[    2.929604] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.</span><br><span class="line">[    2.932820] sky2: driver version 1.30</span><br><span class="line">[    2.948916] VFIO - User Level meta-driver version: 0.3</span><br><span class="line">[    2.954444] ehci_hcd: USB 2.0 <span class="string">'Enhanced'</span> Host Controller (EHCI) Driver</span><br><span class="line">[    2.955462] ehci-pci: EHCI PCI platform driver</span><br><span class="line">[    2.957773] ehci-platform: EHCI generic platform driver</span><br><span class="line">[    2.961430] usbcore: registered new interface driver usb-storage</span><br><span class="line">[    2.991082] rtc-pl031 9010000.pl031: rtc core: registered pl031 as rtc0</span><br><span class="line">[    2.997556] i2c /dev entries driver</span><br><span class="line">[    3.024361] sdhci: Secure Digital Host Controller Interface driver</span><br><span class="line">[    3.030621] sdhci: Copyright(c) Pierre Ossman</span><br><span class="line">[    3.035477] Synopsys Designware Multimedia Card Interface Driver</span><br><span class="line">[    3.043428] sdhci-pltfm: SDHCI platform and OF driver helper</span><br><span class="line">[    3.056220] ledtrig-cpu: registered to indicate activity on CPUs</span><br><span class="line">[    3.086735] usbcore: registered new interface driver usbhid</span><br><span class="line">[    3.087646] usbhid: USB HID core driver</span><br><span class="line">[    3.115425] NET: Registered protocol family 17</span><br><span class="line">[    3.121396] 9pnet: Installing 9P2000 support</span><br><span class="line">[    3.127838] Key <span class="built_in">type</span> dns_resolver registered</span><br><span class="line">[    3.140496] registered taskstats version 1</span><br><span class="line">[    3.141477] Loading compiled-in X.509 certificates</span><br><span class="line">[    3.165868] input: gpio-keys as /devices/platform/gpio-keys/input/input0</span><br><span class="line">[    3.174798] rtc-pl031 9010000.pl031: setting system clock to 2019-06-23 13:50:18 UTC (1561297818)</span><br><span class="line">[    3.179007] ALSA device list:</span><br><span class="line">[    3.179612]   No soundcards found.</span><br><span class="line">[    3.190059] uart-pl011 9000000.pl011: no DMA platform data</span><br><span class="line">[    3.197681] RAMDISK: gzip image found at block 0</span><br><span class="line">[    8.860079] EXT4-fs (ram0): mounted filesystem with ordered data mode. Opts: (null)</span><br><span class="line">[    8.861974] VFS: Mounted root (ext4 filesystem) on device 1:0.</span><br><span class="line">[    8.870895] devtmpfs: mounted</span><br><span class="line">[    8.997547] Freeing unused kernel memory: 768K</span><br><span class="line">[    9.031224] Run /linuxrc as init process</span><br><span class="line"></span><br><span class="line">Please press Enter to activate this console. </span><br><span class="line">[root@aarch64 ]<span class="comment"># ls</span></span><br><span class="line">bin         etc         linuxrc     mnt         root        sys         var</span><br><span class="line">dev         lib         lost+found  proc        sbin        tmp</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/arm/" rel="tag"># arm</a>
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/qemu/" rel="tag"># qemu</a>
+          
+            <a href="/tags/kernel/" rel="tag"># kernel</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/19/tech/hexo-github-ci/" rel="next" title="GitPages+Hexo+CI 自动部署个人主页">
+                <i class="fa fa-chevron-left"></i> GitPages+Hexo+CI 自动部署个人主页
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/05/tech/Git/" rel="prev" title="Git study">
+                Git study <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">50</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Qemu"><span class="nav-number">1.</span> <span class="nav-text">Qemu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#windows-qemu"><span class="nav-number">1.1.</span> <span class="nav-text">windows qemu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Install"><span class="nav-number">1.2.</span> <span class="nav-text">Install</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cross-compile"><span class="nav-number">2.</span> <span class="nav-text">Cross-compile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Busy-Box"><span class="nav-number">3.</span> <span class="nav-text">Busy Box</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux-kernel"><span class="nav-number">4.</span> <span class="nav-text">Linux kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux-Kernel下载"><span class="nav-number">4.1.</span> <span class="nav-text">Linux Kernel下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置Kernel"><span class="nav-number">4.2.</span> <span class="nav-text">配置Kernel</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-kernel"><span class="nav-number">5.</span> <span class="nav-text">Run kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建根文件系统"><span class="nav-number">5.1.</span> <span class="nav-text">创建根文件系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用Qemu运行"><span class="nav-number">5.2.</span> <span class="nav-text">使用Qemu运行</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#共享目录"><span class="nav-number">6.</span> <span class="nav-text">共享目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Network-with-Qemu"><span class="nav-number">7.</span> <span class="nav-text">Network with Qemu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gdbserver"><span class="nav-number">8.</span> <span class="nav-text">Gdbserver</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#测试程序"><span class="nav-number">8.1.</span> <span class="nav-text">测试程序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动运行信息"><span class="nav-number">9.</span> <span class="nav-text">启动运行信息</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
