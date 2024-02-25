@@ -94,18 +94,18 @@
 
 
 
-  <meta name="description" content="RUST Error HandlingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 错误处理rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。 Panicrust中使用panic!宏来处理不可恢复的错误，出现p">
+  <meta name="description" content="RUST TestRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Test Function一个测试函数执行三个任务：  初始设置测试的数据和状态 执行需要测试的代码 判断代码执行结果是否与预期一致  定义一个测试函数时，需要在这个函数前用#[test]注解，这样cargo test执行时，就会运行这些测试函数，并汇报最终通过与否的结果。 简">
 <meta name="keywords" content="learning,rust">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Rust Learning-Errors">
-<meta property="og:url" content="http://memorywalker.github.io/2024/01/21/rust/rust-errors/index.html">
+<meta property="og:title" content="Rust Learning-Test">
+<meta property="og:url" content="http://memorywalker.github.io/2024/02/25/rust/rust-test/index.html">
 <meta property="og:site_name" content="How Time Flies">
-<meta property="og:description" content="RUST Error HandlingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 错误处理rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。 Panicrust中使用panic!宏来处理不可恢复的错误，出现p">
+<meta property="og:description" content="RUST TestRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Test Function一个测试函数执行三个任务：  初始设置测试的数据和状态 执行需要测试的代码 判断代码执行结果是否与预期一致  定义一个测试函数时，需要在这个函数前用#[test]注解，这样cargo test执行时，就会运行这些测试函数，并汇报最终通过与否的结果。 简">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2024-02-25T15:47:04.466Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Rust Learning-Errors">
-<meta name="twitter:description" content="RUST Error HandlingRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) 错误处理rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。 Panicrust中使用panic!宏来处理不可恢复的错误，出现p">
+<meta name="twitter:title" content="Rust Learning-Test">
+<meta name="twitter:description" content="RUST TestRust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io) Test Function一个测试函数执行三个任务：  初始设置测试的数据和状态 执行需要测试的代码 判断代码执行结果是否与预期一致  定义一个测试函数时，需要在这个函数前用#[test]注解，这样cargo test执行时，就会运行这些测试函数，并汇报最终通过与否的结果。 简">
 
 
 
@@ -113,7 +113,7 @@
 
   
   
-  <link rel="canonical" href="http://memorywalker.github.io/2024/01/21/rust/rust-errors/">
+  <link rel="canonical" href="http://memorywalker.github.io/2024/02/25/rust/rust-test/">
 
 
 
@@ -123,7 +123,7 @@
   };
 </script>
 
-  <title>Rust Learning-Errors | How Time Flies</title>
+  <title>Rust Learning-Test | How Time Flies</title>
   
 
 
@@ -351,7 +351,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/01/21/rust/rust-errors/">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/02/25/rust/rust-test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="MemoryWalker">
@@ -368,7 +368,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Rust Learning-Errors
+          <h1 class="post-title" itemprop="name headline">Rust Learning-Test
 
               
             
@@ -394,24 +394,12 @@
                 
               
 
-              <time title="创建时间：2024-01-21 21:42:49" itemprop="dateCreated datePublished" datetime="2024-01-21T21:42:49+00:00">2024-01-21</time>
+              <time title="创建时间：2024-02-25 23:15:49 / 修改时间：15:47:04" itemprop="dateCreated datePublished" datetime="2024-02-25T23:15:49+00:00">2024-02-25</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2024-02-25 15:47:04" itemprop="dateModified" datetime="2024-02-25T15:47:04+00:00">2024-02-25</time>
               
             
           </span>
@@ -463,60 +451,25 @@
       
 
       
-        <h2 id="RUST-Error-Handling"><a href="#RUST-Error-Handling" class="headerlink" title="RUST Error Handling"></a>RUST Error Handling</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
-<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>rust中的错误分为不可恢复错误和可恢复错误两类。对于我们想知会用户的错误或重试操作的错误，是可恢复的，例如文件不存在。而越界访问一个数组是一个严重bug，就可以按不可恢复错误处理。</p>
-<h3 id="Panic"><a href="#Panic" class="headerlink" title="Panic"></a>Panic</h3><p>rust中使用<code>panic!</code>宏来处理不可恢复的错误，出现panic后，程序会打印错误信息，清理函数栈然后退出程序。默认情况下，程序panic退出前，反向遍历每一个函数栈，释放其中的数据，然后再退出，这个过程需要一定时间，所以可以再release版本的程序中配置为直接退出程序，让操作系统来释放程序运行过程中申请的资源。</p>
-<p>在项目的 <em>Cargo.toml</em>文件中增加以下代码，在release版本可以减少程序退出占用的时间：</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[profile.release]</span></span><br><span class="line"><span class="attr">panic</span> = <span class="string">'abort'</span></span><br></pre></td></tr></table></figure>
+        <h2 id="RUST-Test"><a href="#RUST-Test" class="headerlink" title="RUST Test"></a>RUST Test</h2><p><a href="https://kaisery.github.io/trpl-zh-cn/title-page.html" target="_blank" rel="noopener">Rust 程序设计语言 - Rust 程序设计语言 简体中文版 (kaisery.github.io)</a></p>
+<h3 id="Test-Function"><a href="#Test-Function" class="headerlink" title="Test Function"></a>Test Function</h3><p>一个测试函数执行三个任务：</p>
+<ol>
+<li>初始设置测试的数据和状态</li>
+<li>执行需要测试的代码</li>
+<li>判断代码执行结果是否与预期一致</li>
+</ol>
+<p>定义一个测试函数时，需要在这个函数前用<code>#[test]</code>注解，这样<code>cargo test</code>执行时，就会运行这些测试函数，并汇报最终通过与否的结果。</p>
+<h4 id="简单测试例子"><a href="#简单测试例子" class="headerlink" title="简单测试例子"></a>简单测试例子</h4><p>当创建一个rust的lib库工程时，一个测试模块会自动生成。</p>
+<p>执行<code>cargo new plus --lib</code>创建一个名称为plus的lib库。</p>
+<p>默认生成的<code>lib.rs</code>代码如下</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">add</span></span>(left: <span class="built_in">usize</span>, right: <span class="built_in">usize</span>) -&gt; <span class="built_in">usize</span> &#123;</span><br><span class="line">    left + right</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg(test)]</span></span><br><span class="line"><span class="keyword">mod</span> tests &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">it_works</span></span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> result = add(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">        <span class="built_in">assert_eq!</span>(result, <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">it_not_work</span></span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> result = add(<span class="number">2</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="built_in">assert_eq!</span>(result, <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>可以直接调用<code>panic!</code>宏退出程序</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">panic!</span>(<span class="string">"I will be dead..."</span>);</span><br><span class="line"><span class="comment">// 程序会输出</span></span><br><span class="line"><span class="comment">//thread 'main' panicked at src\main.rs:17:5:</span></span><br><span class="line"><span class="comment">//I will be dead...</span></span><br></pre></td></tr></table></figure>
+<p>与普通执行程序不同，这里执行<code>cargo test</code>就会执行我们发的测试.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">running 2 tests</span><br><span class="line">test tests::it_works ... ok</span><br><span class="line">test tests::it_not_work ... FAILED</span><br><span class="line"></span><br><span class="line">failures:</span><br><span class="line"></span><br><span class="line">---- tests::it_not_work stdout ----</span><br><span class="line">thread 'tests::it_not_work' panicked at src\lib.rs:18:9:</span><br><span class="line">assertion `left == right` failed</span><br><span class="line">  left: 3</span><br><span class="line"> right: 4</span><br><span class="line">note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace</span><br><span class="line"></span><br><span class="line">failures:</span><br><span class="line">    tests::it_not_work</span><br><span class="line"></span><br><span class="line">test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s</span><br></pre></td></tr></table></figure>
 
-<p>在C语言中访问数组越界时，程序还是会按实际的地址访问内存空间中的数据，只是错误是未定义的，这样会导致偶发不可预期的故障。rust中只要访问越界，就会panic，并明确告诉错误的原因。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> v = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">v[<span class="number">100</span>]; <span class="comment">// thread 'main' panicked at src\main.rs:18:6:</span></span><br><span class="line"><span class="comment">// index out of bounds: the len is 3 but the index is 100</span></span><br></pre></td></tr></table></figure>
-
-<p>通过在执行程序时设置<code>RUST_BACKTRACE=1</code> 环境变量，就可以把出错时的调用栈打印出来。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> RUST_BACKTRACE=1 cargo run</span></span><br><span class="line">或者</span><br><span class="line">E:\dev\rust\cargo_demo\target\release&gt;set RUST_BACKTRACE=1</span><br><span class="line"></span><br><span class="line">E:\dev\rust\cargo_demo\target\release&gt;cargo_demo.exe</span><br><span class="line">thread 'main' panicked at src\main.rs:18:6:</span><br><span class="line">index out of bounds: the len is 3 but the index is 100</span><br><span class="line">stack backtrace:</span><br><span class="line">   0: std::panicking::begin_panic_handler</span><br><span class="line">             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library\std\src\panicking.rs:645</span><br><span class="line">   1: core::panicking::panic_fmt</span><br><span class="line">   ......</span><br></pre></td></tr></table></figure>
-
-<h3 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h3><p>enum Result有两种值，Ok用来表示成功返回值，Err表示失败时的返回值。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Result</span></span>&lt;T, E&gt; &#123;</span><br><span class="line">    <span class="literal">Ok</span>(T),</span><br><span class="line">    <span class="literal">Err</span>(E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>例如以下代码打开一个文件，它的返回值为  <code>Result&lt;File, Error&gt;</code>  ，然后可以使用match来处理两种情况，当Ok的时候，就把其中的file变量返回出去，如果失败了，就打印错误信息</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::ErrorKind;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file_result = File::open(<span class="string">"hello.txt"</span>);</span><br><span class="line">    <span class="keyword">let</span> greeting_file = <span class="keyword">match</span> greeting_file_result &#123;</span><br><span class="line">        <span class="literal">Ok</span>(file) =&gt; file, <span class="comment">// Result是系统预置类型，所以不需要Result::前缀</span></span><br><span class="line">        <span class="literal">Err</span>(error) =&gt; <span class="keyword">match</span> error.kind() &#123;</span><br><span class="line">            ErrorKind::NotFound =&gt; <span class="keyword">match</span> File::create(<span class="string">"hello.txt"</span>) &#123;</span><br><span class="line">                <span class="literal">Ok</span>(fc) =&gt; fc, <span class="comment">// 打不开文件后，创建文件</span></span><br><span class="line">                <span class="literal">Err</span>(e) =&gt; <span class="built_in">panic!</span>(<span class="string">"Problem creating the file: &#123;:?&#125;"</span>, e),</span><br><span class="line">            &#125;,</span><br><span class="line">            other_error =&gt; &#123;</span><br><span class="line">              	<span class="comment">// 让程序退出</span></span><br><span class="line">                <span class="built_in">panic!</span>(<span class="string">"Problem opening the file: &#123;:?&#125;"</span>, other_error);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="unwrap"><a href="#unwrap" class="headerlink" title="unwrap"></a>unwrap</h4><p><code>Result&lt;T, E&gt;</code> 的unwrap()方法简化错误处理，它内部实现了Ok时返回结果，错误时调用默认的panic。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="comment">// called `Result::unwrap()` on an `Err` value: </span></span><br><span class="line">    <span class="comment">// Os &#123; code: 2, kind: NotFound, message: "The system cannot find the file specified." &#125;</span></span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>).unwrap();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="expect"><a href="#expect" class="headerlink" title="expect"></a>expect</h4><p><code>Result&lt;T, E&gt;</code>的expect()方法它内部实现了Ok时返回结果，错误时可以指定的panic的信息</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)</span><br><span class="line">        .expect(<span class="string">"hello.txt should be included in this project"</span>);</span><br><span class="line">    <span class="comment">//thread 'main' panicked at src\main.rs:5:10:</span></span><br><span class="line">    <span class="comment">//hello.txt should be included in this project: </span></span><br><span class="line">    <span class="comment">//Os &#123; code: 2, kind: NotFound, message: "The system cannot find the file specified." &#125;       </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="传播错误"><a href="#传播错误" class="headerlink" title="传播错误"></a>传播错误</h4><p>把函数执行过程中的错误返回给调用者，这样调用者可以看情况处理错误。可以使用match来直接返回错误</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::&#123;<span class="keyword">self</span>, Read&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt;&#123;</span><br><span class="line">    <span class="keyword">let</span> username_file_result = File::open(<span class="string">"hello.txt"</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username_file = <span class="keyword">match</span> username_file_result &#123;</span><br><span class="line">        <span class="literal">Ok</span>(file) =&gt; file,</span><br><span class="line">        <span class="literal">Err</span>(e) =&gt; <span class="keyword">return</span> <span class="literal">Err</span>(e), <span class="comment">// 直接返回错误</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    <span class="keyword">match</span> username_file.read_to_string(&amp;<span class="keyword">mut</span> username) &#123;</span><br><span class="line">        <span class="literal">Ok</span>(_) =&gt; <span class="literal">Ok</span>(username),</span><br><span class="line">        <span class="literal">Err</span>(e) =&gt; <span class="literal">Err</span>(e), <span class="comment">// 返回错误状态</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>为了简化match语句返回错误，rust支持使用<code>?</code>操作符来提前返回错误。在一个函数调用结束时使用？，如果函数返回错误，就直接返回错误，不用写match。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username_file = File::open(<span class="string">"hello.txt"</span>)?;<span class="comment">// 直接返回错误或正常返回文件句柄</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    username_file.read_to_string(&amp;<span class="keyword">mut</span> username)?;</span><br><span class="line">    <span class="literal">Ok</span>(username)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> <code>?</code> 会调用实现了<code>From</code>Trait的结构体的<code>from</code>方法，把调用函数返回的错误类型转换为当前？所在函数返回的错误类型。</p>
-<p>使用 <code>?</code> 后，可以方便的写链式调用。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_username_from_file</span></span>() -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> username = <span class="built_in">String</span>::new();</span><br><span class="line">    File::open(<span class="string">"hello.txt"</span>)?.read_to_string(&amp;<span class="keyword">mut</span> username)?;</span><br><span class="line">    <span class="literal">Ok</span>(username)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> <code>?</code> 操作符只能用于返回 <code>Result</code> 或 <code>Option</code> (或其他类型实现了 <code>FromResidual</code>)的函数，例如上面的函数返回值为Result.例如下面的会有编译错误，因为main的返回值类型为<code>()</code></p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)?;</span><br><span class="line">  <span class="comment">//the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>main可以返回任何实现了<code>std::process::Termination</code> trait的类型</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::error::Error;</span><br><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() -&gt; <span class="built_in">Result</span>&lt;(), <span class="built_in">Box</span>&lt;<span class="keyword">dyn</span> Error&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> greeting_file = File::open(<span class="string">"hello.txt"</span>)?;</span><br><span class="line"></span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> <code>Box&lt;dyn Error&gt;</code> 表示任何类型的错误，所以这个main函数中可以用<code>?</code>返回任何类型的错误.</p>
-<p> <code>?</code> 返回Option类型时，如果时none会提前返回None，否则会返回Some中的值。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">last_char_of_first_line</span></span>(text: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Option</span>&lt;<span class="built_in">char</span>&gt; &#123;</span><br><span class="line">    text.lines().next()?.chars().last()<span class="comment">// 返回文本的第一行的最后一个字符</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>painic用在程序出现不可恢复的错误。当在开发例子程序，原型程序或测试程序时，使用unwrap或expect产生painic可以简化错误处理，提前发现错误，等后续正式的程序中进行错误处理让程序更健壮。</p>
-<p>当程序执行的前提假设，约定或内存已经被破坏，或者使用了无效数据，这些错误程序已经无法控制，此时需要panic来提醒程序员强制处理这些问题。</p>
-<p>result用在错误时符合预期的，但还是恢复的场景或程序还能处理，例如请求超时。</p>
-<p>通过封装结构体，来确保数据的正确性，例如下面例子中获取一个1-100之间的数字，只要这个对象可以创建出来，它就一定满足1-100这个范围约定。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Guess</span></span> &#123;</span><br><span class="line">    value: <span class="built_in">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> Guess &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(value: <span class="built_in">i32</span>) -&gt; Guess &#123;</span><br><span class="line">        <span class="keyword">if</span> value &lt; <span class="number">1</span> || value &gt; <span class="number">100</span> &#123;</span><br><span class="line">            <span class="built_in">panic!</span>(<span class="string">"Guess value must be between 1 and 100, got &#123;&#125;."</span>, value);</span><br><span class="line">        &#125;</span><br><span class="line">        Guess &#123; value &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">value</span></span>(&amp;<span class="keyword">self</span>) -&gt; <span class="built_in">i32</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.value</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+<p>输出结果说明有个一个测试被执行，结果为ok。总的测试结果也是Ok。通过<code>cargo test</code>指定具体函数名字，可以控制执行匹配字串的测试用例，也可以控制过滤不执行哪些测试用例。measure用来性能测试，目前只在每日编译版本中支持。</p>
+<p>rust可以编译程序api文档中的代码，<code>Doc-tests</code>就是文档中的代码执行测试用例</p>
+<h4 id="使用断言"><a href="#使用断言" class="headerlink" title="使用断言"></a>使用断言</h4><h3 id="Test-run"><a href="#Test-run" class="headerlink" title="Test run"></a>Test run</h3><h3 id="Test-Organization"><a href="#Test-Organization" class="headerlink" title="Test Organization"></a>Test Organization</h3>
       
     </div>
 
@@ -557,8 +510,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2024/01/14/rust/rust-smart-pointer/" rel="next" title="Rust Learning-Smart Pointers">
-                <i class="fa fa-chevron-left"></i> Rust Learning-Smart Pointers
+              <a href="/2024/02/23/program/parallelism-concurrent/" rel="next" title="并行与并发">
+                <i class="fa fa-chevron-left"></i> 并行与并发
               </a>
             
           </div>
@@ -566,10 +519,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2024/02/17/rust/rust-OOP/" rel="prev" title="Rust Learning-Object Oriented Programming">
-                Rust Learning-Object Oriented Programming <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -860,7 +809,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-Error-Handling"><span class="nav-number">1.</span> <span class="nav-text">RUST Error Handling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#错误处理"><span class="nav-number">1.1.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Panic"><span class="nav-number">1.2.</span> <span class="nav-text">Panic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Result"><span class="nav-number">1.3.</span> <span class="nav-text">Result</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#unwrap"><span class="nav-number">1.3.1.</span> <span class="nav-text">unwrap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#expect"><span class="nav-number">1.3.2.</span> <span class="nav-text">expect</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#传播错误"><span class="nav-number">1.3.3.</span> <span class="nav-text">传播错误</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Summary"><span class="nav-number">1.4.</span> <span class="nav-text">Summary</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-Test"><span class="nav-number">1.</span> <span class="nav-text">RUST Test</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Test-Function"><span class="nav-number">1.1.</span> <span class="nav-text">Test Function</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#简单测试例子"><span class="nav-number">1.1.1.</span> <span class="nav-text">简单测试例子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用断言"><span class="nav-number">1.1.2.</span> <span class="nav-text">使用断言</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Test-run"><span class="nav-number">1.2.</span> <span class="nav-text">Test run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Test-Organization"><span class="nav-number">1.3.</span> <span class="nav-text">Test Organization</span></a></li></ol></li></ol></div>
             
 
           </div>
