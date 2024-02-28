@@ -168,8 +168,155 @@ mod tests {
 Error: "result should be 4"
 ```
 
-
-
 ### Test run
 
+`cargo test --`后面的选项是给`cargot test`使用的，例如`cargo test --hlep`是列出`cargo test`的帮助信息
+
+#### 测试用例顺序执行
+
+当执行多个测试时，默认这些测试是并发执行的，这样执行的更快。使用`cargo test -- --test-threads=1`所有的测试都在一个线程中执行，不会因为并发导致互相影响结果
+
+#### 测试函数输出
+
+当测试pass时，在测试函数以及被测函数中的`println!()`都不会输出到标准输出，只有测试失败才会输出。
+
+`cargo test -- --show-output`可以在测试pass的时候，还能输出函数中的`println!()`
+
+#### 执行指定的测试函数
+
+`cargo test 测试函数名称`例如`cargo test it_not_work`就只执行`it_not_work`这个测试函数，其他的测试函数不执行。
+
+`cargo test 测试名称匹配字串`可以过滤执行多个测试函数，例如`cargo test work`表示执行所有名称中有`work`字串的测试函数。
+
+#### 忽略测试函数
+
+在测试函数名称前加上`#[ignore]`，就可以在默认执行`cargo test`把它忽略不执行，这对于非常耗时的测试用例非常有用。
+
+使用`cargo test -- --ignored`来只执行标注了ignore的测试函数。
+
+使用`cargo test -- --include-ignored`可以执行所有的测试函数。
+
+```rust
+#[test]
+#[ignore]
+fn long_time_work() {
+  assert_eq!(1, 1);
+}
+```
+
+默认`cargo test`执行时，会提示哪些函数被忽略了。
+
+```shell
+running 3 tests
+test tests::long_time_work ... ignored
+test tests::it_not_work ... ok
+test tests::it_works ... ok
+```
+
 ### Test Organization
+
+单元测试用来测试每一个模块内部的接口包括私有的接口
+
+集成测试是像外部应用使用库一样测试这个库的外部接口，它只测试公共接口，且同时可能测试多个模块。
+
+#### 单元测试
+
+单元测试的测试代码可以和被测的模块代码在同一个文件中。通过在测试模块前加`#[cfg(test)]`，告诉编译器只有执行`cargo test`的时候才会编译这个测试模块，这样发布的程序中就不会包含测试的代码。
+
+测试私有函数时对于C++应该很难实现，对于rust虽然测试模块是一个独立的作用域，通过测试模块中使用`use super::*`，这样测试模块里面就可以使用它所在的父模块的所有成员。
+
+```rust
+pub fn add_two(a: i32) -> i32 {
+    internal_adder(a, 2)
+}
+// 没有pub的私有模块函数
+fn internal_adder(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*; // 可以访问这个test模块的父模块的所有函数
+
+    #[test]
+    fn internal() {
+        assert_eq!(4, internal_adder(2, 2));
+    }
+}
+```
+
+#### 集成测试
+
+集成测试针库整体测试。
+
+##### 集成测试目录结构
+
+和`src`文件同级创建一个`tests`目录，cargo会把这个`tests`目录中的每一个`rs`文件作为一个独立的crate。这个目录中的文件只有在执行`cargo test`时候才会被编译执行。
+
+```rust
+plus
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    └── integration_test.rs
+```
+
+integration_test.rs中的内容如下，需要引用一下被测试的库。由于rust会自动把tests目录下的文件作为测试代码，所以不需要增加`#[cfg(test)]`和测试模块，每一个文件都是一个独立的测试模块了。
+
+```rust
+use plus;
+
+#[test]
+fn test_add() {
+    let result = plus::add(2, 2);
+    println!("The result is {}", result);
+    assert_eq!(result, 4);
+}
+```
+
+执行`cargo test`后，会先执行库代码中的单元测试，再执行外层的集成测试。如果单元测试有用例执行失败，就不会执行外部的集成测试。
+
+`cargo test --test integration_test`表示只执行文件名称为`integration_test`中的测试用例，库源代码中的单元测试也不会被执行。
+
+如果工程只是一个二进制程序类型，且只有`main.rs`，而没有`lib.rs`，那么就不能使用`tests`目录来创建集成测试，因为只有lib库类型的代码才会暴露模块接口给外部使用，而应用程序不会。一般一个项目会把逻辑和算法放在lib中，main中只是调用库的接口。
+
+##### 集成测试目录中使用公共子模块
+
+一些多个测试模块都要使用的公共方法可以放在`tests/common/mod.rs`文件中，这样编译器不会把mod.rs中的函数作为测试函数执行。
+
+```rust
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    ├── common
+    │   └── mod.rs
+    └── integration_test.rs
+```
+
+例如tests/common/mod.rs中定义了一个公共准备测试的函数
+
+```rust
+pub fn setup() {
+    println!("prepare for the test");
+}
+```
+在测试文件中就可以使用common这个模块
+```rust
+use plus;
+
+mod common;
+
+#[test]
+fn test_add() {
+    common::setup();
+    let result = plus::add(2, 2);
+    println!("The result is {}", result);
+    assert_eq!(result, 4);
+}
+```
+
+使用`cargo test --test integration_test -- --show-output`只执行这个集成测试文件，并把测试函数中的输出也打印出来。第一个`--test`是给`cargo test`的参数，后面的参数相当于是给这个测试程序的参数。 
