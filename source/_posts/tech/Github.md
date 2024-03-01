@@ -33,6 +33,14 @@ tags:
 
 `git remote rename newname oldname`更改一个remote repo的别名
 
+#### 本地的git仓库上传到github上
+
+本地默认的仓库是master，而github的默认仓库是main
+
+1. 本地先使用` git:(master) git branch -m master main`把master重命名为main
+2. 把远端的main先拉取下来` git:(main) git pull origin main --allow-unrelated-histories`，如果远端的main有更改，需要加`--allow-unrelated-histories`，否则会提示` fatal: refusing to merge unrelated histories `
+3. 执行` git:(main) git push -u origin main`把本地的更改同步到服务器上
+
 ### push
 
 `git push origin master`把本地的master分支发送到名为origin的远端repo，会在远端创建一个master分支
