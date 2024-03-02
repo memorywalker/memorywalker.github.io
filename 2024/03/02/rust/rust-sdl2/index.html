@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="RUST SDL2 Develop  Rust Programming by Example . Chapter 2-3-4  SDL2开发环境配置SDLSDL2的官方https://www.libsdl.org/下载最新库文件 https://github.com/libsdl-org/SDL/releases/tag/release-2.30.0 对于windows下载SDL2-devel-2">
+<meta name="keywords" content="learning,rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust SDL2 Develop">
+<meta property="og:url" content="http://memorywalker.github.io/2024/03/02/rust/rust-sdl2/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="RUST SDL2 Develop  Rust Programming by Example . Chapter 2-3-4  SDL2开发环境配置SDLSDL2的官方https://www.libsdl.org/下载最新库文件 https://github.com/libsdl-org/SDL/releases/tag/release-2.30.0 对于windows下载SDL2-devel-2">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2024/03/02/uploads/rust/sdl2_demo.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/sdl2_demo.png">
+<meta property="og:updated_time" content="2024-03-02T11:19:59.470Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust SDL2 Develop">
+<meta name="twitter:description" content="RUST SDL2 Develop  Rust Programming by Example . Chapter 2-3-4  SDL2开发环境配置SDLSDL2的官方https://www.libsdl.org/下载最新库文件 https://github.com/libsdl-org/SDL/releases/tag/release-2.30.0 对于windows下载SDL2-devel-2">
+<meta name="twitter:image" content="http://memorywalker.github.io/2024/03/02/uploads/rust/sdl2_demo.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2024/03/02/rust/rust-sdl2/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Rust SDL2 Develop | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/03/02/rust/rust-sdl2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust SDL2 Develop
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-03-02 15:42:49 / 修改时间：11:19:59" itemprop="dateCreated datePublished" datetime="2024-03-02T15:42:49+00:00">2024-03-02</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="RUST-SDL2-Develop"><a href="#RUST-SDL2-Develop" class="headerlink" title="RUST SDL2 Develop"></a>RUST SDL2 Develop</h2><blockquote>
+<p> Rust Programming by Example . Chapter 2-3-4</p>
+</blockquote>
+<h3 id="SDL2开发环境"><a href="#SDL2开发环境" class="headerlink" title="SDL2开发环境"></a>SDL2开发环境</h3><h4 id="配置SDL"><a href="#配置SDL" class="headerlink" title="配置SDL"></a>配置SDL</h4><p>SDL2的官方<a href="https://www.libsdl.org/下载最新库文件" target="_blank" rel="noopener">https://www.libsdl.org/下载最新库文件</a> <a href="https://github.com/libsdl-org/SDL/releases/tag/release-2.30.0" target="_blank" rel="noopener">https://github.com/libsdl-org/SDL/releases/tag/release-2.30.0</a></p>
+<p>对于windows下载<a href="https://github.com/libsdl-org/SDL/releases/download/release-2.30.0/SDL2-devel-2.30.0-VC.zip" target="_blank" rel="noopener">SDL2-devel-2.30.0-VC.zip</a></p>
+<p>SDL2库是由C语言实现的跨平台库，为了能在rust使用可以使用<a href="https://github.com/Rust-SDL2/rust-sdl2" target="_blank" rel="noopener">https://github.com/Rust-SDL2/rust-sdl2</a>. 这个rust对SDL2封装，就能直接使用rust语言来开发。</p>
+<p>安装<code>Rust-SDL2</code> <a href="https://github.com/Rust-SDL2/rust-sdl2" target="_blank" rel="noopener">https://github.com/Rust-SDL2/rust-sdl2</a>. 在页面有详细的不同平台安装流程，对于Window MSVC环境：</p>
+<ol>
+<li><p>把下载的SDL2-devel-2.30.0-VC.zip中<code>SDL2-2.30.0\lib\x64\</code>的所有文件拷贝到rustup的库目录中<code>.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\x86_64-pc-windows-msvc\lib\</code></p>
+</li>
+<li><p>使用<code>cargo new rtetris</code>创建一个工程名为<code>rtetris</code>的应用程序工程</p>
+</li>
+<li><p>工程的<code>Cargo.toml</code>文件中增加以下依赖代码</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">sdl2</span> = <span class="string">"0.36"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把<code>SDL2.dll</code>文件拷贝到rust开发工程的根目录（和<code>Cargo.toml</code>相同目录）</p>
+</li>
+</ol>
+<h4 id="语义化版本-semantic-version"><a href="#语义化版本-semantic-version" class="headerlink" title="语义化版本(semantic version)"></a>语义化版本(semantic version)</h4><p>Semantic Versioning的版本有三个部分<code>[major].[minor].[patch]</code></p>
+<p><strong>major</strong>: 重大修改且有不兼容的API变化</p>
+<p><strong>minor</strong>:增加新的功能，但不会破坏版本兼容性</p>
+<p><strong>patch</strong>: 修改bug的小更改</p>
+<h4 id="SDL特性设置"><a href="#SDL特性设置" class="headerlink" title="SDL特性设置"></a>SDL特性设置</h4><p>要使用sdl2的特性扩展，需要修改toml文件，不再使用之前的依赖写法，而针对sdl2单独写使用哪些特性</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dependencies.sdl2]</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">"0.36"</span></span><br><span class="line"><span class="attr">default-features</span> = <span class="literal">false</span></span><br><span class="line"><span class="attr">features</span> = [<span class="string">"image"</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="简单窗口程序"><a href="#简单窗口程序" class="headerlink" title="简单窗口程序"></a>简单窗口程序</h3><p>以下代码是一个简单的窗口程序，可以用测试程序是否可以正常编译</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">crate</span> sdl2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> sdl2::pixels::Color;</span><br><span class="line"><span class="keyword">use</span> sdl2::event::Event;</span><br><span class="line"><span class="keyword">use</span> sdl2::keyboard::Keycode;</span><br><span class="line"><span class="keyword">use</span> sdl2::rect::Rect;</span><br><span class="line"><span class="keyword">use</span> sdl2::render::&#123;Texture, TextureCreator&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::time::Duration;</span><br><span class="line"><span class="keyword">use</span> std::thread::sleep;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> TEXTURE_SIZE : <span class="built_in">u32</span> = <span class="number">32</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="comment">// 初始化sdl</span></span><br><span class="line">    <span class="keyword">let</span> sdl_context = sdl2::init().expect(<span class="string">"SDL Init failed"</span>);</span><br><span class="line">    <span class="comment">// 获取视频系统</span></span><br><span class="line">    <span class="keyword">let</span> video_subsystem = sdl_context.video().expect(<span class="string">"Couldn't get sdl video subsystem"</span>);</span><br><span class="line">    <span class="comment">// 获取窗口，并设置窗口的属性，整个屏幕居中，使用opengl渲染</span></span><br><span class="line">    <span class="keyword">let</span> window = video_subsystem.window(<span class="string">"rust-sdl2 demo: Video"</span>, <span class="number">800</span>, <span class="number">600</span>)</span><br><span class="line">                    .position_centered()</span><br><span class="line">                    .opengl()</span><br><span class="line">                    .build()</span><br><span class="line">                    .expect(<span class="string">"Failed to create window"</span>);</span><br><span class="line">    <span class="comment">// 获取窗口画布，支持垂直同步</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> canvas = window.into_canvas()</span><br><span class="line">                    .target_texture()</span><br><span class="line">                    .present_vsync()</span><br><span class="line">                    .build()</span><br><span class="line">                    .expect(<span class="string">"Failed to convert window into canvas"</span>);</span><br><span class="line">    <span class="comment">// 获取画布的纹理创建者</span></span><br><span class="line">    <span class="keyword">let</span> texture_creator: TextureCreator&lt;_&gt; = canvas.texture_creator();</span><br><span class="line">    <span class="comment">// 创建一个正方形纹理</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> square_texture: Texture = texture_creator.create_texture_target(<span class="literal">None</span>, TEXTURE_SIZE, TEXTURE_SIZE)</span><br><span class="line">                .expect(<span class="string">"Failed to create a texture"</span>);</span><br><span class="line">    <span class="comment">// 使用画布绘制纹理</span></span><br><span class="line">    canvas.with_texture_canvas(&amp;<span class="keyword">mut</span> square_texture, |texture| &#123;</span><br><span class="line">        texture.set_draw_color(Color::RGB(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>));</span><br><span class="line">        texture.clear(); <span class="comment">// 填充背景色</span></span><br><span class="line">    &#125;).expect(<span class="string">"Failed to color a texture"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事件句柄</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> event_pump = sdl_context.event_pump().expect(<span class="string">"Failed to get SDL event pump"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="symbol">'running</span>: <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="comment">// 事件处理循环</span></span><br><span class="line">        <span class="keyword">for</span> event <span class="keyword">in</span> event_pump.poll_iter() &#123;</span><br><span class="line">            <span class="keyword">match</span> event &#123;</span><br><span class="line">                Event::Quit &#123; .. &#125; | </span><br><span class="line">                Event::KeyDown &#123; keycode: <span class="literal">Some</span>(Keycode::Escape), ..&#125; =&gt; </span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">break</span> <span class="symbol">'running</span> <span class="comment">// 如果收到esc或关闭，退出这个事件循环</span></span><br><span class="line">                &#125;,</span><br><span class="line">                _=&gt; &#123;&#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 绘制窗口的背景色</span></span><br><span class="line">        canvas.set_draw_color(Color::RGB(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>));</span><br><span class="line">        canvas.clear();</span><br><span class="line">        <span class="comment">// 把纹理拷贝到窗口中的指定位置</span></span><br><span class="line">        canvas.copy(&amp;square_texture, <span class="literal">None</span>, Rect::new(<span class="number">0</span>, <span class="number">0</span>, TEXTURE_SIZE, TEXTURE_SIZE))</span><br><span class="line">                    .expect(<span class="string">"Failed to copy texture into window"</span>);</span><br><span class="line">        <span class="comment">// 更新窗口显示</span></span><br><span class="line">        canvas.present();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 每1秒60帧执行这个循环，所以要没1/60秒就sleep一下</span></span><br><span class="line">        sleep(Duration::new(<span class="number">0</span>, <span class="number">1_000_000_000u32</span>/<span class="number">60</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>cargo run</code>只会的程序如下</p>
+<p><img src="../../uploads/rust/sdl2_demo.png" alt="sdl2_demo"><br><img src="/uploads/rust/sdl2_demo.png" alt="sdl2_demo"></p>
+<h3 id="外部资源使用"><a href="#外部资源使用" class="headerlink" title="外部资源使用"></a>外部资源使用</h3><h4 id="图片资源"><a href="#图片资源" class="headerlink" title="图片资源"></a>图片资源</h4><h5 id="配置SDL的Image扩展库"><a href="#配置SDL的Image扩展库" class="headerlink" title="配置SDL的Image扩展库"></a>配置SDL的Image扩展库</h5><p>SDL的图片插件地址为<a href="https://github.com/libsdl-org/SDL_image" target="_blank" rel="noopener">https://github.com/libsdl-org/SDL_image</a></p>
+<p>把下载的<a href="https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.2/SDL2_image-devel-2.8.2-VC.zip" target="_blank" rel="noopener">SDL2_image-devel-2.8.2-VC.zip</a>和SDL库一样配置。把其中的x64目录中的所有库文件放在rustup的库目录，把动态库文件也在工程目录中放一份。</p>
+<h5 id="图片加载代码"><a href="#图片加载代码" class="headerlink" title="图片加载代码"></a>图片加载代码</h5><p>书中代码编译不过，参考<a href="https://github.com/Rust-SDL2/rust-sdl2/blob/master/examples/image-demo.rs例子调整引用和初始化" target="_blank" rel="noopener">https://github.com/Rust-SDL2/rust-sdl2/blob/master/examples/image-demo.rs例子调整引用和初始化</a></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> sdl2::image::&#123;LoadTexture, InitFlag&#125;;</span><br><span class="line"><span class="comment">// 初始化图像上下文</span></span><br><span class="line"><span class="keyword">let</span> _image_context = sdl2::image::init(InitFlag::PNG | InitFlag::JPG).expect(<span class="string">"Failed to initialize the image context"</span>);</span><br><span class="line"><span class="comment">// 创建一个图像纹理用来显示    </span></span><br><span class="line"><span class="keyword">let</span> image_texture = texture_creator.load_texture(<span class="string">"res/images/flower.jpeg"</span>).expect(<span class="string">"Failed to load image"</span>);</span><br><span class="line">...</span><br><span class="line"><span class="comment">// 把图像纹理拷贝到窗口中</span></span><br><span class="line">canvas.copy(&amp;image_texture, <span class="literal">None</span>, <span class="literal">None</span>).expect(<span class="string">"Failed to copy image to window"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>其中图片资源放在工程根目录的<code>/res/images/</code>目录下</p>
+<h4 id="读写文件"><a href="#读写文件" class="headerlink" title="读写文件"></a>读写文件</h4><p>新建一个score_file.rs文件用来存取分数和行数。迭代器的next()在collect()调用的时候才会被执行。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::&#123;<span class="keyword">self</span>, Read, Write&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">write_into_file</span></span>(content: &amp;<span class="built_in">str</span>, file_name: &amp;<span class="built_in">str</span>) -&gt; io::<span class="built_in">Result</span>&lt;()&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> f = File::create(file_name)?;</span><br><span class="line">    f.write_all(content.as_bytes())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read_from_file</span></span>(file_name: &amp;<span class="built_in">str</span>) -&gt; io::<span class="built_in">Result</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> f = File::open(file_name)?;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> content = <span class="built_in">String</span>::new();</span><br><span class="line">    f.read_to_string(&amp;<span class="keyword">mut</span> content)?;</span><br><span class="line">    <span class="literal">Ok</span>(content)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 把数组中的每一个值转换为string类型，最后再把Vec&lt;String&gt;的每一个string用空格连接起来</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">slice_to_string</span></span>(slice: &amp;[<span class="built_in">u32</span>]) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">    slice.iter().map(|highscores| highscores.to_string())</span><br><span class="line">                        .collect::&lt;<span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;&gt;().join(<span class="string">" "</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 文件有两行，第一行存储分数列表，第二行存储函数列表</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">save_highscores_and_lines</span></span>(highscores: &amp;[<span class="built_in">u32</span>], number_of_lines: &amp;[<span class="built_in">u32</span>]) -&gt; <span class="built_in">bool</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> s_highscores = slice_to_string(highscores);</span><br><span class="line">    <span class="keyword">let</span> s_num_of_lines = slice_to_string(number_of_lines);</span><br><span class="line">    write_into_file(<span class="built_in">format!</span>(<span class="string">"&#123;&#125;\n&#123;&#125;\n"</span>, s_highscores, s_num_of_lines).as_str(),<span class="string">"save.txt"</span>).is_ok()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 把一行文本中的字符用空格分割，并将每一个字串转换为u32类型的数字，最后返回一个vec</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">line_to_slice</span></span>(line: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">u32</span>&gt; &#123;</span><br><span class="line">    line.split(<span class="string">" "</span>).filter_map(</span><br><span class="line">        |nb| nb.parse::&lt;<span class="built_in">u32</span>&gt;().ok())</span><br><span class="line">        .collect()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 分别读取两行文本，并把每一行的文本解析成数字的vec</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">load_highscores_and_lines</span></span>() -&gt; <span class="built_in">Option</span>&lt;(<span class="built_in">Vec</span>&lt;<span class="built_in">u32</span>&gt;, <span class="built_in">Vec</span>&lt;<span class="built_in">u32</span>&gt;)&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Ok</span>(constent) = read_from_file(<span class="string">"save.txt"</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> lines = constent.splitn(<span class="number">2</span>, <span class="string">"\n"</span>).map(</span><br><span class="line">            |line| line_to_slice(line)).collect::&lt;<span class="built_in">Vec</span>&lt;_&gt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> lines.len() == <span class="number">2</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> (number_lines, highscores) = (lines.pop().unwrap(), lines.pop().unwrap());</span><br><span class="line">            <span class="literal">Some</span>((highscores, number_lines))</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="literal">None</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="literal">None</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在main.rs文件中</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mod</span> score_file;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> scores:[<span class="built_in">u32</span>; <span class="number">2</span>] = [<span class="number">10</span>, <span class="number">20</span>];</span><br><span class="line">    <span class="keyword">let</span> lines: [<span class="built_in">u32</span>; <span class="number">2</span>] = [<span class="number">500</span>,<span class="number">600</span>];</span><br><span class="line">    score_file::save_highscores_and_lines(&amp;scores, &amp;lines);</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(values) = score_file::load_highscores_and_lines() &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"scores:&#123;:?&#125;, lines:&#123;:?&#125;"</span>, values.<span class="number">0</span>, values.<span class="number">1</span>); <span class="comment">// scores:[10, 20], lines:[500]</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"None data"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/learning/" rel="tag"># learning</a>
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/02/25/rust/rust-test/" rel="next" title="Rust Learning-Test">
+                <i class="fa fa-chevron-left"></i> Rust Learning-Test
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-SDL2-Develop"><span class="nav-number">1.</span> <span class="nav-text">RUST SDL2 Develop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SDL2开发环境"><span class="nav-number">1.1.</span> <span class="nav-text">SDL2开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置SDL"><span class="nav-number">1.1.1.</span> <span class="nav-text">配置SDL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语义化版本-semantic-version"><span class="nav-number">1.1.2.</span> <span class="nav-text">语义化版本(semantic version)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SDL特性设置"><span class="nav-number">1.1.3.</span> <span class="nav-text">SDL特性设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单窗口程序"><span class="nav-number">1.2.</span> <span class="nav-text">简单窗口程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部资源使用"><span class="nav-number">1.3.</span> <span class="nav-text">外部资源使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#图片资源"><span class="nav-number">1.3.1.</span> <span class="nav-text">图片资源</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#配置SDL的Image扩展库"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">配置SDL的Image扩展库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#图片加载代码"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">图片加载代码</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读写文件"><span class="nav-number">1.3.2.</span> <span class="nav-text">读写文件</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
