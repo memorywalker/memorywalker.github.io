@@ -13,6 +13,12 @@ tags:
 
 当多人合作时，可以每个人各自创建一个分支，每个分支都有明确的名称，做完自己的开发后，合并到一起
 
+#### 加速下载
+
+在下载的地址前加上前缀https://ghproxy.com/，例如下载SDL2的image库
+
+https://ghproxy.com/https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.2/SDL2_image-devel-2.8.2-VC.zip
+
 ### 远程仓库
 
 远端仓库是存在远端服务器或PC上的git仓库，可以使用URL或文件系统的路径来访问一个远程仓库
