@@ -255,6 +255,17 @@ http://ghproxy.com/https://github.com/libsdl-org/SDL_ttf/releases/download/relea
 
 同其他功能一样把`SDL2_ttf.dll`拷贝到rustup的lib目录和当前工程目录。把下载的字体文件放在工程的`/res/font/xxx.ttf`
 
+##### 添加工程依赖
+
+```toml
+[dependencies.sdl2]
+version = "0.36"
+default-features = false
+features = ["image", "ttf"]
+```
+
+
+
 ##### 加载字体
 
 ```rust
