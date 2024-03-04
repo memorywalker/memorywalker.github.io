@@ -70,7 +70,14 @@ rustup的安装程序会自动下载每一个组件，并在最后把cargo的bin
 
 #### 配置rust库的安装源
 
-在` $CARGO_HOME` 目录下新建一个config文件，内容如下
+windows系统添加以下两个环境变量可以使用国内的镜像站更新rustup
+
+```shell
+RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+```
+
+Cargo下载依赖库的镜像配置，在` $CARGO_HOME` 目录下新建一个config文件，内容如下
 
 ```ini
 [source.crates-io]
@@ -86,15 +93,19 @@ registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
 
 ### 交叉编译
 
-
+rust种使用的编译平台的命名规则`<arch><sub>-<vendor>-<sys>-<env>`，例如`x86_64-unknown-linux-gnu` `x86_64-pc-windows-msvc` `armv7-linux-androideabi`
 
 1. 安装目标库
 
    `rustup target add armv7-unknown-linux-gnueabi`
 
+   `rustup target add aarch64-unknown-linux-gnu` 
+
    安装后的库目录为
 
    `.\rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\armv7-unknown-linux-gnueabi`
+
+   使用`rustup show`可以看到当前安装过的环境
 
 2. 配置目标的链接器
 
@@ -102,5 +113,5 @@ registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
 
 3. 交叉编译
 
-   `cargo build --target=`armv7-unknown-linux-gnueabi`
+   `cargo build --target=armv7-unknown-linux-gnueabi`
 
