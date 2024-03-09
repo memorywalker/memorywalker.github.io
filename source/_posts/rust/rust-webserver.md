@@ -117,8 +117,6 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-
-
 ### 使用线程池处理多个请求
 
 每当有一个新任务时，可以从线程池中取出一个线程执行这个任务。线程池中通过一个队列处理所有收到的请求，它最多并发执行线程池大小的任务。使用线程池是最简单的方案，还可以有`fork/join模型`,`单线程的异步IO`以及`多线程的异步IO`。
@@ -227,3 +225,74 @@ let thread = thread::spawn(move || {
 ```
 
 如果使用了while，receiver.lock()的声明周期在while循环体这一次的执行完成后，才能释放，也就是锁也会在job()执行完成后才能释放，导致其他线程在这个job没有执行完前都不能获取锁，也就不能同通道中获取新的任务信息，其实就没有多线程执行的效果了，因为其他线程获取`receiver.lock().unwrap().recv()`这个操作被正在执行任务的这个线程的lock阻塞了。而使用let的方式，=右边的表达式在let执行完后，就会被释放了，锁的释放在执行Job之前，所以如果job耗时也不会影响其他线程拿锁。
+
+### 释放线程资源
+
+当程序执行不需要线程池时，可以通过让线程池实现`Drop`trait来释放资源，结束线程。
+
+工作线程中的线程闭包函数是一个死循环，因此需要跳出那个循环结束线程执行。线程函数中通过channel接收信号，因此可以通过在外部把sender释放，来断开通道，这样线程函数就能捕获到错误消息，从而跳出循环。释放sender时，需要把sender从ThreadPool取出来，如果它是ThreadPool的成员，因为drop的参数`&mut self`拿了ThreadPool的可变引用，所以不能直接获取sender的引用，使用Option可以把sender包一下，通过take取出。
+
+Option的take()方法可以把其中的值拿出去，并换一个None在里面，这样原来的Option对象并没有改变。例如
+
+```rust
+let mut x = Some(2);
+let y = x.take();    //x由some(2)变成none
+assert_eq!(x, None);
+assert_eq!(y, Some(2));
+```
+
+ThreadPool 重新调整后
+
+```rust
+pub struct ThreadPool {
+    // thread::spawn的返回值是JoinHandle<T>
+    workers: Vec<Worker>,
+    sender: Option<mpsc::Sender<Job>>,
+}
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+        // 断开channel从而让线程循环函数结束
+        drop(self.sender.take());
+        // 等待每一个正在执行的线程执行完成
+        for worker in &mut self.workers {
+            println!("Shutdown worker {}", worker.id);
+            if let Some(thread) = worker.thread.take() {
+                thread.join().unwrap();
+            }
+        }
+    }
+}
+```
+
+由于线程的join函数需要获取线程对象thread的所有权，而thread已经是一个可变引用的成员了。这时可以通过把thread改为一个Option<>类型，通过Option的take()函数获取其中的Some变量并留下None，这样外部就可以调用`thread.join()`。需要同步修改Worker的thread成员为Option类型，并修改对应的new方法。
+
+```rust
+struct Worker {
+    id: usize,
+    // thread::spawn的返回值是JoinHandle<T>
+    thread: Option<thread::JoinHandle<()>>,
+}
+
+impl Worker {
+    fn new(id:usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+        let thread = thread::spawn(move || 
+        loop {
+            // 循环一直等待接收任务，recv是一个阻塞调用，当它收到新的消息后，才会继续执行
+            let message = receiver.lock().unwrap().recv();
+            match message {
+                Ok(job) => {
+                    println!("Worker {id} got a job; executing.");
+                    // 执行闭包
+                    job();
+                }
+                Err(_) => {
+                    println!("Worker {id} shutdown.");
+                    break;
+                }
+            }            
+        });
+        Worker { id, thread:Some(thread) }
+    }
+}
+```
+
