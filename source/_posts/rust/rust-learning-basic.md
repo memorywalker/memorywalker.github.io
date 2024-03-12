@@ -86,6 +86,22 @@ rand = "0.8.5"
 
 如果修改了toml的配置文件，执行build时，就会下载最新的库文件。
 
+##### 依赖库离线打包
+
+在工程设置好cargo.toml文件后，在工程的根目录执行`cargo vendor`，可以把当前工程的依赖库下载到工程根目录下的vendor目录中。
+
+在工程的根目录中新建`.cargo`目录，并在其中新建`config`配置文件，配置以下内容让工程使用指定目录的依赖库程序
+
+```toml
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "vendor"
+```
+
+把当前工程的整个目录拷贝到其他不能联网的机器，就会使用下载好的依赖库文件，同时也可以提高编译效率，不用每次都重新下载依赖库了。
+
 ##### 文档
 
 执行`cargo doc --open`可以构建本地依赖库的文档，并在浏览器中打开
