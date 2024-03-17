@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="RUST Network - Tun一直想了解加速器的工作原理，看到很多都会提到普通的代理只能提供Tcp的代理，而游戏是走UDP的，一般用Tap设备虚拟网卡和修改路由表的方式来转发游戏的数据到加速服务器 网络协议开发时经常提到：  二层协议指数据链路层，主要是以太协议，物理链路算是第一层 三层协议就是指网络层，主要是IP协议 四层协议是指传输层，主要是TCP和UDP协议 应用层协议就是一般的应用程">
+<meta name="keywords" content="learning,rust,Network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How Time Flies">
+<meta property="og:url" content="http://memorywalker.github.io/2024/03/17/rust/rust-network-tun/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="RUST Network - Tun一直想了解加速器的工作原理，看到很多都会提到普通的代理只能提供Tcp的代理，而游戏是走UDP的，一般用Tap设备虚拟网卡和修改路由表的方式来转发游戏的数据到加速服务器 网络协议开发时经常提到：  二层协议指数据链路层，主要是以太协议，物理链路算是第一层 三层协议就是指网络层，主要是IP协议 四层协议是指传输层，主要是TCP和UDP协议 应用层协议就是一般的应用程">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2024/03/17/uploads/rust/tun_network.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/tun_network.png">
+<meta property="og:image" content="http://memorywalker.github.io/2024/03/17/uploads/rust/icmp_packet.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/rust/icmp_packet.png">
+<meta property="og:updated_time" content="2024-03-17T18:03:47.515Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How Time Flies">
+<meta name="twitter:description" content="RUST Network - Tun一直想了解加速器的工作原理，看到很多都会提到普通的代理只能提供Tcp的代理，而游戏是走UDP的，一般用Tap设备虚拟网卡和修改路由表的方式来转发游戏的数据到加速服务器 网络协议开发时经常提到：  二层协议指数据链路层，主要是以太协议，物理链路算是第一层 三层协议就是指网络层，主要是IP协议 四层协议是指传输层，主要是TCP和UDP协议 应用层协议就是一般的应用程">
+<meta name="twitter:image" content="http://memorywalker.github.io/2024/03/17/uploads/rust/tun_network.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2024/03/17/rust/rust-network-tun/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/03/17/rust/rust-network-tun/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-03-17 21:32:49 / 修改时间：18:03:47" itemprop="dateCreated datePublished" datetime="2024-03-17T21:32:49+00:00">2024-03-17</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="RUST-Network-Tun"><a href="#RUST-Network-Tun" class="headerlink" title="RUST Network - Tun"></a>RUST Network - Tun</h2><p>一直想了解加速器的工作原理，看到很多都会提到普通的代理只能提供Tcp的代理，而游戏是走UDP的，一般用Tap设备虚拟网卡和修改路由表的方式来转发游戏的数据到加速服务器</p>
+<h3 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h3><p>开发时经常提到：</p>
+<ul>
+<li>二层协议指数据链路层，主要是以太协议，物理链路算是第一层</li>
+<li>三层协议就是指网络层，主要是IP协议</li>
+<li>四层协议是指传输层，主要是TCP和UDP协议</li>
+<li>应用层协议就是一般的应用程序基于TCP或UDP实现的特殊应用功能的协议</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>层次</th>
+<th>作用和协议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Layer 5</td>
+<td><strong>应用层</strong>application layer</td>
+<td>例如<a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">HTTP</a>、<a href="https://zh.wikipedia.org/wiki/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">FTP</a>、<a href="https://zh.wikipedia.org/wiki/DNS" target="_blank" rel="noopener">DNS</a>（如<a href="https://zh.wikipedia.org/wiki/%E8%BE%B9%E7%95%8C%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">BGP</a>和<a href="https://zh.wikipedia.org/wiki/%E8%B7%AF%E7%94%B1%E4%BF%A1%E6%81%AF%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">RIP</a>这样的路由协议，尽管由于各种各样的原因它们分别运行在TCP和UDP上，仍然可以将它们看作网络层的一部分）</td>
+</tr>
+<tr>
+<td>Layer 4</td>
+<td><strong>传输层</strong>transport layer</td>
+<td>例如<a href="https://zh.wikipedia.org/wiki/%E4%BC%A0%E8%BE%93%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">TCP</a>、<a href="https://zh.wikipedia.org/wiki/%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E6%8A%A5%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">UDP</a>、<a href="https://zh.wikipedia.org/wiki/RTP" target="_blank" rel="noopener">RTP</a>、<a href="https://zh.wikipedia.org/wiki/SCTP" target="_blank" rel="noopener">SCTP</a>（如<a href="https://zh.wikipedia.org/wiki/OSPF" target="_blank" rel="noopener">OSPF</a>这样的路由协议，尽管运行在IP上也可以看作是网络层的一部分）</td>
+</tr>
+<tr>
+<td>Layer 3</td>
+<td><strong>网络互连层</strong>internet layer</td>
+<td>对于TCP/IP来说这是<a href="https://zh.wikipedia.org/wiki/%E5%9B%A0%E7%89%B9%E7%BD%91%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">因特网协议</a>（IP）（如<a href="https://zh.wikipedia.org/wiki/%E4%BA%92%E8%81%94%E7%BD%91%E6%8E%A7%E5%88%B6%E6%B6%88%E6%81%AF%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">ICMP</a>和<a href="https://zh.wikipedia.org/wiki/%E5%9B%A0%E7%89%B9%E7%BD%91%E7%BB%84%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">IGMP</a>这样的必须协议尽管运行在IP上，也仍然可以看作是网络互连层的一部分；<a href="https://zh.wikipedia.org/wiki/%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">ARP</a>不运行在IP上）</td>
+</tr>
+<tr>
+<td>Layer 2</td>
+<td><strong>网络链路层</strong>Network Access(link) layer</td>
+<td>例如<a href="https://zh.wikipedia.org/wiki/%E4%BB%A5%E5%A4%AA%E7%BD%91" target="_blank" rel="noopener">以太网</a>、<a href="https://zh.wikipedia.org/wiki/Wi-Fi" target="_blank" rel="noopener">Wi-Fi</a>、<a href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%8D%8F%E8%AE%AE%E6%A0%87%E7%AD%BE%E4%BA%A4%E6%8D%A2" target="_blank" rel="noopener">MPLS</a>等。</td>
+</tr>
+</tbody></table>
+<p>低层协议头包在高层协议外层，例如收到到数据为</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[链路层以太协议包头][IP包头][TCP包头][应用协议包头][应用数据]</span><br></pre></td></tr></table></figure>
+
+<h4 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h4><p><a href="https://datatracker.ietf.org/doc/html/rfc793" target="_blank" rel="noopener">RFC793</a> 定义了TCP的详细内容</p>
+<p>TCP协议头</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">TCP Header Format( Note that one tick mark represents one bit position)</span><br><span class="line">   0                   1                   2                   3</span><br><span class="line">   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">  |          Source Port          |       Destination Port        |</span><br><span class="line">  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">  |                        Sequence Number                        |</span><br><span class="line">  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">  |                    Acknowledgment Number                      |</span><br><span class="line">  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">  |  Data |           |U|A|P|R|S|F|                               |</span><br><span class="line">  | Offset| Reserved  |R|C|S|S|Y|I|            Window             |</span><br><span class="line">  |       |           |G|K|H|T|N|N|                               |</span><br><span class="line">  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">  |           Checksum            |         Urgent Pointer        |</span><br><span class="line">  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">  |                    Options                    |    Padding    |</span><br><span class="line">  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">  |                             data                              |</span><br><span class="line">  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<h4 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h4><p><a href="https://datatracker.ietf.org/doc/html/rfc768" target="_blank" rel="noopener">RFC768</a>定义了UDP协议，很短一份文档</p>
+<p>UDP包头</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> 0      7 8     15 16    23 24    31</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|     Source      |   Destination   |</span><br><span class="line">|      Port       |      Port       |</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|                 |                 |</span><br><span class="line">|     Length      |    Checksum     |</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|</span><br><span class="line">|          data octets ...</span><br><span class="line">+---------------- ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="IP"><a href="#IP" class="headerlink" title="IP"></a>IP</h4><p>IP协议分为IPv4 <a href="https://datatracker.ietf.org/doc/html/rfc791" target="_blank" rel="noopener">RFC791</a> 和IPv6 <a href="https://datatracker.ietf.org/doc/html/rfc8200" target="_blank" rel="noopener">RFC8200</a> </p>
+<p>IPv4包头为20字节</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|Version|  IHL  |Type of Service|          Total Length         |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|         Identification        |Flags|      Fragment Offset    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|  Time to Live |    Protocol   |         Header Checksum       |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                       Source Address                          |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Destination Address                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Options                    |    Padding    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<h4 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h4><p><a href="https://datatracker.ietf.org/doc/html/rfc792" target="_blank" rel="noopener">RFC 792</a>定义了ICMP</p>
+<p>ping命令的协议格式如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Echo or Echo Reply Message</span><br><span class="line">    0                   1                   2                   3</span><br><span class="line">    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">   |     Type      |     Code      |          Checksum             |</span><br><span class="line">   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">   |           Identifier          |        Sequence Number        |</span><br><span class="line">   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">   |     Data ...</span><br><span class="line">   +-+-+-+-+-</span><br></pre></td></tr></table></figure>
+
+<h3 id="Raw-Packet编程"><a href="#Raw-Packet编程" class="headerlink" title="Raw Packet编程"></a>Raw Packet编程</h3><h4 id="Socket"><a href="#Socket" class="headerlink" title="Socket"></a>Socket</h4><p>网络应用程序通信时会使用socket来建立主机间的点对点连接，<a href="https://datatracker.ietf.org/doc/html/rfc3493" target="_blank" rel="noopener">RFC3493</a> 对它有一些扩展描述。一般可以认为socket是在传输层和应用层之间的会话层，因为它建立了两个设备之间会话连接。普通的应用程序使用socket编程时，会设置socket的类型为<code>SOCK_STREAM</code>表示TCP数据传输或<code>SOCK_DGRAM</code>表示UDP数据传输。当然对于抓包应用程序，还可以设置类型为<code>SOCK_RAW</code>，这样获取到数据不会被内核的TCP/IP协议栈处理掉对应的TCP或IP的包头。socket编程学习可以参考<a href="https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/Sockets.html" target="_blank" rel="noopener">https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/Sockets.html</a></p>
+<p>一般应用程序不会使用raw类型的socket，因为原始包中的TCP或IP包头没有被处理，就需要应用程序来处理这些包头，这些不是应用程序关心的协议，所以很少会用<code>SOCK_RAW</code>类型。</p>
+<p>如果是为了学习网络协议，特别是底层协议，就需要获取到网卡传给内核的原始数据包。由于应用程序在用户空间无法获取到内核空间的数据，应用程序拿到的网络数据一般（除了<code>SOCK_RAW</code>）都是经过内核的协议栈处理过的TCP或UDP协议上的数据，这些数据的TCP或UDP的包头已经被内核处理掉了，应用直接拿到的就是数据而不包括协议头。</p>
+<h3 id="虚拟网络设备"><a href="#虚拟网络设备" class="headerlink" title="虚拟网络设备"></a>虚拟网络设备</h3><p>linux类的系统中提供了<a href="https://www.kernel.org/doc/html/v5.8/networking/tuntap.html" target="_blank" rel="noopener">Tap/Tun</a>虚拟网卡设备，它可以在<strong>用户空间</strong>接收和传输原始数据包，可以看作是一个简单的从物理介质上收发数据的点对点或以太设备。</p>
+<p><img src="../../uploads/rust/tun_network.png" alt="tun_network"><br><img src="/uploads/rust/tun_network.png" alt="tun_network"></p>
+<p>使用虚拟网卡的基本步骤：</p>
+<ol>
+<li>创建虚拟网卡设备，一般网卡名称为Tap0或Tun0</li>
+<li>给虚拟网卡配置ip地址，掩码，网关信息，可能还需要路由信息，让指定ip的访问都通过这个网卡传输</li>
+<li>网络应用程序中打开这个虚拟网卡，得到对应的设备描述符，通过描述符读写数据</li>
+<li>例如主机A的浏览器需要从服务器B下载文件，但是主机A不能直接访问到服务器B，通过配置路由表，让对服务器B的访问都通过虚拟网卡Tun0传输，此时浏览器像B地址的请求，内核会发送给虚拟网卡Tun0</li>
+<li>网络应用程序收到内核给Tun0发来的IP数据包，并将IP数据包数据包加密压缩处理后发送给代理服务器P</li>
+<li>代理服务器P收到数据包，解压解密后，向服务器B发送请求，并得到B的应答</li>
+<li>代理服务器P将服务器B的应答压缩加密后，发送回网络应用程序</li>
+<li>网络应用程序通过Tun0网卡把解压和解密后数据发送给浏览器</li>
+</ol>
+<p>整个过程中内核会把tun0当作真实的物理网卡</p>
+<h4 id="Tap和Tun区别"><a href="#Tap和Tun区别" class="headerlink" title="Tap和Tun区别"></a>Tap和Tun区别</h4><p>Tap工作在2层网络，它的数据包从以太帧开始</p>
+<p>Tun工作在3层网络，它的数据包从IP包开始</p>
+<p>因此，如果想要自己实现TCP或UDP协议，使用tun就足够了，如果想实现ARP协议，需要Tap设备，参看<a href="https://www.cnblogs.com/kaleidopink/p/13961730.html" target="_blank" rel="noopener">编写网络协议栈之Ethernet &amp; ARP Protocol</a></p>
+<h4 id="wintun"><a href="#wintun" class="headerlink" title="wintun"></a>wintun</h4><p>linux内核默认支持了tun/tap虚拟网卡，windows可以通过wintun来创建tun网卡。</p>
+<p><a href="https://www.wintun.net/" target="_blank" rel="noopener">wintun</a>是WireGuard软件中使用的为windows内核实现的tun虚拟网卡设备，使用方法和linux的tun相同。</p>
+<h4 id="rust使用wintun"><a href="#rust使用wintun" class="headerlink" title="rust使用wintun"></a>rust使用wintun</h4><p>crate <a href="https://github.com/nulldotblack/wintun" target="_blank" rel="noopener">wintun</a> 是对wintun动态库的rust封装，项目中有使用这个crate的例子程序</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">wintun</span> = <span class="string">"0.4.0"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="ICMP-by-Rust"><a href="#ICMP-by-Rust" class="headerlink" title="ICMP by Rust"></a>ICMP by Rust</h3><p>ICMP虽然和IP在同一层，但是它也是由IP包头里面打包的。ping命令就是ICMP的一个重要功能。</p>
+<p><code>[IP Header][ICMP Header][ICMP Data]</code></p>
+<p>通过使用socket的<code>SOCK_RAW</code>类型也可以实现ping命令，参看<a href="https://www.cnblogs.com/kaleidopink/p/12589362.html" target="_blank" rel="noopener">Linux下实现ping程序</a>。</p>
+<p>为了学习tun和rust参考<a href="https://dev.to/xphoniex/i-implementing-icmp-in-rust-296o" target="_blank" rel="noopener">Implementing ICMP in Rust</a>和<a href="https://github.com/pysrc/study-udp" target="_blank" rel="noopener">study-udp</a> 来实现ICMP的ping命令应答。</p>
+<p>下图为<code>ping -4 www.baidu.com</code>执行后的数据包，可以看到IP包包头20字节，ICMP的 Echo包共40字节</p>
+<p><img src="../../uploads/rust/icmp_packet.png" alt="icmp_packet"><br><img src="/uploads/rust/icmp_packet.png" alt="icmp_packet"></p>
+<p>工程依赖使用wintun和etherparse，后者用来解析ip包</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">wintun</span> = <span class="string">"0.4.0"</span></span><br><span class="line"><span class="attr">etherparse</span> = <span class="string">"0.13.0"</span></span><br></pre></td></tr></table></figure>
+
+<p>下载wintun的压缩包，解压后wintun目录放在项目的根目录中</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::sync::&#123;atomic::&#123;AtomicBool, Ordering&#125;, Arc&#125;;</span><br><span class="line"><span class="comment">// 根据平台获取dll位置</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">get_wintun_bin_relative_path</span></span>() -&gt; <span class="built_in">Result</span>&lt;std::path::PathBuf, <span class="built_in">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> dll_path = <span class="keyword">if</span> <span class="built_in">cfg!</span>(target_arch = <span class="string">"x86"</span>) &#123;</span><br><span class="line">        <span class="string">"wintun/bin/x86/wintun.dll"</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="built_in">cfg!</span>(target_arch = <span class="string">"x86_64"</span>) &#123;</span><br><span class="line">        <span class="string">"wintun/bin/amd64/wintun.dll"</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="built_in">cfg!</span>(target_arch = <span class="string">"arm"</span>) &#123;</span><br><span class="line">        <span class="string">"wintun/bin/arm/wintun.dll"</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="built_in">cfg!</span>(target_arch = <span class="string">"aarch64"</span>) &#123;</span><br><span class="line">        <span class="string">"wintun/bin/arm64/wintun.dll"</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">Err</span>(<span class="string">"Unsupported architecture"</span>.into());</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="literal">Ok</span>(dll_path.into())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化Tun网适配器</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">init_tun_nic</span></span>() -&gt; Arc&lt;wintun::Adapter&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> dll_path = get_wintun_bin_relative_path().unwrap();</span><br><span class="line">    <span class="keyword">let</span> wintun = <span class="keyword">unsafe</span> &#123; wintun::load_from_path(dll_path).expect(<span class="string">"load dll failed"</span>) &#125;;</span><br><span class="line">	<span class="comment">// 打开虚拟网卡</span></span><br><span class="line">    <span class="keyword">let</span> adapter = <span class="keyword">match</span> wintun::Adapter::open(&amp;wintun, <span class="string">"NetProto"</span>) &#123;</span><br><span class="line">        <span class="literal">Ok</span>(a) =&gt; a,</span><br><span class="line">        <span class="literal">Err</span>(_) =&gt; wintun::Adapter::create(&amp;wintun, <span class="string">"NetProto"</span>, <span class="string">"Work"</span>, <span class="literal">None</span>).expect(<span class="string">"Create tun adapter failed"</span>),</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> version = wintun::get_running_driver_version(&amp;wintun).unwrap();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Using wintun version: &#123;:?&#125;"</span>, version);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// set the address for the tun nic</span></span><br><span class="line">    <span class="keyword">let</span> index = adapter.get_adapter_index().unwrap();</span><br><span class="line">    <span class="keyword">let</span> set_metric = <span class="built_in">format!</span>(<span class="string">"netsh interface ip set interface &#123;&#125; metric=255"</span>, index);</span><br><span class="line">    <span class="keyword">let</span> set_gateway = <span class="built_in">format!</span>(</span><br><span class="line">        <span class="string">"netsh interface ip set address &#123;&#125; static 172.250.68.50/24 gateway=172.250.68.1"</span>, index);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125;"</span>, set_gateway);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加路由表，让172.250.68.50/24子网下的流量都走172.250.68.1虚拟网卡</span></span><br><span class="line">    <span class="keyword">let</span> set_route = <span class="built_in">format!</span>(<span class="string">"netsh interface ip add route 172.250.68.50/24 &#123;&#125; 172.250.68.1"</span>,  index);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// execute the command</span></span><br><span class="line">    std::process::Command::new(<span class="string">"cmd"</span>)</span><br><span class="line">        .arg(<span class="string">"/C"</span>)</span><br><span class="line">        .arg(set_metric)</span><br><span class="line">        .output()</span><br><span class="line">        .unwrap();</span><br><span class="line">    std::process::Command::new(<span class="string">"cmd"</span>)</span><br><span class="line">        .arg(<span class="string">"/C"</span>)</span><br><span class="line">        .arg(set_gateway)</span><br><span class="line">        .output()</span><br><span class="line">        .unwrap();</span><br><span class="line">    <span class="comment">// 执行添加路由命令</span></span><br><span class="line">    std::process::Command::new(<span class="string">"cmd"</span>)</span><br><span class="line">        .arg(<span class="string">"/C"</span>)</span><br><span class="line">        .arg(set_route)</span><br><span class="line">        .output()</span><br><span class="line">        .unwrap();</span><br><span class="line"></span><br><span class="line">    adapter    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 计算校验和</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">calculate_checksum</span></span>(data: &amp;<span class="keyword">mut</span> [<span class="built_in">u8</span>]) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> f = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> chk: <span class="built_in">u32</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> f + <span class="number">2</span> &lt;= data.len() &#123;</span><br><span class="line">        chk += <span class="built_in">u16</span>::from_le_bytes(data[f..f+<span class="number">2</span>].try_into().unwrap()) <span class="keyword">as</span> <span class="built_in">u32</span>;        </span><br><span class="line">        f += <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//chk &amp;= 0xffffffff; // unneccesary</span></span><br><span class="line">    <span class="keyword">while</span> chk &gt; <span class="number">0xffff</span> &#123;</span><br><span class="line">        chk = (chk &amp; <span class="number">0xffff</span>) + (chk &gt;&gt; <span class="number">2</span>*<span class="number">8</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> chk = chk <span class="keyword">as</span> <span class="built_in">u16</span>;</span><br><span class="line">    chk = !chk &amp; <span class="number">0xffff</span>;</span><br><span class="line">    <span class="comment">// endianness</span></span><br><span class="line">    <span class="comment">//chk = chk &gt;&gt; 8 | ((chk &amp; 0xff) &lt;&lt; 8);</span></span><br><span class="line">    data[<span class="number">3</span>] = (chk &gt;&gt; <span class="number">8</span>) <span class="keyword">as</span> <span class="built_in">u8</span>;</span><br><span class="line">    data[<span class="number">2</span>] = (chk &amp; <span class="number">0xff</span>) <span class="keyword">as</span> <span class="built_in">u8</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ICMP_ECHO_REQUEST : <span class="built_in">u8</span> = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">const</span> ICMP_ECHO_REPLY   : <span class="built_in">u8</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ICMP数据包</span></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">ICMPPacket</span></span> &lt;<span class="symbol">'a</span>&gt; &#123;</span><br><span class="line">    ip: etherparse::Ipv4Header,</span><br><span class="line">    icmp_id: <span class="built_in">u16</span>,</span><br><span class="line">    seq_no: <span class="built_in">u16</span>,</span><br><span class="line">    data: &amp;<span class="symbol">'a</span> [<span class="built_in">u8</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;<span class="symbol">'a</span>&gt; ICMPPacket &lt;<span class="symbol">'a</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">start</span></span>(iph: etherparse::Ipv4HeaderSlice, data: &amp;<span class="symbol">'a</span> [<span class="built_in">u8</span>]) -&gt; std::io::<span class="built_in">Result</span>&lt;<span class="built_in">Option</span>&lt;<span class="keyword">Self</span>&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> packet = ICMPPacket &#123;</span><br><span class="line">            ip: etherparse::Ipv4Header::new(</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                <span class="number">64</span>,</span><br><span class="line">                etherparse::IpNumber::Icmp <span class="keyword">as</span> <span class="built_in">u8</span>,</span><br><span class="line">                [ <span class="comment">// 应答的源和目的地址要对调</span></span><br><span class="line">                    iph.destination()[<span class="number">0</span>],</span><br><span class="line">                    iph.destination()[<span class="number">1</span>],</span><br><span class="line">                    iph.destination()[<span class="number">2</span>],</span><br><span class="line">                    iph.destination()[<span class="number">3</span>],</span><br><span class="line">                ],</span><br><span class="line">                [</span><br><span class="line">                    iph.source()[<span class="number">0</span>],</span><br><span class="line">                    iph.source()[<span class="number">1</span>],</span><br><span class="line">                    iph.source()[<span class="number">2</span>],</span><br><span class="line">                    iph.source()[<span class="number">3</span>],</span><br><span class="line">                ],</span><br><span class="line">            ),</span><br><span class="line">            icmp_id: <span class="built_in">u16</span>::from_be_bytes(data[<span class="number">4</span>..<span class="number">6</span>].try_into().unwrap()),</span><br><span class="line">            seq_no: <span class="built_in">u16</span>::from_be_bytes(data[<span class="number">6</span>..<span class="number">8</span>].try_into().unwrap()),</span><br><span class="line">            data: data,</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="literal">Ok</span>(<span class="literal">Some</span>(packet))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">build_response</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, buf: &amp;<span class="keyword">mut</span> [<span class="built_in">u8</span>]) -&gt; std::io::<span class="built_in">Result</span>&lt;<span class="built_in">usize</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">use</span> std::io::Write;</span><br><span class="line">        <span class="comment">// IP header</span></span><br><span class="line">        <span class="keyword">self</span>.ip.set_payload_len(<span class="keyword">self</span>.data.len());        </span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> unwritten = &amp;<span class="keyword">mut</span> buf[..];</span><br><span class="line">        <span class="keyword">self</span>.ip.write(&amp;<span class="keyword">mut</span> unwritten);</span><br><span class="line">        <span class="comment">// 实际测试，IP头20字节，ICMP头8字节，数据32字节，共40字节</span></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> icmp_reply = [<span class="number">0u8</span>; <span class="number">40</span>];</span><br><span class="line">        icmp_reply[<span class="number">0</span>] = ICMP_ECHO_REPLY;                                <span class="comment">// type</span></span><br><span class="line">        icmp_reply[<span class="number">1</span>] = <span class="number">0</span>;			                        <span class="comment">// code - always 0?</span></span><br><span class="line"></span><br><span class="line">        icmp_reply[<span class="number">2</span>] = <span class="number">0x00</span>;                                           <span class="comment">// checksum = 2 &amp; 3, empty for now </span></span><br><span class="line">        icmp_reply[<span class="number">3</span>] = <span class="number">0x00</span>;                                           <span class="comment">// </span></span><br><span class="line">        icmp_reply[<span class="number">4</span>] = ((<span class="keyword">self</span>.icmp_id &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xff</span>) <span class="keyword">as</span> <span class="built_in">u8</span>;             <span class="comment">// id = 4 &amp; 5 </span></span><br><span class="line">        icmp_reply[<span class="number">5</span>] = (<span class="keyword">self</span>.icmp_id &amp; <span class="number">0xff</span>) <span class="keyword">as</span> <span class="built_in">u8</span>;</span><br><span class="line">        icmp_reply[<span class="number">6</span>] = ((<span class="keyword">self</span>.seq_no &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xff</span>) <span class="keyword">as</span> <span class="built_in">u8</span>;              <span class="comment">// seq_no = 6 &amp; 7</span></span><br><span class="line">        icmp_reply[<span class="number">7</span>] = (<span class="keyword">self</span>.seq_no &amp; <span class="number">0xff</span>) <span class="keyword">as</span> <span class="built_in">u8</span>;</span><br><span class="line">        icmp_reply[<span class="number">8</span>..<span class="keyword">self</span>.data.len()].clone_from_slice(&amp;<span class="keyword">self</span>.data[<span class="number">8</span>..]);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// finally we substitute the checksum </span></span><br><span class="line">        calculate_checksum(&amp;<span class="keyword">mut</span> icmp_reply);</span><br><span class="line">        unwritten.write(&amp;icmp_reply);</span><br><span class="line">        <span class="literal">Ok</span>(unwritten.len())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> RUNNING: AtomicBool = AtomicBool::new(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main_loop</span></span>(adapter: Arc&lt;wintun::Adapter&gt;) &#123;</span><br><span class="line">    <span class="keyword">let</span> session = Arc::new(adapter.start_session(wintun::MAX_RING_CAPACITY).expect(<span class="string">"new session failed"</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> reader_session = session.clone();</span><br><span class="line">    <span class="keyword">let</span> writer_session = session.clone();  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> reader = std::thread::spawn(<span class="keyword">move</span> || &#123;</span><br><span class="line">        <span class="keyword">while</span> RUNNING.load(Ordering::Relaxed) &#123;</span><br><span class="line">            <span class="keyword">let</span> packet = reader_session.receive_blocking();</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Err</span>(err) = packet &#123;</span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">"Error reading packet: &#123;:?&#125;"</span>, err);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">let</span> packet = packet?;</span><br><span class="line">            <span class="keyword">let</span> bytes = packet.bytes();</span><br><span class="line">            <span class="keyword">let</span> len = bytes.len();</span><br><span class="line">            <span class="keyword">match</span> etherparse::Ipv4HeaderSlice::from_slice(&amp;bytes[..len]) &#123;</span><br><span class="line">                <span class="literal">Ok</span>(iph) =&gt; &#123;</span><br><span class="line">                    <span class="keyword">let</span> src = iph.source_addr();</span><br><span class="line">                    <span class="keyword">let</span> dst = iph.destination_addr();</span><br><span class="line">                    <span class="keyword">let</span> proto = iph.protocol();</span><br><span class="line">                    <span class="comment">// 只处理ICMP</span></span><br><span class="line">                    <span class="keyword">if</span> proto != etherparse::IpNumber::Icmp <span class="keyword">as</span> <span class="built_in">u8</span> &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="built_in">println!</span>(<span class="string">"Read packet size &#123;&#125; bytes. Source: &#123;:?&#125;, Destination: &#123;:?&#125;, Protocol: &#123;:?&#125;"</span>, len, src, dst, proto);</span><br><span class="line">                    <span class="keyword">let</span> data = &amp;bytes[<span class="number">0</span>..];</span><br><span class="line">                    <span class="keyword">let</span> hex_string = data.iter().map(|byte| <span class="built_in">format!</span>(<span class="string">"&#123;:02x&#125;"</span>, byte)).collect::&lt;<span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;&gt;().join(<span class="string">" "</span>);</span><br><span class="line">                    <span class="built_in">println!</span>(<span class="string">"Read packet size &#123;&#125; bytes. Header data: &#123;:?&#125;"</span>, len, hex_string);</span><br><span class="line">                    <span class="comment">//Read packet size 60 bytes. Header data: "45 00 00 3c b3 be 00 00 80 01 a4 77 ac fa 44 32 ac fa 44 64 08 00 4b 4d 00 01 02 0e 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 </span></span><br><span class="line">                    <span class="comment">//75 76 77 61 62 63 64 65 66 67 68 69" </span></span><br><span class="line">                    <span class="keyword">let</span> iph_len = iph.slice().len() <span class="keyword">as</span> <span class="built_in">u16</span>;                   </span><br><span class="line">                    <span class="built_in">println!</span>(<span class="string">"ip header len: &#123;&#125;"</span>, iph_len); <span class="comment">//ip header len: 20</span></span><br><span class="line">                    <span class="keyword">let</span> data_buf = &amp;bytes[iph.slice().len()..len];</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 应答数据</span></span><br><span class="line">                    <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(<span class="keyword">mut</span> packet) = ICMPPacket::start(</span><br><span class="line">                        iph,</span><br><span class="line">                        data_buf,<span class="comment">// ping要求原包应答</span></span><br><span class="line">                    ).unwrap() &#123;</span><br><span class="line">                        <span class="keyword">let</span> resp_len = iph_len + data_buf.len() <span class="keyword">as</span> <span class="built_in">u16</span>;</span><br><span class="line">                        <span class="keyword">let</span> <span class="keyword">mut</span> write_pack = writer_session.allocate_send_packet(resp_len).unwrap();</span><br><span class="line">                        <span class="keyword">let</span> <span class="keyword">mut</span> buf = write_pack.bytes_mut();</span><br><span class="line">                        packet.build_response(&amp;<span class="keyword">mut</span> buf).unwrap();</span><br><span class="line">                        writer_session.send_packet(write_pack);</span><br><span class="line">                        <span class="built_in">println!</span>(<span class="string">"responded to type# &#123;&#125; packet from &#123;&#125; data len &#123;&#125;"</span>, proto, src, resp_len);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="literal">Err</span>(e) =&gt; &#123;</span><br><span class="line">                    <span class="comment">// 其他网络包 ignoring weird packet Ipv4UnexpectedVersion(6)</span></span><br><span class="line">                    <span class="comment">//eprintln!("ignoring weird packet &#123;:?&#125;", e);</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;            </span><br><span class="line">        &#125;</span><br><span class="line">        Ok::&lt;(), wintun::Error&gt;(())</span><br><span class="line">    &#125;);    </span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Press enter to stop session"</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> line = <span class="built_in">String</span>::new();</span><br><span class="line">    <span class="keyword">let</span> _ = std::io::stdin().read_line(&amp;<span class="keyword">mut</span> line);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Shutting down session"</span>);</span><br><span class="line"></span><br><span class="line">    RUNNING.store(<span class="literal">false</span>, Ordering::Relaxed);</span><br><span class="line">    session.shutdown().unwrap();</span><br><span class="line">    <span class="keyword">let</span> _ = reader.join().map_err(|err| wintun::Error::from(<span class="built_in">format!</span>(<span class="string">"&#123;:?&#125;"</span>, err))).unwrap();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Shutdown complete"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> adapter = init_tun_nic();</span><br><span class="line">    main_loop(adapter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/learning/" rel="tag"># learning</a>
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/Network/" rel="tag"># Network</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/03/09/rust/rust-webserver/" rel="next" title="Rust Web Server">
+                <i class="fa fa-chevron-left"></i> Rust Web Server
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">49</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-Network-Tun"><span class="nav-number">1.</span> <span class="nav-text">RUST Network - Tun</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络协议"><span class="nav-number">1.1.</span> <span class="nav-text">网络协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP"><span class="nav-number">1.1.1.</span> <span class="nav-text">TCP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UDP"><span class="nav-number">1.1.2.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP"><span class="nav-number">1.1.3.</span> <span class="nav-text">IP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ICMP"><span class="nav-number">1.1.4.</span> <span class="nav-text">ICMP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raw-Packet编程"><span class="nav-number">1.2.</span> <span class="nav-text">Raw Packet编程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Socket"><span class="nav-number">1.2.1.</span> <span class="nav-text">Socket</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟网络设备"><span class="nav-number">1.3.</span> <span class="nav-text">虚拟网络设备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Tap和Tun区别"><span class="nav-number">1.3.1.</span> <span class="nav-text">Tap和Tun区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wintun"><span class="nav-number">1.3.2.</span> <span class="nav-text">wintun</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rust使用wintun"><span class="nav-number">1.3.3.</span> <span class="nav-text">rust使用wintun</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMP-by-Rust"><span class="nav-number">1.4.</span> <span class="nav-text">ICMP by Rust</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
