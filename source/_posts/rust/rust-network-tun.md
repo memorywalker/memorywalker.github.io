@@ -204,7 +204,7 @@ wintun = "0.4.0"
 etherparse = "0.13.0"
 ```
 
-下载wintun的压缩包，解压后wintun目录放在项目的根目录中
+下载wintun的压缩包，解压后wintun目录放在项目的根目录中。程序运行后，执行`ping 172.250.68.100`就可以看到收到的数据包和应答。**如果`ping`虚拟网卡自己的ip则不会收到包**。
 
 ```rust
 use std::sync::{atomic::{AtomicBool, Ordering}, Arc};
