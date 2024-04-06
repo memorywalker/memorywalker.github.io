@@ -94,22 +94,26 @@
 
 
 
-  <meta name="description" content="C++并发编程-内存模型 C++ Concurrency in Action 2nd Chapter-5 内存模型只有了解了对象在内存中的布局方式，才能理解锁，互斥量这些的工作原理 对象在内存中的布局对象是一块内存区域，同时它还有一些属性，例如类型和生命周期。例如int类型的变量就是占用4字节连续内存的整型对象。 内存位置：无论什么样的类型都会存储在一个确定的位置上。标量类型或一段bit fiel">
+  <meta name="description" content="C++并发编程-内存模型 C++ Concurrency in Action 2nd Chapter-5 书的这一章讲解有点粗略 内存模型只有了解了对象在内存中的布局方式，才能理解锁，互斥量这些的工作原理 对象在内存中的布局对象是一块内存区域，同时它还有一些属性，例如类型和生命周期。例如int类型的变量就是占用4字节连续内存的整型对象。 内存位置：无论什么样的类型都会存储在一个确定的位置上。标量类">
 <meta name="keywords" content="c++,多线程,并行">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++并发编程-内存模型">
 <meta property="og:url" content="http://memorywalker.github.io/2024/04/05/cpp/cpp-concurrency/index.html">
 <meta property="og:site_name" content="How Time Flies">
-<meta property="og:description" content="C++并发编程-内存模型 C++ Concurrency in Action 2nd Chapter-5 内存模型只有了解了对象在内存中的布局方式，才能理解锁，互斥量这些的工作原理 对象在内存中的布局对象是一块内存区域，同时它还有一些属性，例如类型和生命周期。例如int类型的变量就是占用4字节连续内存的整型对象。 内存位置：无论什么样的类型都会存储在一个确定的位置上。标量类型或一段bit fiel">
+<meta property="og:description" content="C++并发编程-内存模型 C++ Concurrency in Action 2nd Chapter-5 书的这一章讲解有点粗略 内存模型只有了解了对象在内存中的布局方式，才能理解锁，互斥量这些的工作原理 对象在内存中的布局对象是一块内存区域，同时它还有一些属性，例如类型和生命周期。例如int类型的变量就是占用4字节连续内存的整型对象。 内存位置：无论什么样的类型都会存储在一个确定的位置上。标量类">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://memorywalker.github.io/2024/04/05/uploads/c++/struct_memory_model.png">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/c++/struct_memory_model.png">
 <meta property="og:image" content="http://memorywalker.github.io/2024/04/05/uploads/c++/struct_memory_model_vs2019_x64.png">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/c++/struct_memory_model_vs2019_x64.png">
-<meta property="og:updated_time" content="2024-04-05T10:54:22.675Z">
+<meta property="og:image" content="http://memorywalker.github.io/2024/04/05/uploads/c++/Dekker_alg.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/c++/Dekker_alg.png">
+<meta property="og:image" content="http://memorywalker.github.io/2024/04/05/uploads/c++/cpu_buffer.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/c++/cpu_buffer.png">
+<meta property="og:updated_time" content="2024-04-06T04:14:29.016Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++并发编程-内存模型">
-<meta name="twitter:description" content="C++并发编程-内存模型 C++ Concurrency in Action 2nd Chapter-5 内存模型只有了解了对象在内存中的布局方式，才能理解锁，互斥量这些的工作原理 对象在内存中的布局对象是一块内存区域，同时它还有一些属性，例如类型和生命周期。例如int类型的变量就是占用4字节连续内存的整型对象。 内存位置：无论什么样的类型都会存储在一个确定的位置上。标量类型或一段bit fiel">
+<meta name="twitter:description" content="C++并发编程-内存模型 C++ Concurrency in Action 2nd Chapter-5 书的这一章讲解有点粗略 内存模型只有了解了对象在内存中的布局方式，才能理解锁，互斥量这些的工作原理 对象在内存中的布局对象是一块内存区域，同时它还有一些属性，例如类型和生命周期。例如int类型的变量就是占用4字节连续内存的整型对象。 内存位置：无论什么样的类型都会存储在一个确定的位置上。标量类">
 <meta name="twitter:image" content="http://memorywalker.github.io/2024/04/05/uploads/c++/struct_memory_model.png">
 
 
@@ -399,12 +403,24 @@
                 
               
 
-              <time title="创建时间：2024-04-05 14:25:49 / 修改时间：10:54:22" itemprop="dateCreated datePublished" datetime="2024-04-05T14:25:49+00:00">2024-04-05</time>
+              <time title="创建时间：2024-04-05 14:25:49" itemprop="dateCreated datePublished" datetime="2024-04-05T14:25:49+00:00">2024-04-05</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2024-04-06 04:14:29" itemprop="dateModified" datetime="2024-04-06T04:14:29+00:00">2024-04-06</time>
               
             
           </span>
@@ -456,7 +472,7 @@
       
 
       
-        <h2 id="C-并发编程-内存模型"><a href="#C-并发编程-内存模型" class="headerlink" title="C++并发编程-内存模型"></a>C++并发编程-内存模型</h2><p> C++ Concurrency in Action 2nd <strong>Chapter-5</strong></p>
+        <h2 id="C-并发编程-内存模型"><a href="#C-并发编程-内存模型" class="headerlink" title="C++并发编程-内存模型"></a>C++并发编程-内存模型</h2><p> C++ Concurrency in Action 2nd <strong>Chapter-5</strong> 书的这一章讲解有点粗略</p>
 <h3 id="内存模型"><a href="#内存模型" class="headerlink" title="内存模型"></a>内存模型</h3><p>只有了解了对象在内存中的布局方式，才能理解锁，互斥量这些的工作原理</p>
 <h4 id="对象在内存中的布局"><a href="#对象在内存中的布局" class="headerlink" title="对象在内存中的布局"></a>对象在内存中的布局</h4><p>对象是一块内存区域，同时它还有一些属性，例如类型和生命周期。例如int类型的变量就是占用4字节连续内存的整型对象。</p>
 <p><strong>内存位置</strong>：无论什么样的类型都会存储在一个确定的位置上。<strong>标量类型</strong>或一段<strong>bit field</strong>类型都有自己的内存位置。虽然一个结构中的相邻bit field是不同的子对象，但是他们都在同一个内存位置上。</p>
@@ -475,7 +491,38 @@
 <p>上面的例子中代码在vs2019 64位程序中的地址，8个字节对齐，第一行是第一个成员i的内存位置。第三行是bf1和bf2的内存位置。最后一段是string类型的内存位置共40字节。</p>
 <p><img src="../../uploads/c++/struct_memory_model_vs2019_x64.png" alt="struct_memory_model_vs2019_x64"><br><img src="/uploads/c++/struct_memory_model_vs2019_x64.png" alt="struct_memory_model_vs2019_x64"></p>
 <h4 id="多线程访问内存位置"><a href="#多线程访问内存位置" class="headerlink" title="多线程访问内存位置"></a>多线程访问内存位置</h4><p>多个线程访问不同的内存位置是没有问题的。多个线程都是读取同一个内存位置，也没有问题。如果两个线程访问同一个内存地址没有强制的顺序，且其中一个或两个访问都不是原子的，并且其中一个或两个都是写操作，那么这就是数据竞争，会导致未定义的行为。</p>
-<h4 id="并发修改对象内存"><a href="#并发修改对象内存" class="headerlink" title="并发修改对象内存"></a>并发修改对象内存</h4><h3 id="原子操作和类型"><a href="#原子操作和类型" class="headerlink" title="原子操作和类型"></a>原子操作和类型</h3><h3 id="同步操作"><a href="#同步操作" class="headerlink" title="同步操作"></a>同步操作</h3>
+<h4 id="并发修改对象内存"><a href="#并发修改对象内存" class="headerlink" title="并发修改对象内存"></a>并发修改对象内存</h4><h3 id="原子操作和类型"><a href="#原子操作和类型" class="headerlink" title="原子操作和类型"></a>原子操作和类型</h3><h3 id="同步操作"><a href="#同步操作" class="headerlink" title="同步操作"></a>同步操作</h3><h3 id="Atomic-Weapons-The-C-Memory-Model-and-Modern-Hardware"><a href="#Atomic-Weapons-The-C-Memory-Model-and-Modern-Hardware" class="headerlink" title="Atomic Weapons: The C++ Memory Model and Modern Hardware"></a>Atomic Weapons: The C++ Memory Model and Modern Hardware</h3><p>Herb Sutter在cppcon上讲的 <a href="https://herbsutter.com/2013/02/11/atomic-weapons-the-c-memory-model-and-modern-hardware/" target="_blank" rel="noopener">atomic Weapons: The C++ Memory Model and Modern Hardware</a> 非常值得一看，B站有搬运 <a href="https://www.bilibili.com/video/BV1DL41117rr/" target="_blank" rel="noopener">C++ and Beyond 2012: Herb Sutter - atomic Weapons</a> 演讲对应的slide的 <a href="https://1drv.ms/b/s!Aq0V7yDPsIZOgcI0y2P8R-VifbnTtw" target="_blank" rel="noopener">link</a></p>
+<h4 id="程序是否如你所写一样执行？"><a href="#程序是否如你所写一样执行？" class="headerlink" title="程序是否如你所写一样执行？"></a>程序是否如你所写一样执行？</h4><p><strong>Sequential consistency(SC)</strong> 程序的执行如代码所写的顺序。</p>
+<p><strong>Race condition</strong> 一个内存位置被多个线程访问，并且至少有一个线程会写这个内存位置</p>
+<p>我们都希望自己的程序按编写的顺序执行，但是处理器(prefetch, speculation, overlap writes, HTM )，缓存(store buffers, private shared caches)，以及编译器(subexpr elimination, reg allocation, STM)看到我们的程序，为了提高执行效率会有它的优化。</p>
+<p><strong>Sequential consistency for data race free programs (SC-DRF)</strong> 只要程序中没有数据竞争的情况，硬件就能保证按代码编写的顺序执行。 这个原则就像是硬件和软件程序之间的协议。</p>
+<h5 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h5><p>CPU的速度比内存的速度快太多，所以它有多级缓存用来提高程序的执行效率，当CPU执行完一个计算后，会先把这个数据放入缓存中，立即执行后续的指令，对于单线程的程序没有问题，但是多线程的程序，可能出现实际的执行和预期不一致的情况。</p>
+<p>例如两个线程中，分别有一个标记变量用来标识自己是否进入了关键区，当一个线程进入关键区时，先设置自己的标记，<strong>然后</strong>检查对方是否已经在关键区了，如果没有，就执行自己的代码。</p>
+<p><img src="../../uploads/c++/Dekker_alg.png" alt="Dekker_alg"><br><img src="/uploads/c++/Dekker_alg.png" alt="Dekker_alg"></p>
+<p>这里特别强调了然后这个词，因为cpu在执行完给flag1赋值，会先把这个值送给缓存，因为内存操作太慢，它还可以执行其他事情，例如执行判断flag2是否被设置了。如果执行线程2的另一个处理器和它有相同的操作，此时flag2的值可能写入也可能没有写入内存中，这样这个条件就可能true也可能false，程序的顺序就不一致了。</p>
+<p><img src="../../uploads/c++/cpu_buffer.png" alt="cpu_buffer"><br><img src="/uploads/c++/cpu_buffer.png" alt="cpu_buffer"></p>
+<h5 id="编译器"><a href="#编译器" class="headerlink" title="编译器"></a>编译器</h5><p>对于单线程情况下，很多编译器的优化都没有问题，因为最终执行的结果都是相同的。</p>
+<p>例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">1</span>;</span><br><span class="line">y = <span class="string">"universe"</span>;</span><br><span class="line">x = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>因为x在被赋值2之前没有被使用，所以可以被优化为</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y = <span class="string">"universe"</span>;</span><br><span class="line">x = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>以下循环语句</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; count; i++)</span><br><span class="line">&#123;</span><br><span class="line">    z += <span class="built_in">array</span>[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>局部变量z可以通过使用寄存器变量，减少内存访问次数，在循环结束后，再给z赋值</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">r1 = z;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; count; i++)</span><br><span class="line">&#123;</span><br><span class="line">    r1 += <span class="built_in">array</span>[i];</span><br><span class="line">&#125;</span><br><span class="line">z = r1;</span><br></pre></td></tr></table></figure>
+
+<p>再例如由于代码执行的上下文，z变量可能之前刚被使用过，所以编译器可以先执行z的赋值</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="string">"life"</span>;</span><br><span class="line">y = <span class="string">"universe"</span>;</span><br><span class="line">z = <span class="string">"everything"</span>;</span><br><span class="line"><span class="comment">// 改为按以下顺序执行</span></span><br><span class="line">z = <span class="string">"everything"</span>;</span><br><span class="line">x = <span class="string">"life"</span>;</span><br><span class="line">y = <span class="string">"universe"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>循环语句的优化会调整循环遍历的行和列的顺序</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; rows; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> j = <span class="number">0</span>; j &lt; cols; j++)</span><br><span class="line">        a[j*rows + i] += <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为了提高执行效率会被优化为，这里j*row的执行次数会少</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">size_t</span> j = <span class="number">0</span>; j &lt; cols; j++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; rows; i++)    </span><br><span class="line">        a[j*rows + i] += <span class="number">42</span>;</span><br></pre></td></tr></table></figure>
+
+<p>编译器只知道一个线程中内存位置的操作和变量的别名，它不知道哪些内存位置是可变的共享变量，这些共享变量可能被其他线程异步更改。所以需要我们告诉它哪些内存位置是可变的共享变量，例如使用mutex。</p>
+<p>##### </p>
+<h5 id="数据竞争"><a href="#数据竞争" class="headerlink" title="数据竞争"></a>数据竞争</h5>
       
     </div>
 
@@ -835,7 +882,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#C-并发编程-内存模型"><span class="nav-number">1.</span> <span class="nav-text">C++并发编程-内存模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存模型"><span class="nav-number">1.1.</span> <span class="nav-text">内存模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象在内存中的布局"><span class="nav-number">1.1.1.</span> <span class="nav-text">对象在内存中的布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多线程访问内存位置"><span class="nav-number">1.1.2.</span> <span class="nav-text">多线程访问内存位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#并发修改对象内存"><span class="nav-number">1.1.3.</span> <span class="nav-text">并发修改对象内存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原子操作和类型"><span class="nav-number">1.2.</span> <span class="nav-text">原子操作和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步操作"><span class="nav-number">1.3.</span> <span class="nav-text">同步操作</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#C-并发编程-内存模型"><span class="nav-number">1.</span> <span class="nav-text">C++并发编程-内存模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存模型"><span class="nav-number">1.1.</span> <span class="nav-text">内存模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象在内存中的布局"><span class="nav-number">1.1.1.</span> <span class="nav-text">对象在内存中的布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多线程访问内存位置"><span class="nav-number">1.1.2.</span> <span class="nav-text">多线程访问内存位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#并发修改对象内存"><span class="nav-number">1.1.3.</span> <span class="nav-text">并发修改对象内存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原子操作和类型"><span class="nav-number">1.2.</span> <span class="nav-text">原子操作和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步操作"><span class="nav-number">1.3.</span> <span class="nav-text">同步操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Atomic-Weapons-The-C-Memory-Model-and-Modern-Hardware"><span class="nav-number">1.4.</span> <span class="nav-text">Atomic Weapons: The C++ Memory Model and Modern Hardware</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#程序是否如你所写一样执行？"><span class="nav-number">1.4.1.</span> <span class="nav-text">程序是否如你所写一样执行？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#硬件"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">硬件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#编译器"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">编译器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据竞争"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">数据竞争</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
