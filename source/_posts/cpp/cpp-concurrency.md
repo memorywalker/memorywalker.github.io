@@ -73,9 +73,72 @@ data.s = "hello";
 
 多个线程访问不同的内存位置是没有问题的。多个线程都是读取同一个内存位置，也没有问题。如果两个线程访问同一个内存地址没有强制的顺序，且其中一个或两个访问都不是原子的，并且其中一个或两个都是写操作，那么这就是数据竞争，会导致未定义的行为。
 
-#### 并发修改对象内存
+#### 修改对象顺序
+
+书里写了一堆很绕的话。
+
+每一个对象从它被初始化开始，都会有一个明确的各个线程修改它的顺序。程序的每次执行顺序可能都不同，但是在一次运行内，所有的线程都必须遵循这个顺序。如果数据类型不是原子类型，需要使用同步机制确保所有线程都遵循相同的顺序更改变量，否则就是数据竞争，会产生未定义行为。
+
+
 
 ### 原子操作和类型
+
+原子操作是不可再分的操作，不会看到这个操作只执行了一半的情况。要么做了，要么没做。
+
+如果一个读取一个对象值的操作是原子的，所有对这个对象的修改也是原子的，那么都操作就能获取到这个对象修改后的值，而不是中间过程的随机值。
+
+例如对一个整数执行++操作就不是原子的。
+
+```c++
+int g = 0;
+void add(int num) {
+    g++;
+}
+```
+
+对应的汇编中执行了3步才完成，cpu可能在第3步前进行了线程切换，如果这时有其他线程把全局变量或内存变量g的值改为100了，等cpu恢复这个线程栈时，eax的值还是1，再执行第3步，又会把g的值改为1，而不是100。导致另一个线程的更改无效。
+
+```asm
+add(int):
+        push    rbp
+        mov     rbp, rsp
+        mov     DWORD PTR [rbp-4], edi
+        mov     eax, DWORD PTR g[rip] // 1. 把g的值放入eax
+        add     eax, 1                // 2. eax值增加1
+        mov     DWORD PTR g[rip], eax // 3. 把eax中的值给变量g
+        nop
+        pop     rbp
+        ret
+```
+
+可以在这个网站实时生成汇编代码https://godbolt.org/。
+
+使用atomic类型后
+
+```c++
+std::atomic<int> g(5);
+void add(int num) {
+    g++;
+}
+```
+
+对应的汇编中对g的修改没有中间的拷贝到寄存器的过程，直接修改了值
+
+```asm
+add(int):
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     DWORD PTR [rbp-4], edi
+        mov     esi, 0
+        mov     edi, OFFSET FLAT:g  // 把g的地址写入edi
+        call    std::__atomic_base<int>::operator++(int) // 修改值在一步完成，要么没改，要么改了
+        nop
+        leave
+        ret
+```
+
+
 
 ### 同步操作
 
@@ -173,6 +236,47 @@ for (size_t j = 0; j < cols; j++)
 
 编译器只知道一个线程中内存位置的操作和变量的别名，它不知道哪些内存位置是可变的共享变量，这些共享变量可能被其他线程异步更改。所以需要我们告诉它哪些内存位置是可变的共享变量，例如使用mutex。
 
-##### 
+##### 事务
+
+原子性：全部发生或没有发生，没有中间状态
+
+一致性：读取出来的数据都是一致的
+
+独立性：在同一个数据上其他事务也正确
+
+##### 关键区
+
+```c++
+// mutex
+{ lock_guard<mutex> hold(mut_x); // enter critical region (lock “acquire”)
+	… read/write x …
+}// exit critical region (lock “release”)
+
+// Orderd atomics
+while( whose_turn != me ) { } // enter critical region (atomic read “acquires” value)
+… read/write x …
+whose_turn = someone_else; // exit critical region (atomic write “release”)
+```
+
+lock acquire 和 lock release之间是关键区，关键区中的代码不能移出关键区，例如对x的读写不能移到保护的外面。
+
+```c++
+x = "life"
+mut.lock(); // lock “acquire”
+y = "universe";
+mut.unlock(); // lock “release”
+z = "everything";
+
+// 可以把x和z的语句移入关键区
+mut.lock(); // lock “acquire”
+z = "everything";
+y = "universe";
+x = "life"
+mut.unlock(); // lock “release”
+```
+
+但是不能把x放在关键区release之后，不能把z放在关键区acquire之前。另一个线程获取到锁后，访问y的时候可能会依赖于x已经被赋值了，同理z也不能移到关键区之前。
+
+所以关键区形成了一个单向的屏障。A release store makes its prior accesses visible to a thread preforming an acquire load that sees that store.
 
 ##### 数据竞争
