@@ -11,17 +11,19 @@ tags:
 
 ## C++并发编程-内存模型
 
- C++ Concurrency in Action 2nd **Chapter-5** 书的这一章讲解有点粗略
+ C++ Concurrency in Action 2nd **Chapter-5** 书的这一章讲解有点粗略。其实C++参考官网的说明就很不错[Memory model](https://en.cppreference.com/w/cpp/language/memory_model)
 
 ### 内存模型
 
-只有了解了对象在内存中的布局方式，才能理解锁，互斥量这些的工作原理
+c++11提供了多线程的机制，为了解决多线程数据竞争，标准定义了对象的内存模型，主要包括对象在内存位置，内存顺序，原子操作。这里的内存模型主要是针对多线程并发访问，而不是字节对齐。
 
-#### 对象在内存中的布局
+#### 内存位置
 
 对象是一块内存区域，同时它还有一些属性，例如类型和生命周期。例如int类型的变量就是占用4字节连续内存的整型对象。
 
-**内存位置**：无论什么样的类型都会存储在一个确定的位置上。**标量类型**或一段**bit field**类型都有自己的内存位置。虽然一个结构中的相邻bit field是不同的子对象，但是他们都在同一个内存位置上。
+字节是内存中有自己地址的最小单位，它可以是8bit或更多位数。一个字节的位数可以使用`std::numeric_limits<unsigned char>::digits`获取。
+
+**内存位置**：无论什么样的类型变量都会存储在一个确定的位置上。**标量类型**对象或一段非0的**bit field**类型都有自己的内存位置。虽然一个结构中的相邻bit field是不同的子对象，但是他们都在同一个内存位置上。
 
 C++中的**标量类型**是指整型，浮点型，指针，枚举，成员指针以及空指针(std::nullptr_t)。https://cplusplus.com/reference/type_traits/is_scalar/
 
@@ -30,21 +32,21 @@ C++中的**标量类型**是指整型，浮点型，指针，枚举，成员指�
 * 基础数据类型无论大小，例如int或char各会占用一个内存位置，数组中的各个元素占用不同的位置。
 * 相邻的bit位域是一个内存位置
 
-，，基础数据类
+下面的结构体每一个基础类型都有一个自己的内存地址
 
 ```c++
 struct my_data
 {
-    int i;
-    double d;
-    unsigned int bf1:10;
-    int bf2:25;
+    int i; // memory location #1
+    double d; // memory location #2
+    unsigned int bf1:10; // memory location #3
+    int bf2:25; // memory location #3
     int    :0; // 用来分隔两个位域的内存位置
-    int bf4:9;
-    int i2;
-    char c1, c2;
-    std::string s;
-};
+    int bf4:9; // memory location #4
+    int i2; // memory location #5
+    char c1, c2; // memory location #6,7
+    std::string s; // memory location #8
+}; // 整个结构体有8个独立的内存地址
 
 my_data data;
 memset(&data, 0, sizeof(my_data));
@@ -71,17 +73,17 @@ data.s = "hello";
 
 #### 多线程访问内存位置
 
-多个线程访问不同的内存位置是没有问题的。多个线程都是读取同一个内存位置，也没有问题。如果两个线程访问同一个内存地址没有强制的顺序，且其中一个或两个访问都不是原子的，并且其中一个或两个都是写操作，那么这就是数据竞争，会导致未定义的行为。
+多个线程可以并发的访问不同的**内存位置**，并且不用考虑同步和相互干扰。多个线程都是读取同一个内存位置，也没有问题。
 
-#### 修改对象顺序
+当一段程序代码(an expression)修改了一个内存位置，另一段程序会读取或修改这个相同的内存位置，这两个程序代码就存在冲突(conflict)。并且这两段代码会产生**数据竞争**，除非：
 
-书里写了一堆很绕的话。
+ * 这两段代码在同一个线程中或同一个信号句柄([signal handler](https://en.cppreference.com/w/cpp/utility/program/signal#Signal_handler))中
+ * 这两段代码操作都是原子操作[std::atomic](https://en.cppreference.com/w/cpp/atomic/atomic)
+ * 其中一段代码一定发生在另一段代码执行之前(happens-before)[std::memory_order](https://en.cppreference.com/w/cpp/atomic/memory_order)
 
-每一个对象从它被初始化开始，都会有一个明确的各个线程修改它的顺序。程序的每次执行顺序可能都不同，但是在一次运行内，所有的线程都必须遵循这个顺序。如果数据类型不是原子类型，需要使用同步机制确保所有线程都遵循相同的顺序更改变量，否则就是数据竞争，会产生未定义行为。
+即如果两个线程访问同一个内存地址没有强制的顺序，且他们的访问都不是原子的，并且其中一个或两个都是写操作，那么这就是数据竞争，会导致未定义的行为。
 
-
-
-### 原子操作和类型
+#### 原子操作
 
 原子操作是不可再分的操作，不会看到这个操作只执行了一半的情况。要么做了，要么没做。
 
@@ -122,7 +124,7 @@ void add(int num) {
 }
 ```
 
-对应的汇编中对g的修改没有中间的拷贝到寄存器的过程，直接修改了值
+对应的汇编中对g的修改没有中间的拷贝到寄存器的过程，直接修改了值，所以这里的g++就是原子操作，当有多个线程执行这句代码，也不会产生数据竞争。
 
 ```asm
 add(int):
@@ -138,9 +140,63 @@ add(int):
         ret
 ```
 
+#### Atomic和Mutex比较
 
+Atomics：适用于对共享数据的操作比较简单，一般一条指令就能执行完成，例如累加，交换数据，更新一个标记。相对而言它更轻量级，负载更小，适合对性能关注的场景。
+
+Mutex：提供了同步机制可以让同一个时刻只有一个线程有权访问共享数据。它适用于关键区中的代码比较复杂，不是一个原子操作就能完成的情况。它相对有更高的负载，因为有上下文切换，等待的线程要一直查询是否可以访问了。
+
+#### 内存顺序
+
+内存顺序主要定义了多个线程对同一个内存位置的访问顺序。`std::memory_order` 和标准库的原子操作配合使用。当多个线程同时读或写几个变量时，其中一个线程看到这些变量的值的变化顺序可能与修改这些变量的线程执行的顺序不同。默认情况下，标准库的所有原子操作都是顺序一致的(*sequentially consistent ordering*)，它是最严格的，所以存在一定的性能损失，所以标准库还提供了其他的内存顺序，一共有6种。
+
+这里的一致可以理解为程序实际运行的顺序和代码内容的顺序一致，通过设置不同的内存顺序，要求编译器和硬件按我们要求的顺序修改共享内存资源。
+
+《C++ Concurrency in Action》书里写了一堆很绕的话，c++每一个对象从它初始化开始，各个线程对它的修改都会定义一个顺序。程序的每次执行顺序可能都不同，但是在程序的一次运行内，所有的线程都必须遵循这个顺序。如果数据类型不是标准库的原子类型，还需要确保使用同步机制让所有线程都遵循相同的顺序更改来更改数据，如果不同的线程看到一个变量值更改的顺序是不同的，那就是数据竞争，会产生未定义行为。也可以看官方文档[memory_order](https://en.cppreference.com/w/cpp/atomic/memory_order)，其中有几种顺序的例子。
+
+#### C++ 6种内存顺序
+
+《C++ Concurrency in Action》把内存顺序放在了5.3同步操作里面详细介绍了。
+
+##### Relaxed ordering
+
+这种顺序只保证这个操作的原子性，但不保证并发内存访问的顺序。它主要用在累加计数器，例如智能指针中增加引用计数，因为这个场景只关心数据增加操作的原子性，不管有多少个线程同时增加这个变量，因为原子操作的不可分割性，它的值一定会增加完成，不会出现值在线程1被改了一半，保存上下文，切换到另一个线程2修改值，等线程1再切换回来 ，把线程1保存的值又给了变量，导致线程2的修改被冲掉了。但是智能指针减引用计数就不能用这个relaxed order，因为因为它需要和对象的析构进行同步，不能先执行析构，在修改计数的值，这样会导致多次析构调用，这种情况下需要用Acquire-Release order。
+
+下面的例子中， 原子类型的x和y的初始值都为0，在两个线程都执行完后可能出现`r1 == r2 == 42` 的结果。因为虽然A在B之前执行，C在D之前执行，但是可能存在D在A之前执行，修改y的值为42，B又在C之前执行，修改x的值为42。当编译器重排执行顺序后，就可能存在D可能在C之前就已经执行完了。
+
+```c++
+// Thread 1:
+r1 = y.load(std::memory_order_relaxed); // A
+x.store(r1, std::memory_order_relaxed); // B
+// Thread 2:
+r2 = x.load(std::memory_order_relaxed); // C 
+y.store(42, std::memory_order_relaxed); // D
+```
+
+例如下面的代码一定能保证多个线程并发累加数字的正确性，因为每一个线程的每一次加法操作都是原子的，线程之间也不需要关心执行顺序和同步。
+
+```c++
+std::atomic<int> cnt = { 0 };
+
+void f()
+{
+    for (int n = 0; n < 1000; ++n)
+        cnt.fetch_add(1, std::memory_order_relaxed);
+}
+
+int main()
+{
+    std::vector<std::thread> v;
+    for (int n = 0; n < 10; ++n)
+        v.emplace_back(f);
+    for (auto& t : v)
+        t.join();
+    std::cout << "Final counter value is " << cnt << '\n';
+}
+```
 
 ### 同步操作
+
 
 ### Atomic Weapons: The C++ Memory Model and Modern Hardware
 
@@ -278,5 +334,3 @@ mut.unlock(); // lock “release”
 但是不能把x放在关键区release之后，不能把z放在关键区acquire之前。另一个线程获取到锁后，访问y的时候可能会依赖于x已经被赋值了，同理z也不能移到关键区之前。
 
 所以关键区形成了一个单向的屏障。A release store makes its prior accesses visible to a thread preforming an acquire load that sees that store.
-
-##### 数据竞争
