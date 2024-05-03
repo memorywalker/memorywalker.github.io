@@ -19,3 +19,10 @@ tags:
 
  [不死鸟 - 分享为王官网 (iui.su)](https://iui.su/) 
 
+### 电子书下载
+
+ https://salttiger.com/ 
+
+ [好资源收集站 – 一站式分享好的资源 (9080hou.com)](https://www.9080hou.com/) 
+
+ [[搬书匠\] - 电子书(EBook) (banshujiang.cn)](http://www.banshujiang.cn/) 
