@@ -182,11 +182,13 @@ const app = Vue.createApp(upvoteApp).mount("#app");
 * data 用来返回这个组件的数据对象，例如submissions变量返回了Seed.js中的Seed.submissions对象，在vue的表达式中就可以使用这个submissions变量。
 * computed 标识这个组件计算属性，只要计算函数中的数据变化，计算就会发生，而页面中可以像使用数据变量一样使用计算对象
 * components 应用程序或根组件中可以定义它里面的子组件，子组件的名称为`submission-component`，它的options对象为`submissionComponent`，通过props可以把数据传递给子组件。
+* methods 用来定义这个组件中支持的方法
+* this 使用this可以访问这个实例的数据成员
 
 #### 使用数据
 
-* 对于html标签的属性，可以使用**v-bind来动态绑定vue程序的数据**，例如超链接的href就可以直接使用data中的submissions对象
-* 标签的内容可以使用`{{表达式}}`模板来使用数据变量，而这个语法可以和后端服务结合生成不同的模板
+* 对于html标签的属性，可以使用**v-bind来动态绑定vue程序的数据**，例如超链接的href就可以直接使用data中的submissions对象. `v-bind`可以缩写为`:`
+* 标签的内容可以使用Mustache`{{表达式}}`模板来使用数据变量，而这个语法可以和后端服务结合生成不同的模板
 
 ```html
 <div id="app">
@@ -266,15 +268,78 @@ const app = Vue.createApp(upvoteApp).mount("#app");
   </div>
 ```
 
+#### 列表排序
+
+Computed属性用来处理界面view显示的需要复杂计算的数据，在容器中可以像使用数据Data一样使用计算属性的字段。sortedSubmissions就是返回使用了JavaScript的sort排序后的submissions。
+
+```javascript
+computed: {
+    sortedSubmissions() {
+      return this.submissions.sort((a, b) => {
+        return b.votes - a.votes;
+      });
+    },
+  },
+```
+
+
+
 #### 处理事件
 
-通过`v-on:`给一个标签增加事件处理，类似原生的JavaScript的事件处理函数，只是这里可以使用vue实例对象或组件的方法作为事件处理函数。
+通过`v-on:`给一个标签增加事件处理，类似原生的JavaScript的事件处理函数，只是这里可以使用vue实例对象或组件的方法作为事件处理函数。Methods属性中定义的方法只有显示调用才会执行。`v-on:`可以缩写为@
 
-`<span class="icon is-small" v-on:click="upvote(submissions[0].id)">`就给这个span的内容绑定了一个click事件，当点击后，会调用vue组件的`upvote()`方法，并以一个submission对象的id作为参数，这样处理函数内就知道点击了列表中的哪一个。
+`<span class="icon is-small" v-on:click="upvote(submissions[0].id)">`就给这个span的内容绑定了一个click事件，当点击后，会调用vue组件的`upvote()`方法，并以一个submission对象的id作为参数，这样处理函数内通过参数submissionId就知道点击了列表中的哪一个，把这个对象的投票数增加。由于vue的响应式机制，当submission.votes的变化后，computed属性的sortedSubmissions()会自动触发计算，随后，view会用最新的数据动态刷新界面
+
+```javascript
+methods: {
+    upvote(submissionId) {
+      const submission = this.submissions.find(
+        (submission) => submission.id == submissionId
+      );
+      submission.votes++;
+    }
+  },
+```
 
 #### 组件
 
 随着开发功能模块 越来越多，方便相同的代码复用，例如一个数据的列表显示在多个功能的列表显示中都会用到，就可以把数据列表显示作为一个组件。根组件下面可以使用多个子组件。
+
+组件也是vue的实例，可以有自己的模版(html)，处理逻辑(JS)，样式(CSS)。
+
+在根组件中声明它的子组件`submission-component`
+
+```javascript
+const upvoteApp = {
+	//...  
+  components: {
+    "submission-component": submissionComponent,
+  },
+};
+const app = Vue.createApp(upvoteApp).mount("#app");
+```
+
+然后就可以在容器中使用子组件了，通过把上面html中的每一个article的内容作为一个组件，并把定义的子组件作为article的内容。子组件中的v-bind就是子组件需要从父组件中获取的对象，在子组件中就可以使用这两个对象了。
+
+```html
+<article 
+    v-for="submission in sortedSubmissions" 
+    v-bind:key="submission.id"
+    class="media"
+    v-bind:class="{ 'blue-border': submission.votes>=20}"
+    >
+    <submission-component 
+       v-bind:submission="submission"
+       v-bind:submissions="sortedSubmissions"
+    >
+    </submission-component>
+</article>
+```
+
+通过定义子组件的options对象submissionComponent，原来在根组件中的方法和数据可以移入子组件中，例如根组件不关心每一个分组的投票增加，所以可以把这个处理函数移入子组件中。子组件中会用到两个变量submission和submissions对象，这两个对象需要用props属性让根组件传递给子组件。
+
+1. 子组件通过props定义需要通过上一级组件传递过来的对象
+2. 使用v-bind把父组件的对象传递给子组件
 
 ```javascript
 const submissionComponent = {
@@ -322,3 +387,4 @@ const submissionComponent = {
 };
 ```
 
+通过把原来在article的内容封装在子组件中，方便代码的维护和复用。模版属性template中如果有多行字串，需要使用**`**来包括所有的多行字串内容。
