@@ -11,6 +11,8 @@ tags:
 
 ## Vue 3单文件组件
 
+ 对应代码位置[web/vue3/vbooks at main · memorywalker/web (github.com)](https://github.com/memorywalker/web/tree/main/vue3/vbooks) 
+
 ### 创建工程
 
 从官方[快速上手](https://cn.vuejs.org/guide/quick-start.html)为例创建工程
@@ -18,6 +20,14 @@ tags:
 1.  `npm create vue@latest `使用官方的创建工具按步骤创建一个web应用，默认使用的vite作为构建工具
 2. ` npm install `安装依赖
 3. ` npm run dev `运行工程，生产环境使用` npm run build `
+
+```shell
+ VITE v5.2.10  ready in 2732 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+```
 
 ### 工程目录
 
@@ -128,9 +138,208 @@ export default {
 </script>
 ```
 
-### 创建一个vue应用的基本步骤
+#### 响应式状态
+
+当从一个组件中返回data()时，这个数据会在内部默认使用`reactive()`方法修饰为响应式的状态。当数据状态在组件外部定义时，就需要显示调用`reactive()`把数据状态修饰为响应式。
+
+```javascript
+export const store = {
+    state: {
+        data: reactive(seedData)
+    },    
+}
+```
+
+##### 数据绑定
+
+**v-model**可以用来把vue对象与html的表单中的输入框做双向绑定，其中任何一个变化，另一个会更新。下面例子中文本输入框和组件中的`inputEntry`数据对象绑定
+
+```html
+<input type="text" placeholder="New Event" v-model="inputEntry" required />
+```
+
+```javascript
+data() {
+      return {
+        inputEntry:"",
+        error:false,
+      };
+    },
+```
+
+**v-if**后面的值如果为true，它所在的html标签就会被创建出来，否则不会创建。
+
+当用户没有输入有效信息时可以使用v-if显示一个提示信息
+
+```html
+<p style="color: red; font-size: 13px" v-if="error">
+  You must type something first!
+</p>
+```
+
+在提交数据方法中判断用户输入为空，修改v-if的条件为true，这样上面的提示信息就能显示出来
+
+```javascript
+methods: {
+    submitEvent(eventDetails) {
+        if (eventDetails==='') return this.error = true;
+        store.submitEvent(eventDetails);
+        this.inputEntry = "";
+        this.error = false;
+    }
+}
+```
+
+
+
+### 创建vue应用步骤
 
 1. 创建一个静态版本的app
 2. 把这个app分解为多个组件
 3. 使用父->子的数据流来初始化状态传递
 4. 创建状态变化Mutation和组件派发dispatchers
+
+### 关键代码
+
+**CalendarEvent.vue**
+
+```javascript
+<template>
+  <div class="day-event" :style="getEventBackgroundColor">
+    <div v-if="!event.edit">
+      <span class="has-text-centered details">{{ event.details }}</span>
+      <div class="has-text-centered icons">
+        <i class="fa fa-pencil-square edit-icon" @click="editEvent(day.id, event.details)"></i>
+        <i class="fa fa-trash-o delete-icon" @click="deleteEvent(day.id, event.details)"></i>
+      </div>
+    </div>
+    <div v-if="event.edit">
+      <input type="text" :placeholder="event.details" v-model="newEventDetails" />
+      <div class="has-text-centered icons">
+        <i class="fa fa-check" @click="updateEvent(day.id, event.details, newEventDetails)"></i>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { store } from "../store.js";
+
+export default {
+  name: 'CalendarEvent',
+  props: ['event', 'day'],
+  data () {
+    return {
+      newEventDetails: ''
+    }
+  },
+  computed: {
+    getEventBackgroundColor() {
+      const colors = ['#FF9999', '#85D6FF', '#99FF99'];
+      let randomColor = colors[Math.floor(Math.random() * colors.length)];
+      return `background-color: ${randomColor}`;
+    }
+  },
+  methods: {
+    editEvent (dayId, eventDetails) {
+      store.editEvent(dayId, eventDetails);
+    },
+    updateEvent (dayId, originalEventDetails, updatedEventDetails) {
+      if (updatedEventDetails === '') updatedEventDetails = originalEventDetails;
+      store.updateEvent(dayId, originalEventDetails, updatedEventDetails);
+
+      this.newEventDetails = '';
+    },
+    deleteEvent (dayId, eventDetails) {
+      store.deleteEvent(dayId, eventDetails);
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.day-event {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  display: block;
+  color: #4C4C4C;
+  padding: 5px;
+
+  .details {
+    display: block;
+  }
+
+  input {
+    background: none;
+    border: 0;
+    border-bottom: 1px solid #FFF;
+    width: 100%;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+</style>
+```
+
+
+
+**store.js**
+
+```javascript
+import { reactive } from "vue";
+import { seedData } from "./seed.js";
+
+export const store = {
+    state: {
+        data: reactive(seedData)
+    },    
+    getActiveDay() {
+        return this.state.data.find((day) => day.active);
+    },
+    setActiveDay(dayId) {
+        this.state.data.map((dayObj)=> {
+            dayObj.active = (dayObj.id === dayId);    
+        });
+    },
+    submitEvent(eventDetails) {
+        const activeDay = this.getActiveDay();
+        activeDay.events.push({"details":eventDetails, "edit":false});
+    },
+    getEventObj(dayId, eventDetails) {
+        const dayObj = this.state.data.find((day)=> day.id === dayId);
+        return dayObj.events.find(
+            (event)=>event.details === eventDetails
+        );
+    },
+    editEvent(dayId, eventDetails) {
+        this.resetEditOfAllEvents();        
+        const eventObj = this.getEventObj(dayId, eventDetails);
+        eventObj.edit = true;
+    },
+    resetEditOfAllEvents() {
+        this.state.data.map((dayObj)=> {
+            dayObj.events.map((event)=>{
+                event.edit = false;
+            });
+        });
+    },
+    updateEvent(dayId, originalEventDetails, newEventDetails) {
+        const dayObj = this.state.data.find((day)=>day.id ===dayId);
+        const eventObj = this.getEventObj(dayId, originalEventDetails);
+        eventObj.details = newEventDetails;
+        eventObj.edit = false;
+    },
+    deleteEvent(dayId, eventDetails) {
+        const dayObj = this.state.data.find(
+            day=> day.id===dayId
+        );
+        const eventIndexToRemove = dayObj.events.findIndex(
+            event=> event.details===eventDetails
+        );
+        dayObj.events.splice(eventIndexToRemove, 1);
+    }
+}
+```
+
