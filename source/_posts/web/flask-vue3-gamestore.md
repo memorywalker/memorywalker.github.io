@@ -14,6 +14,8 @@ tags:
 
 steam夏促来了，今年打折的比较给力，但是自己在很多平台都有购买游戏（游戏我都买了，还要玩吗），需要把各个平台游戏汇总一下，先从steam开始，它的web api最完善。以下内容主要是**ChatGPT**的帮助下完成，效率的确很高，解释的很详细。
 
+完整代码：https://github.com/memorywalker/GameStore.git
+
 ### Flask后端
 
 使用Flask提供后端http服务，requests请求steam的web API
@@ -77,13 +79,13 @@ if __name__ == '__main__':
 #### 安装运行环境
 
 ```powershell
-npx @vue/cli create frontend
+npm create vue@latest
+# 进入vue交互式创建工程，输入工程名称为frontend，其他都用默认选项就可以
 cd frontend
+npm install
 npm install axios
 vue add vuetify
 ```
-
-vue创建的工程都用默认选项就可以
 
 其中Vuetify安装过程中会提示选择一个配置，我选择了`Vuetify 3 - Vite`，其他选项没试，看名字应该选择这个，毕竟是Vue3+Vite创建的工程。安装Vuetify插件会修改App.vue，main.js,vite.config.js这三个文件，所以如果自己对这些文件有修改要先备份一下再安装Vuetify插件。
 
