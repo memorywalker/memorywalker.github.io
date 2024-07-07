@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Flask+Vue3 展示Steam拥有的游戏steam夏促来了，今年打折的比较给力，但是自己在很多平台都有购买游戏（游戏我都买了，还要玩吗），需要把各个平台游戏汇总一下，先从steam开始，它的web api最完善。以下内容主要是ChatGPT的帮助下完成，效率的确很高，解释的很详细。 Flask后端使用Flask提供后端http服务，requests请求steam的web API 安装环境12">
+<meta name="keywords" content="web,steam,vue,flask">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flask+Vue3展示游戏库-1">
+<meta property="og:url" content="http://memorywalker.github.io/2024/07/07/web/flask-vue3-gamestore/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="Flask+Vue3 展示Steam拥有的游戏steam夏促来了，今年打折的比较给力，但是自己在很多平台都有购买游戏（游戏我都买了，还要玩吗），需要把各个平台游戏汇总一下，先从steam开始，它的web api最完善。以下内容主要是ChatGPT的帮助下完成，效率的确很高，解释的很详细。 Flask后端使用Flask提供后端http服务，requests请求steam的web API 安装环境12">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2024/07/07/uploads/web/flask_handle_request.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/web/flask_handle_request.png">
+<meta property="og:image" content="http://memorywalker.github.io/2024/07/07/uploads/web/vuetify_install.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/web/vuetify_install.png">
+<meta property="og:image" content="http://memorywalker.github.io/2024/07/07/uploads/web/vuetify_game_list.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/web/vuetify_game_list.png">
+<meta property="og:updated_time" content="2024-07-07T16:58:58.128Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flask+Vue3展示游戏库-1">
+<meta name="twitter:description" content="Flask+Vue3 展示Steam拥有的游戏steam夏促来了，今年打折的比较给力，但是自己在很多平台都有购买游戏（游戏我都买了，还要玩吗），需要把各个平台游戏汇总一下，先从steam开始，它的web api最完善。以下内容主要是ChatGPT的帮助下完成，效率的确很高，解释的很详细。 Flask后端使用Flask提供后端http服务，requests请求steam的web API 安装环境12">
+<meta name="twitter:image" content="http://memorywalker.github.io/2024/07/07/uploads/web/flask_handle_request.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2024/07/07/web/flask-vue3-gamestore/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Flask+Vue3展示游戏库-1 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2024/07/07/web/flask-vue3-gamestore/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Flask+Vue3展示游戏库-1
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2024-07-07 22:01:49 / 修改时间：16:58:58" itemprop="dateCreated datePublished" datetime="2024-07-07T22:01:49+00:00">2024-07-07</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Flask-Vue3-展示Steam拥有的游戏"><a href="#Flask-Vue3-展示Steam拥有的游戏" class="headerlink" title="Flask+Vue3 展示Steam拥有的游戏"></a>Flask+Vue3 展示Steam拥有的游戏</h2><p>steam夏促来了，今年打折的比较给力，但是自己在很多平台都有购买游戏（游戏我都买了，还要玩吗），需要把各个平台游戏汇总一下，先从steam开始，它的web api最完善。以下内容主要是<strong>ChatGPT</strong>的帮助下完成，效率的确很高，解释的很详细。</p>
+<h3 id="Flask后端"><a href="#Flask后端" class="headerlink" title="Flask后端"></a>Flask后端</h3><p>使用Flask提供后端http服务，requests请求steam的web API</p>
+<h4 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> mkdir GameStore</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> python -m venv venv</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> venv\Scripts\activate</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> pip install Flask requests</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="后端服务程序"><a href="#后端服务程序" class="headerlink" title="后端服务程序"></a>后端服务程序</h4><p>查看并测试steam的API可以用这个网站<code>https://steamapi.xpaw.me/#IPlayerService/GetOwnedGames</code></p>
+<p>steam的web API key 在登录steam账号后，这个网址<code>https://steamcommunity.com/dev/apikey</code>可以看到</p>
+<p>在GameStore目录中新建一个<code>app.py</code>文件，作为flask的主程序，目前只有最简单处理一个查询列表的请求，以后有了本地数据库，就从本地获取数据。</p>
+<p>为了显示游戏的封面，把游戏的icon的信息替换为了steam游戏的图片，只需要appid信息，并把游戏的信息返回给客户端。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, jsonify, request</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="comment">#https://steamcommunity.com/dev/apikey</span></span><br><span class="line">STEAM_API_KEY = <span class="string">'xxxxxx'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/api/games/&lt;steam_id&gt;', methods=['GET'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_games</span><span class="params">(steam_id)</span>:</span></span><br><span class="line">    print(<span class="string">"recv steam_id:"</span>, steam_id)</span><br><span class="line">    url = <span class="string">f'https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=<span class="subst">&#123;STEAM_API_KEY&#125;</span>&amp;steamid=<span class="subst">&#123;steam_id&#125;</span>&amp;format=json&amp;include_appinfo=true'</span>    </span><br><span class="line">    response = requests.get(url)</span><br><span class="line">    data = response.json()</span><br><span class="line">    <span class="keyword">for</span> game <span class="keyword">in</span> data[<span class="string">'response'</span>][<span class="string">'games'</span>]:</span><br><span class="line">        appid = game[<span class="string">'appid'</span>]   </span><br><span class="line">        game[<span class="string">'img_icon_url'</span>] = <span class="string">f"https://steamcdn-a.akamaihd.net/steam/apps/<span class="subst">&#123;appid&#125;</span>/library_600x900_2x.jpg"</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> jsonify(data)</span><br><span class="line"></span><br><span class="line"><span class="comment">#76561198099917059</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Flask运行 在项目根目录GameStore下执行flask run</p>
+<p>下面是flask收到来自vue的请求后，向steam请求数据收到的应答</p>
+</li>
+</ul>
+<p><img src="../../uploads/web/flask_handle_request.png" alt="flask_handle_request"><br><img src="/uploads/web/flask_handle_request.png" alt="flask_handle_request"></p>
+<h3 id="Vue3前端"><a href="#Vue3前端" class="headerlink" title="Vue3前端"></a>Vue3前端</h3><p>使用了vuetify自带的样式和组件可以快速创建一个效果还不错页面。ChatGPT提到UI框架可以选择<code>Vuetify</code>, <code>BootstrapVue</code>或<code>Ant Design Vue</code>。它给的例子用的是Vuetify，说它是一个material design的组件框架。</p>
+<h4 id="安装运行环境"><a href="#安装运行环境" class="headerlink" title="安装运行环境"></a>安装运行环境</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npx @vue/cli create frontend</span><br><span class="line">cd frontend</span><br><span class="line">npm install axios</span><br><span class="line">vue add vuetify</span><br></pre></td></tr></table></figure>
+
+<p>vue创建的工程都用默认选项就可以</p>
+<p>其中Vuetify安装过程中会提示选择一个配置，我选择了<code>Vuetify 3 - Vite</code>，其他选项没试，看名字应该选择这个，毕竟是Vue3+Vite创建的工程。安装Vuetify插件会修改App.vue，main.js,vite.config.js这三个文件，所以如果自己对这些文件有修改要先备份一下再安装Vuetify插件。</p>
+<p><img src="../../uploads/web/vuetify_install.png" alt="vuetify_install"><br><img src="/uploads/web/vuetify_install.png" alt="vuetify_install"></p>
+<h4 id="Vue主程序"><a href="#Vue主程序" class="headerlink" title="Vue主程序"></a>Vue主程序</h4><ul>
+<li>App.vue</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">'axios'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  data() &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      steamId: <span class="string">''</span>,</span><br><span class="line">      games: <span class="literal">null</span>,</span><br><span class="line">      loading:<span class="literal">false</span>,</span><br><span class="line">      error: <span class="string">''</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    <span class="keyword">async</span> fetchGames() &#123;</span><br><span class="line">      <span class="keyword">this</span>.loading = <span class="literal">true</span>;</span><br><span class="line">      <span class="keyword">this</span>.error = <span class="string">''</span>;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> response = <span class="keyword">await</span> axios.get(<span class="string">`/api/games/<span class="subst">$&#123;<span class="keyword">this</span>.steamId&#125;</span>`</span>);</span><br><span class="line">        <span class="keyword">this</span>.games = response.data.response.games;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">catch</span> ( error ) &#123;</span><br><span class="line">        <span class="keyword">this</span>.error = <span class="string">'Error fetching games. Please try again later.'</span>;</span><br><span class="line">      &#125; </span><br><span class="line">      <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.loading = <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;template&gt;</span></span><br><span class="line"><span class="regexp">  &lt;v-app&gt;</span></span><br><span class="line"><span class="regexp">    &lt;v-container&gt;</span></span><br><span class="line"><span class="regexp">      &lt;v-row justify="center"&gt;</span></span><br><span class="line"><span class="regexp">        &lt;v-col cols="12" md="8"&gt;</span></span><br><span class="line"><span class="regexp">          &lt;v-text-field v-model="steamId" label="Steam ID" outlined&gt;&lt;/</span>v-text-field&gt;</span><br><span class="line">          &lt;v-btn  @click=<span class="string">"fetchGames"</span> color=<span class="string">"primary"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"mt-4"</span>&gt;Fetch Games&lt;<span class="regexp">/v-btn&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>v-col&gt;</span><br><span class="line">      &lt;<span class="regexp">/v-row&gt;</span></span><br><span class="line"><span class="regexp">      &lt;v-row&gt;</span></span><br><span class="line"><span class="regexp">        &lt;v-col v-if="error" cols="12"&gt;</span></span><br><span class="line"><span class="regexp">          &lt;v-alert  type="error" dismissible&gt;&#123;&#123; error &#125;&#125;&lt;/</span>v-alert&gt;</span><br><span class="line">        &lt;<span class="regexp">/v-col&gt;</span></span><br><span class="line"><span class="regexp">        &lt;v-col v-if="loading" cols="12" class="text-center"&gt;</span></span><br><span class="line"><span class="regexp">          &lt;v-progress-circular indeterminate color="primary"&gt;&lt;/</span>v-progress-circular&gt;</span><br><span class="line">        &lt;<span class="regexp">/v-col&gt;</span></span><br><span class="line"><span class="regexp">        &lt;v-col v-for="game in games" :key="game.appid" cols="12" sm="6" md="4" lg="3"&gt;</span></span><br><span class="line"><span class="regexp">          &lt;v-card class="game-cover"&gt;</span></span><br><span class="line"><span class="regexp">            &lt;v-img :src="game.img_icon_url" alt="Game Cover" aspect-ratio="0.5"&gt;&lt;/</span>v-img&gt;</span><br><span class="line">            &lt;v-card-title <span class="class"><span class="keyword">class</span></span>=<span class="string">"game-title"</span>&gt;&#123;&#123; game.name &#125;&#125;&lt;<span class="regexp">/v-card-title&gt;</span></span><br><span class="line"><span class="regexp">            &lt;v-card-subtitle class="game-details"&gt;Playtime:&#123;&#123; game.playtime_forever &#125;&#125; hours&lt;/</span>v-card-subtitle&gt;</span><br><span class="line">          &lt;<span class="regexp">/v-card&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>v-col&gt;</span><br><span class="line">      &lt;<span class="regexp">/v-row&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>v-container&gt;</span><br><span class="line">  &lt;<span class="regexp">/v-app&gt;  </span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;style &gt;</span><br><span class="line">#app &#123;</span><br><span class="line">  font-family: Avenir, Helvetica, Arial, sans-serif;</span><br><span class="line">  text-align: center;</span><br><span class="line">  color: #2c3e50;</span><br><span class="line">  margin-top: <span class="number">60</span>px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.game-card &#123;</span><br><span class="line">  margin-bottom: <span class="number">20</span>px;</span><br><span class="line">  border-radius: <span class="number">8</span>px;</span><br><span class="line">  overflow: hidden;</span><br><span class="line">  box-shadow: <span class="number">0</span> <span class="number">4</span>px <span class="number">8</span>px rgba(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">.14</span>);</span><br><span class="line">  transition: transform <span class="number">0.2</span>s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.game-cover &#123;</span><br><span class="line">  height: <span class="number">500</span>px;</span><br><span class="line">  object-fit: cover;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.game-title &#123;</span><br><span class="line">  font-size: <span class="number">18</span>px;</span><br><span class="line">  font-weight: bold;</span><br><span class="line">&#125;</span><br><span class="line">.game-details &#123;</span><br><span class="line">  font-size: <span class="number">14</span>px;</span><br><span class="line">  color:gray;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.v-card &#123;</span><br><span class="line">  margin-bottom: <span class="number">20</span>px;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Vue配置"><a href="#Vue配置" class="headerlink" title="Vue配置"></a>Vue配置</h4><ol>
+<li>配置plugins使用<code>vuetify</code></li>
+<li>配置proxy，解决本地CORS请求处理</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; fileURLToPath, URL &#125; <span class="keyword">from</span> <span class="string">'node:url'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; defineConfig &#125; <span class="keyword">from</span> <span class="string">'vite'</span></span><br><span class="line"><span class="keyword">import</span> vue <span class="keyword">from</span> <span class="string">'@vitejs/plugin-vue'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin</span></span><br><span class="line"><span class="keyword">import</span> vuetify <span class="keyword">from</span> <span class="string">'vite-plugin-vuetify'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// https://vitejs.dev/config/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> defineConfig(&#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    vue(),</span><br><span class="line">    vuetify(&#123;</span><br><span class="line">      autoImport: <span class="literal">true</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">  resolve: &#123;</span><br><span class="line">    alias: &#123;</span><br><span class="line">      <span class="string">'@'</span>: fileURLToPath(<span class="keyword">new</span> URL(<span class="string">'./src'</span>, <span class="keyword">import</span>.meta.url))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  server: &#123;</span><br><span class="line">    port: <span class="number">3000</span>,</span><br><span class="line">    open: <span class="literal">false</span>, </span><br><span class="line">    proxy: &#123; <span class="comment">// 通过代理实现跨域</span></span><br><span class="line">      <span class="string">'/api'</span>: &#123;</span><br><span class="line">        target: <span class="string">'http://localhost:5000/api'</span>, <span class="comment">// flask后端服务地址</span></span><br><span class="line">        changeOrigin: <span class="literal">true</span>, <span class="comment">//开启代理</span></span><br><span class="line">        rewrite: <span class="function">(<span class="params">path</span>) =&gt;</span> path.replace(<span class="regexp">/^\/api/</span>, <span class="string">''</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h3><p>输入steam Id后，就可以在下方列出所拥有游戏的列表</p>
+<p><img src="../../uploads/web/vuetify_game_list.png" alt="vuetify_game_list"><br><img src="/uploads/web/vuetify_game_list.png" alt="vuetify_game_list"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/steam/" rel="tag"># steam</a>
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+            <a href="/tags/flask/" rel="tag"># flask</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/05/03/web/vue3-sfc/" rel="next" title="Vue3 单文件组件">
+                <i class="fa fa-chevron-left"></i> Vue3 单文件组件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Flask-Vue3-展示Steam拥有的游戏"><span class="nav-number">1.</span> <span class="nav-text">Flask+Vue3 展示Steam拥有的游戏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Flask后端"><span class="nav-number">1.1.</span> <span class="nav-text">Flask后端</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装环境"><span class="nav-number">1.1.1.</span> <span class="nav-text">安装环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后端服务程序"><span class="nav-number">1.1.2.</span> <span class="nav-text">后端服务程序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vue3前端"><span class="nav-number">1.2.</span> <span class="nav-text">Vue3前端</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装运行环境"><span class="nav-number">1.2.1.</span> <span class="nav-text">安装运行环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Vue主程序"><span class="nav-number">1.2.2.</span> <span class="nav-text">Vue主程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Vue配置"><span class="nav-number">1.2.3.</span> <span class="nav-text">Vue配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果"><span class="nav-number">1.3.</span> <span class="nav-text">最终效果</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
