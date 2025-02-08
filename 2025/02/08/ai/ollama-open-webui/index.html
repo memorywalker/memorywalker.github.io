@@ -94,22 +94,22 @@
 
 
 
-  <meta name="description" content="本地运行AI模型的最简单方法本地运行AI模型主要分两部分：  运行AI模型的后端服务 处理用户输入交互的前端界面  Ollama运行AI模型以我的电脑AMD 6650 XT 8G显卡为例：  下载ollama-windows-amd64.7z  https://github.com/likelovewant/ollama-for-amd/releases，并解压到`D:\Program Files">
+  <meta name="description" content="本地运行AI模型的最简单方法本地运行AI模型主要分两部分：  运行AI模型的后端服务 处理用户输入交互的前端界面  Ollama运行AI模型以我的电脑AMD 6650 XT 8G显卡为例：  下载ollama-windows-amd64.7z  ，并解压到D:\Program Files\ollama-windows-amd64 由于Ollama默认不支持 6650XT  ，所以需要使用对应显卡内">
 <meta name="keywords" content="AI,ollama,WebUI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="本地运行AI模型的最简单方法">
 <meta property="og:url" content="http://memorywalker.github.io/2025/02/08/ai/ollama-open-webui/index.html">
 <meta property="og:site_name" content="How Time Flies">
-<meta property="og:description" content="本地运行AI模型的最简单方法本地运行AI模型主要分两部分：  运行AI模型的后端服务 处理用户输入交互的前端界面  Ollama运行AI模型以我的电脑AMD 6650 XT 8G显卡为例：  下载ollama-windows-amd64.7z  https://github.com/likelovewant/ollama-for-amd/releases，并解压到`D:\Program Files">
+<meta property="og:description" content="本地运行AI模型的最简单方法本地运行AI模型主要分两部分：  运行AI模型的后端服务 处理用户输入交互的前端界面  Ollama运行AI模型以我的电脑AMD 6650 XT 8G显卡为例：  下载ollama-windows-amd64.7z  ，并解压到D:\Program Files\ollama-windows-amd64 由于Ollama默认不支持 6650XT  ，所以需要使用对应显卡内">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://memorywalker.github.io/2025/02/08/uploads/ai/ollama_install_model.png">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/ai/ollama_install_model.png">
 <meta property="og:image" content="http://memorywalker.github.io/2025/02/08/uploads/ai/open_webui.png">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/ai/open_webui.png">
-<meta property="og:updated_time" content="2025-02-08T08:05:14.882Z">
+<meta property="og:updated_time" content="2025-02-08T08:18:59.312Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="本地运行AI模型的最简单方法">
-<meta name="twitter:description" content="本地运行AI模型的最简单方法本地运行AI模型主要分两部分：  运行AI模型的后端服务 处理用户输入交互的前端界面  Ollama运行AI模型以我的电脑AMD 6650 XT 8G显卡为例：  下载ollama-windows-amd64.7z  https://github.com/likelovewant/ollama-for-amd/releases，并解压到`D:\Program Files">
+<meta name="twitter:description" content="本地运行AI模型的最简单方法本地运行AI模型主要分两部分：  运行AI模型的后端服务 处理用户输入交互的前端界面  Ollama运行AI模型以我的电脑AMD 6650 XT 8G显卡为例：  下载ollama-windows-amd64.7z  ，并解压到D:\Program Files\ollama-windows-amd64 由于Ollama默认不支持 6650XT  ，所以需要使用对应显卡内">
 <meta name="twitter:image" content="http://memorywalker.github.io/2025/02/08/uploads/ai/ollama_install_model.png">
 
 
@@ -399,7 +399,7 @@
                 
               
 
-              <time title="创建时间：2025-02-08 13:07:49 / 修改时间：08:05:14" itemprop="dateCreated datePublished" datetime="2025-02-08T13:07:49+00:00">2025-02-08</time>
+              <time title="创建时间：2025-02-08 13:07:49 / 修改时间：08:18:59" itemprop="dateCreated datePublished" datetime="2025-02-08T13:07:49+00:00">2025-02-08</time>
             
 
             
@@ -463,17 +463,17 @@
 </ol>
 <h3 id="Ollama运行AI模型"><a href="#Ollama运行AI模型" class="headerlink" title="Ollama运行AI模型"></a>Ollama运行AI模型</h3><p>以我的电脑AMD 6650 XT 8G显卡为例：</p>
 <ol>
-<li>下载<a href="https://github.com/likelovewant/ollama-for-amd/releases/download/v0.5.4/ollama-windows-amd64.7z" target="_blank" rel="noopener">ollama-windows-amd64.7z</a>  <a href="https://github.com/likelovewant/ollama-for-amd/releases，并解压到`D:\Program" target="_blank" rel="noopener">https://github.com/likelovewant/ollama-for-amd/releases，并解压到`D:\Program</a> Files\ollama-windows-amd64`</li>
-<li>由于Ollama默认不支持 6650XT <a href="https://ollama.com/blog/amd-preview" target="_blank" rel="noopener">https://ollama.com/blog/amd-preview</a> ，所以需要使用对应显卡内核编译好的的库，例如6650的内核为gfx1032.可以从<a href="https://rocm.docs.amd.com/projects/install-on-windows/en/develop/reference/system-requirements.html查看" target="_blank" rel="noopener">https://rocm.docs.amd.com/projects/install-on-windows/en/develop/reference/system-requirements.html查看</a></li>
-<li>在<a href="https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases" target="_blank" rel="noopener">https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases</a> 下载适用于gfx1032的版本<a href="https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.1.2/rocm.gfx1032.for.hip.sdk.6.1.2.7z" target="_blank" rel="noopener">rocm.gfx1032.for.hip.sdk.6.1.2.7z</a> 也可以尝试最新版本</li>
-<li>下载AMD的HIP SDK <a href="https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html" target="_blank" rel="noopener">https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html</a> ，之前下载的是6.1.2版本，所以SDK也要下载6.1.2版本</li>
+<li>下载<a href="https://github.com/likelovewant/ollama-for-amd/releases/download/v0.5.4/ollama-windows-amd64.7z" target="_blank" rel="noopener">ollama-windows-amd64.7z</a>  ，并解压到<code>D:\Program Files\ollama-windows-amd64</code></li>
+<li>由于Ollama默认不<a href="https://ollama.com/blog/amd-preview" target="_blank" rel="noopener">支持</a> 6650XT  ，所以需要使用对应显卡内核编译好的的库，例如6650的内核为gfx1032.可以从  <a href="https://rocm.docs.amd.com/projects/install-on-windows/en/develop/reference/system-requirements.html" target="_blank" rel="noopener">https://rocm.docs.amd.com/projects/install-on-windows/en/develop/reference/system-requirements.html</a> 查看</li>
+<li>在 <a href="https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases" target="_blank" rel="noopener">https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases</a> 下载适用于gfx1032的版本<a href="https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.1.2/rocm.gfx1032.for.hip.sdk.6.1.2.7z" target="_blank" rel="noopener">rocm.gfx1032.for.hip.sdk.6.1.2.7z</a> 也可以尝试最新版本</li>
+<li>下载AMD的HIP SDK <a href="https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html" target="_blank" rel="noopener">https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html</a> ，之前下载的是6.1.2版本，所以SDK也要下载6.1.2版本. HIP SDK可以简单理解为AMD的CUDA平替</li>
 <li>安装HIP SDK后，把下载的rocm.gfx1032.for.hip.sdk.6.1.2中的文件覆盖 <code>C:\Program Files\AMD\ROCm\6.1\bin</code>目录中的<code>rocblas.dll</code>和<code>C:\Program Files\AMD\ROCm\6.1\bin\rocblas\library</code>目录</li>
 <li>使用rocm.gfx1032.for.hip.sdk.6.1.2的文件替换ollama安装目录的<code>rocblas.dll</code>和<code>D:\Program Files\ollama-windows-amd64\lib\ollama\rocblas\library</code>目录</li>
 <li>在Ollama目录中运行<code>ollama serve</code>，可以看到输出日志<code>msg=&quot;inference compute&quot; id=0 library=rocm variant=&quot;&quot; compute=gfx1032 driver=6.2 name=&quot;AMD Radeon RX 6650 XT&quot; total=&quot;8.0 GiB&quot; available=&quot;7.8 GiB&quot;</code>说明可以以显卡来运行ollama中的模型</li>
 <li>配置ollama的模型默认安装位置（默认C盘用户目录下的<code>.ollama</code>）,新增环境变量<code>OLLAMA_MODELS</code>，值为想要放置模型的目录<code>D:\ollama</code></li>
 <li>执行<code>ollama run huihui_ai/deepseek-r1-abliterated:8b</code> 安装<code>deepseek-r1-abliterated</code>的模型，也可以在ollama官网安装想用的其他模型，安装完成后，就可以在命令提示符中执行进行对话<br><img src="../../uploads/ai/ollama_install_model.png" alt="ollama_install_model"><br><img src="/uploads/ai/ollama_install_model.png" alt="ollama_install_model"></li>
 </ol>
-<h3 id="对话交互UI"><a href="#对话交互UI" class="headerlink" title="对话交互UI"></a>对话交互UI</h3><p>Ollama可以直接和open-webUI <a href="https://www.openwebui.com/" target="_blank" rel="noopener">https://www.openwebui.com/</a> 配合使用，默认不需要任何配置。<a href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener">https://github.com/open-webui/open-webui</a></p>
+<h3 id="对话交互UI"><a href="#对话交互UI" class="headerlink" title="对话交互UI"></a>对话交互UI</h3><p>Ollama可以直接和<a href="https://www.openwebui.com/" target="_blank" rel="noopener">Open-webUI</a>配合使用，默认不需要任何配置。<a href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener">https://github.com/open-webui/open-webui</a></p>
 <h4 id="安装open-webUI"><a href="#安装open-webUI" class="headerlink" title="安装open webUI"></a>安装open webUI</h4><ol>
 <li>安装python 3.11以上版本，我使用<code>Python 3.12.2 (tags/v3.12.2:6abddd9, Feb  6 2024, 21:26:36) [MSC v.1937 64 bit (AMD64)] on win32</code>也是可行的</li>
 <li>安装<code>pip install open-webui</code> 这个步骤持续时间很长</li>
