@@ -20,10 +20,10 @@ tags:
 
 以我的电脑AMD 6650 XT 8G显卡为例：
 
-1. 下载[ollama-windows-amd64.7z](https://github.com/likelovewant/ollama-for-amd/releases/download/v0.5.4/ollama-windows-amd64.7z)  https://github.com/likelovewant/ollama-for-amd/releases，并解压到`D:\Program Files\ollama-windows-amd64`
-2. 由于Ollama默认不支持 6650XT https://ollama.com/blog/amd-preview ，所以需要使用对应显卡内核编译好的的库，例如6650的内核为gfx1032.可以从https://rocm.docs.amd.com/projects/install-on-windows/en/develop/reference/system-requirements.html查看
-3. 在https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases 下载适用于gfx1032的版本[rocm.gfx1032.for.hip.sdk.6.1.2.7z](https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.1.2/rocm.gfx1032.for.hip.sdk.6.1.2.7z) 也可以尝试最新版本
-4. 下载AMD的HIP SDK https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html ，之前下载的是6.1.2版本，所以SDK也要下载6.1.2版本
+1. 下载[ollama-windows-amd64.7z](https://github.com/likelovewant/ollama-for-amd/releases/download/v0.5.4/ollama-windows-amd64.7z)  ，并解压到`D:\Program Files\ollama-windows-amd64`
+2. 由于Ollama默认不[支持](https://ollama.com/blog/amd-preview) 6650XT  ，所以需要使用对应显卡内核编译好的的库，例如6650的内核为gfx1032.可以从  https://rocm.docs.amd.com/projects/install-on-windows/en/develop/reference/system-requirements.html 查看
+3. 在 https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases 下载适用于gfx1032的版本[rocm.gfx1032.for.hip.sdk.6.1.2.7z](https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.1.2/rocm.gfx1032.for.hip.sdk.6.1.2.7z) 也可以尝试最新版本
+4. 下载AMD的HIP SDK https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html ，之前下载的是6.1.2版本，所以SDK也要下载6.1.2版本. HIP SDK可以简单理解为AMD的CUDA平替
 5. 安装HIP SDK后，把下载的rocm.gfx1032.for.hip.sdk.6.1.2中的文件覆盖 `C:\Program Files\AMD\ROCm\6.1\bin`目录中的`rocblas.dll`和`C:\Program Files\AMD\ROCm\6.1\bin\rocblas\library`目录
 6. 使用rocm.gfx1032.for.hip.sdk.6.1.2的文件替换ollama安装目录的`rocblas.dll`和`D:\Program Files\ollama-windows-amd64\lib\ollama\rocblas\library`目录
 7. 在Ollama目录中运行`ollama serve`，可以看到输出日志`msg="inference compute" id=0 library=rocm variant="" compute=gfx1032 driver=6.2 name="AMD Radeon RX 6650 XT" total="8.0 GiB" available="7.8 GiB"`说明可以以显卡来运行ollama中的模型
@@ -35,7 +35,7 @@ tags:
 
 ### 对话交互UI
 
-Ollama可以直接和open-webUI https://www.openwebui.com/ 配合使用，默认不需要任何配置。https://github.com/open-webui/open-webui
+Ollama可以直接和[Open-webUI]( https://www.openwebui.com/ )配合使用，默认不需要任何配置。https://github.com/open-webui/open-webui
 
 #### 安装open webUI
 
