@@ -1,3 +1,4 @@
+---
 title: Call of Duty 4 EP2 Crew Expendable
 date: 2025-03-08 17:18
 categories:
@@ -5,6 +6,7 @@ categories:
 tags:
 - Game
 - English
+---
 
 ## Crew Expendable
 
@@ -38,7 +40,7 @@ The satellite tracks Sgt. "Soap" MacTavish and the SAS team in a Black Hawk heli
 卫星追踪到"肥皂"麦克塔维什中士和英国特种空勤团（SAS）小队乘坐黑鹰直升机飞向货轮。
 
 ["**Crew Expendable**"]
-["**可牺牲船员**"
+["**可牺牲船员**"]
 
 [Day 1 - 1:23:36]
 [第1天 - 1时23分36秒]

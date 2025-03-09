@@ -1,3 +1,4 @@
+---
 title: Call of Duty 4 EP1 F.N.G
 date: 2025-03-02 21:18
 categories:
@@ -5,8 +6,9 @@ categories:
 tags:
 - Game
 - English
+---
 
-### Freaking New Guy
+## Freaking New Guy
 
 从这个网址下载剧情脚本
 
