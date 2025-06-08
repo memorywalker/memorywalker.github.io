@@ -26,9 +26,9 @@ tags:
 
     预编译好的库文件。ROCm是AMD的开源GPU计算软件堆栈，旨在提供一个可移植、高性能的GPU计算平台。
 
-4. 安装HIP SDK后，把下载的rocm.gfx1032.for.hip.sdk.6.2.4.navi21.logic.7z中的文件覆盖 `C:\Program Files\AMD\ROCm\6.1\bin`目录中的`rocblas.dll`和`C:\Program Files\AMD\ROCm\6.1\bin\rocblas\library`目录
+4. 安装HIP SDK后，把下载的rocm.gfx1032.for.hip.sdk.6.2.4.navi21.logic.7z中的文件覆盖 `C:\Program Files\AMD\ROCm\6.2\bin`目录中的`rocblas.dll`和`C:\Program Files\AMD\ROCm\6.2\bin\rocblas\library`目录
 
-5. 系统环境变量path中添加 `C:\Program Files\AMD\ROCm\6.1\bin`目录
+5. 系统环境变量path中添加 `C:\Program Files\AMD\ROCm\6.2\bin`目录
 
 
 ### 安装ComfyUI-Zluda
