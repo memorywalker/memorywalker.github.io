@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Google Colab应用Colabhttps://colab.research.google.com/ Colab给每一个笔记一个运行的虚拟Linux环境；每一个代码段或文本段都是一个独立的Cell。 基本使用 目录 当前的根目录为Content目录，可以通过左侧的文件列表来查看  查看当前服务器ip，运行时类型为T4 GPU时，ip地址为新加坡。Google AI Studio会判断如果Co">
+<meta name="keywords" content="AI,Google,Colab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google Colab 应用">
+<meta property="og:url" content="http://memorywalker.github.io/2025/07/19/ai/google-colab-run-ai/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="Google Colab应用Colabhttps://colab.research.google.com/ Colab给每一个笔记一个运行的虚拟Linux环境；每一个代码段或文本段都是一个独立的Cell。 基本使用 目录 当前的根目录为Content目录，可以通过左侧的文件列表来查看  查看当前服务器ip，运行时类型为T4 GPU时，ip地址为新加坡。Google AI Studio会判断如果Co">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2025/07/19/uploads/ai/colab_cosyvoice.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/colab_cosyvoice.png">
+<meta property="og:updated_time" content="2025-07-19T15:33:10.455Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Google Colab 应用">
+<meta name="twitter:description" content="Google Colab应用Colabhttps://colab.research.google.com/ Colab给每一个笔记一个运行的虚拟Linux环境；每一个代码段或文本段都是一个独立的Cell。 基本使用 目录 当前的根目录为Content目录，可以通过左侧的文件列表来查看  查看当前服务器ip，运行时类型为T4 GPU时，ip地址为新加坡。Google AI Studio会判断如果Co">
+<meta name="twitter:image" content="http://memorywalker.github.io/2025/07/19/uploads/ai/colab_cosyvoice.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2025/07/19/ai/google-colab-run-ai/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Google Colab 应用 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2025/07/19/ai/google-colab-run-ai/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Google Colab 应用
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2025-07-19 18:07:49 / 修改时间：15:33:10" itemprop="dateCreated datePublished" datetime="2025-07-19T18:07:49+00:00">2025-07-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Google-Colab应用"><a href="#Google-Colab应用" class="headerlink" title="Google Colab应用"></a>Google Colab应用</h2><h3 id="Colab"><a href="#Colab" class="headerlink" title="Colab"></a>Colab</h3><p><a href="https://colab.research.google.com/" target="_blank" rel="noopener">https://colab.research.google.com/</a></p>
+<p>Colab给每一个笔记一个运行的虚拟Linux环境；每一个代码段或文本段都是一个独立的Cell。</p>
+<h4 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h4><ul>
+<li><p>目录 当前的根目录为Content目录，可以通过左侧的文件列表来查看</p>
+</li>
+<li><p>查看当前服务器ip，运行时类型为T4 GPU时，ip地址为新加坡。Google AI Studio会判断如果Colab实例的区域不是支持的区域，也不能使用。</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!curl ipinfo.io</span><br></pre></td></tr></table></figure>
+
+<h4 id="Colab下载文件到Google-Drive"><a href="#Colab下载文件到Google-Drive" class="headerlink" title="Colab下载文件到Google Drive"></a>Colab下载文件到Google Drive</h4><p>Colab中左侧导航栏中正常挂载了Goolge Drive后</p>
+<p>在Goolge Drive上先建立好目录<code>MyDrive/AI/models/FunAudioLLM/</code>，在Colab中新建一个代码段，执行以下，可以下载文件到当前切换的目录中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%bash</span><br><span class="line">cd /content/drive/MyDrive/AI/models/FunAudioLLM/</span><br><span class="line">git clone https://www.modelscope.cn/iic/CosyVoice2-0.5B.git</span><br></pre></td></tr></table></figure>
+
+<p>使用以下命令可以创建目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">%%bash</span><br><span class="line">cd /content/drive/MyDrive/</span><br><span class="line">mkdir -p my_path</span><br><span class="line">cd my_path</span><br></pre></td></tr></table></figure>
+
+<p>例如下载CosyVoice的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%bash</span><br><span class="line">cd /content/drive/MyDrive/AI/models/FunAudioLLM/</span><br><span class="line">git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git</span><br></pre></td></tr></table></figure>
+
+<p>输出为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Submodule path &apos;third_party/Matcha-TTS&apos;: checked out &apos;dd9105b34bf2be2230f4aa1e4769fb586a3c824e&apos;</span><br><span class="line">Cloning into &apos;CosyVoice&apos;...</span><br><span class="line">Submodule &apos;third_party/Matcha-TTS&apos; (https://github.com/shivammehta25/Matcha-TTS.git) registered for path &apos;third_party/Matcha-TTS&apos;</span><br><span class="line">Cloning into &apos;/content/drive/MyDrive/AI/models/FunAudioLLM/CosyVoice/third_party/Matcha-TTS&apos;...</span><br></pre></td></tr></table></figure>
+
+<h4 id="运行CosyVoice2"><a href="#运行CosyVoice2" class="headerlink" title="运行CosyVoice2"></a>运行CosyVoice2</h4><p>主要参考这份笔记</p>
+<p><a href="https://colab.research.google.com/github/weedge/doraemon-nb/blob/main/CosyVoice.ipynb#scrollTo=v-kA3Nzc5-2E" target="_blank" rel="noopener">https://colab.research.google.com/github/weedge/doraemon-nb/blob/main/CosyVoice.ipynb#scrollTo=v-kA3Nzc5-2E</a></p>
+<p>我自己的笔记地址</p>
+<p><a href="https://colab.research.google.com/drive/10yTX97D8sj6qoXcxcZ8ebAmx_QDOhC51?authuser=1" target="_blank" rel="noopener">https://colab.research.google.com/drive/10yTX97D8sj6qoXcxcZ8ebAmx_QDOhC51?authuser=1</a></p>
+<ol>
+<li><p>下载模型到Google Drive中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%bash</span><br><span class="line"><span class="built_in">cd</span> /content/drive/MyDrive/AI/models/FunAudioLLM/</span><br><span class="line">git <span class="built_in">clone</span> https://www.modelscope.cn/iic/CosyVoice2-0.5B.git</span><br></pre></td></tr></table></figure>
+
+<p>下载完成后由错误提示信息，但是文件已经完全下载下来了，不影响使用，15G的空间用了9G多。</p>
+<p><strong>以下操作在同一个T4 GPU实例实例中执行</strong>，下载的项目代码和依赖库都是在同一个实例中存在，如果切换实例，之前下载的东西都没了</p>
+</li>
+<li><p>下载项目源码（自己克隆一份到自己的Github之后，下载自己的，方便以后修改）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!git <span class="built_in">clone</span> https://github.com/memorywalker/CosyVoice.git</span><br><span class="line">!<span class="built_in">cd</span> /content/CosyVoice &amp;&amp; git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
+
+<p>简单起见直接在根目录下载项目</p>
+</li>
+<li><p>安装miniconda，创建虚拟环境</p>
+<p>因为当前Colab的默认Python是3.11版本，而CosyVoice直接使用会用库依赖错误，这一步费了不少时间。所以使用conda来安装CosyVoice使用的Python依赖。手动配置Conda环境有点麻烦，这里使用工具性的项目来安装和配置MiniConda</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">!pip install konda</span><br><span class="line">import konda</span><br><span class="line">konda.install()</span><br><span class="line">!conda --version</span><br></pre></td></tr></table></figure>
+
+<p>使用Conda必须先接受使用条款，不然在创建虚拟环境时会提示不能继续</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main</span><br><span class="line">!conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r</span><br></pre></td></tr></table></figure>
+
+<p>创建虚拟环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!konda create -n cosyvoice -y python=3.10</span><br></pre></td></tr></table></figure>
+
+<p>Colab中的每一个Cell都是独立的运行环境，所以即使执行了<code>!konda activate cosyvoice</code>，在下一个Cell中还不是激活的虚拟环境。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!<span class="built_in">source</span> activate cosyvoice;<span class="built_in">which</span> python</span><br></pre></td></tr></table></figure>
+
+<p><code>which python</code>放在激活虚拟环境的同一行，会显示使用虚拟环境的python，如果放在第二行就会是系统python，即使这两个语句都在同一个cell中。</p>
+</li>
+</ol>
+<ol start="4">
+<li><p>安装依赖</p>
+<p>切换到项目目录下，安装项目的依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%<span class="built_in">cd</span> CosyVoice/</span><br><span class="line">!konda run <span class="string">"pip install -r requirements.txt"</span></span><br></pre></td></tr></table></figure>
+
+<p>参考CosyVoice项目指南安装另一个依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!apt-get install sox libsox-dev 2&gt;&amp;1 &gt; /dev/null</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<ol start="5">
+<li><p>运行测试脚本</p>
+<p>按照前面的测试只有在同一行的代码，才能使用同一个虚拟环境，所以只能把代码保存在一个文件中，通过<code>konda run</code>来在虚拟环境中执行python代码。</p>
+<p>代码中需要把依赖的第三方库加入到环境变量中，不然会提示<code>ModuleNotFoundError: No module named &#39;matcha&#39;</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">%%writefile my_voice.py</span><br><span class="line"><span class="comment"># 配置依赖</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.append(<span class="string">'/content/CosyVoice/third_party/Matcha-TTS'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> cosyvoice.utils.file_utils <span class="keyword">import</span> load_wav</span><br><span class="line"><span class="keyword">import</span> torchaudio</span><br><span class="line"><span class="keyword">from</span> cosyvoice.cli.cosyvoice <span class="keyword">import</span> CosyVoice2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载模型</span></span><br><span class="line">cosyvoice = CosyVoice2(<span class="string">'/content/drive/MyDrive/AI/models/FunAudioLLM/CosyVoice2-0.5B'</span>, load_jit=<span class="literal">False</span>, load_trt=<span class="literal">False</span>, fp16=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE if you want to reproduce the results on https://funaudiollm.github.io/cosyvoice2, please add text_frontend=False during inference</span></span><br><span class="line"><span class="comment"># zero_shot usage</span></span><br><span class="line">prompt_speech_16k = load_wav(<span class="string">'./asset/zero_shot_prompt.wav'</span>, <span class="number">16000</span>)</span><br><span class="line"><span class="keyword">for</span> i, j <span class="keyword">in</span> enumerate(cosyvoice.inference_zero_shot(<span class="string">'收到好友从远方寄来的生日礼物，那份意外的惊喜与深深的祝福让我心中充满了甜蜜的快乐，笑容如花儿般绽放。'</span>, <span class="string">'希望你以后能够做的比我还好呦。'</span>, prompt_speech_16k, stream=<span class="literal">False</span>)):</span><br><span class="line">    torchaudio.save(<span class="string">'zero_shot_&#123;&#125;.wav'</span>.format(i), j[<span class="string">'tts_speech'</span>], cosyvoice.sample_rate)</span><br><span class="line"></span><br><span class="line"><span class="comment"># fine grained control, for supported control, check cosyvoice/tokenizer/tokenizer.py#L248</span></span><br><span class="line"><span class="keyword">for</span> i, j <span class="keyword">in</span> enumerate(cosyvoice.inference_cross_lingual(<span class="string">'在他讲述那个荒诞故事的过程中，他突然[laughter]停下来，因为他自己也被逗笑了[laughter]。'</span>, prompt_speech_16k, stream=<span class="literal">False</span>)):</span><br><span class="line">    torchaudio.save(<span class="string">'fine_grained_control_&#123;&#125;.wav'</span>.format(i), j[<span class="string">'tts_speech'</span>], cosyvoice.sample_rate)</span><br><span class="line"></span><br><span class="line"><span class="comment"># instruct usage</span></span><br><span class="line"><span class="keyword">for</span> i, j <span class="keyword">in</span> enumerate(cosyvoice.inference_instruct2(<span class="string">'收到好友从远方寄来的生日礼物，那份意外的惊喜与深深的祝福让我心中充满了甜蜜的快乐，笑容如花儿般绽放。'</span>, <span class="string">'用四川话说这句话'</span>, prompt_speech_16k, stream=<span class="literal">False</span>)):</span><br><span class="line">    torchaudio.save(<span class="string">'instruct_&#123;&#125;.wav'</span>.format(i), j[<span class="string">'tts_speech'</span>], cosyvoice.sample_rate)</span><br></pre></td></tr></table></figure>
+
+<p>这段代码会在当前目录中保存一个<code>my_voice.py</code>的文件，下面就可以在虚拟环境中执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!konda activate cosyvoice</span><br><span class="line">!konda run <span class="string">"python my_voice.py"</span></span><br></pre></td></tr></table></figure>
+
+<p>执行完成后，会在当前目录下生成<code>zero_shot_0.wav</code>等音频文件，使用以下代码可以播放音频</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Audio</span><br><span class="line">Audio(<span class="string">'/content/CosyVoice/zero_shot_0.wav'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>实际运行速度还能接受，长文本会被分割成18s左右的音频片段  <img src="../../uploads/ai/colab_cosyvoice.png" alt="colab_cosyvoice"><br>  <img src="/uploads/ai/colab_cosyvoice.png" alt="colab_cosyvoice">   </p>
+</li>
+</ol>
+<p>### </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/Google/" rel="tag"># Google</a>
+          
+            <a href="/tags/Colab/" rel="tag"># Colab</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/06/08/ai/miniconda_cosyovoice/" rel="next" title="Cosy Voice 声音克隆">
+                <i class="fa fa-chevron-left"></i> Cosy Voice 声音克隆
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">68</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">69</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Google-Colab应用"><span class="nav-number">1.</span> <span class="nav-text">Google Colab应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Colab"><span class="nav-number">1.1.</span> <span class="nav-text">Colab</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本使用"><span class="nav-number">1.1.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Colab下载文件到Google-Drive"><span class="nav-number">1.1.2.</span> <span class="nav-text">Colab下载文件到Google Drive</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行CosyVoice2"><span class="nav-number">1.1.3.</span> <span class="nav-text">运行CosyVoice2</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
