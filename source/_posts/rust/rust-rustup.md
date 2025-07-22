@@ -72,22 +72,31 @@ rustup的安装程序会自动下载每一个组件，并在最后把cargo的bin
 
 windows系统添加以下两个环境变量可以使用国内的镜像站更新rustup
 
+
+~~RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static~~
+~~RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup~~
+
+中科大的访问现在有问题，改为用aliyun的镜像
+
 ```shell
-RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
-RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+RUSTUP_UPDATE_ROOT=https://mirrors.aliyun.com/rustup/rustup
+RUSTUP_DIST_SERVER=https://mirrors.aliyun.com/rustup
 ```
+
+
 
 Cargo下载依赖库的镜像配置，在` $CARGO_HOME` 目录下新建一个config文件，内容如下
 
 ```ini
 [source.crates-io]
-replace-with = 'ustc'
+registry = "https://github.com/rust-lang/crates.io-index"
+replace-with = 'aliyun'
 
-[source.ustc]
-registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+[source.aliyun]
+registry = "sparse+https://mirrors.aliyun.com/crates.io-index/"
 ```
 
-就可以使用中科大镜像源了，速度快很多。
+中科大的不能用改为阿里云 [使用说明](https://developer.aliyun.com/mirror/rustup) 
 
  [Rust Crates 源使用帮助 — USTC Mirror Help 文档](https://mirrors.ustc.edu.cn/help/crates.io-index.html) 
 
