@@ -91,6 +91,16 @@ f85bd96 (origin/master) add h2 style
 
 `git merge origin/master`,在本地把冲突处理
 
+### stash
+
+使用pull或fetch时，经常会用到stash命令先把本地的更改暂存一下。
+
+当需要从从remote更新代码到本地时，如果本地有一些更改但是代码时临时不完整的，没必要commit到库里生成一次有效提交记录，可以使用`git stash`命令把本地的所有临时更改缓存到一个栈列表中。如果本地还有一些没有add的文件，可以使用`git stash -u`把所有没有commit的内容暂存起来，本地的代码会变为最后一次commit的状态，这时再执行`git fetch`把远端的更改下载下来。
+
+当把远端的代码下载下来后，或有别的更改处理完成后，可以使用`git stash pop`把之前暂存的内容回复回来。
+
+使用`git stash list`查看所有的暂存项。
+
 ### shortlog
 
 `git shortlog`可以查看每一个提交者提交了多少次以及每次提交信息，默认使用作者的名称字母顺序，可以增加`-n`安提交次数降序排列，`-s`只显示提交次数，不显示提交信息
@@ -242,7 +252,7 @@ fork的项目在本地更改后，原始的项目可能已经更新了内容，�
   网络原因导致失败，可以多试几次，也可以关闭ssl验证
 
   `git config --global http.sslVerify "false"`
-  
+
 * 重装系统后提示`git@github.com: Permission denied (publickey)` 因为ssh没有正确配置，需要在`C:\Users\Edison\.ssh\`目录下新建config文件，配置以下内容。`github_rsa`是自己的私钥文件，需要拷贝到.ssh目录中。再执行`ssh -vT git@github.com`确认认证成功
 
 ```yaml
