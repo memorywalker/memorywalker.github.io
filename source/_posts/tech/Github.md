@@ -13,6 +13,15 @@ tags:
 
 当多人合作时，可以每个人各自创建一个分支，每个分支都有明确的名称，做完自己的开发后，合并到一起
 
+### 国内访问
+
+每日host更新 https://github.com/521xueweihan/GitHub520
+1. host文件下载地址 https://raw.hellogithub.com/hosts
+2. 将下载的host文件内容复制到系统hosts文件中 `C:\Windows\System32\drivers\etc\hosts` 
+3. 执行生效 `ipconfig /flushdns`
+
+类似获取hosts的网站还有 https://hosts.gitcdn.top/
+
 #### 加速下载
 
 在下载的地址前加上前缀https://ghproxy.com/，例如下载SDL2的image库
@@ -233,6 +242,15 @@ fork的项目在本地更改后，原始的项目可能已经更新了内容，�
   网络原因导致失败，可以多试几次，也可以关闭ssl验证
 
   `git config --global http.sslVerify "false"`
+  
+* 重装系统后提示`git@github.com: Permission denied (publickey)` 因为ssh没有正确配置，需要在`C:\Users\Edison\.ssh\`目录下新建config文件，配置以下内容。`github_rsa`是自己的私钥文件，需要拷贝到.ssh目录中。再执行`ssh -vT git@github.com`确认认证成功
+
+```yaml
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github_rsa
+```
 
 
 
