@@ -94,20 +94,20 @@
 
 
 
-  <meta name="description" content="并行与并发基本差异打开两个文件A和B，分别向其中写入数据后保存，实现的方式有三种模式：  同步顺序执行 先打开文件A，向其中写入内容，关闭A文件，再打开文件B向其中写入内容，关闭B文件  多线程执行（并行） 创建两个线程1和2，线程1中打开文件A，线程2中打开文件B，分别在两个线程中处理  异步IO（并发） 在同一个线程中分派两个任务1和2，分别在1和2中执行打开文件A和文件B的操作，线程中先执行">
+  <meta name="description" content="并行与并发2025-07-31 更新：今天看到FastAPI官方的学习指南，讲解异步、并发和并行很直观，更新了自己的新理解。 基本差异打开两个文件A和B，分别向其中写入数据后保存，实现的方式有三种模式：  同步顺序执行 先打开文件A，向其中写入内容，关闭A文件，再打开文件B向其中写入内容，关闭B文件  多线程执行（并行） 创建两个线程1和2，线程1中打开文件A，线程2中打开文件B，分别在两个线程中">
 <meta name="keywords" content="learning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="并行与并发">
 <meta property="og:url" content="http://memorywalker.github.io/2024/02/23/program/parallelism-concurrent/index.html">
 <meta property="og:site_name" content="How Time Flies">
-<meta property="og:description" content="并行与并发基本差异打开两个文件A和B，分别向其中写入数据后保存，实现的方式有三种模式：  同步顺序执行 先打开文件A，向其中写入内容，关闭A文件，再打开文件B向其中写入内容，关闭B文件  多线程执行（并行） 创建两个线程1和2，线程1中打开文件A，线程2中打开文件B，分别在两个线程中处理  异步IO（并发） 在同一个线程中分派两个任务1和2，分别在1和2中执行打开文件A和文件B的操作，线程中先执行">
+<meta property="og:description" content="并行与并发2025-07-31 更新：今天看到FastAPI官方的学习指南，讲解异步、并发和并行很直观，更新了自己的新理解。 基本差异打开两个文件A和B，分别向其中写入数据后保存，实现的方式有三种模式：  同步顺序执行 先打开文件A，向其中写入内容，关闭A文件，再打开文件B向其中写入内容，关闭B文件  多线程执行（并行） 创建两个线程1和2，线程1中打开文件A，线程2中打开文件B，分别在两个线程中">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://memorywalker.github.io/2024/02/23/uploads/program/concurrent.png">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/program/concurrent.png">
-<meta property="og:updated_time" content="2025-07-27T16:23:34.213Z">
+<meta property="og:updated_time" content="2025-08-01T14:13:52.914Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并行与并发">
-<meta name="twitter:description" content="并行与并发基本差异打开两个文件A和B，分别向其中写入数据后保存，实现的方式有三种模式：  同步顺序执行 先打开文件A，向其中写入内容，关闭A文件，再打开文件B向其中写入内容，关闭B文件  多线程执行（并行） 创建两个线程1和2，线程1中打开文件A，线程2中打开文件B，分别在两个线程中处理  异步IO（并发） 在同一个线程中分派两个任务1和2，分别在1和2中执行打开文件A和文件B的操作，线程中先执行">
+<meta name="twitter:description" content="并行与并发2025-07-31 更新：今天看到FastAPI官方的学习指南，讲解异步、并发和并行很直观，更新了自己的新理解。 基本差异打开两个文件A和B，分别向其中写入数据后保存，实现的方式有三种模式：  同步顺序执行 先打开文件A，向其中写入内容，关闭A文件，再打开文件B向其中写入内容，关闭B文件  多线程执行（并行） 创建两个线程1和2，线程1中打开文件A，线程2中打开文件B，分别在两个线程中">
 <meta name="twitter:image" content="http://memorywalker.github.io/2024/02/23/uploads/program/concurrent.png">
 
 
@@ -414,7 +414,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2025-07-27 16:23:34" itemprop="dateModified" datetime="2025-07-27T16:23:34+00:00">2025-07-27</time>
+                <time title="修改时间：2025-08-01 14:13:52" itemprop="dateModified" datetime="2025-08-01T14:13:52+00:00">2025-08-01</time>
               
             
           </span>
@@ -466,7 +466,8 @@
       
 
       
-        <h2 id="并行与并发"><a href="#并行与并发" class="headerlink" title="并行与并发"></a>并行与并发</h2><h3 id="基本差异"><a href="#基本差异" class="headerlink" title="基本差异"></a>基本差异</h3><p>打开两个文件A和B，分别向其中写入数据后保存，实现的方式有三种模式：</p>
+        <h2 id="并行与并发"><a href="#并行与并发" class="headerlink" title="并行与并发"></a>并行与并发</h2><p>2025-07-31 更新：今天看到FastAPI官方的<a href="https://fastapi.tiangolo.com/zh/async/#_2" target="_blank" rel="noopener">学习指南</a>，讲解异步、并发和并行很直观，更新了自己的新理解。</p>
+<h3 id="基本差异"><a href="#基本差异" class="headerlink" title="基本差异"></a>基本差异</h3><p>打开两个文件A和B，分别向其中写入数据后保存，实现的方式有三种模式：</p>
 <ul>
 <li><p>同步顺序执行</p>
 <p>先打开文件A，向其中写入内容，关闭A文件，再打开文件B向其中写入内容，关闭B文件</p>
@@ -489,7 +490,9 @@
 </ul>
 <p>对于单核上的多线程，其实也是一种并发，因为多个线程之间并没有真正意义上的同时执行，只是轮流执行多个线程。对于多核处理器，多个线程可以在不同的处理器上同时执行，所以是并行。可以把<strong>并行看做是一种特殊的并发</strong>，因为同时执行的一定同时存在。</p>
 <h3 id="并行"><a href="#并行" class="headerlink" title="并行"></a>并行</h3><p>并行一般指多个进程或多个线程同时运行在多个处理器上，强调同时执行。</p>
+<p>你和朋友去餐厅吃饭，同时有8个前台收银员提供服务，你和朋友分别和一个收银员点餐，点餐后，你和朋友分别在各自的前台等后厨出餐，你必须被迫与厨师同步，等待他把饭做好，在进行后续找位置吃饭。因为如果你不在自己的前台等待，会有别人把你的饭拿走，在等待的过程中，你什么都不能做，只能等后厨做好饭，这是同步操作，但是由于你和朋友同时都在各自的队伍中等待出餐，这就是并行两个任务。</p>
 <h3 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h3><p>并发并不要求必须同时执行，多个任务都是同时存在的。比并行的概念更宽泛。</p>
+<p>你和朋友去餐厅吃饭，你们排队等收银员接单，等队伍排到你们的时候，选了一份双人套餐，收银员通知后厨备餐，你拿到取餐号码。当等餐的时候，你和朋友找了一个位置，一起聊天，玩游戏，过程中，你会时不时的看有没有到你的号。到某一个时刻你看到叫你的号了，你可以等朋友把要说的故事讲完，再到前台取餐，然后一起吃饭，到此整个吃饭任务完成。</p>
 <h4 id="并发编程模型"><a href="#并发编程模型" class="headerlink" title="并发编程模型"></a>并发编程模型</h4><p>不同语言实现并发编程的模型不尽相同：</p>
 <ul>
 <li>操作系统线程：线程池方式让多个任务执行在多个线程上，需要处理线程同步，以及线程切换负载也很大。</li>
@@ -497,10 +500,27 @@
 <li>协程：像线程，但是它对系统底层进行抽象，实现语言自己的类似线程模型，语言的M个线程会以N个操作系统线程执行</li>
 <li>actor模型：把多个并发的计算任务分割为actor，actor之间通过消息传递，类似分布式系统。</li>
 </ul>
+<h3 id="并发与并行谁更好？"><a href="#并发与并行谁更好？" class="headerlink" title="并发与并行谁更好？"></a>并发与并行谁更好？</h3><p>并发在需要大量等待的场景下效果更好，例如在Web应用中，你的服务器在等待许多不同的客户通过网络发送请求过来，处理完请求后，再等用户的应答，在服务器等的过程中，其实可以做其一些他事情，提高服务器的工作效率，这就是并发。NodeJS和Go语言因此在web开发中很流行原因。</p>
+<p>对于在任何情况下，都不需要等待的任务，并发更高效。例如打扫整个房子，你可以先打扫卧室，再打扫客厅，最后打扫餐厅，整个打扫任务过程中，你都不需要等待，你总是在打扫；无论是否轮流并发执行这些打扫任务，使用的总时间都是相同的，因为中间过程都是实际工作打扫房间，你也没有要等待的事情。这时如果来三个人同时打扫，就可以使用原来三分之一的时间完成总任务，这种时候并发更好。每一个人都是一个独立的处理器。</p>
+<p>对于大多数执行时间都是实际工作而不是等待的任务，在计算机中一般都是由CPU来完成的，这些任务称为CPU密集型(CPU Bound)任务。CPU密集型的操作主要是复杂的数学计算，例如：</p>
+<ul>
+<li>音频或图像处理</li>
+<li>计算机视觉，对图像中的大量的像素点数据计算</li>
+<li>机器学习中有大量的矩阵和向量乘法</li>
+<li>深度学习中构建和使用模型</li>
+</ul>
 <h3 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h3><p>异步执行一个任务时不需要等待它执行完成，可以直接进行别的操作。</p>
 <p>同步必须等当前任务执行完成后，才能继续执行后续的操作。</p>
 <p>异步和并发没有关系。异步编程更像是一种并发编程模型，它可以让大量的任务并发执行在很小数量的操作系统线程上。</p>
 <p>例如编程书中，一般并发的章节中讲的都是多线程的知识，而异步的章节中讲的是<code>Future</code>和<code>async</code></p>
+<p>编程语言中的异步代码告诉计算机在代码执行的某一个时刻，它需要等待其他地方完成一些事情A，在等待的这段时间里，计算机可以做一些其他事情X。在A完成后，程序等很短时间计算机处理完它刚刚走开去处理的X后，回来继续自己的A后面任务。计算机只要一空闲就会遍历等待自己的任务依次处理。</p>
+<p>等待的事情一般都是IO耗时操作，所以又称为“IO密集型(I/O bound)”操作，例如：</p>
+<ul>
+<li>通过网络发送数据或接收网络数据</li>
+<li>从磁盘中读取文件内容，或写内容到磁盘文件中</li>
+<li>调用一个远程API</li>
+<li>数据库操作，查询等</li>
+</ul>
 <p>异步编程比使用多线程更便捷，不需要考虑线程间数据竞争和加锁的问题，代码写起来和同步执行的代码类似。</p>
 <h4 id="rust中异步"><a href="#rust中异步" class="headerlink" title="rust中异步"></a>rust中异步</h4><p> <a href="https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html" target="_blank" rel="noopener">Why Async? - Asynchronous Programming in Rust (rust-lang.github.io)</a> </p>
 <h5 id="什么时候用线程？"><a href="#什么时候用线程？" class="headerlink" title="什么时候用线程？"></a>什么时候用线程？</h5><p>当任务的数量比较少时。线程会有CPU切换和内存使用，切换线程非常占用系统资源。多线程可以不用大量修改现有的同步代码，系统编程时可以调整线程的优先级，这在对于时效敏感的程序很重要。使用多线程下载两个文件伪代码</p>
@@ -519,6 +539,8 @@
 <li>Reactor 与操作系统的实际机制<code>epoll</code>交互，当系统通知某个事件发生后，它通过Waker通知Executor对应的任务可以执行了</li>
 <li>任务队列 可以想象为有两个队列，一个是正在执行的队列，一个是等待唤醒的队列，这两个队列都由Executor来控制调度</li>
 </ul>
+<h4 id="python中的异步"><a href="#python中的异步" class="headerlink" title="python中的异步"></a>python中的异步</h4><p>python中使用<code>await</code>关键字告诉CPU程序执行到这里要等待一会儿，CPU可以去做点别的事情，等一会再回来。</p>
+<p><code>await</code>需要在<code>async def</code>定义的函数中使用，当调用一个<code>async def</code>定义的函数时也必须用<code>await</code>去等它</p>
 
       
     </div>
@@ -913,7 +935,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#并行与并发"><span class="nav-number">1.</span> <span class="nav-text">并行与并发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本差异"><span class="nav-number">1.1.</span> <span class="nav-text">基本差异</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并行"><span class="nav-number">1.2.</span> <span class="nav-text">并行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并发"><span class="nav-number">1.3.</span> <span class="nav-text">并发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#并发编程模型"><span class="nav-number">1.3.1.</span> <span class="nav-text">并发编程模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步"><span class="nav-number">1.4.</span> <span class="nav-text">异步</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rust中异步"><span class="nav-number">1.4.1.</span> <span class="nav-text">rust中异步</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#什么时候用线程？"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">什么时候用线程？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#什么时候使用异步？"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">什么时候使用异步？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rust异步编程模型"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">rust异步编程模型</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#并行与并发"><span class="nav-number">1.</span> <span class="nav-text">并行与并发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本差异"><span class="nav-number">1.1.</span> <span class="nav-text">基本差异</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并行"><span class="nav-number">1.2.</span> <span class="nav-text">并行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并发"><span class="nav-number">1.3.</span> <span class="nav-text">并发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#并发编程模型"><span class="nav-number">1.3.1.</span> <span class="nav-text">并发编程模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并发与并行谁更好？"><span class="nav-number">1.4.</span> <span class="nav-text">并发与并行谁更好？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步"><span class="nav-number">1.5.</span> <span class="nav-text">异步</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rust中异步"><span class="nav-number">1.5.1.</span> <span class="nav-text">rust中异步</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#什么时候用线程？"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">什么时候用线程？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#什么时候使用异步？"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">什么时候使用异步？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rust异步编程模型"><span class="nav-number">1.5.1.3.</span> <span class="nav-text">rust异步编程模型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#python中的异步"><span class="nav-number">1.5.2.</span> <span class="nav-text">python中的异步</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
