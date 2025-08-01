@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://memorywalker.github.io/uploads/tech/language-server.png">
 <meta property="og:image" content="http://memorywalker.github.io/2025/07/30/uploads/tech/init-launch.svg">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/tech/init-launch.svg">
-<meta property="og:updated_time" content="2025-08-01T14:25:13.042Z">
+<meta property="og:updated_time" content="2025-08-01T16:22:58.187Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="VS Code 工具">
 <meta name="twitter:description" content="VS Code工具Language Server Protocolhttps://microsoft.github.io/language-server-protocol/overviews/lsp/overview/ 代码编辑器中常用的自动补全，转到定义，浮动相关显示文档的功能，每个编辑工具对每种语言都有一套自己的实现，这是很大的重复工作。 通过对每种语言提供一个这个语言规范话的服务端，编辑工具">
@@ -418,7 +418,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2025-08-01 14:25:13" itemprop="dateModified" datetime="2025-08-01T14:25:13+00:00">2025-08-01</time>
+                <time title="修改时间：2025-08-01 16:22:58" itemprop="dateModified" datetime="2025-08-01T16:22:58+00:00">2025-08-01</time>
               
             
           </span>
@@ -493,6 +493,32 @@
 <p><a href="https://code.visualstudio.com/api/language-extensions/language-server-extension-guide" target="_blank" rel="noopener">https://code.visualstudio.com/api/language-extensions/language-server-extension-guide</a></p>
 <p>   <img src="../../uploads/tech/language-server.png" alt="language-server"><br>   <img src="/uploads/tech/language-server.png" alt="language-server">   </p>
 <h3 id="Debug-Adapter-Protocol"><a href="#Debug-Adapter-Protocol" class="headerlink" title="Debug Adapter Protocol"></a>Debug Adapter Protocol</h3><p><a href="https://microsoft.github.io/debug-adapter-protocol/overview" target="_blank" rel="noopener">https://microsoft.github.io/debug-adapter-protocol/overview</a></p>
+<p>开发工具在实现每一种编程语言的调试功能时，都需要使用自己的接口，针对性的开发这个语言的Debugger，这是很大的重复工作。</p>
+<p>DAP定义了开发工具和具体语言调试器之间的协议，现有的不同的开发工具和调试器不可能都去按这个协议去实现，所以在开发工具和调试器之间增加一个Debug Adapter的中间件，开发工具实现一个通用的调试功能，具体语言的Debug Adapter的中间件可以被不同的开发工具复用。</p>
+<p>标准化使用协议而不是API或客户端库方式定义，这样中间件可以使用最适合调试器或者开发工具的语言来实现。因为开发工具调试时看到的信息主要也是字符串，所以DAP主要使用字符串的格式的数据结构来与调试器的API交互。</p>
+<h4 id="基本协议"><a href="#基本协议" class="headerlink" title="基本协议"></a>基本协议</h4><p>协议包括消息头和内容，类似Http消息，这两个部分通过<code>\r\n</code>来分隔。</p>
+<h5 id="头部信息"><a href="#头部信息" class="headerlink" title="头部信息"></a>头部信息</h5><p>每一个头部字段由key和value组成，它们之间使用<code>:</code>分隔，每个字段以<code>\r\n</code>结束。</p>
+<p>目前头部字段只有一个，它的key是Content-Length表示内容部分的字节数量。</p>
+<p>一个next请求的消息举例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Content-Length: 119\r\n</span><br><span class="line">\r\n</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"seq"</span>: <span class="number">153</span>,</span><br><span class="line">    <span class="attr">"type"</span>: <span class="string">"request"</span>,</span><br><span class="line">    <span class="attr">"command"</span>: <span class="string">"next"</span>,</span><br><span class="line">    <span class="attr">"arguments"</span>: &#123;</span><br><span class="line">        <span class="attr">"threadId"</span>: <span class="number">3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="内容部分"><a href="#内容部分" class="headerlink" title="内容部分"></a>内容部分</h5><p>内容部分使用json格式描述请求，应答和事件，内容部分使用utf-8编码。</p>
+<h4 id="工作过程"><a href="#工作过程" class="headerlink" title="工作过程"></a>工作过程</h4><ol>
+<li>调试开始时，开发工具需要把Debug Adapter运行起来，有两种方式：<ul>
+<li>单会话模式：Debug Adapter作为一个单独的进程，开发工具和它通过标准输入和输出通信，调试结束，这个进程也会终止，对于并发的多个调试，开发工具需运行多个Debug Adapter。</li>
+<li>多会话模式：开发工具不启动Debug Adapter，它假设Debug Adapter已经在运行监听连接，开发工具每一次调试会话与Debug Adapter建立一个网络连接，有多少个调试会话，就有多少个连接。</li>
+</ul>
+</li>
+<li>开发工具给Debug Adapter发送初始请求， <a href="https://microsoft.github.io/debug-adapter-protocol/specification#Types_InitializeRequestArguments" target="_blank" rel="noopener"><strong>InitializeRequestArguments</strong></a>请求参数中包括开发工具的名称，开发工具支持的特性；Debug Adapter应答 <a href="https://microsoft.github.io/debug-adapter-protocol/specification#Types_InitializeResponse" target="_blank" rel="noopener"><strong>InitializeResponse</strong></a> 中通过 <a href="https://microsoft.github.io/debug-adapter-protocol/specification#Types_Capabilities" target="_blank" rel="noopener"><strong>Capabilities</strong></a> 告诉开发工具它支持的特性。一旦开发工具收到Debug Adapter应答的特性后，开发工具就可以发送一个Launch或Attach请求。<ul>
+<li>Launch请求：Debug Adapter启动被调式的程序，并与之通信，通常被调试程序作为Debug Adapter的子进程，程序的debug输出通过output事件连接到Debug Adapter。更好的方式是在终端中运行程序，Debug Adapter可以通过<a href="https://microsoft.github.io/debug-adapter-protocol/specification#Reverse_Requests_RunInTerminal" target="_blank" rel="noopener"><strong>runInTerminal</strong></a>请求要求开发工具在终端中启动被调试程序，这个终端可以是集成在开发工具或者可以被开发工具配置和管理的外部终端。</li>
+<li>attach请求：Debug Adapter直接连接一个已经运行起来的程序</li>
+</ul>
+</li>
+<li>配置断点和异常行为：Debug Adapter准备好接收配置信息后，它会给开发工具发送<a href="https://microsoft.github.io/debug-adapter-protocol/specification#Events_Initialized" target="_blank" rel="noopener"><strong>initialized</strong></a> 事件，开发工具这时才可以给Debug Adapter发送断点等配置信息，当所有的配置信息都发送完成后，开发工具要发送一个<a href="https://microsoft.github.io/debug-adapter-protocol/specification#Requests_ConfigurationDone" target="_blank" rel="noopener"><strong>configurationDoneRequest</strong></a>请求，告诉Debug Adapter配置信息发送完成了</li>
+<li>在Debug Adapter收到配置完成请求后，它可以开始响应之前的启动(Launch)或挂载(Attach)请求，然后调试过程就开始了。</li>
+<li>当触发断点或异常程序停止时，Debug Adapter会给开发工具发送 <a href="https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped" target="_blank" rel="noopener"><strong>stopped</strong></a>事件，开发工具在向Debug Adapter请求停止事件中的线程的栈帧信息和变量信息</li>
+<li>结束调试，开发工具给Debug Adapter发送 <a href="https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Terminate" target="_blank" rel="noopener"><strong>terminate</strong></a>请求，被调试程序可以正常终止，也可以发送<a href="https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Disconnect" target="_blank" rel="noopener"><strong>disconnect</strong></a> 强制结束被调试程序，对于Attached的程序，<a href="https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Disconnect" target="_blank" rel="noopener"><strong>disconnect</strong></a> 请求只是会断开调试器，被调试的程序还可以正常继续运行。</li>
+</ol>
 <p>客户端和Debug Adapter交互流程   <img src="../../uploads/tech/init-launch.svg" alt="init-launch"><br>   <img src="/uploads/tech/init-launch.svg" alt="init-launch">   </p>
 
       
@@ -894,7 +920,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#VS-Code工具"><span class="nav-number">1.</span> <span class="nav-text">VS Code工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Language-Server-Protocol"><span class="nav-number">1.1.</span> <span class="nav-text">Language Server Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#工作流程"><span class="nav-number">1.1.1.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语言服务"><span class="nav-number">1.1.2.</span> <span class="nav-text">语言服务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debug-Adapter-Protocol"><span class="nav-number">1.2.</span> <span class="nav-text">Debug Adapter Protocol</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#VS-Code工具"><span class="nav-number">1.</span> <span class="nav-text">VS Code工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Language-Server-Protocol"><span class="nav-number">1.1.</span> <span class="nav-text">Language Server Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#工作流程"><span class="nav-number">1.1.1.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语言服务"><span class="nav-number">1.1.2.</span> <span class="nav-text">语言服务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debug-Adapter-Protocol"><span class="nav-number">1.2.</span> <span class="nav-text">Debug Adapter Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本协议"><span class="nav-number">1.2.1.</span> <span class="nav-text">基本协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#头部信息"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">头部信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#内容部分"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">内容部分</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#工作过程"><span class="nav-number">1.2.2.</span> <span class="nav-text">工作过程</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
