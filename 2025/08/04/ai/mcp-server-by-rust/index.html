@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="rust创建MCP Server参考文档： https://www.shuttle.dev/blog/2025/07/18/how-to-build-a-stdio-mcp-server-in-rust https://mcpcat.io/guides/building-mcp-server-rust/ MCPhttps://modelcontextprotocol.io/overview MCP">
+<meta name="keywords" content="AI,rust,mcp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用rust创建MCP Server">
+<meta property="og:url" content="http://memorywalker.github.io/2025/08/04/ai/mcp-server-by-rust/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="rust创建MCP Server参考文档： https://www.shuttle.dev/blog/2025/07/18/how-to-build-a-stdio-mcp-server-in-rust https://mcpcat.io/guides/building-mcp-server-rust/ MCPhttps://modelcontextprotocol.io/overview MCP">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2025/08/04/uploads/ai/rust_dns_mcp_server_in_cline.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/rust_dns_mcp_server_in_cline.png">
+<meta property="og:updated_time" content="2025-08-04T17:19:47.791Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用rust创建MCP Server">
+<meta name="twitter:description" content="rust创建MCP Server参考文档： https://www.shuttle.dev/blog/2025/07/18/how-to-build-a-stdio-mcp-server-in-rust https://mcpcat.io/guides/building-mcp-server-rust/ MCPhttps://modelcontextprotocol.io/overview MCP">
+<meta name="twitter:image" content="http://memorywalker.github.io/2025/08/04/uploads/ai/rust_dns_mcp_server_in_cline.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2025/08/04/ai/mcp-server-by-rust/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用rust创建MCP Server | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2025/08/04/ai/mcp-server-by-rust/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用rust创建MCP Server
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2025-08-04 22:22:25 / 修改时间：17:19:47" itemprop="dateCreated datePublished" datetime="2025-08-04T22:22:25+00:00">2025-08-04</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="rust创建MCP-Server"><a href="#rust创建MCP-Server" class="headerlink" title="rust创建MCP Server"></a>rust创建MCP Server</h2><p>参考文档：</p>
+<p><a href="https://www.shuttle.dev/blog/2025/07/18/how-to-build-a-stdio-mcp-server-in-rust" target="_blank" rel="noopener">https://www.shuttle.dev/blog/2025/07/18/how-to-build-a-stdio-mcp-server-in-rust</a></p>
+<p><a href="https://mcpcat.io/guides/building-mcp-server-rust/" target="_blank" rel="noopener">https://mcpcat.io/guides/building-mcp-server-rust/</a></p>
+<h3 id="MCP"><a href="#MCP" class="headerlink" title="MCP"></a>MCP</h3><p><a href="https://modelcontextprotocol.io/overview" target="_blank" rel="noopener">https://modelcontextprotocol.io/overview</a></p>
+<p>MCP(Model Context Protocol)定义了AI模型使用外部工具或资源方法的协议，这样可以扩展AI的应用场景。Cursor，Claude，VS Code的Cline插件，CherryStudio这些模型客户端都可以作为MCP客户端，通过MCP协议，从MCP Server获取资源，工具。</p>
+<h4 id="传输类型"><a href="#传输类型" class="headerlink" title="传输类型"></a>传输类型</h4><p>MCP协议目前的传输类型有：</p>
+<ul>
+<li>stdio (standard input/output)标准输入输出流，主要在本地使用，可以访问本地文件系统，执行命令，访问数据库等</li>
+<li>SSE (Server-Sent-Events) 服务发送事件，运行在云服务器上，通过websockets连接</li>
+</ul>
+<h5 id="标准输入输出数据传输"><a href="#标准输入输出数据传输" class="headerlink" title="标准输入输出数据传输"></a>标准输入输出数据传输</h5><p>通过stdin接收请求，通过stdout发送响应。这种模式在命令行工具、脚本集成和进程间通信（IPC）使用。</p>
+<ul>
+<li><strong>标准输入 (stdin)</strong>: 程序读取输入数据的流（文件描述符0）</li>
+<li><strong>标准输出 (stdout)</strong>: 程序写入输出数据的流（文件描述符1）</li>
+<li><strong>标准错误 (stderr)</strong>: 程序写入错误信息的流（文件描述符2）</li>
+</ul>
+<p>一个程序使用标准输入输出数据传输流程：</p>
+<ol>
+<li>服务程序启动后，以阻塞模式从stdin读取数据</li>
+<li>其他程序向服务程序的stdin写入数据，数据格式通常为JSON-RPC请求</li>
+<li>服务程序解析读取的json数据做对应的处理</li>
+<li>服务程序将应答封装为JSON-RPC数据，写入stdout</li>
+</ol>
+<h4 id="MCP-Server基本工作流程"><a href="#MCP-Server基本工作流程" class="headerlink" title="MCP Server基本工作流程"></a>MCP Server基本工作流程</h4><ol>
+<li>AI客户端根据MCP Server获取它所能提供的工具、资源、提示词信息</li>
+<li>模型根据上下文决定使用哪些工具或资源</li>
+<li>MCP客户端根据AI模型决策的工具向MCP Server发送对应工具或资源请求</li>
+<li>MCP Server处理请求</li>
+<li>MCP Server返回结果给客户端</li>
+<li>AI模型把返回的结果应用在上下文中</li>
+</ol>
+<h3 id="创建一个查询DNS的MCP-Server"><a href="#创建一个查询DNS的MCP-Server" class="headerlink" title="创建一个查询DNS的MCP Server"></a>创建一个查询DNS的MCP Server</h3><p>这个MCP Server因为是本地使用使用stdio传输就可以</p>
+<h4 id="创建工程"><a href="#创建工程" class="headerlink" title="创建工程"></a>创建工程</h4><ol>
+<li><p><code>cargo new github-dns-mcp-server</code>，创建一个工程目录和默认的main.rs文件</p>
+</li>
+<li><p>添加工程依赖</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">tokio</span> = &#123; version = <span class="string">"1"</span>, features = [<span class="string">"full"</span>] &#125;</span><br><span class="line"><span class="attr">rmcp</span> = &#123; version = <span class="string">"0.3"</span>, features = [<span class="string">"server"</span>, <span class="string">"transport-io"</span>] &#125;</span><br><span class="line"><span class="attr">serde</span> = &#123; version = <span class="string">"1"</span>, features = [<span class="string">"derive"</span>] &#125;</span><br><span class="line"><span class="attr">reqwest</span> = <span class="string">"0.12"</span></span><br><span class="line"><span class="attr">anyhow</span> = <span class="string">"1.0"</span></span><br><span class="line"><span class="attr">schemars</span> = <span class="string">"1.0"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>tokio</code> 处理异步操作</li>
+<li><code>rmcp</code> MCP官方提供的<a href="https://github.com/modelcontextprotocol/rust-sdk" target="_blank" rel="noopener">Rust Model Context Protocol SDK</a></li>
+<li><code>serde</code> 序列化和反序列化MCP协议传输的 JSON-RPC (JSON Remote Procedure Call) 数据</li>
+<li><code>reqwest</code> 创建给 DNS lookup API (HackerTarget)的HTTP请求</li>
+<li><code>anyhow</code> 用来错误处理</li>
+<li><code>schemars</code> 用来生成 JSON schema </li>
+</ul>
+</li>
+</ol>
+<h4 id="实现服务功能"><a href="#实现服务功能" class="headerlink" title="实现服务功能"></a>实现服务功能</h4><p>新建一个<code>dns_mcp.rs</code>文件实现主要逻辑功能，具体宏的<a href="https://github.com/modelcontextprotocol/rust-sdk/blob/main/crates/rmcp-macros/README.md" target="_blank" rel="noopener">说明</a></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> rmcp::&#123;</span><br><span class="line">    ServerHandler,</span><br><span class="line">    handler::server::&#123;router::tool::ToolRouter, tool::Parameters&#125;,</span><br><span class="line">    model::&#123;ErrorData <span class="keyword">as</span> McpError, *&#125;,</span><br><span class="line">    schemars, tool, tool_handler, tool_router,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">use</span> serde::Deserialize;</span><br><span class="line"><span class="comment">// 写时复制智能指针</span></span><br><span class="line"><span class="keyword">use</span> std::&#123;borrow::Cow, future::Future&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Debug, Clone)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">DnsService</span></span> &#123;</span><br><span class="line">  	<span class="comment">// ToolRouter中有一个map，它的key为str，value为ToolRoute&lt;S&gt;，这样就根据字串来找到对应的工具，也就是路由功能</span></span><br><span class="line">    tool_router: ToolRouter&lt;DnsService&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义请求结构体，只有一个参数即域名的字串</span></span><br><span class="line"><span class="meta">#[derive(Debug, Deserialize, schemars::JsonSchema)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">DnsLookupRequest</span></span> &#123;</span><br><span class="line">    <span class="meta">#[schemars(description = <span class="meta-string">"The domain name to lookup"</span>)]</span></span><br><span class="line">    <span class="keyword">pub</span> domain: <span class="built_in">String</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// tool_router宏用来给impl代码段中的所有标记了#[rmcp::tool]的工具函数生成工具路由，它的new返回一个ToolRouter实例</span></span><br><span class="line"><span class="comment">// 自动收集所有 #[tool] 标记的方法，并注册到 ToolRouter 中</span></span><br><span class="line"><span class="meta">#[tool_router]</span></span><br><span class="line"><span class="keyword">impl</span> DnsService &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>() -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">Self</span> &#123;</span><br><span class="line">            tool_router: Self::tool_router(),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 定义一个工具名称为dns_lookup，默认情况下使用函数名作为工具的名称，也可以通过name字段指定别的名字</span></span><br><span class="line">    <span class="comment">//它接收一个 `Parameters&lt;DnsLookupRequest&gt;` 类型的参数，这个参数封装了请求数据</span></span><br><span class="line">    <span class="comment">// 返回一个 `Result`，成功时返回 `CallToolResult`，失败时返回 `McpError`</span></span><br><span class="line">    <span class="comment">// Parameters(request)：自动提取并反序列化请求参数</span></span><br><span class="line">    <span class="meta">#[tool(description = <span class="meta-string">"Perform DNS lookup for a domain name"</span>)]</span></span><br><span class="line">    <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">dns_lookup</span></span>(</span><br><span class="line">        &amp;<span class="keyword">self</span>,</span><br><span class="line">        Parameters(request): Parameters&lt;DnsLookupRequest&gt;,</span><br><span class="line">    ) -&gt; <span class="built_in">Result</span>&lt;CallToolResult, McpError&gt; &#123;</span><br><span class="line">        <span class="comment">// 使用 `reqwest` 库向 `hackertarget.com` 的API发送HTTP GET请求，查询指定的域名</span></span><br><span class="line">        <span class="keyword">let</span> response = reqwest::get(<span class="built_in">format!</span>(</span><br><span class="line">            <span class="string">"https://api.hackertarget.com/dnslookup/?q=&#123;&#125;"</span>,</span><br><span class="line">            request.domain</span><br><span class="line">        ))</span><br><span class="line">        .<span class="keyword">await</span></span><br><span class="line">        .map_err(|e| McpError &#123;</span><br><span class="line">            code: ErrorCode(-<span class="number">32603</span>),</span><br><span class="line">            message: Cow::from(<span class="built_in">format!</span>(<span class="string">"Request failed: &#123;&#125;"</span>, e)),</span><br><span class="line">            data: <span class="literal">None</span>,</span><br><span class="line">        &#125;)?;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> text = response.text().<span class="keyword">await</span>.map_err(|e| McpError &#123;</span><br><span class="line">            code: ErrorCode(-<span class="number">32603</span>),</span><br><span class="line">            message: Cow::from(<span class="built_in">format!</span>(<span class="string">"Failed to read response: &#123;&#125;"</span>, e)),</span><br><span class="line">            data: <span class="literal">None</span>,</span><br><span class="line">        &#125;)?;</span><br><span class="line">		<span class="comment">// 如果成功，把请求到的文本信息包装成CallToolResult::success</span></span><br><span class="line">        <span class="literal">Ok</span>(CallToolResult::success(<span class="built_in">vec!</span>[Content::text(text)]))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//  使用 #[tool_handler]属性宏为DnsService默认实现ServerHandler特性，包括list_tools和call_tool等</span></span><br><span class="line"><span class="meta">#[tool_handler]</span></span><br><span class="line"><span class="keyword">impl</span> ServerHandler <span class="keyword">for</span> DnsService &#123;</span><br><span class="line">    <span class="comment">// 实现 get_info 方法，返回服务器的信息</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">get_info</span></span>(&amp;<span class="keyword">self</span>) -&gt; ServerInfo &#123;</span><br><span class="line">        ServerInfo &#123;</span><br><span class="line">            protocol_version: ProtocolVersion::V_2024_11_05,</span><br><span class="line">            capabilities: ServerCapabilities::builder().enable_tools().build(),</span><br><span class="line">            server_info: Implementation::from_build_env(),</span><br><span class="line">            instructions: <span class="literal">Some</span>(<span class="string">"A DNS lookup service that queries domain information using the HackerTarget API. Use the dns_lookup tool to perform DNS lookups for any domain name."</span>.to_string()),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>main.rs中启动服务</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anyhow::<span class="built_in">Result</span>;</span><br><span class="line"><span class="keyword">use</span> dns_mcp::DnsService;</span><br><span class="line"><span class="keyword">use</span> rmcp::&#123;ServiceExt, transport::stdio&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">mod</span> dns_mcp;</span><br><span class="line"></span><br><span class="line"><span class="comment">//自动将 main 函数转换为异步入口点， 在后台创建和管理 Tokio 运行时</span></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() -&gt; <span class="built_in">Result</span>&lt;()&gt; &#123;</span><br><span class="line">    <span class="comment">// Create an instance of our DNS service</span></span><br><span class="line">    <span class="keyword">let</span> service = DnsService::new().serve(stdio()).<span class="keyword">await</span>?;</span><br><span class="line">    <span class="comment">// waiting(): 阻塞当前任务直到服务终止</span></span><br><span class="line">    service.waiting().<span class="keyword">await</span>?;</span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用MCP-Server"><a href="#使用MCP-Server" class="headerlink" title="使用MCP Server"></a>使用MCP Server</h3><h4 id="Cline中配置"><a href="#Cline中配置" class="headerlink" title="Cline中配置"></a>Cline中配置</h4><p>vs code的Cline插件配置文件<code>C:\Users\xxx\AppData\Roaming\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json</code>中配置MCP Server，因为就是普通的可执行程序，所以执行的命令就是编译生成的exe文件。</p>
+<p>开发过程中直接用编译出来的路径，实际应用可以放在系统环境变量中，例如使用<code>cargo install --path .</code>工程会编译release版本，并把编译出来的exe文件拷贝到Cargo的bin目录中，这样系统任何地方都可以访问。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"mcpServers"</span>: &#123;</span><br><span class="line">    <span class="attr">"github-dns"</span>: &#123;</span><br><span class="line">      <span class="attr">"disabled"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">"timeout"</span>: <span class="number">60</span>,</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"stdio"</span>,</span><br><span class="line">      <span class="attr">"command"</span>: <span class="string">"E:\\dev\\rust\\github-dns-mcp-server\\target\\debug\\github-dns-mcp-server.exe"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h4><p>在Cline的聊天框中询问 “tell me the dns records for github”</p>
+<p>目前我用的Qwen3-Coder模型会如下回答：</p>
+<p>The user wants to find the DNS records for github. I can see from the environment details that there’s a connected MCP server called “github-dns” that has a tool called “dns_lookup” which can perform DNS lookup for a domain name. This is exactly what I need.</p>
+<p>The dns_lookup tool requires a “domain” parameter, and I can infer that “github” refers to “github.com” which is the standard domain for GitHub.</p>
+<p>I’m currently in PLAN MODE, so I need to use the plan_mode_respond tool to acknowledge this request and explain my approach.</p>
+<p>I can help you find the DNS records for GitHub using the available MCP tools. I see there’s a connected DNS lookup tool that can perform this task.</p>
+<p>My approach will be:</p>
+<ol>
+<li>Use the dns_lookup tool from the github-dns MCP server to look up the DNS records for github.com</li>
+<li>Present the results to you</li>
+</ol>
+<p>Since you asked for DNS records for “github”, I’ll assume you mean “github.com” - is that correct? Or did you have a different GitHub-related domain in mind?</p>
+<p>在点击了Act模式后，Cline会运行MCP Server配置的github-dns-mcp-server.exe。通过Process Explorer可以看到github-dns-mcp-server.exe的父进程是VS Code。</p>
+<p>   <img src="../../uploads/ai/rust_dns_mcp_server_in_cline.png" alt="rust_dns_mcp_server_in_cline"><br>   <img src="/uploads/ai/rust_dns_mcp_server_in_cline.png" alt="rust_dns_mcp_server_in_cline">   </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/mcp/" rel="tag"># mcp</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/08/03/python/work-on-fastapi/" rel="next" title="FastAPI简单使用">
+                <i class="fa fa-chevron-left"></i> FastAPI简单使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">72</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">76</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#rust创建MCP-Server"><span class="nav-number">1.</span> <span class="nav-text">rust创建MCP Server</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MCP"><span class="nav-number">1.1.</span> <span class="nav-text">MCP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#传输类型"><span class="nav-number">1.1.1.</span> <span class="nav-text">传输类型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#标准输入输出数据传输"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">标准输入输出数据传输</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MCP-Server基本工作流程"><span class="nav-number">1.1.2.</span> <span class="nav-text">MCP Server基本工作流程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个查询DNS的MCP-Server"><span class="nav-number">1.2.</span> <span class="nav-text">创建一个查询DNS的MCP Server</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建工程"><span class="nav-number">1.2.1.</span> <span class="nav-text">创建工程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现服务功能"><span class="nav-number">1.2.2.</span> <span class="nav-text">实现服务功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用MCP-Server"><span class="nav-number">1.3.</span> <span class="nav-text">使用MCP Server</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cline中配置"><span class="nav-number">1.3.1.</span> <span class="nav-text">Cline中配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际应用"><span class="nav-number">1.3.2.</span> <span class="nav-text">实际应用</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
