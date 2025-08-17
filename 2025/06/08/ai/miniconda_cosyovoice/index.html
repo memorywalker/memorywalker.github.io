@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://memorywalker.github.io/uploads/ai/run_cosyvoice_webui.png">
 <meta property="og:image" content="http://memorywalker.github.io/2025/06/08/uploads/ai/cosyvoice_webui.png">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/ai/cosyvoice_webui.png">
-<meta property="og:updated_time" content="2025-08-10T10:01:01.699Z">
+<meta property="og:updated_time" content="2025-08-17T02:14:50.816Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cosy Voice 声音克隆">
 <meta name="twitter:description" content="Cosy Voice 声音克隆Cosy Voice V2是阿里开源的声音克隆模型，最少只需3秒原始音频，就可以克隆声音，支持中英文和中国部分地区方言。 Miniconda环境安装Anaconda提供python虚拟环境的功能，与pip不同的是它默认安装了常用的数据科学相关库，所以安装包比较大。除了python的库，它还提供了其他语言的预编译库。Miniconda也是Anaconda这个组织提供的A">
@@ -418,7 +418,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2025-08-10 10:01:01" itemprop="dateModified" datetime="2025-08-10T10:01:01+00:00">2025-08-10</time>
+                <time title="修改时间：2025-08-17 02:14:50" itemprop="dateModified" datetime="2025-08-17T02:14:50+00:00">2025-08-17</time>
               
             
           </span>
@@ -521,6 +521,55 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">  File "E:\ProgramData\miniconda3\envs\cosyvoice\lib\subprocess.py", line 1456, in _execute_child</span><br><span class="line">    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,</span><br><span class="line">FileNotFoundError: [WinError 2] The system cannot find the file specified</span><br></pre></td></tr></table></figure>
 
 <p>在官方issue中搜到了这个 <a href="https://github.com/FunAudioLLM/CosyVoice/issues/872#top" target="_blank" rel="noopener">系统找不到指定的文件。</a>，按照别人的解决方案从 <a href="https://github.com/BtbN/FFmpeg-Builds" target="_blank" rel="noopener">https://github.com/BtbN/FFmpeg-Builds</a> 下载ffmpeg-master-latest-win64-gpl-shared.zip 解压到任意目录，并把ffmpeg.exe所在的目录添加到系统环境变量path中，需要<strong>关闭原来的命令提示窗口(否则新添加的环境变量没识别)重新运行webui.py</strong>服务。</p>
+<h4 id="WSL的ubuntu24-04环境使用"><a href="#WSL的ubuntu24-04环境使用" class="headerlink" title="WSL的ubuntu24.04环境使用"></a>WSL的ubuntu24.04环境使用</h4><h5 id="准备运行环境"><a href="#准备运行环境" class="headerlink" title="准备运行环境"></a>准备运行环境</h5><h6 id="miniConda"><a href="#miniConda" class="headerlink" title="miniConda"></a>miniConda</h6><p>下载安装miniConda，官方教程是安装home目录，我放在e盘的wsl目录中，最后查了一下wsl使用ext4效率要比共享目录高很多倍，所以程序还是安装到ext4磁盘中比较好。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /mnt/e/wsl</span><br><span class="line">mkdir -p miniconda3</span><br><span class="line">wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ./miniconda3/miniconda.sh</span><br><span class="line">bash ./miniconda3/miniconda.sh -b -u -p ./miniconda3</span><br><span class="line"><span class="built_in">source</span> ./miniconda3/bin/activate</span><br><span class="line">conda init --all</span><br><span class="line"><span class="comment"># 接受两个协议</span></span><br><span class="line">conda tos accept --override-channels --channel  https://repo.anaconda.com/pkgs/main</span><br><span class="line">conda tos accept --override-channels --channel  https://repo.anaconda.com/pkgs/r</span><br></pre></td></tr></table></figure>
+
+<p>参考这份<a href="https://mirrors.ustc.edu.cn/help/anaconda.html" target="_blank" rel="noopener">指南</a>配置中科大的源，之前的清华源访问不了。 <code>vim ~/.condarc</code>，增加以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">channels:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">defaults</span></span><br><span class="line"><span class="attr">show_channel_urls:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">default_channels:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">https://mirrors.ustc.edu.cn/anaconda/pkgs/main</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">https://mirrors.ustc.edu.cn/anaconda/pkgs/r</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">https://mirrors.ustc.edu.cn/anaconda/pkgs/msys2</span></span><br><span class="line"><span class="attr">custom_channels:</span></span><br><span class="line">  <span class="attr">conda-forge:</span> <span class="string">https://mirrors.ustc.edu.cn/anaconda/cloud</span></span><br><span class="line">  <span class="attr">bioconda:</span> <span class="string">https://mirrors.ustc.edu.cn/anaconda/cloud</span></span><br></pre></td></tr></table></figure>
+
+<p>系统其他依赖</p>
+<ul>
+<li><p>提示<code>No such file or directory: &#39;ffprobe&#39;</code> 需要安装<code>sudo apt-get install ffmpeg</code> </p>
+</li>
+<li><p>提示<code>failed to import ttsfrd, use wetext instead</code> </p>
+<p>参看官方指南：</p>
+<ol>
+<li><p>下载模型<code>git clone https://www.modelscope.cn/iic/CosyVoice-ttsfrd.git pretrained_models/CosyVoice-ttsfrd</code></p>
+</li>
+<li><p>安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> pretrained_models/CosyVoice-ttsfrd/</span><br><span class="line">unzip resource.zip -d .</span><br><span class="line">pip install ttsfrd_dependency-0.1-py3-none-any.whl</span><br><span class="line">pip install ttsfrd-0.4.2-cp310-cp310-linux_x86_64.whl</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+</li>
+</ul>
+<h5 id="安装CosyVoice"><a href="#安装CosyVoice" class="headerlink" title="安装CosyVoice"></a>安装CosyVoice</h5><ol>
+<li><p>下载代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --recursive https://github.com/FunAudioLLM/CosyVoice.git</span><br><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建虚拟环境和下载依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">conda create -n cosyvoice -y python=3.10</span><br><span class="line">conda activate cosyvoice</span><br><span class="line">pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com</span><br></pre></td></tr></table></figure>
+
+<p>下载库的过程中<code>onnxruntime-gpu==1.18.0</code>这个包不是从国内源下载，即使只有200M也很慢，所以通过过程中的<a href="https://aiinfra.pkgs.visualstudio.com/2692857e-05ef-43b4-ba9c-ccf1c22c437c/_packaging/9387c3aa-d9ad-4513-968c-383f6f7f53b8/pypi/download/onnxruntime-gpu/1.18/onnxruntime_gpu-1.18.0-cp310-cp310-manylinux_2_28_x86_64.whl" target="_blank" rel="noopener">链接</a>地址使用IDM下载下来，再到wsl的虚拟环境中安装这个wheel文件，速度可以快很多。</p>
+</li>
+<li><p>执行<code>python webui.py</code>运行程序</p>
+</li>
+<li><p>在wsl中<code>ifconfig</code>查看本地的ip地址为<code>inet 172.26.44.35</code>，在windows中浏览器访问<a href="http://172.26.44.35:8000/" target="_blank" rel="noopener">http://172.26.44.35:8000/</a></p>
+</li>
+<li><p>目前运行时的信息<code>[WARNING] [real_accelerator.py:162:get_accelerator] Setting accelerator to CPU. If you have GPU or other accelerator, we were unable to detect it.</code>说明系统还是运行的cpu，实际在任务管理器中观察也是cpu在运行。</p>
+<p>使用以下脚本验证，的确不识别显卡</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">torch_info</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># Print the CUDA version that PyTorch is using</span></span><br><span class="line">    print(<span class="string">f"CUDA version: <span class="subst">&#123;torch.version.cuda&#125;</span>"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Check if CUDA is available</span></span><br><span class="line">    <span class="keyword">if</span> torch.cuda.is_available():</span><br><span class="line">        print(<span class="string">"CUDA is available."</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">"CUDA is not available."</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    torch_info()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+</li>
+</ol>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://doupoa.site/archives/581" target="_blank" rel="noopener">CosyVoice2-0.5B在Windows下本地完全部署、最小化部署</a></p>
 
       
@@ -936,7 +985,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cosy-Voice-声音克隆"><span class="nav-number">1.</span> <span class="nav-text">Cosy Voice 声音克隆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Miniconda环境安装"><span class="nav-number">1.1.</span> <span class="nav-text">Miniconda环境安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载安装包"><span class="nav-number">1.1.1.</span> <span class="nav-text">下载安装包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置镜像源"><span class="nav-number">1.1.2.</span> <span class="nav-text">配置镜像源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟环境"><span class="nav-number">1.1.3.</span> <span class="nav-text">虚拟环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cosy-Voice"><span class="nav-number">1.2.</span> <span class="nav-text">Cosy Voice</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载项目代码"><span class="nav-number">1.2.1.</span> <span class="nav-text">下载项目代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置虚拟环境"><span class="nav-number">1.2.2.</span> <span class="nav-text">配置虚拟环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装依赖和模型"><span class="nav-number">1.2.3.</span> <span class="nav-text">安装依赖和模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行模型"><span class="nav-number">1.2.4.</span> <span class="nav-text">运行模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#后台输出如下"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">后台输出如下</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#webui界面"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">webui界面</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遇到问题"><span class="nav-number">1.2.5.</span> <span class="nav-text">遇到问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">1.3.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cosy-Voice-声音克隆"><span class="nav-number">1.</span> <span class="nav-text">Cosy Voice 声音克隆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Miniconda环境安装"><span class="nav-number">1.1.</span> <span class="nav-text">Miniconda环境安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载安装包"><span class="nav-number">1.1.1.</span> <span class="nav-text">下载安装包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置镜像源"><span class="nav-number">1.1.2.</span> <span class="nav-text">配置镜像源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟环境"><span class="nav-number">1.1.3.</span> <span class="nav-text">虚拟环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cosy-Voice"><span class="nav-number">1.2.</span> <span class="nav-text">Cosy Voice</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载项目代码"><span class="nav-number">1.2.1.</span> <span class="nav-text">下载项目代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置虚拟环境"><span class="nav-number">1.2.2.</span> <span class="nav-text">配置虚拟环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装依赖和模型"><span class="nav-number">1.2.3.</span> <span class="nav-text">安装依赖和模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行模型"><span class="nav-number">1.2.4.</span> <span class="nav-text">运行模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#后台输出如下"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">后台输出如下</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#webui界面"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">webui界面</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遇到问题"><span class="nav-number">1.2.5.</span> <span class="nav-text">遇到问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WSL的ubuntu24-04环境使用"><span class="nav-number">1.2.6.</span> <span class="nav-text">WSL的ubuntu24.04环境使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#准备运行环境"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">准备运行环境</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#miniConda"><span class="nav-number">1.2.6.1.1.</span> <span class="nav-text">miniConda</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装CosyVoice"><span class="nav-number">1.2.6.2.</span> <span class="nav-text">安装CosyVoice</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">1.3.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
             
 
           </div>
