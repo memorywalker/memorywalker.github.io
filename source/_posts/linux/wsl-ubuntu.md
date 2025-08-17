@@ -77,6 +77,7 @@ This message is shown once a day. To disable it please create the
 * 使用root用户登录，在powershell中执行`wsl -u -root`或者`wsl --distribution <Distribution Name> --user <User Name>`
 * 帮助信息`wsl --help`
 * 关闭系统`wsl --shutdown` 或者`wsl -t <系统名称>`
+* 删除系统 `--unregister <Distro>`
 
 #### 文件访问
 
@@ -198,6 +199,3 @@ AMD官方文档 https://rocm.blogs.amd.com/software-tools-optimization/rocm-on-w
 
 
 
-
-
-#### 
