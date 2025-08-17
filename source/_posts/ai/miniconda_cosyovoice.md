@@ -158,6 +158,111 @@ FileNotFoundError: [WinError 2] The system cannot find the file specified
 
 在官方issue中搜到了这个 [系统找不到指定的文件。](https://github.com/FunAudioLLM/CosyVoice/issues/872#top)，按照别人的解决方案从 https://github.com/BtbN/FFmpeg-Builds 下载ffmpeg-master-latest-win64-gpl-shared.zip 解压到任意目录，并把ffmpeg.exe所在的目录添加到系统环境变量path中，需要**关闭原来的命令提示窗口(否则新添加的环境变量没识别)重新运行webui.py**服务。
 
+#### WSL的ubuntu24.04环境使用
+
+##### 准备运行环境
+
+###### miniConda
+
+下载安装miniConda，官方教程是安装home目录，我放在e盘的wsl目录中，最后查了一下wsl使用ext4效率要比共享目录高很多倍，所以程序还是安装到ext4磁盘中比较好。
+
+```bash
+cd /mnt/e/wsl
+mkdir -p miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ./miniconda3/miniconda.sh
+bash ./miniconda3/miniconda.sh -b -u -p ./miniconda3
+source ./miniconda3/bin/activate
+conda init --all
+# 接受两个协议
+conda tos accept --override-channels --channel  https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel  https://repo.anaconda.com/pkgs/r
+```
+
+参考这份[指南](https://mirrors.ustc.edu.cn/help/anaconda.html)配置中科大的源，之前的清华源访问不了。 `vim ~/.condarc`，增加以下内容
+
+```yaml
+channels:
+  - defaults
+show_channel_urls: true
+default_channels:
+  - https://mirrors.ustc.edu.cn/anaconda/pkgs/main
+  - https://mirrors.ustc.edu.cn/anaconda/pkgs/r
+  - https://mirrors.ustc.edu.cn/anaconda/pkgs/msys2
+custom_channels:
+  conda-forge: https://mirrors.ustc.edu.cn/anaconda/cloud
+  bioconda: https://mirrors.ustc.edu.cn/anaconda/cloud
+```
+
+系统其他依赖
+
+* 提示`No such file or directory: 'ffprobe'` 需要安装`sudo apt-get install ffmpeg` 
+
+* 提示`failed to import ttsfrd, use wetext instead` 
+
+  参看官方指南：
+
+  1. 下载模型`git clone https://www.modelscope.cn/iic/CosyVoice-ttsfrd.git pretrained_models/CosyVoice-ttsfrd`
+
+  2. 安装
+     ```bash
+     cd pretrained_models/CosyVoice-ttsfrd/
+     unzip resource.zip -d .
+     pip install ttsfrd_dependency-0.1-py3-none-any.whl
+     pip install ttsfrd-0.4.2-cp310-cp310-linux_x86_64.whl
+     ```
+
+
+##### 安装CosyVoice
+
+1. 下载代码
+
+   ```bash
+   git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+   git submodule update --init --recursive
+   ```
+
+2. 创建虚拟环境和下载依赖
+
+   ```bash
+   conda create -n cosyvoice -y python=3.10
+   conda activate cosyvoice
+   pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
+   ```
+   下载库的过程中`onnxruntime-gpu==1.18.0`这个包不是从国内源下载，即使只有200M也很慢，所以通过过程中的[链接](https://aiinfra.pkgs.visualstudio.com/2692857e-05ef-43b4-ba9c-ccf1c22c437c/_packaging/9387c3aa-d9ad-4513-968c-383f6f7f53b8/pypi/download/onnxruntime-gpu/1.18/onnxruntime_gpu-1.18.0-cp310-cp310-manylinux_2_28_x86_64.whl)地址使用IDM下载下来，再到wsl的虚拟环境中安装这个wheel文件，速度可以快很多。
+
+3. 执行`python webui.py`运行程序
+
+4. 在wsl中`ifconfig`查看本地的ip地址为`inet 172.26.44.35 `，在windows中浏览器访问http://172.26.44.35:8000/
+
+5. 目前运行时的信息` [WARNING] [real_accelerator.py:162:get_accelerator] Setting accelerator to CPU. If you have GPU or other accelerator, we were unable to detect it.`说明系统还是运行的cpu，实际在任务管理器中观察也是cpu在运行。
+
+   使用以下脚本验证，的确不识别显卡
+
+   ```python
+   import torch
+   
+   def torch_info():
+       # Print the CUDA version that PyTorch is using
+       print(f"CUDA version: {torch.version.cuda}")
+   
+       # Check if CUDA is available
+       if torch.cuda.is_available():
+           print("CUDA is available.")
+       else:
+           print("CUDA is not available.")
+   
+   if __name__ == '__main__':
+       torch_info()
+   ```
+
+   
+
+
+
+   
+
+
+
 ### 参考资料
 
 [CosyVoice2-0.5B在Windows下本地完全部署、最小化部署](https://doupoa.site/archives/581)

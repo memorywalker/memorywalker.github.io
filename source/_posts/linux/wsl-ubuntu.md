@@ -133,7 +133,7 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 amd官方指南文档 https://rocm.docs.amd.com/projects/radeon/en/latest/docs/install/wsl/install-radeon.html
 
-1. 下载地址https://www.amd.com/zh-cn/support/download/linux-drivers.html，下文件`amdgpu-install_6.4.60402-1_all.deb`
+1. 下载地址https://www.amd.com/zh-cn/support/download/linux-drivers.html，下文件`amdgpu-install_6.4.60402-1_all.deb` [下载地址](https://repo.radeon.com/amdgpu-install/6.4.2.1/ubuntu/noble/amdgpu-install_6.4.60402-1_all.deb)
 
 2. `sudo dpkg -i amdgpu-install_6.4.60402-1_all.deb` 安装`amdgpu-install`脚本
 
@@ -141,7 +141,7 @@ amd官方指南文档 https://rocm.docs.amd.com/projects/radeon/en/latest/docs/i
 
 4. 在这之前一定配置好国外的安装源，要下载很多文件，执行`amdgpu-install -y --usecase=wsl,rocm --no-dkms` 安装WSL usecase
 
-5. 执行`rocminfo`查看版本信息
+5. 执行`rocminfo`查看版本信息，发现并没有识别到显卡，amd官方不支持老的显卡
 
    ```bash
    *******
@@ -156,7 +156,45 @@ amd官方指南文档 https://rocm.docs.amd.com/projects/radeon/en/latest/docs/i
      Float Round Mode:        NEAR
    ```
 
-   ​
+### ComfyUI（未完成）
+
+由于官方不支持6650XT显卡，所以这部分只是按照官方正常安装操作，最终验证pytorch时，还是会检测不到显卡
+
+AMD官方文档 https://rocm.blogs.amd.com/software-tools-optimization/rocm-on-wsl/README.html
+
+1. 安装虚拟环境`conda create -n comfyui -y python=3.12`
+
+2. 激活虚拟环境 `conda activate comfyui`
+
+3. 到`https://repo.radeon.com/rocm/manylinux/`下载对应版本的pytorch文件 我的`amdgpu-install_6.4.60402-1_all.deb`版本从下载路径上看是6.4.2.1
+
+   ```bash
+   https://repo.radeon.com/rocm/manylinux/rocm-rel-6.4.2/torch-2.6.0%2Brocm6.4.2.git76481f7c-cp312-cp312-linux_x86_64.whl  3.79G
+   https://repo.radeon.com/rocm/manylinux/rocm-rel-6.4.2/torchvision-0.21.0%2Brocm6.4.2.git4040d51f-cp312-cp312-linux_x86_64.whl 2.34M
+   https://repo.radeon.com/rocm/manylinux/rocm-rel-6.4.2/pytorch_triton_rocm-3.2.0%2Brocm6.4.2.git7e948ebf-cp312-cp312-linux_x86_64.whl 253.91M
+   https://repo.radeon.com/rocm/manylinux/rocm-rel-6.4.2/torchaudio-2.6.0%2Brocm6.4.2.gitd8831425-cp312-cp312-linux_x86_64.whl 1.68M
+   ```
+
+4. 更新pip `pip3 install \--upgrade pip wheel`
+
+5. 依次安装下载好的文件 `pip3 install ***.whl`，过程中还会联网下载一些其他依赖库例如numpy
+
+   ```
+   pip3 install torch-2.6.0+rocm6.4.2.git76481f7c-cp312-cp312-linux_x86_64.whl torchvision-0.21.0+rocm6.4.2.git4040d51f-cp312-cp312-linux_x86_64.whl torchaudio-2.6.0+rocm6.4.2.gitd8831425-cp312-cp312-linux_x86_64.whl pytorch_triton_rocm-3.2.0+rocm6.4.2.git7e948ebf-cp312-cp312-linux_x86_64.whl
+   ```
+
+6. 删除pytorch库中的rocm库文件，使用系统安装的
+
+   ```sh
+   location=$(pip show torch | grep Location | awk -F ": " '{print $2}')
+   cd ${location}/torch/lib/
+   rm libhsa-runtime64.so*
+   cp /opt/rocm/lib/libhsa-runtime64.so.1.15.60402 libhsa-runtime64.so
+   ```
+
+7.  因为libhsa-runtime64.so库依赖GCC 12.1，所以使用conda还需要安装  GCC 12.1 `conda install -c conda-forge gcc=12.1.0`
+
+8. 使用命令检查安装是否成功 `python3 -c 'import torch' 2> /dev/null && echo 'Success' || echo 'Failure'`
 
 
 
