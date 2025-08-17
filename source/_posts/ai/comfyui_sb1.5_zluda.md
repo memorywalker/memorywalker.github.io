@@ -135,7 +135,67 @@ VAE Decode节点把生成的采样数据生成图片，它的vae和checkpoint的
 ![Comfyui_make_image](../../uploads/ai/Comfyui_make_image.png)
 ![Comfyui_make_image](/uploads/ai/Comfyui_make_image.png)
 
+### Index-TTS 1.5
+
+#### 插件1. ComfyUI-Index-TTS
+
+插件项目[ComfyUI-Index-TTS](https://github.com/chenpipi0807/ComfyUI-Index-TTS)
+
+1. 在ComfyUI的custom_nodes目录下，执行`git clone https://github.com/chenpipi0807/ComfyUI-Index-TTS.git`下载插件代码到ComfyUI-Index-TTS目录中
+
+2. 激活ComfyUI的虚拟环境后，执行`pip install -r requirements.txt`下载项目依赖
+
+   pynini和WeTextProcessing这两个因为没有官方windows版本，需要单独安装
+
+   https://github.com/SystemPanic/pynini-windows 下载windows编译好的whl文件安装到虚拟环境中，版本为2.1.6.post1
+
+   https://pypi.org/project/WeTextProcessing/#WeTextProcessing-1.0.4.1-py3-none-any.whl 下载WeTextProcessing的whl文件，使用不处理依赖的方式安装
+
+   `pip install WeTextProcessing-1.0.4.1-py3-none-any.whl --no-deps` 
+
+   然后参考https://github.com/wenet-e2e/WeTextProcessing的[requirements.txt](https://github.com/wenet-e2e/WeTextProcessing/blob/master/requirements.txt)手动安装依赖，中间会提示依赖有错，不过不影响使用
+
+   ```bash
+   pip install flake8
+   pip install importlib_resources
+   pip install pre-commit
+   pip install pytest
+   pip install matplotlib
+   ```
+
+3. 在ComfyUI的模型目录下 `ComfyUI-Zluda\models`执行以下命令，下载模型到IndexTTS-1.5目录中
+
+```bash
+git lfs install
+git clone https://www.modelscope.cn/IndexTeam/IndexTTS-1.5.git
+```
+
+4. 运行comfyui.bat后，可以在模板的Custom Node下面导入默认的例子工作流
+
+生成40s的音频用35s时间，效果很不错, 声音素材https://drive.google.com/drive/folders/1AyB3egmr0hAKp0CScI0eXJaUdVccArGB
+
+![comfyui_index_tts](../../uploads/ai/comfyui_index_tts.png)
+![comfyui_index_tts](/uploads/ai/comfyui_index_tts.png)
+
+#### 插件2.ComfyUI_IndexTTS
+
+项目地址[ComfyUI_IndexTTS](https://github.com/billwuhao/ComfyUI_IndexTTS)，这个项目支持多人对话和之前相比各有特色
+
+作者的另一个网站 https://aiart.website/ 
+
+这个项目的说明中给出了pynini的安装方法，到https://github.com/billwuhao/pynini-windows-wheels 下载自己对应版本的pynini安装文件 [pynini-2.1.6.post1-cp312-cp312-win_amd64.whl](https://github.com/billwuhao/pynini-windows-wheels/releases/download/v2.1.6.post1/pynini-2.1.6.post1-cp312-cp312-win_amd64.whl)，这里编译了Python3.10到3.13的所有版本，虚拟环境中执行
+
+```bash
+pip install pynini-2.1.6.post1-cp312-cp312-win_amd64.whl
+pip install importlib_resources
+pip install WeTextProcessing>=1.0.4 --no-deps
+```
+
+
+
 ### 问题解决
+
+
 
 * 2025-08-17 运行comfyui.bat更新最新版本后，无法运行，提示` CUDA initialization: CUDA unknown error` 查了一下zluda不识别最新的AMD显卡驱动，我因为这条wsl把显卡更新为**25.8.1**了，因为用的zluda版本3.9.2版本不支持新驱动，所以回退驱动版本**25.4.1**就可以和以前一样使用了。也可以升级使用最新的3.9.5版本的zluda，这样可以使用新的驱动，顺便把torch版本也升级到2.7。
 * 
