@@ -114,7 +114,9 @@
 <meta property="og:image" content="http://memorywalker.github.io/uploads/ai/start_comfyui_zluda.png">
 <meta property="og:image" content="http://memorywalker.github.io/2025/06/08/uploads/ai/Comfyui_make_image.png">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/ai/Comfyui_make_image.png">
-<meta property="og:updated_time" content="2025-08-17T11:52:45.240Z">
+<meta property="og:image" content="http://memorywalker.github.io/2025/06/08/uploads/ai/comfyui_index_tts.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/comfyui_index_tts.png">
+<meta property="og:updated_time" content="2025-08-17T15:13:16.270Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AMD GPU使用ComfyUI-Zluda简单图像生成">
 <meta name="twitter:description" content="AMD GPU使用ComfyUI-Zluda简单图像生成使用ComfyUI进行间的的文本图像生成，AMD显卡运行pytorch需要额外的配置 AMD显卡Rocm HIP SDK以我的电脑AMD 6650 XT 8G显卡为例：  从  https://rocm.docs.amd.com/projects/install-on-windows/en/develop/reference/system-r">
@@ -424,7 +426,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2025-08-17 11:52:45" itemprop="dateModified" datetime="2025-08-17T11:52:45+00:00">2025-08-17</time>
+                <time title="修改时间：2025-08-17 15:13:16" itemprop="dateModified" datetime="2025-08-17T15:13:16+00:00">2025-08-17</time>
               
             
           </span>
@@ -543,6 +545,33 @@
 <h3 id="试用总结"><a href="#试用总结" class="headerlink" title="试用总结"></a>试用总结</h3><p>官方模型4G多，网友分享的模型2G，二者比较居然是后者生成的图像质量高很多。官方的1.5模型生成的人物脸都变形了。第一次加载模型使用的时间比较长，后面修改提示词再生成图像就只需要几秒时间。</p>
 <p>第一次使用stable diffusion和ComfyUI，很多名词和概念都不明白，但整个过程还是很简单，就像小时候玩积木游戏，一步一步操作，查看输出，满满成就感。</p>
 <p><img src="../../uploads/ai/Comfyui_make_image.png" alt="Comfyui_make_image"><br><img src="/uploads/ai/Comfyui_make_image.png" alt="Comfyui_make_image"></p>
+<h3 id="Index-TTS-1-5"><a href="#Index-TTS-1-5" class="headerlink" title="Index-TTS 1.5"></a>Index-TTS 1.5</h3><h4 id="插件1-ComfyUI-Index-TTS"><a href="#插件1-ComfyUI-Index-TTS" class="headerlink" title="插件1. ComfyUI-Index-TTS"></a>插件1. ComfyUI-Index-TTS</h4><p>插件项目<a href="https://github.com/chenpipi0807/ComfyUI-Index-TTS" target="_blank" rel="noopener">ComfyUI-Index-TTS</a></p>
+<ol>
+<li><p>在ComfyUI的custom_nodes目录下，执行<code>git clone https://github.com/chenpipi0807/ComfyUI-Index-TTS.git</code>下载插件代码到ComfyUI-Index-TTS目录中</p>
+</li>
+<li><p>激活ComfyUI的虚拟环境后，执行<code>pip install -r requirements.txt</code>下载项目依赖</p>
+<p>pynini和WeTextProcessing这两个因为没有官方windows版本，需要单独安装</p>
+<p><a href="https://github.com/SystemPanic/pynini-windows" target="_blank" rel="noopener">https://github.com/SystemPanic/pynini-windows</a> 下载windows编译好的whl文件安装到虚拟环境中，版本为2.1.6.post1</p>
+<p><a href="https://pypi.org/project/WeTextProcessing/#WeTextProcessing-1.0.4.1-py3-none-any.whl" target="_blank" rel="noopener">https://pypi.org/project/WeTextProcessing/#WeTextProcessing-1.0.4.1-py3-none-any.whl</a> 下载WeTextProcessing的whl文件，使用不处理依赖的方式安装</p>
+<p><code>pip install WeTextProcessing-1.0.4.1-py3-none-any.whl --no-deps</code> </p>
+<p>然后参考<a href="https://github.com/wenet-e2e/WeTextProcessing的[requirements.txt](https://github.com/wenet-e2e/WeTextProcessing/blob/master/requirements.txt)手动安装依赖，中间会提示依赖有错，不过不影响使用" target="_blank" rel="noopener">https://github.com/wenet-e2e/WeTextProcessing的[requirements.txt](https://github.com/wenet-e2e/WeTextProcessing/blob/master/requirements.txt)手动安装依赖，中间会提示依赖有错，不过不影响使用</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pip install flake8</span><br><span class="line">pip install importlib_resources</span><br><span class="line">pip install pre-commit</span><br><span class="line">pip install pytest</span><br><span class="line">pip install matplotlib</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在ComfyUI的模型目录下 <code>ComfyUI-Zluda\models</code>执行以下命令，下载模型到IndexTTS-1.5目录中</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git lfs install</span><br><span class="line">git <span class="built_in">clone</span> https://www.modelscope.cn/IndexTeam/IndexTTS-1.5.git</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>运行comfyui.bat后，可以在模板的Custom Node下面导入默认的例子工作流</li>
+</ol>
+<p>生成40s的音频用35s时间，效果很不错, 声音素材<a href="https://drive.google.com/drive/folders/1AyB3egmr0hAKp0CScI0eXJaUdVccArGB" target="_blank" rel="noopener">https://drive.google.com/drive/folders/1AyB3egmr0hAKp0CScI0eXJaUdVccArGB</a></p>
+<p><img src="../../uploads/ai/comfyui_index_tts.png" alt="comfyui_index_tts"><br><img src="/uploads/ai/comfyui_index_tts.png" alt="comfyui_index_tts"></p>
+<h4 id="插件2-ComfyUI-IndexTTS"><a href="#插件2-ComfyUI-IndexTTS" class="headerlink" title="插件2.ComfyUI_IndexTTS"></a>插件2.ComfyUI_IndexTTS</h4><p>项目地址<a href="https://github.com/billwuhao/ComfyUI_IndexTTS" target="_blank" rel="noopener">ComfyUI_IndexTTS</a>，这个项目支持多人对话和之前相比各有特色</p>
+<p>作者的另一个网站 <a href="https://aiart.website/" target="_blank" rel="noopener">https://aiart.website/</a> </p>
+<p>这个项目的说明中给出了pynini的安装方法，到<a href="https://github.com/billwuhao/pynini-windows-wheels" target="_blank" rel="noopener">https://github.com/billwuhao/pynini-windows-wheels</a> 下载自己对应版本的pynini安装文件 <a href="https://github.com/billwuhao/pynini-windows-wheels/releases/download/v2.1.6.post1/pynini-2.1.6.post1-cp312-cp312-win_amd64.whl" target="_blank" rel="noopener">pynini-2.1.6.post1-cp312-cp312-win_amd64.whl</a>，这里编译了Python3.10到3.13的所有版本，虚拟环境中执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install pynini-2.1.6.post1-cp312-cp312-win_amd64.whl</span><br><span class="line">pip install importlib_resources</span><br><span class="line">pip install WeTextProcessing&gt;=1.0.4 --no-deps</span><br></pre></td></tr></table></figure>
+
 <h3 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h3><ul>
 <li>2025-08-17 运行comfyui.bat更新最新版本后，无法运行，提示<code>CUDA initialization: CUDA unknown error</code> 查了一下zluda不识别最新的AMD显卡驱动，我因为这条wsl把显卡更新为<strong>25.8.1</strong>了，因为用的zluda版本3.9.2版本不支持新驱动，所以回退驱动版本<strong>25.4.1</strong>就可以和以前一样使用了。也可以升级使用最新的3.9.5版本的zluda，这样可以使用新的驱动，顺便把torch版本也升级到2.7。</li>
 <li></li>
@@ -963,7 +992,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AMD-GPU使用ComfyUI-Zluda简单图像生成"><span class="nav-number">1.</span> <span class="nav-text">AMD GPU使用ComfyUI-Zluda简单图像生成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AMD显卡Rocm-HIP-SDK"><span class="nav-number">1.1.</span> <span class="nav-text">AMD显卡Rocm HIP SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#升级使用3-9-5版本Zluda"><span class="nav-number">1.2.</span> <span class="nav-text">升级使用3.9.5版本Zluda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装ComfyUI-Zluda"><span class="nav-number">1.3.</span> <span class="nav-text">安装ComfyUI-Zluda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ComfyUI文本生成图像"><span class="nav-number">1.4.</span> <span class="nav-text">ComfyUI文本生成图像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-加载模型"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 加载模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-输入提示词"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 输入提示词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-设置图片大小"><span class="nav-number">1.4.3.</span> <span class="nav-text">3. 设置图片大小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-图像采样KSampler"><span class="nav-number">1.4.4.</span> <span class="nav-text">4. 图像采样KSampler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-合成图像"><span class="nav-number">1.4.5.</span> <span class="nav-text">5. 合成图像</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#试用总结"><span class="nav-number">1.5.</span> <span class="nav-text">试用总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题解决"><span class="nav-number">1.6.</span> <span class="nav-text">问题解决</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AMD-GPU使用ComfyUI-Zluda简单图像生成"><span class="nav-number">1.</span> <span class="nav-text">AMD GPU使用ComfyUI-Zluda简单图像生成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AMD显卡Rocm-HIP-SDK"><span class="nav-number">1.1.</span> <span class="nav-text">AMD显卡Rocm HIP SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#升级使用3-9-5版本Zluda"><span class="nav-number">1.2.</span> <span class="nav-text">升级使用3.9.5版本Zluda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装ComfyUI-Zluda"><span class="nav-number">1.3.</span> <span class="nav-text">安装ComfyUI-Zluda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ComfyUI文本生成图像"><span class="nav-number">1.4.</span> <span class="nav-text">ComfyUI文本生成图像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-加载模型"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 加载模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-输入提示词"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 输入提示词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-设置图片大小"><span class="nav-number">1.4.3.</span> <span class="nav-text">3. 设置图片大小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-图像采样KSampler"><span class="nav-number">1.4.4.</span> <span class="nav-text">4. 图像采样KSampler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-合成图像"><span class="nav-number">1.4.5.</span> <span class="nav-text">5. 合成图像</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#试用总结"><span class="nav-number">1.5.</span> <span class="nav-text">试用总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index-TTS-1-5"><span class="nav-number">1.6.</span> <span class="nav-text">Index-TTS 1.5</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#插件1-ComfyUI-Index-TTS"><span class="nav-number">1.6.1.</span> <span class="nav-text">插件1. ComfyUI-Index-TTS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#插件2-ComfyUI-IndexTTS"><span class="nav-number">1.6.2.</span> <span class="nav-text">插件2.ComfyUI_IndexTTS</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题解决"><span class="nav-number">1.7.</span> <span class="nav-text">问题解决</span></a></li></ol></li></ol></div>
             
 
           </div>
