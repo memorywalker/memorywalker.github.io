@@ -30,6 +30,40 @@ tags:
 
 5. 系统环境变量path中添加 `C:\Program Files\AMD\ROCm\6.2\bin`目录
 
+### 升级使用3.9.5版本Zluda
+
+在https://github.com/patientx/ComfyUI-Zluda 有说明更新3.9.5版本，同时`patchzluda-n.bat`文件中也有注释说明
+
+1. 安装25.5.1以上的驱动，这也是zluda3.9.5更新中说明支持的版本，我选择安装了25.6.1版本
+
+2. 卸载已经安装的HIP SDK，删除目录`C:\Program Files\AMD\ROCm\6.2`，因之前替换还有残留的文件 ，下载[6.2.4版本](https://www.amd.com/en/developer/resources/rocm-hub/eula/licenses.html?filename=AMD-Software-PRO-Edition-24.Q4-Win10-Win11-For-HIP.exe) 重新安装
+
+3. https://drive.google.com/file/d/1Gvg3hxNEj2Vsd2nQgwadrUEY6dYXy0H9/view?usp=sharing 下载新的补丁`HIP-SDK-extension.zip`覆盖到`C:\Program Files\AMD\ROCm\6.2`目录，不确定这一步是不是必须的，下载的文件有2.12G
+
+4. 在 https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases 下载适用于gfx1032的6.2.4版本[rocm.gfx1032.for.hip.sdk.6.2.4.navi21.logic.7z](https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.2.4/rocm.gfx1032.for.hip.sdk.6.2.4.navi21.logic.7z) 覆盖到 `C:\Program Files\AMD\ROCm\6.2\bin`目录中的`rocblas.dll`和`C:\Program Files\AMD\ROCm\6.2\bin\rocblas\library`目录，否则会提示`rocBLAS error: Cannot read C:\Program Files\AMD\ROCm\6.2\bin\/rocblas/library/TensileLibrary.dat: No such file or directory for GPU arch : gfx1032`
+
+5. 删除`C:\Users\Edison\AppData\Local\ZLUDA\ComputeCache`
+
+6. 运行根目录的`patchzluda-n.bat`，会先卸载之前默认安装的2.3版本的torch，改为安装2.7版本的torch ，我用IDM手动从阿里云下载安装
+
+   ```bash
+   https://mirrors.aliyun.com/pytorch-wheels/cu118/torch-2.7.0+cu118-cp312-cp312-win_amd64.whl
+   pip install "torch-2.7.0+cu118-cp312-cp312-win_amd64.whl"
+   #剩下两个比较小，直接从官方安装
+   pip install torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu118
+   pip install torchaudio==2.7.0 --index-url https://download.pytorch.org/whl/cu118
+   ```
+
+更新后的提示信息，**torch**版本已经是**2.7**
+
+ ![update_comfyui_zluda_version](../../uploads/ai/update_comfyui_zluda_version.png)
+ ![update_comfyui_zluda_version](/uploads/ai/update_comfyui_zluda_version.png)
+
+新版本的ComfyUI界面也有变化
+
+![comfyui_new_ver](../../uploads/ai/comfyui_new_ver.png)
+![comfyui_new_ver](/uploads/ai/comfyui_new_ver.png)
+
 
 ### 安装ComfyUI-Zluda
 
@@ -37,7 +71,7 @@ ComfyUI-Zluda项目的网址为https://github.com/patientx/ComfyUI-Zluda
 
  1.  参考项目主页的[说明]( https://github.com/patientx/ComfyUI-Zluda?tab=readme-ov-file#dependencies )  ，确认安装依赖环境，包括git，python，VC运行时以及AMD HIP这个说明文件很详细的说明了依赖需要的版本和注意事项；python的版本我本机之前安装的是3.12就保持不变，VC运行时重新安装了一遍；AMD HIP 安装的6.2版本
 
- 2.  在E:\ai目录下执行`git clone https://github.com/patientx/ComfyUI-Zluda`，可以把项目下载到ComfyUI-Zluda目录中
+ 2.  在`E:\ai`目录下执行`git clone https://github.com/patientx/ComfyUI-Zluda`，可以把项目下载到ComfyUI-Zluda目录中
 
  3.  进入到ComfyUI-Zluda目录中执行install.bat进行安装，这个过程需要**外网**连接，同时安装过程中也会提示下载torch文件很大，需要很长时间 。安装过程中会在当前目录中创建venv的目录作为python虚拟环境，安装完成后虚拟环境目录大小为6G。详细安装的内容可以查看install.bat文件。由于安装过程会自动安装ZLUDA补丁，所以不用自己单独下载ZLUDA补丁了。
 
@@ -52,8 +86,8 @@ ComfyUI-Zluda项目的网址为https://github.com/patientx/ComfyUI-Zluda
 
   后台显示：
 
-     ![start_comfyui_zluda](../../uploads/ai/start_comfyui_zluda.png)
-     ![start_comfyui_zluda](/uploads/ai/start_comfyui_zluda.png)
+   ![start_comfyui_zluda](../../uploads/ai/start_comfyui_zluda.png)
+   ![start_comfyui_zluda](/uploads/ai/start_comfyui_zluda.png)
 ### ComfyUI文本生成图像
 
 ComfyUI的使用方法可以到https://comfyui-wiki.com/zh 这个网站学习。
@@ -101,6 +135,8 @@ VAE Decode节点把生成的采样数据生成图片，它的vae和checkpoint的
 ![Comfyui_make_image](../../uploads/ai/Comfyui_make_image.png)
 ![Comfyui_make_image](/uploads/ai/Comfyui_make_image.png)
 
+### 问题解决
 
-
+* 2025-08-17 运行comfyui.bat更新最新版本后，无法运行，提示` CUDA initialization: CUDA unknown error` 查了一下zluda不识别最新的AMD显卡驱动，我因为这条wsl把显卡更新为**25.8.1**了，因为用的zluda版本3.9.2版本不支持新驱动，所以回退驱动版本**25.4.1**就可以和以前一样使用了。也可以升级使用最新的3.9.5版本的zluda，这样可以使用新的驱动，顺便把torch版本也升级到2.7。
+* 
 
