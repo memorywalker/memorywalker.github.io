@@ -110,7 +110,7 @@
 <meta property="og:image" content="http://memorywalker.github.io/uploads/ai/weight_context_vector_class.png">
 <meta property="og:image" content="http://memorywalker.github.io/2025/08/24/uploads/ai/multi_head_attention.png">
 <meta property="og:image" content="http://memorywalker.github.io/uploads/ai/multi_head_attention.png">
-<meta property="og:updated_time" content="2025-08-24T15:31:34.374Z">
+<meta property="og:updated_time" content="2025-08-30T11:59:37.970Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从零构建大模型-注意力机制">
 <meta name="twitter:description" content="《从零构建大模型》 [美]塞巴斯蒂安·拉施卡 书中资料 https://github.com/rasbt/LLMs-from-scratch 第三章 注意力机制3.1 长序列建模中的问题 Transformer出现之前，循环神经网络(recurrent neural network, RNN)是语言翻译中最流行的编码器-解码器架构。RNN是一种将前一步骤的输出作为当前步骤的输入的神经网络，它非常适">
@@ -403,12 +403,24 @@
                 
               
 
-              <time title="创建时间：2025-08-24 15:07:25 / 修改时间：15:31:34" itemprop="dateCreated datePublished" datetime="2025-08-24T15:07:25+00:00">2025-08-24</time>
+              <time title="创建时间：2025-08-24 15:07:25" itemprop="dateCreated datePublished" datetime="2025-08-24T15:07:25+00:00">2025-08-24</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2025-08-30 11:59:37" itemprop="dateModified" datetime="2025-08-30T11:59:37+00:00">2025-08-30</time>
               
             
           </span>
@@ -556,6 +568,12 @@
 </li>
 </ul>
 <h5 id="自注意类实现"><a href="#自注意类实现" class="headerlink" title="自注意类实现"></a>自注意类实现</h5><p>在自注意力机制中，我们用3个权重矩阵$W_q$, $W_k$, and $W_v$来变换输入矩阵$X$中的输入向量。根据所得查询矩阵($Q$)和键矩阵($K$)计算注意力权重矩阵。然后，使用注意力权重矩阵和值矩阵($V$)计算上下文向量($Z$)。为了视觉清晰，我们关注具有$n$个词元的单个输入文本，而不是一批多个输入。因此，在这种情况下，三维输入张量被简化为二维矩阵，方便更直观地可视化和理解所涉及的过程。</p>
+<ol>
+<li>输入6个词元，每个词元嵌入向量维度为3，对应矩阵为[6, 3]，假设输出嵌入维度为2，权重矩阵就是[3, 2]，因为要把输入映射到权重矩阵上，左矩阵的列数就是右矩阵的行数，二者相乘得到权重向量的维度为[6,2]</li>
+<li>以输入的第二个词元为例，它的查询向量Q为[6,2]依次与第一个词元的键K向量[6, 2]<strong>点积</strong>后，得到标量值如图中的0.2，由于查询要和每一个词元的键都进行点积，所以对第二个词元最终会得到一个[1, 6]的向量，即下图6*6矩阵的第二行。所有的词元都作为查询计算权重矩阵的结果就是[6, 6]即[n,n]的矩阵</li>
+<li>还以第二个词元为例，它对每一个其他词元(包括它自己)用上一步算出来的权重标量和对应词元的值向量V矩阵乘法计算得到中间向量[1,2]，再把6(n)个中间向量相加得到[1,2]的第二个词元最终的上下文向量。</li>
+</ol>
+<p>无论输入词元的嵌入向量维度是多少，最终每个词元的上下文向量的维度都是输出的维度，一般这个维度和字典的个数相同，表示每个词出现的可能性。</p>
 <p> <img src="../../uploads/ai/weight_context_vector_class.png" alt="weight_context_vector_class"><br> <img src="/uploads/ai/weight_context_vector_class.png" alt="weight_context_vector_class"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从nn.Module派生出来的类。nn.Module是PyTorch模型的一个基本构建块，它为模型层的创建和管理提供了必要的功能</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SelfAttention_v2</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, d_in, d_out, qkv_bias=False)</span>:</span></span><br><span class="line">        super().__init__()</span><br><span class="line">        <span class="comment"># 每个矩阵用来将输入维度d_in转换为输出维度d_out</span></span><br><span class="line">        <span class="comment"># 当偏置单元被禁用时，nn.Linear层可以有效地执行矩阵乘法。</span></span><br><span class="line">        <span class="comment"># 相比手动实现nn.Parameter(torch.rand(...))，使用nn.Linear的一个重要优势</span></span><br><span class="line">        <span class="comment"># 是它提供了优化的权重初始化方案，从而有助于模型训练的稳定性和有效性</span></span><br><span class="line">        self.W_query = nn.Linear(d_in, d_out, bias=qkv_bias)</span><br><span class="line">        self.W_key   = nn.Linear(d_in, d_out, bias=qkv_bias)</span><br><span class="line">        self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="string">'''</span></span><br><span class="line"><span class="string">        将查询向量和键向量相乘来计算注意力分数(attn_scores),然后使用softmax对这些分数进行归一化。</span></span><br><span class="line"><span class="string">        最后，我们通过使用这些归一化的注意力分数对值向量进行加权来创建上下文向量。</span></span><br><span class="line"><span class="string">        '''</span></span><br><span class="line">        keys = self.W_key(x)</span><br><span class="line">        queries = self.W_query(x)</span><br><span class="line">        values = self.W_value(x)</span><br><span class="line">        </span><br><span class="line">        attn_scores = queries @ keys.T</span><br><span class="line">        attn_weights = torch.softmax(attn_scores / keys.shape[<span class="number">-1</span>]**<span class="number">0.5</span>, dim=<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">        context_vec = attn_weights @ values</span><br><span class="line">        <span class="keyword">return</span> context_vec</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">use_SelfAttention_v2</span><span class="params">()</span>:</span></span><br><span class="line">    inputs = torch.tensor(</span><br><span class="line">        [[<span class="number">0.43</span>, <span class="number">0.15</span>, <span class="number">0.89</span>], <span class="comment"># Your    (x^1)</span></span><br><span class="line">        [<span class="number">0.55</span>, <span class="number">0.87</span>, <span class="number">0.66</span>], <span class="comment"># journey  (x^2)</span></span><br><span class="line">        [<span class="number">0.57</span>, <span class="number">0.85</span>, <span class="number">0.64</span>], <span class="comment"># starts   (x^3)</span></span><br><span class="line">        [<span class="number">0.22</span>, <span class="number">0.58</span>, <span class="number">0.33</span>], <span class="comment"># with     (x^4)</span></span><br><span class="line">        [<span class="number">0.77</span>, <span class="number">0.25</span>, <span class="number">0.10</span>], <span class="comment"># one      (x^5)</span></span><br><span class="line">        [<span class="number">0.05</span>, <span class="number">0.80</span>, <span class="number">0.55</span>]] <span class="comment"># step     (x^6)</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    d_in = inputs.shape[<span class="number">1</span>] <span class="comment"># 输入嵌入维度, d=3</span></span><br><span class="line">    d_out = <span class="number">2</span> <span class="comment"># 查询嵌入维度, d=2</span></span><br><span class="line">    torch.manual_seed(<span class="number">789</span>)</span><br><span class="line">    sa_v2 = SelfAttention_v2(d_in, d_out)</span><br><span class="line">    print(sa_v2(inputs))    </span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    tensor([[-0.0739,  0.0713],</span></span><br><span class="line"><span class="string">        [-0.0748,  0.0703],</span></span><br><span class="line"><span class="string">        [-0.0749,  0.0702],</span></span><br><span class="line"><span class="string">        [-0.0760,  0.0685],</span></span><br><span class="line"><span class="string">        [-0.0763,  0.0679],</span></span><br><span class="line"><span class="string">        [-0.0754,  0.0693]], grad_fn=&lt;MmBackward0&gt;)</span></span><br><span class="line"><span class="string">    '''</span></span><br></pre></td></tr></table></figure>
 
@@ -713,6 +731,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2025/08/30/ai/LLMs-from-scratch-4/" rel="prev" title="从零构建大模型-模型架构">
+                从零构建大模型-模型架构 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -782,7 +804,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">75</span>
+                    <span class="site-state-item-count">76</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
