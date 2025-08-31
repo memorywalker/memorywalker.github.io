@@ -639,7 +639,7 @@ def test_new_generate():
 
 * 权重指的是存储在PyTorch的Linear层和Embedding层的`.weight`属性中的权重参数
 * OpenAI最初通过TensorFlow保存了GPT-2的权重，我们需要在Python中安装TensorFlow才能加载这些权重 `pip install tensorflow`
-* 可以从https://huggingface.co/rasbt/gpt2-from-scratch-pytorch 下载转换为pytorch的模型数据文件gpt2-small-124M.pth 
+* 可以从https://huggingface.co/rasbt/gpt2-from-scratch-pytorch 下载转换为pytorch的模型数据文件`gpt2-small-124M.pth `
 
 https://github.com/rasbt/LLMs-from-scratch/discussions/273
 
@@ -650,6 +650,11 @@ open AI的地址为 `https://openaipublic.blob.core.windows.net/gpt-2/models/124
 一共有7个文件"checkpoint", "encoder.json", "hparams.json", "model.ckpt.data-00000-of-00001", "model.ckpt.index",    "model.ckpt.meta", "vocab.bpe"，总大小为476 MB (499,748,864 bytes)。下载的文件放在`项目目录\gpt2\124M`目录中，根据参数建立不同的目录方便以后切换不同的模型数据。
 
 ```python
+import os
+import json
+import tensorflow as tf
+import numpy as np
+
 def load_gpt_models(model_size, models_dir):
     # Load settings and params
     model_dir = os.path.join(models_dir, model_size)
@@ -848,3 +853,11 @@ def test_gpt2_model():
     '''
 ```
 
+### Zluda使用cuda
+
+如果直接设置`device = torch.device("cuda")`使用`cuda`计算，会出现`RuntimeError: CUDA error: CUBLAS_STATUS_NOT_SUPPORTED when calling cublasLtMatmulAlgoGetHeuristic`错误。这时可以
+
+1. 使用`torch.device("cpu")`使用CPU来运行模型
+2. 通过设置临时环境变量`set DISABLE_ADDMM_CUDA_LT=1 ` 禁用 `addmm CUDA LT` (Lightweight Tensor) 就可以正常使用
+
+使用zluda编译的程序第一次回特别慢，因为它需要把cuda代码转换为AMD支持Rocm的应用接口。第2次运行就会块很多。
