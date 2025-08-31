@@ -401,7 +401,8 @@ def test_train_process():
         shuffle=False,
         num_workers=0
     )
-    device = torch.device("cpu")
+    # 需要先设置环境变量 set DISABLE_ADDMM_CUDA_LT=1
+    device = torch.device("cuda") #cuda or cpu
     torch.manual_seed(123)
     model = GPTModel(GPT_CONFIG_124M_TRAIN)
     model.to(device)
@@ -453,7 +454,9 @@ Every effort moves you know," was one of the axioms he laid down across the Sevr
 Training completed in 4.80 minutes.
 ```
 
-从输出的结果看训练集损失有了显著的改善，从9.781的初始值收敛到了0.391。模型的语言能力得到了相当大的提升。在开始阶段，模型只能在起始上下文后添加逗号(Every effort moves you,,,,,,,,,,,,)或重复单词and。在训练结束时，它已经可以生成语法正确的文本
+从输出的结果看训练集损失有了显著的改善，从9.781的初始值收敛到了0.391。模型的语言能力得到了相当大的提升。在开始阶段，模型只能在起始上下文后添加逗号(Every effort moves you,,,,,,,,,,,,)或重复单词and。在训练结束时，它已经可以生成语法正确的文本。
+
+程序在CPU上运行需要5分钟左右CPU使用率70%左右，使用CUDA，如果zluda第一次编译也需要5分钟，第2次运行只需要0.7分钟，快了很多，CPU的使用率13%，GPU会突然上升一下，显存会用一点。
 
 验证集损失在训练过程中从较高值(9.933)开始逐渐降低。然而，它永远不会像训练集损失那样变得很小，在第10轮之后其值为6.452
 
@@ -855,9 +858,18 @@ def test_gpt2_model():
 
 ### Zluda使用cuda
 
+现在用的还是之前ComfyUI-Zluda的环境，pytorch的版本为2.7 cu118版本。
+
+```bash
+torch                      2.7.0+cu118
+torchaudio                 2.7.0+cu118
+torchsde                   0.2.6
+torchvision                0.22.0+cu118
+```
+
 如果直接设置`device = torch.device("cuda")`使用`cuda`计算，会出现`RuntimeError: CUDA error: CUBLAS_STATUS_NOT_SUPPORTED when calling cublasLtMatmulAlgoGetHeuristic`错误。这时可以
 
 1. 使用`torch.device("cpu")`使用CPU来运行模型
 2. 通过设置临时环境变量`set DISABLE_ADDMM_CUDA_LT=1 ` 禁用 `addmm CUDA LT` (Lightweight Tensor) 就可以正常使用
 
-使用zluda编译的程序第一次回特别慢，因为它需要把cuda代码转换为AMD支持Rocm的应用接口。第2次运行就会块很多。
+使用zluda编译的程序第一次回特别慢，因为它需要把cuda代码转换为AMD支持Rocm的应用接口。第2次运行就会块很多。只要程序代码不变，就不需要重新编译。
