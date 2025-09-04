@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="《从零构建大模型》 [美]塞巴斯蒂安·拉施卡 书中资料 https://github.com/rasbt/LLMs-from-scratch 第六章  针对分类微调6.1 微调分类微调语言模型最常见的方法是指令微调和分类微调 指令微调涉及使用特定的指令数据对一组任务进行训练，以提高语言模型理解和执行自然语言提示词中描述的任务的能力。指令微调提升了模型基于特定用户指令理解和生成响应的能力。指令微调最">
+<meta name="keywords" content="AI,LLM,read">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零构建大模型-针对分类微调">
+<meta property="og:url" content="http://memorywalker.github.io/2025/09/04/ai/LLMs-from-scratch-6/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="《从零构建大模型》 [美]塞巴斯蒂安·拉施卡 书中资料 https://github.com/rasbt/LLMs-from-scratch 第六章  针对分类微调6.1 微调分类微调语言模型最常见的方法是指令微调和分类微调 指令微调涉及使用特定的指令数据对一组任务进行训练，以提高语言模型理解和执行自然语言提示词中描述的任务的能力。指令微调提升了模型基于特定用户指令理解和生成响应的能力。指令微调最">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2025/09/04/uploads/ai/change_output_of_model.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/change_output_of_model.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/09/04/uploads/ai/class_train_epoch.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/class_train_epoch.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/09/04/uploads/ai/class_model_loss_trend.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/class_model_loss_trend.png">
+<meta property="og:updated_time" content="2025-09-04T15:32:07.381Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从零构建大模型-针对分类微调">
+<meta name="twitter:description" content="《从零构建大模型》 [美]塞巴斯蒂安·拉施卡 书中资料 https://github.com/rasbt/LLMs-from-scratch 第六章  针对分类微调6.1 微调分类微调语言模型最常见的方法是指令微调和分类微调 指令微调涉及使用特定的指令数据对一组任务进行训练，以提高语言模型理解和执行自然语言提示词中描述的任务的能力。指令微调提升了模型基于特定用户指令理解和生成响应的能力。指令微调最">
+<meta name="twitter:image" content="http://memorywalker.github.io/2025/09/04/uploads/ai/change_output_of_model.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2025/09/04/ai/LLMs-from-scratch-6/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>从零构建大模型-针对分类微调 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2025/09/04/ai/LLMs-from-scratch-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从零构建大模型-针对分类微调
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2025-09-04 20:07:25 / 修改时间：15:32:07" itemprop="dateCreated datePublished" datetime="2025-09-04T20:07:25+00:00">2025-09-04</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="《从零构建大模型》"><a href="#《从零构建大模型》" class="headerlink" title="《从零构建大模型》"></a>《从零构建大模型》</h2><p> [美]塞巴斯蒂安·拉施卡</p>
+<p>书中资料 <a href="https://github.com/rasbt/LLMs-from-scratch" target="_blank" rel="noopener">https://github.com/rasbt/LLMs-from-scratch</a></p>
+<h3 id="第六章-针对分类微调"><a href="#第六章-针对分类微调" class="headerlink" title="第六章  针对分类微调"></a>第六章  针对分类微调</h3><h4 id="6-1-微调分类"><a href="#6-1-微调分类" class="headerlink" title="6.1 微调分类"></a>6.1 微调分类</h4><p>微调语言模型最常见的方法是<strong>指令微调</strong>和<strong>分类微调</strong></p>
+<p>指令微调涉及使用特定的指令数据对一组任务进行训练，以提高语言模型理解和执行自然语言提示词中描述的任务的能力。指令微调提升了模型基于特定用户指令理解和生成响应的能力。指令微调最适合处理需要应对多种任务的模型，这些任务依赖于复杂的用户指令。通过指令微调，可以提升模型的灵活性和交互质量。</p>
+<p>分类微调指模型被训练来识别一组特定的类别标签，比如在消息中过滤“垃圾消息”和“非垃圾消息”。这类任务的例子不仅限于大语言模型和电子邮件过滤，还包括从图像中识别不同的植物种类，将新闻文章分类为体育、政治、科技等主题，以及在医学影像中区分良性肿瘤和恶性肿瘤</p>
+<p>经过分类微调的模型只能预测它在训练过程中遇到的类别，即训练过程中的目标值。例如，它可以判断某条内容是“垃圾消息”还是“非垃圾消息”，但它不能对输入文本进行其他分析或说明。分类微调更适合需要将数据精确分类为预定义类别的任务，比如情感分析或垃圾消息检测。分类微调所需的数据和计算资源较少，但它的应用范围局限于模型所训练的特定类别</p>
+<ul>
+<li>对大语言模型进行分类微调的三阶段过程：<pre><code>1. 准备数据集
+1. 模型设置
+1. 模型的微调和应用</code></pre></li>
+</ul>
+<h4 id="6-2-准备数据集"><a href="#6-2-准备数据集" class="headerlink" title="6.2 准备数据集"></a>6.2 准备数据集</h4><h5 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h5><p>数据集来源<a href="https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip" target="_blank" rel="noopener">https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip</a> 下载的数据集文件名为<code>SMSSpamCollection</code>，文件中内容每一行为一个样本，spam表示垃圾短信，后面跟4个空格长度的tab和短信内容；ham表示正常短信，后面跟1个空格长度的tab和短信内容，整个文件有5574行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">spam	SMS. ac Sptv: The New Jersey Devils and the Detroit Red Wings play Ice Hockey. Correct or Incorrect? End? Reply END SPTV</span><br><span class="line">ham	Do you know what Mallika Sherawat did yesterday? Find out now @  &amp;lt;URL&amp;gt;</span><br></pre></td></tr></table></figure>
+
+<p>原始文件中正常短信有4827条，垃圾短信有747条，为简单起见，使用一个较小的数据集（这将有助于更快地微调大语言模型）​，并对数据集进行下采样，使得每个类别包含747个实例，这样两个分类数据输入数量相同。处理类别不平衡的方法有很多，但这些内容超出了本书的范畴。如果你对处理不平衡数据的方法感兴趣，可以在附录B中找到更多信息</p>
+<p>将数据集分成3部分：70%用于训练，10%用于验证，20%用于测试。这些比例在机器学习中很常见，用于训练、调整和评估模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_balanced_dataset</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 需要删除原始文件中5082行内容开头的"，这一行只有一个"会导致直到下一个"行的内容都被当作一条短信</span></span><br><span class="line">    df = pd.read_csv(<span class="string">".\\sms\\SMSSpamCollection.tsv"</span>, sep=<span class="string">"\t"</span>, header=<span class="literal">None</span>, names=[<span class="string">"Label"</span>, <span class="string">"Text"</span>])</span><br><span class="line">    print(df)   <span class="comment"># [5574 rows x 2 columns] </span></span><br><span class="line">    print(df[<span class="string">"Label"</span>].value_counts())  <span class="comment"># ham 4827 spam 747</span></span><br><span class="line">    <span class="comment"># 统计垃圾信息的条数 747</span></span><br><span class="line">    num_spam = df[df[<span class="string">"Label"</span>] == <span class="string">"spam"</span>].shape[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 对正常信息数据随机采样，使它的条数和垃圾信息的条数相同</span></span><br><span class="line">    ham_subset = df[df[<span class="string">"Label"</span>] == <span class="string">"ham"</span>].sample(num_spam, random_state=<span class="number">123</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 把两个数据集合并</span></span><br><span class="line">    balanced_df = pd.concat([ham_subset, df[df[<span class="string">"Label"</span>] == <span class="string">"spam"</span>]])</span><br><span class="line">    <span class="comment"># 把标签映射成数字0和1</span></span><br><span class="line">    balanced_df[<span class="string">"Label"</span>] = balanced_df[<span class="string">"Label"</span>].map(&#123;<span class="string">"ham"</span>: <span class="number">0</span>, <span class="string">"spam"</span>: <span class="number">1</span>&#125;)</span><br><span class="line"></span><br><span class="line">    train_frac = <span class="number">0.7</span> <span class="comment"># 训练集的比例为0.7</span></span><br><span class="line">    validation_frac = <span class="number">0.1</span> <span class="comment"># 验证集的比例为0.1</span></span><br><span class="line">    <span class="comment"># 先打乱所有的数据集 两个标签各747条，一共1494条数据</span></span><br><span class="line">    balanced_df = balanced_df.sample(frac=<span class="number">1</span>, random_state=<span class="number">123</span>).reset_index(drop=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 按训练集和验证集的比例把数据分组</span></span><br><span class="line">    train_end = int(len(balanced_df) * train_frac)</span><br><span class="line">    validation_end = train_end + int(len(balanced_df) * validation_frac)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Split the DataFrame</span></span><br><span class="line">    train_df = balanced_df[:train_end]</span><br><span class="line">    validation_df = balanced_df[train_end:validation_end]</span><br><span class="line">    test_df = balanced_df[validation_end:]</span><br><span class="line">    <span class="comment"># 保存数据，不用每次都准备</span></span><br><span class="line">    train_df.to_csv(<span class="string">"train.csv"</span>, index=<span class="literal">None</span>)</span><br><span class="line">    validation_df.to_csv(<span class="string">"validation.csv"</span>, index=<span class="literal">None</span>)</span><br><span class="line">    test_df.to_csv(<span class="string">"test.csv"</span>, index=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+
+<p>三个数据集分别存储到一个文件中，以后可以复用。保存后的”train.csv”文件内容前3行如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Label,Text</span><br><span class="line">0,Dude how do you like the buff wind.</span><br><span class="line">0,Ü mean it&apos;s confirmed... I tot they juz say oni... Ok then...</span><br></pre></td></tr></table></figure>
+
+<h5 id="创建数据加载器"><a href="#创建数据加载器" class="headerlink" title="创建数据加载器"></a>创建数据加载器</h5><p>训练输入的短信数据每一行的长度都不相同，这里将所有消息填充到数据集中最长消息的长度或批次长度。确保每个输入张量的大小相同对于接下来实现数据批处理是必要的。</p>
+<p>在把输入的单词转换为词元ID的过程中，如果一个输入长度小于最长消息长度，可以将”&lt;|endoftext|&gt;”对应的词元ID(50256)填充到到编码的文本消息中，使所有的输入长度相同。</p>
+<p>可以像处理文本数据那样来实例化数据加载器。只是这里的目标是类别标签，而不是文本中的下一个词元。如果我们选择批次大小为8，则每个批次将包含8个长度为120的训练样本以及每个样本对应的类别标签。即8行短信内容为一个批次，每行输入为短信文本内容，训练目标数据为数据标签label 0或1</p>
+<p>数据集总的数量为747*2 = 1494，按0.7比例做为训练集，则有1045条训练集数据，每个批次大小为8，对应的批次数量为1045/8 = 130</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> Dataset</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SpamDataset</span><span class="params">(Dataset)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, csv_file, tokenizer, max_length=None, pad_token_id=<span class="number">50256</span>)</span>:</span></span><br><span class="line">        self.data = pd.read_csv(csv_file)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 处理每一行短信内容数据为词元id，这也是输入数据</span></span><br><span class="line">        self.encoded_texts = [</span><br><span class="line">            tokenizer.encode(text) <span class="keyword">for</span> text <span class="keyword">in</span> self.data[<span class="string">"Text"</span>]</span><br><span class="line">        ]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> max_length <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.max_length = self._longest_encoded_length()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.max_length = max_length</span><br><span class="line">            <span class="comment"># 如果文版长度大于输入参数的长度，把文本长度截断到最大长度</span></span><br><span class="line">            self.encoded_texts = [</span><br><span class="line">                encoded_text[:self.max_length]</span><br><span class="line">                <span class="keyword">for</span> encoded_text <span class="keyword">in</span> self.encoded_texts</span><br><span class="line">            ]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 长度不够的文本使用pad_token_id进行填充</span></span><br><span class="line">        self.encoded_texts = [</span><br><span class="line">            encoded_text + [pad_token_id] * (self.max_length - len(encoded_text))</span><br><span class="line">            <span class="keyword">for</span> encoded_text <span class="keyword">in</span> self.encoded_texts</span><br><span class="line">        ]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, index)</span>:</span></span><br><span class="line">        encoded = self.encoded_texts[index]</span><br><span class="line">        <span class="comment"># 目标数据是每一行对应的标签0或1</span></span><br><span class="line">        label = self.data.iloc[index][<span class="string">"Label"</span>]</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            torch.tensor(encoded, dtype=torch.long),</span><br><span class="line">            torch.tensor(label, dtype=torch.long)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self.data)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 找出数据集中最长的文本长度</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_longest_encoded_length</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> max(len(encoded_text) <span class="keyword">for</span> encoded_text <span class="keyword">in</span> self.encoded_texts)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_sms_data_loaders</span><span class="params">()</span>:</span></span><br><span class="line">    tokenizer = tiktoken.get_encoding(<span class="string">"gpt2"</span>)</span><br><span class="line">    print(tokenizer.encode(<span class="string">"&lt;|endoftext|&gt;"</span>, allowed_special=&#123;<span class="string">"&lt;|endoftext|&gt;"</span>&#125;)) <span class="comment"># [50256]</span></span><br><span class="line"></span><br><span class="line">    num_workers = <span class="number">0</span></span><br><span class="line">    batch_size = <span class="number">8</span></span><br><span class="line"></span><br><span class="line">    torch.manual_seed(<span class="number">123</span>)</span><br><span class="line"></span><br><span class="line">    train_dataset = SpamDataset(</span><br><span class="line">        csv_file=<span class="string">"train.csv"</span>,</span><br><span class="line">        max_length=<span class="literal">None</span>,</span><br><span class="line">        tokenizer=tokenizer</span><br><span class="line">    )</span><br><span class="line">    print(train_dataset.max_length) <span class="comment"># 120</span></span><br><span class="line">    print(len(train_dataset)) <span class="comment"># 1045</span></span><br><span class="line"></span><br><span class="line">    val_dataset = SpamDataset(</span><br><span class="line">        csv_file=<span class="string">"validation.csv"</span>,</span><br><span class="line">        max_length=train_dataset.max_length, <span class="comment"># 验证集和测试集的长度和训练集一样</span></span><br><span class="line">        tokenizer=tokenizer</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    test_dataset = SpamDataset(</span><br><span class="line">        csv_file=<span class="string">"test.csv"</span>,</span><br><span class="line">        max_length=train_dataset.max_length, <span class="comment"># 验证集和测试集的长度和训练集一样</span></span><br><span class="line">        tokenizer=tokenizer</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    train_loader = DataLoader(</span><br><span class="line">        dataset=train_dataset,</span><br><span class="line">        batch_size=batch_size,</span><br><span class="line">        shuffle=<span class="literal">True</span>,</span><br><span class="line">        num_workers=num_workers,</span><br><span class="line">        drop_last=<span class="literal">True</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    val_loader = DataLoader(</span><br><span class="line">        dataset=val_dataset,</span><br><span class="line">        batch_size=batch_size,</span><br><span class="line">        num_workers=num_workers,</span><br><span class="line">        drop_last=<span class="literal">False</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    test_loader = DataLoader(</span><br><span class="line">        dataset=test_dataset,</span><br><span class="line">        batch_size=batch_size,</span><br><span class="line">        num_workers=num_workers,</span><br><span class="line">        drop_last=<span class="literal">False</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Train loader:"</span>)</span><br><span class="line">    <span class="keyword">for</span> input_batch, target_batch <span class="keyword">in</span> train_loader:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Input batch dimensions:"</span>, input_batch.shape) <span class="comment"># torch.Size([8, 120]) 一个批次8行输入，每个输入120个词元</span></span><br><span class="line">    print(<span class="string">"Label batch dimensions:"</span>, target_batch.shape) <span class="comment"># torch.Size([8]) 目标是分类的结果0或1，所以只有一个结果，每一行对应一个结果</span></span><br><span class="line">    <span class="comment"># 总数据集条数 747*2 = 1494， 训练集1045条，验证集149条，测试集300条，分成8条一批</span></span><br><span class="line">    print(<span class="string">f"<span class="subst">&#123;len(train_loader)&#125;</span> training batches"</span>) <span class="comment"># 130 training batches 1045/8 = 130.625</span></span><br><span class="line">    print(<span class="string">f"<span class="subst">&#123;len(val_loader)&#125;</span> validation batches"</span>) <span class="comment"># 19 validation batches 149/8 = 18.625</span></span><br><span class="line">    print(<span class="string">f"<span class="subst">&#123;len(test_loader)&#125;</span> test batches"</span>) <span class="comment"># 38 test batches 300/8 = 37.5</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-3-模型设置"><a href="#6-3-模型设置" class="headerlink" title="6.3 模型设置"></a>6.3 模型设置</h4><h5 id="初始化带有预训练权重的模型"><a href="#初始化带有预训练权重的模型" class="headerlink" title="初始化带有预训练权重的模型"></a>初始化带有预训练权重的模型</h5><p>和第5章一样加载预训练好的GPT2模型，使用之前的测试文本输出模型的结果，确认模型加载成功</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_model_for_spam</span><span class="params">()</span>:</span></span><br><span class="line">    BASE_CONFIG_SPAM = &#123;</span><br><span class="line">        <span class="string">"vocab_size"</span>: <span class="number">50257</span>,     <span class="comment"># Vocabulary size</span></span><br><span class="line">        <span class="string">"context_length"</span>: <span class="number">1024</span>,  <span class="comment"># Context length</span></span><br><span class="line">        <span class="string">"drop_rate"</span>: <span class="number">0.0</span>,        <span class="comment"># Dropout rate</span></span><br><span class="line">        <span class="string">"qkv_bias"</span>: <span class="literal">True</span>         <span class="comment"># Query-key-value bias</span></span><br><span class="line">    &#125;</span><br><span class="line">    model_configs = &#123;</span><br><span class="line">        <span class="string">"gpt2-small (124M)"</span>: &#123;<span class="string">"emb_dim"</span>: <span class="number">768</span>, <span class="string">"n_layers"</span>: <span class="number">12</span>, <span class="string">"n_heads"</span>: <span class="number">12</span>&#125;,</span><br><span class="line">        <span class="string">"gpt2-medium (355M)"</span>: &#123;<span class="string">"emb_dim"</span>: <span class="number">1024</span>, <span class="string">"n_layers"</span>: <span class="number">24</span>, <span class="string">"n_heads"</span>: <span class="number">16</span>&#125;,</span><br><span class="line">        <span class="string">"gpt2-large (774M)"</span>: &#123;<span class="string">"emb_dim"</span>: <span class="number">1280</span>, <span class="string">"n_layers"</span>: <span class="number">36</span>, <span class="string">"n_heads"</span>: <span class="number">20</span>&#125;,</span><br><span class="line">        <span class="string">"gpt2-xl (1558M)"</span>: &#123;<span class="string">"emb_dim"</span>: <span class="number">1600</span>, <span class="string">"n_layers"</span>: <span class="number">48</span>, <span class="string">"n_heads"</span>: <span class="number">25</span>&#125;,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CHOOSE_MODEL = <span class="string">"gpt2-small (124M)"</span></span><br><span class="line">    BASE_CONFIG_SPAM.update(model_configs[CHOOSE_MODEL])</span><br><span class="line">    model_size = CHOOSE_MODEL.split(<span class="string">" "</span>)[<span class="number">-1</span>].lstrip(<span class="string">"("</span>).rstrip(<span class="string">")"</span>)</span><br><span class="line">    settings, params = load_gpt_models(model_size, models_dir=<span class="string">"gpt2"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># set DISABLE_ADDMM_CUDA_LT=1</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line">    model = GPTModel(BASE_CONFIG_SPAM)</span><br><span class="line">    load_weights_into_gpt(model, params)</span><br><span class="line">    model.to(device)</span><br><span class="line">    model.eval()</span><br><span class="line"></span><br><span class="line">    tokenizer = tiktoken.get_encoding(<span class="string">"gpt2"</span>)</span><br><span class="line">    torch.manual_seed(<span class="number">123</span>)</span><br><span class="line"></span><br><span class="line">    text_1 = <span class="string">"Every effort moves you"</span></span><br><span class="line">    token_ids = generate(model,</span><br><span class="line">        idx=text_to_token_ids(text_1, tokenizer).to(device),</span><br><span class="line">        max_new_tokens=<span class="number">15</span>,</span><br><span class="line">        context_size=BASE_CONFIG_SPAM[<span class="string">"context_length"</span>],</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    print(token_ids_to_text(token_ids, tokenizer))</span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    Every effort moves you forward.</span></span><br><span class="line"><span class="string">    The first step is to understand the importance of your work</span></span><br><span class="line"><span class="string">    '''</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="添加分类头"><a href="#添加分类头" class="headerlink" title="添加分类头"></a>添加分类头</h5><p>我们将GPT2模型的最后的线性输出层（该输出层会将768个隐藏单元输出映射到一张包含50 257个词汇的词汇表中）替换为一个较小的输出层，该输出层会映射到两个类别：0（“非垃圾消息”）和1（“垃圾消息”）</p>
+<p>通常令输出节点的数量与类别数量相匹配。例如，对于一个三分类问题（比如将新闻文章分类为“科技”“体育”或“政治”），我们将使用3个输出节点，以此类推</p>
+<p>由于模型已经经过了预训练，因此不需要微调所有的模型层。在基于神经网络的语言模型中，较低层通常捕捉基本的语言结构和语义，适用于广泛的任务和数据集，最后几层（靠近输出的层）更侧重于捕捉细微的语言模式和特定任务的特征。因此，只微调最后几层通常就足以将模型适应到新任务。同时，仅微调少量层在计算上也更加高效。</p>
+<p>GPT模型包含12个重复的Transformer块。除了<strong>输出层</strong>，我们还将<strong>最终层归一化</strong>和<strong>最后一个Transformer块</strong>设置为可训练。其余11个Transformer块和嵌入层则保持为不可训练</p>
+<ol>
+<li>为了使模型准备好进行分类微调，我们首先冻结模型，即将所有层设为不可训练</li>
+<li>替换输出层<code>(model.out_head)</code> 这个新<code>的model.out_head</code>输出层的<code>requires_grad</code>属性默认设置为True，这意味着它是模型中唯一在训练过程中会被更新的层</li>
+<li>在实验中发现，微调额外的层可以显著提升模型的预测性能。（有关详细信息，请参见附录B。）所以将最后一个Transformer块和连接该块到输出层的最终层归一化模块设置为可训练</li>
+</ol>
+<p>对于每一个输入词元，都会有一个输出向量与之对应，输入节点个数和输出的节点个数相同，例如<code>[1, 4]</code>的输入<code>Do you have time</code>，它的输出为<code>[1, 4, 2]</code></p>
+<p><img src="../../uploads/ai/change_output_of_model.png" alt="change_output_of_model"><br><img src="/uploads/ai/change_output_of_model.png" alt="change_output_of_model"> </p>
+<ul>
+<li>为什么只需要关注最后一个输入词元的结果？</li>
+</ul>
+<p>根据因果注意力掩码的概念，每个词元只能关注当前及之前的位置，从而确保每个词元只受自己和之前词元的影响。只有输入序列中的最后一个词元累积了最多的信息，因为它是唯一一个可以访问之前所有数据的词元。因此，在垃圾消息分类任务中，我们在微调过程中会关注这个最后的词元。因此将最后的词元转换为类别标签进行预测，并计算模型的初始预测准确率。在下面代码输出中，我们只需关注最后一个输出词元的结果<code>[-3.5983,  3.9902]</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_model_for_spam</span><span class="params">()</span>:</span></span><br><span class="line">    BASE_CONFIG_SPAM = &#123;</span><br><span class="line">        <span class="string">"vocab_size"</span>: <span class="number">50257</span>,     <span class="comment"># Vocabulary size</span></span><br><span class="line">        <span class="string">"context_length"</span>: <span class="number">1024</span>,  <span class="comment"># Context length</span></span><br><span class="line">        <span class="string">"drop_rate"</span>: <span class="number">0.0</span>,        <span class="comment"># Dropout rate</span></span><br><span class="line">        <span class="string">"qkv_bias"</span>: <span class="literal">True</span>         <span class="comment"># Query-key-value bias</span></span><br><span class="line">    &#125;</span><br><span class="line">    model_configs = &#123;</span><br><span class="line">        <span class="string">"gpt2-small (124M)"</span>: &#123;<span class="string">"emb_dim"</span>: <span class="number">768</span>, <span class="string">"n_layers"</span>: <span class="number">12</span>, <span class="string">"n_heads"</span>: <span class="number">12</span>&#125;,</span><br><span class="line">        <span class="string">"gpt2-medium (355M)"</span>: &#123;<span class="string">"emb_dim"</span>: <span class="number">1024</span>, <span class="string">"n_layers"</span>: <span class="number">24</span>, <span class="string">"n_heads"</span>: <span class="number">16</span>&#125;,</span><br><span class="line">        <span class="string">"gpt2-large (774M)"</span>: &#123;<span class="string">"emb_dim"</span>: <span class="number">1280</span>, <span class="string">"n_layers"</span>: <span class="number">36</span>, <span class="string">"n_heads"</span>: <span class="number">20</span>&#125;,</span><br><span class="line">        <span class="string">"gpt2-xl (1558M)"</span>: &#123;<span class="string">"emb_dim"</span>: <span class="number">1600</span>, <span class="string">"n_layers"</span>: <span class="number">48</span>, <span class="string">"n_heads"</span>: <span class="number">25</span>&#125;,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CHOOSE_MODEL = <span class="string">"gpt2-small (124M)"</span></span><br><span class="line">    BASE_CONFIG_SPAM.update(model_configs[CHOOSE_MODEL])</span><br><span class="line">    model_size = CHOOSE_MODEL.split(<span class="string">" "</span>)[<span class="number">-1</span>].lstrip(<span class="string">"("</span>).rstrip(<span class="string">")"</span>)</span><br><span class="line">    settings, params = load_gpt_models(model_size, models_dir=<span class="string">"gpt2"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># set DISABLE_ADDMM_CUDA_LT=1</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line">    model = GPTModel(BASE_CONFIG_SPAM)</span><br><span class="line">    load_weights_into_gpt(model, params)</span><br><span class="line">    model.to(device)</span><br><span class="line">    model.eval()</span><br><span class="line"></span><br><span class="line">    tokenizer = tiktoken.get_encoding(<span class="string">"gpt2"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1. 设置模型所有参数都是不训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    torch.manual_seed(<span class="number">123</span>)</span><br><span class="line">    num_classes = <span class="number">2</span></span><br><span class="line">    <span class="comment"># 2. 新的输出维度为2，因为只有0和1两个选项</span></span><br><span class="line">    model.out_head = torch.nn.Linear(in_features=BASE_CONFIG_SPAM[<span class="string">"emb_dim"</span>], out_features=num_classes).to(device)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 最后一个transformer层参数是需要训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.trf_blocks[<span class="number">-1</span>].parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 最后的归一化层的参数是需要训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.final_norm.parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">True</span></span><br><span class="line">    </span><br><span class="line">    inputs = tokenizer.encode(<span class="string">"Do you have time"</span>)</span><br><span class="line">    inputs = torch.tensor(inputs).unsqueeze(<span class="number">0</span>)</span><br><span class="line">    print(<span class="string">"Inputs:"</span>, inputs) <span class="comment"># ([[5211,  345,  423,  640]])</span></span><br><span class="line">    print(<span class="string">"Inputs dimensions:"</span>, inputs.shape) <span class="comment"># shape: (batch_size, num_tokens) torch.Size([1, 4])</span></span><br><span class="line">    inputs = inputs.to(device)</span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        outputs = model(inputs)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Outputs:\n"</span>, outputs)</span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    tensor([[[-1.5854,  0.9904],</span></span><br><span class="line"><span class="string">         [-3.7235,  7.4548],</span></span><br><span class="line"><span class="string">         [-2.2661,  6.6049],</span></span><br><span class="line"><span class="string">         [-3.5983,  3.9902]]], device='cuda:0')</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    print(<span class="string">"Outputs dimensions:"</span>, outputs.shape) <span class="comment"># shape: (batch_size, num_tokens, num_classes) torch.Size([1, 4, 2])</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="计算分类损失和准确率"><a href="#计算分类损失和准确率" class="headerlink" title="计算分类损失和准确率"></a>计算分类损失和准确率</h5><p>之前我们通过将50257个输出转换为概率（利用softmax函数），然后返回最高概率的位置（利用argmax函数），来计算大语言模型生成的下一个词元的词元ID。</p>
+<p>新的分类场景下，对应于最后一个词元的模型输出被转换为每个输入文本的概率分数。例如最后一个词元的结果<code>[-3.5983,  3.9902]</code>中两个值分别表示垃圾短信和正常短信的概率。</p>
+<p>使用<code>calc_accuracy_loader</code>函数来确定各个数据集的分类准确率。我们用10个批次的数据进行估计以提高效率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算每一个数据集的准确率</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_accuracy_loader</span><span class="params">(data_loader, model, device, num_batches=None)</span>:</span></span><br><span class="line">    model.eval()</span><br><span class="line">    correct_predictions, num_examples = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> num_batches <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        num_batches = len(data_loader)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        num_batches = min(num_batches, len(data_loader))</span><br><span class="line">    <span class="comment"># 遍历数据集中每一个批次，每个批次有120个词元</span></span><br><span class="line">    <span class="keyword">for</span> i, (input_batch, target_batch) <span class="keyword">in</span> enumerate(data_loader):</span><br><span class="line">        <span class="keyword">if</span> i &lt; num_batches:</span><br><span class="line">            input_batch, target_batch = input_batch.to(device), target_batch.to(device)</span><br><span class="line">            <span class="comment"># 先不训练看模型预测结果</span></span><br><span class="line">            <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">                logits = model(input_batch) </span><br><span class="line">            print(<span class="string">"logits shape"</span>, logits.shape) <span class="comment"># torch.Size([8, 120, 2])</span></span><br><span class="line">            logits = logits[:, <span class="number">-1</span>, :]  <span class="comment"># [:, -1, :] 用来取输出的结果中最后一个词元的结果 [1]</span></span><br><span class="line">            print(<span class="string">"logits:"</span>, logits)</span><br><span class="line">            <span class="string">'''</span></span><br><span class="line"><span class="string">            这里只是第一个训练集的第一个批次的数据</span></span><br><span class="line"><span class="string">            logits: tensor([[-2.3470,  2.7103], # 第一行的最后一个词元的两个输出</span></span><br><span class="line"><span class="string">                    [-2.3967,  2.7040],</span></span><br><span class="line"><span class="string">                    [-2.3161,  2.7413],</span></span><br><span class="line"><span class="string">                    [-2.3640,  2.6571],</span></span><br><span class="line"><span class="string">                    [-2.3471,  2.7348],</span></span><br><span class="line"><span class="string">                    [-2.4621,  2.7977],</span></span><br><span class="line"><span class="string">                    [-2.4104,  2.8182],</span></span><br><span class="line"><span class="string">                    [-2.4334,  2.7510]], device='cuda:0')</span></span><br><span class="line"><span class="string">            '''</span></span><br><span class="line">            <span class="comment"># 取每一行中最大值的索引作为预测的标签，0不是垃圾短信，1是垃圾短信</span></span><br><span class="line">            predicted_labels = torch.argmax(logits, dim=<span class="number">-1</span>)</span><br><span class="line">            <span class="comment"># 由于第一列都是负数小于第二列，所以取的索引都是1</span></span><br><span class="line">            print(<span class="string">"predicted_labels:"</span>, predicted_labels) <span class="comment"># predicted_labels: tensor([1, 1, 1, 1, 1, 1, 1, 1], device='cuda:0')</span></span><br><span class="line">            num_examples += predicted_labels.shape[<span class="number">0</span>]</span><br><span class="line">            <span class="comment">#print(predicted_labels.shape[0]) # 每个批次有8个输入行    </span></span><br><span class="line">            <span class="comment"># 训练集第一个批次的目标数据</span></span><br><span class="line">            print(<span class="string">"target_batch:"</span>, target_batch) <span class="comment"># target_batch: tensor([0, 0, 1, 0, 0, 0, 1, 0], device='cuda:0')</span></span><br><span class="line">            <span class="comment"># 统计预测正确的个数</span></span><br><span class="line">            correct_predictions += (predicted_labels == target_batch).sum().item()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> correct_predictions / num_examples</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_model_class_output</span><span class="params">()</span>:</span></span><br><span class="line">    BASE_CONFIG_SPAM = &#123;</span><br><span class="line">        <span class="string">"vocab_size"</span>: <span class="number">50257</span>,     <span class="comment"># Vocabulary size</span></span><br><span class="line">        <span class="string">"emb_dim"</span>: <span class="number">768</span>, </span><br><span class="line">        <span class="string">"n_layers"</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">"n_heads"</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">"context_length"</span>: <span class="number">1024</span>,  <span class="comment"># Context length</span></span><br><span class="line">        <span class="string">"drop_rate"</span>: <span class="number">0.0</span>,        <span class="comment"># Dropout rate</span></span><br><span class="line">        <span class="string">"qkv_bias"</span>: <span class="literal">True</span>         <span class="comment"># Query-key-value bias</span></span><br><span class="line">    &#125;</span><br><span class="line">    settings, params = load_gpt_models(model_size=<span class="string">"124M"</span>, models_dir=<span class="string">"gpt2"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># set DISABLE_ADDMM_CUDA_LT=1</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line">    model = GPTModel(BASE_CONFIG_SPAM)</span><br><span class="line">    load_weights_into_gpt(model, params)</span><br><span class="line">    model.to(device)</span><br><span class="line">    model.eval()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1. 设置模型所有参数都是不训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    torch.manual_seed(<span class="number">123</span>)</span><br><span class="line">    num_classes = <span class="number">2</span></span><br><span class="line">    <span class="comment"># 2. 新的输出维度为2，因为只有0和1两个选项</span></span><br><span class="line">    model.out_head = torch.nn.Linear(in_features=BASE_CONFIG_SPAM[<span class="string">"emb_dim"</span>], out_features=num_classes).to(device)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 最后一个transformer层参数是需要训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.trf_blocks[<span class="number">-1</span>].parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 最后的归一化层的参数是需要训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.final_norm.parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">True</span>    </span><br><span class="line">        </span><br><span class="line">    train_loader, val_loader, test_loader = create_sms_data_loaders()</span><br><span class="line">    <span class="comment"># 每个数据集只跑10个批次的数据</span></span><br><span class="line">    train_accuracy = calc_accuracy_loader(train_loader, model, device, num_batches=<span class="number">10</span>)</span><br><span class="line">    val_accuracy = calc_accuracy_loader(val_loader, model, device, num_batches=<span class="number">10</span>)</span><br><span class="line">    test_accuracy = calc_accuracy_loader(test_loader, model, device, num_batches=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">f"Training accuracy: <span class="subst">&#123;train_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 46.25%</span></span><br><span class="line">    print(<span class="string">f"Validation accuracy: <span class="subst">&#123;val_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 45.00%</span></span><br><span class="line">    print(<span class="string">f"Test accuracy: <span class="subst">&#123;test_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 48.75%</span></span><br></pre></td></tr></table></figure>
+
+<p>由于还没任何训练，所以对所有数据集的每个批次的8行短信输入(每行输入120个词元)，每个批次的输出为<code>[8, 120, 2]</code>，取每行输出的最后一个词元的输出为<code>[8, 2]</code>，每一行的结果中第一列都是负数小于第二列，所以<code>torch.argmax</code>输出的索引都是1，<code>predicted_labels</code>的值为[1, 1, 1, 1, 1, 1, 1, 1]，即每一行选中的都是索引1，把它与<code>target_batch</code>的每一个值比较是否相同计算正确率。</p>
+<p>由于分类准确率不是一个可微分的函数，这里我们使用交叉熵损失作为替代来最大化准确率。因此，第五章的<code>calc_loss_batch</code>函数保持不变，唯一的调整是专注于优化最后一个词元<code>(model(input_batch)[:, -1, :])</code>而不是所有词元<code>(model(input_batch))</code>。使用<code>calc_loss_batch</code>函数来计算从之前定义的数据加载器中获得的单个批次的损失。为了计算数据加载器中所有批次的损失，可以像之前一样定义<code>calc_loss_loader</code>函数。</p>
+<p>训练的目标是最小化训练集损失，提高分类准确率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># calc_loss_batch函数名中增加了class，避免混淆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_class_loss_batch</span><span class="params">(input_batch, target_batch, model, device)</span>:</span></span><br><span class="line">    input_batch, target_batch = input_batch.to(device), target_batch.to(device)</span><br><span class="line">    logits = model(input_batch)[:, <span class="number">-1</span>, :]  <span class="comment"># 关注的输出为每一行数据的最后一个词元的输出</span></span><br><span class="line">    loss = torch.nn.functional.cross_entropy(logits, target_batch)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"><span class="comment"># 和第五章的calc_loss_loader完全相同，这里只是改了函数名字</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_class_loss_loader</span><span class="params">(data_loader, model, device, num_batches=None)</span>:</span></span><br><span class="line">    total_loss = <span class="number">0.</span></span><br><span class="line">    <span class="keyword">if</span> len(data_loader) == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> float(<span class="string">"nan"</span>)</span><br><span class="line">    <span class="keyword">elif</span> num_batches <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        num_batches = len(data_loader)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># Reduce the number of batches to match the total number of batches in the data loader</span></span><br><span class="line">        <span class="comment"># if num_batches exceeds the number of batches in the data loader</span></span><br><span class="line">        <span class="comment"># 可以通过num_batches指定较小的批次数，以加快模型训练期间的评估速度</span></span><br><span class="line">        num_batches = min(num_batches, len(data_loader))</span><br><span class="line">    <span class="keyword">for</span> i, (input_batch, target_batch) <span class="keyword">in</span> enumerate(data_loader):</span><br><span class="line">        <span class="keyword">if</span> i &lt; num_batches:</span><br><span class="line">            loss = calc_class_loss_batch(input_batch, target_batch, model, device)</span><br><span class="line">            total_loss += loss.item()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> total_loss / num_batches</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_model_class_output</span><span class="params">()</span>:</span></span><br><span class="line">    BASE_CONFIG_SPAM = &#123;</span><br><span class="line">        <span class="string">"vocab_size"</span>: <span class="number">50257</span>,     <span class="comment"># Vocabulary size</span></span><br><span class="line">        <span class="string">"emb_dim"</span>: <span class="number">768</span>, </span><br><span class="line">        <span class="string">"n_layers"</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">"n_heads"</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">"context_length"</span>: <span class="number">1024</span>,  <span class="comment"># Context length</span></span><br><span class="line">        <span class="string">"drop_rate"</span>: <span class="number">0.0</span>,        <span class="comment"># Dropout rate</span></span><br><span class="line">        <span class="string">"qkv_bias"</span>: <span class="literal">True</span>         <span class="comment"># Query-key-value bias</span></span><br><span class="line">    &#125;</span><br><span class="line">    settings, params = load_gpt_models(model_size=<span class="string">"124M"</span>, models_dir=<span class="string">"gpt2"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># set DISABLE_ADDMM_CUDA_LT=1</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line">    model = GPTModel(BASE_CONFIG_SPAM)</span><br><span class="line">    load_weights_into_gpt(model, params)</span><br><span class="line">    model.to(device)</span><br><span class="line">    model.eval()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1. 设置模型所有参数都是不训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    torch.manual_seed(<span class="number">123</span>)</span><br><span class="line">    num_classes = <span class="number">2</span></span><br><span class="line">    <span class="comment"># 2. 新的输出维度为2，因为只有0和1两个选项</span></span><br><span class="line">    model.out_head = torch.nn.Linear(in_features=BASE_CONFIG_SPAM[<span class="string">"emb_dim"</span>], out_features=num_classes).to(device)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 最后一个transformer层参数是需要训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.trf_blocks[<span class="number">-1</span>].parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 最后的归一化层的参数是需要训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.final_norm.parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">True</span>    </span><br><span class="line"></span><br><span class="line">    train_loader, val_loader, test_loader = create_sms_data_loaders()</span><br><span class="line">    <span class="comment"># 计算每个数据集的损失</span></span><br><span class="line">    <span class="keyword">with</span> torch.no_grad(): <span class="comment"># Disable gradient tracking for efficiency because we are not training, yet</span></span><br><span class="line">        train_loss = calc_class_loss_loader(train_loader, model, device, num_batches=<span class="number">5</span>)</span><br><span class="line">        val_loss = calc_class_loss_loader(val_loader, model, device, num_batches=<span class="number">5</span>)</span><br><span class="line">        test_loss = calc_class_loss_loader(test_loader, model, device, num_batches=<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">f"Training loss: <span class="subst">&#123;train_loss:<span class="number">.3</span>f&#125;</span>"</span>) <span class="comment"># 3.083</span></span><br><span class="line">    print(<span class="string">f"Validation loss: <span class="subst">&#123;val_loss:<span class="number">.3</span>f&#125;</span>"</span>) <span class="comment"># 2.575</span></span><br><span class="line">    print(<span class="string">f"Test loss: <span class="subst">&#123;test_loss:<span class="number">.3</span>f&#125;</span>"</span>) <span class="comment"># 2.312</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-4-模型微调和应用"><a href="#6-4-模型微调和应用" class="headerlink" title="6.4 模型微调和应用"></a>6.4 模型微调和应用</h4><h5 id="在有监督数据上微调模型"><a href="#在有监督数据上微调模型" class="headerlink" title="在有监督数据上微调模型"></a>在有监督数据上微调模型</h5><p>训练循环与之前章节中预训练的整体训练循环相同，唯一的区别是要计算分类准确率，而不是生成文本样本来评估模型。</p>
+<p>一轮就是完整的遍历依次训练集，批次的数量=训练集大小/每个批次大小</p>
+<p><img src="../../uploads/ai/class_train_epoch.png" alt="class_train_epoch"><br><img src="/uploads/ai/class_train_epoch.png" alt="class_train_epoch"> </p>
+<p>我们现在跟踪的是已经看到的训练样本数量(examples_seen)，而不是词元数量，并且我们在每轮后会计算准确率，而不是打印一个文本样本。</p>
+<ul>
+<li>训练函数<code>train_classifier_simple</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_classifier_simple</span><span class="params">(model, train_loader, val_loader, optimizer, device, num_epochs,</span></span></span><br><span class="line"><span class="function"><span class="params">                            eval_freq, eval_iter)</span>:</span></span><br><span class="line">    <span class="comment"># 初始化存放中间统计数据的列表</span></span><br><span class="line">    train_losses, val_losses, train_accs, val_accs = [], [], [], []</span><br><span class="line">    examples_seen, global_step = <span class="number">0</span>, <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 主循环轮次</span></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs):</span><br><span class="line">        model.train()  <span class="comment"># Set model to training mode</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> input_batch, target_batch <span class="keyword">in</span> train_loader:</span><br><span class="line">            optimizer.zero_grad() <span class="comment"># Reset loss gradients from previous batch iteration</span></span><br><span class="line">            loss = calc_class_loss_batch(input_batch, target_batch, model, device)</span><br><span class="line">            loss.backward() <span class="comment"># Calculate loss gradients</span></span><br><span class="line">            optimizer.step() <span class="comment"># Update model weights using loss gradients</span></span><br><span class="line">            examples_seen += input_batch.shape[<span class="number">0</span>] <span class="comment"># New: track examples instead of tokens</span></span><br><span class="line">            global_step += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Optional evaluation step</span></span><br><span class="line">            <span class="keyword">if</span> global_step % eval_freq == <span class="number">0</span>:</span><br><span class="line">                train_loss, val_loss = evaluate_class_model(</span><br><span class="line">                    model, train_loader, val_loader, device, eval_iter)</span><br><span class="line">                train_losses.append(train_loss)</span><br><span class="line">                val_losses.append(val_loss)</span><br><span class="line">                print(<span class="string">f"Ep <span class="subst">&#123;epoch+<span class="number">1</span>&#125;</span> (Step <span class="subst">&#123;global_step:<span class="number">06</span>d&#125;</span>): "</span></span><br><span class="line">                      <span class="string">f"Train loss <span class="subst">&#123;train_loss:<span class="number">.3</span>f&#125;</span>, Val loss <span class="subst">&#123;val_loss:<span class="number">.3</span>f&#125;</span>"</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Calculate accuracy after each epoch</span></span><br><span class="line">        train_accuracy = calc_accuracy_loader(train_loader, model, device, num_batches=eval_iter)</span><br><span class="line">        val_accuracy = calc_accuracy_loader(val_loader, model, device, num_batches=eval_iter)</span><br><span class="line">        print(<span class="string">f"Training accuracy: <span class="subst">&#123;train_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>% | "</span>, end=<span class="string">""</span>)</span><br><span class="line">        print(<span class="string">f"Validation accuracy: <span class="subst">&#123;val_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>)</span><br><span class="line">        <span class="comment"># 用于绘制图表</span></span><br><span class="line">        train_accs.append(train_accuracy)</span><br><span class="line">        val_accs.append(val_accuracy)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> train_losses, val_losses, train_accs, val_accs, examples_seen</span><br><span class="line"><span class="comment"># 评估模型效果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">evaluate_class_model</span><span class="params">(model, train_loader, val_loader, device, eval_iter)</span>:</span></span><br><span class="line">    model.eval()</span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        train_loss = calc_class_loss_loader(train_loader, model, device, num_batches=eval_iter)</span><br><span class="line">        val_loss = calc_class_loss_loader(val_loader, model, device, num_batches=eval_iter)</span><br><span class="line">    model.train()</span><br><span class="line">    <span class="keyword">return</span> train_loss, val_loss</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>整体流程代码：<pre><code>1. 加载预训练模型
+1. 修改模型，以训练更新部分层的参数
+1. 初始化优化器，设置训练的轮数，并使用`train_classifier_simple`函数启动训练
+1. 保存新的模型参数</code></pre></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_train_class_model</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 加载预训练模型</span></span><br><span class="line">    BASE_CONFIG_SPAM = &#123;</span><br><span class="line">        <span class="string">"vocab_size"</span>: <span class="number">50257</span>,     <span class="comment"># Vocabulary size</span></span><br><span class="line">        <span class="string">"emb_dim"</span>: <span class="number">768</span>, </span><br><span class="line">        <span class="string">"n_layers"</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">"n_heads"</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">"context_length"</span>: <span class="number">1024</span>,  <span class="comment"># Context length</span></span><br><span class="line">        <span class="string">"drop_rate"</span>: <span class="number">0.0</span>,        <span class="comment"># Dropout rate</span></span><br><span class="line">        <span class="string">"qkv_bias"</span>: <span class="literal">True</span>         <span class="comment"># Query-key-value bias</span></span><br><span class="line">    &#125;</span><br><span class="line">    settings, params = load_gpt_models(model_size=<span class="string">"124M"</span>, models_dir=<span class="string">"gpt2"</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># set DISABLE_ADDMM_CUDA_LT=1</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line">    model = GPTModel(BASE_CONFIG_SPAM)</span><br><span class="line">    load_weights_into_gpt(model, params)    </span><br><span class="line"></span><br><span class="line">    <span class="comment"># 修改预训练模型</span></span><br><span class="line">    <span class="comment"># 1. 设置模型所有参数都是不训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    torch.manual_seed(<span class="number">123</span>)</span><br><span class="line">    num_classes = <span class="number">2</span></span><br><span class="line">    <span class="comment"># 2. 新的输出维度为2，因为只有0和1两个选项</span></span><br><span class="line">    model.out_head = torch.nn.Linear(in_features=BASE_CONFIG_SPAM[<span class="string">"emb_dim"</span>], out_features=num_classes).to(device)</span><br><span class="line">    model.to(device)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 最后一个transformer层参数是需要训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.trf_blocks[<span class="number">-1</span>].parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 最后的归一化层的参数是需要训练的</span></span><br><span class="line">    <span class="keyword">for</span> param <span class="keyword">in</span> model.final_norm.parameters():</span><br><span class="line">        param.requires_grad = <span class="literal">True</span>    </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 微调模型</span></span><br><span class="line">    <span class="keyword">import</span> time</span><br><span class="line">    start_time = time.time()</span><br><span class="line"></span><br><span class="line">    torch.manual_seed(<span class="number">123</span>)</span><br><span class="line">    optimizer = torch.optim.AdamW(model.parameters(), lr=<span class="number">5e-5</span>, weight_decay=<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line">    num_epochs = <span class="number">5</span></span><br><span class="line">    train_loader, val_loader, test_loader = create_sms_data_loaders()</span><br><span class="line">    train_losses, val_losses, train_accs, val_accs, examples_seen = train_classifier_simple(</span><br><span class="line">        model, train_loader, val_loader, optimizer, device,</span><br><span class="line">        num_epochs=num_epochs, eval_freq=<span class="number">50</span>, eval_iter=<span class="number">5</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    end_time = time.time()</span><br><span class="line">    execution_time_minutes = (end_time - start_time) / <span class="number">60</span></span><br><span class="line">    print(<span class="string">f"Training completed in <span class="subst">&#123;execution_time_minutes:<span class="number">.2</span>f&#125;</span> minutes."</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 绘制结果图</span></span><br><span class="line">    <span class="comment"># 损失图</span></span><br><span class="line">    epochs_tensor = torch.linspace(<span class="number">0</span>, num_epochs, len(train_losses))</span><br><span class="line">    examples_seen_tensor = torch.linspace(<span class="number">0</span>, examples_seen, len(train_losses))</span><br><span class="line">    plot_values(epochs_tensor, examples_seen_tensor, train_losses, val_losses)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 准确率图</span></span><br><span class="line">    epochs_tensor = torch.linspace(<span class="number">0</span>, num_epochs, len(train_accs))</span><br><span class="line">    examples_seen_tensor = torch.linspace(<span class="number">0</span>, examples_seen, len(train_accs))</span><br><span class="line">    plot_values(epochs_tensor, examples_seen_tensor, train_accs, val_accs, label=<span class="string">"accuracy"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 保存训练好的模型</span></span><br><span class="line">    torch.save(model.state_dict(), <span class="string">"review_classifier.pth"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    Ep 1 (Step 000000): Train loss 2.143, Val loss 2.383</span></span><br><span class="line"><span class="string">    Ep 1 (Step 000050): Train loss 0.611, Val loss 0.620</span></span><br><span class="line"><span class="string">    Ep 1 (Step 000100): Train loss 0.511, Val loss 0.526</span></span><br><span class="line"><span class="string">    Training accuracy: 67.50% | Validation accuracy: 72.50%</span></span><br><span class="line"><span class="string">    Ep 2 (Step 000150): Train loss 0.598, Val loss 0.451</span></span><br><span class="line"><span class="string">    Ep 2 (Step 000200): Train loss 0.416, Val loss 0.342</span></span><br><span class="line"><span class="string">    Ep 2 (Step 000250): Train loss 0.379, Val loss 0.294</span></span><br><span class="line"><span class="string">    Training accuracy: 87.50% | Validation accuracy: 90.00%</span></span><br><span class="line"><span class="string">    Ep 3 (Step 000300): Train loss 0.230, Val loss 0.184</span></span><br><span class="line"><span class="string">    Ep 3 (Step 000350): Train loss 0.242, Val loss 0.102</span></span><br><span class="line"><span class="string">    Training accuracy: 95.00% | Validation accuracy: 97.50%</span></span><br><span class="line"><span class="string">    Ep 4 (Step 000400): Train loss 0.096, Val loss 0.084</span></span><br><span class="line"><span class="string">    Ep 4 (Step 000450): Train loss 0.115, Val loss 0.084</span></span><br><span class="line"><span class="string">    Ep 4 (Step 000500): Train loss 0.198, Val loss 0.073</span></span><br><span class="line"><span class="string">    Training accuracy: 100.00% | Validation accuracy: 97.50%</span></span><br><span class="line"><span class="string">    Ep 5 (Step 000550): Train loss 0.201, Val loss 0.086</span></span><br><span class="line"><span class="string">    Ep 5 (Step 000600): Train loss 0.047, Val loss 0.049</span></span><br><span class="line"><span class="string">    Training accuracy: 100.00% | Validation accuracy: 97.50%</span></span><br><span class="line"><span class="string">    Training completed in 0.68 minutes.</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    </span><br><span class="line">    train_accuracy = calc_accuracy_loader(train_loader, model, device)</span><br><span class="line">    val_accuracy = calc_accuracy_loader(val_loader, model, device)</span><br><span class="line">    test_accuracy = calc_accuracy_loader(test_loader, model, device)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">f"Training accuracy: <span class="subst">&#123;train_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 97.60%</span></span><br><span class="line">    print(<span class="string">f"Validation accuracy: <span class="subst">&#123;val_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 97.32%</span></span><br><span class="line">    print(<span class="string">f"Test accuracy: <span class="subst">&#123;test_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 95.33%</span></span><br></pre></td></tr></table></figure>
+
+<p>使用matplotlib绘制趋势变化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_values</span><span class="params">(epochs_seen, examples_seen, train_values, val_values, label=<span class="string">"loss"</span>)</span>:</span></span><br><span class="line">    fig, ax1 = plt.subplots(figsize=(<span class="number">5</span>, <span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Plot training and validation loss against epochs</span></span><br><span class="line">    ax1.plot(epochs_seen, train_values, label=<span class="string">f"Training <span class="subst">&#123;label&#125;</span>"</span>)</span><br><span class="line">    ax1.plot(epochs_seen, val_values, linestyle=<span class="string">"-."</span>, label=<span class="string">f"Validation <span class="subst">&#123;label&#125;</span>"</span>)</span><br><span class="line">    ax1.set_xlabel(<span class="string">"Epochs"</span>)</span><br><span class="line">    ax1.set_ylabel(label.capitalize())</span><br><span class="line">    ax1.legend()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Create a second x-axis for tokens seen</span></span><br><span class="line">    ax2 = ax1.twiny()  <span class="comment"># Create a second x-axis that shares the same y-axis</span></span><br><span class="line">    ax2.plot(examples_seen, train_values, alpha=<span class="number">0</span>)  <span class="comment"># Invisible plot for aligning ticks</span></span><br><span class="line">    ax2.set_xlabel(<span class="string">"Examples seen"</span>)</span><br><span class="line"></span><br><span class="line">    fig.tight_layout()  <span class="comment"># Adjust layout to make room</span></span><br><span class="line">    plt.savefig(<span class="string">f"<span class="subst">&#123;label&#125;</span>-plot.pdf"</span>)</span><br><span class="line">    <span class="comment"># plt.show()</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="../../uploads/ai/class_model_loss_trend.png" alt="class_model_loss_trend"><br><img src="/uploads/ai/class_model_loss_trend.png" alt="class_model_loss_trend"> </p>
+<p>从输出结果看，第一轮后损失有明显下降趋势，可以看出模型正在有效地从训练数据中学习，几乎没有过拟合的迹象。也就是说，训练集和验证集的损失之间没有明显的差距</p>
+<p>轮数的选择取决于数据集和任务的难度，并没有通用的解决方案，不过通常情况下，5轮是一个不错的起点。如果模型在前几轮之后出现过拟合（参见图6-16的损失曲线），则可能需要减少轮数。相反，如果趋势表明验证集损失可能随着进一步训练而改善，则应该增加轮数。在这种情况下，5轮是合理的，因为没有早期过拟合的迹象，且验证集损失接近于0。</p>
+<p>验证集的准确率会比测试集的准确率稍高，因为模型开发过程中往往会调整超参数以提升在验证集上的性能，这可能导致模型在测试集上并不完全适用。这种情况很常见，但可以通过调整模型设置，比如增加dropout率(drop_rate)或优化器配置中的权重衰减参数(weight_decay)来尽量缩小这种差距。</p>
+<h5 id="使用大语言模型作为垃圾消息分类器"><a href="#使用大语言模型作为垃圾消息分类器" class="headerlink" title="使用大语言模型作为垃圾消息分类器"></a>使用大语言模型作为垃圾消息分类器</h5><p>使用模型对输入文本进行分类的函数<code>classify_review</code>，其中主要是处理输入数据长度不会超过模型的上下文长度1024，以及把过短的输入补上特殊的词元，最后根据输出的分数最大值的索引决定是否是垃圾短信</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">classify_review</span><span class="params">(text, model, tokenizer, device, max_length=None, pad_token_id=<span class="number">50256</span>)</span>:</span></span><br><span class="line">    model.eval()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Prepare inputs to the model</span></span><br><span class="line">    input_ids = tokenizer.encode(text)</span><br><span class="line">    supported_context_length = model.pos_emb.weight.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># Note: In the book, this was originally written as pos_emb.weight.shape[1] by mistake</span></span><br><span class="line">    <span class="comment"># It didn't break the code but would have caused unnecessary truncation (to 768 instead of 1024)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Truncate sequences if they too long</span></span><br><span class="line">    input_ids = input_ids[:min(max_length, supported_context_length)]</span><br><span class="line">    <span class="keyword">assert</span> max_length <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, (</span><br><span class="line">        <span class="string">"max_length must be specified. If you want to use the full model context, "</span></span><br><span class="line">        <span class="string">"pass max_length=model.pos_emb.weight.shape[0]."</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">assert</span> max_length &lt;= supported_context_length, (</span><br><span class="line">        <span class="string">f"max_length (<span class="subst">&#123;max_length&#125;</span>) exceeds model's supported context length (<span class="subst">&#123;supported_context_length&#125;</span>)."</span></span><br><span class="line">    )    </span><br><span class="line">    <span class="comment"># Alternatively, a more robust version is the following one, which handles the max_length=None case better</span></span><br><span class="line">    <span class="comment"># max_len = min(max_length,supported_context_length) if max_length else supported_context_length</span></span><br><span class="line">    <span class="comment"># input_ids = input_ids[:max_len]</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Pad sequences to the longest sequence</span></span><br><span class="line">    input_ids += [pad_token_id] * (max_length - len(input_ids))</span><br><span class="line">    input_tensor = torch.tensor(input_ids, device=device).unsqueeze(<span class="number">0</span>) <span class="comment"># add batch dimension</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Model inference</span></span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        logits = model(input_tensor)[:, <span class="number">-1</span>, :]  <span class="comment"># Logits of the last output token</span></span><br><span class="line">    predicted_label = torch.argmax(logits, dim=<span class="number">-1</span>).item()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Return the classified result</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"spam"</span> <span class="keyword">if</span> predicted_label == <span class="number">1</span> <span class="keyword">else</span> <span class="string">"not spam"</span></span><br></pre></td></tr></table></figure>
+
+<p>加载使用一个微调后的模型，这里不需要再去加载GPT2的模型参数了，只需加载之前自己微调保存后的<code>pytorch</code>专用的权重参数文件<code>review_classifier.pth</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_load_class_model</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 加载预训练模型</span></span><br><span class="line">    BASE_CONFIG_SPAM = &#123;</span><br><span class="line">        <span class="string">"vocab_size"</span>: <span class="number">50257</span>,     <span class="comment"># Vocabulary size</span></span><br><span class="line">        <span class="string">"emb_dim"</span>: <span class="number">768</span>, </span><br><span class="line">        <span class="string">"n_layers"</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">"n_heads"</span>: <span class="number">12</span>,</span><br><span class="line">        <span class="string">"context_length"</span>: <span class="number">1024</span>,  <span class="comment"># Context length</span></span><br><span class="line">        <span class="string">"drop_rate"</span>: <span class="number">0.0</span>,        <span class="comment"># Dropout rate</span></span><br><span class="line">        <span class="string">"qkv_bias"</span>: <span class="literal">True</span>         <span class="comment"># Query-key-value bias</span></span><br><span class="line">    &#125;    </span><br><span class="line">    model = GPTModel(BASE_CONFIG_SPAM)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置模型输出为2个类别</span></span><br><span class="line">    num_classes = <span class="number">2</span></span><br><span class="line">    model.out_head = torch.nn.Linear(in_features=BASE_CONFIG_SPAM[<span class="string">"emb_dim"</span>], out_features=num_classes)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># set DISABLE_ADDMM_CUDA_LT=1</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line">    <span class="comment"># 加载模型不用在加载GPT2的那堆东西了</span></span><br><span class="line">    model_state_dict = torch.load(<span class="string">"review_classifier.pth"</span>, map_location=device, weights_only=<span class="literal">True</span>)</span><br><span class="line">    model.load_state_dict(model_state_dict)</span><br><span class="line">    model.to(device)</span><br><span class="line">    model.eval()</span><br><span class="line">	<span class="comment"># 使用第一步训练准备数据集进行准确率测试</span></span><br><span class="line">    train_loader, val_loader, test_loader = create_sms_data_loaders()</span><br><span class="line">    train_accuracy = calc_accuracy_loader(train_loader, model, device)</span><br><span class="line">    val_accuracy = calc_accuracy_loader(val_loader, model, device)</span><br><span class="line">    test_accuracy = calc_accuracy_loader(test_loader, model, device)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">f"Training accuracy: <span class="subst">&#123;train_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 97.60%</span></span><br><span class="line">    print(<span class="string">f"Validation accuracy: <span class="subst">&#123;val_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 97.32%</span></span><br><span class="line">    print(<span class="string">f"Test accuracy: <span class="subst">&#123;test_accuracy*<span class="number">100</span>:<span class="number">.2</span>f&#125;</span>%"</span>) <span class="comment"># 95.33%</span></span><br><span class="line"></span><br><span class="line">    tokenizer = tiktoken.get_encoding(<span class="string">"gpt2"</span>)</span><br><span class="line">	<span class="comment"># 两个测试例子</span></span><br><span class="line">    text_1 = (</span><br><span class="line">        <span class="string">"You are a winner you have been specially"</span></span><br><span class="line">        <span class="string">" selected to receive $1000 cash or a $2000 award."</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    print(classify_review(text_1, model, tokenizer, device, max_length=<span class="number">120</span>)) <span class="comment"># spam</span></span><br><span class="line"></span><br><span class="line">    text_2 = (</span><br><span class="line">        <span class="string">"Hey, just wanted to check if we're still on"</span></span><br><span class="line">        <span class="string">" for dinner tonight? Let me know!"</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    print(classify_review(text_2, model, tokenizer, device, max_length=<span class="number">120</span>)) <span class="comment"># not spam</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-5-总结"><a href="#6-5-总结" class="headerlink" title="6.5 总结"></a>6.5 总结</h4><ul>
+<li><p>分类微调涉及通过添加一个小型分类层来替换大语言模型的输出层</p>
+</li>
+<li><p>与预训练相似，微调的模型输入是将文本转换为词元ID。</p>
+</li>
+<li><p>在微调大语言模型之前，我们会将预训练模型加载为基础模型</p>
+</li>
+<li><p>分类模型的评估包括计算分类准确率（正确预测的比例或百分比）​。</p>
+</li>
+<li><p>分类模型的微调使用与大语言模型预训练相同的交叉熵损失函数。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/LLM/" rel="tag"># LLM</a>
+          
+            <a href="/tags/read/" rel="tag"># read</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/08/31/ai/LLMs-from-scratch-5/" rel="next" title="从零构建大模型-训练模型">
+                <i class="fa fa-chevron-left"></i> 从零构建大模型-训练模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">78</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">80</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#《从零构建大模型》"><span class="nav-number">1.</span> <span class="nav-text">《从零构建大模型》</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第六章-针对分类微调"><span class="nav-number">1.1.</span> <span class="nav-text">第六章  针对分类微调</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-微调分类"><span class="nav-number">1.1.1.</span> <span class="nav-text">6.1 微调分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-准备数据集"><span class="nav-number">1.1.2.</span> <span class="nav-text">6.2 准备数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#数据预处理"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">数据预处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建数据加载器"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">创建数据加载器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-模型设置"><span class="nav-number">1.1.3.</span> <span class="nav-text">6.3 模型设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#初始化带有预训练权重的模型"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">初始化带有预训练权重的模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#添加分类头"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">添加分类头</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#计算分类损失和准确率"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">计算分类损失和准确率</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4-模型微调和应用"><span class="nav-number">1.1.4.</span> <span class="nav-text">6.4 模型微调和应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#在有监督数据上微调模型"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">在有监督数据上微调模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用大语言模型作为垃圾消息分类器"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">使用大语言模型作为垃圾消息分类器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-5-总结"><span class="nav-number">1.1.5.</span> <span class="nav-text">6.5 总结</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
