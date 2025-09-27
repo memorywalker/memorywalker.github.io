@@ -70,4 +70,7 @@ _列表_
 
 我在使用的软件[markdownpad](http://www.markdownpad.com/ "markdownpad")
 
+还可以使用[[obsidian-usage]]
+
 [本文预览](http://jianshu.io/p/txFRad)
+
