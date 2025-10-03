@@ -95,20 +95,32 @@
 
 
   <meta name="description" content="《深度学习入门：基于Python的理论与实现》1-3章 [日]斋藤康毅 感知机感知机是由美国学者Frank Rosenblatt在1957年提出来的。 感知机接收多个输入信号，输出一个信号。这里所说的“信号”可以想象成电流或河流那样具备“流动性”的东西。 感知机的信号只有“流/不流”(1/0)两种取值。在本书中，0对应“不传递信号”，1对应“传递信号”。 $x_{1}$和$x_{2}$ 是输入信号">
-<meta name="keywords" content="AI,Deep Learning,read">
+<meta name="keywords" content="AI,read,Deep Learning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深度学习入门-感知机和神经网络">
 <meta property="og:url" content="http://memorywalker.github.io/2025/10/02/ai/DeepLearningFromScratch1-3/index.html">
 <meta property="og:site_name" content="How Time Flies">
 <meta property="og:description" content="《深度学习入门：基于Python的理论与实现》1-3章 [日]斋藤康毅 感知机感知机是由美国学者Frank Rosenblatt在1957年提出来的。 感知机接收多个输入信号，输出一个信号。这里所说的“信号”可以想象成电流或河流那样具备“流动性”的东西。 感知机的信号只有“流/不流”(1/0)两种取值。在本书中，0对应“不传递信号”，1对应“传递信号”。 $x_{1}$和$x_{2}$ 是输入信号">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="d:%5Cdev%5Cmemorywalker.github.io%5Csource%5Cuploads%5Cai%5Cor_plot.png">
-<meta property="og:image" content="d:%5Cdev%5Cmemorywalker.github.io%5Csource%5Cuploads%5Cai%5Cxor_plot.png">
-<meta property="og:updated_time" content="2025-10-02T15:34:06.665Z">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/02/uploads/ai/or_plot.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/or_plot.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/02/uploads/ai/xor_plot.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/xor_plot.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/02/uploads/ai/xor_composite.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/xor_composite.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/02/uploads/ai/input_1layer.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/input_1layer.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/02/uploads/ai/sig_step_compare.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/sig_step_compare.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/02/uploads/ai/hidden_layer_calc.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/hidden_layer_calc.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/02/uploads/ai/output_node_calc.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/output_node_calc.png">
+<meta property="og:updated_time" content="2025-10-03T04:42:25.576Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习入门-感知机和神经网络">
 <meta name="twitter:description" content="《深度学习入门：基于Python的理论与实现》1-3章 [日]斋藤康毅 感知机感知机是由美国学者Frank Rosenblatt在1957年提出来的。 感知机接收多个输入信号，输出一个信号。这里所说的“信号”可以想象成电流或河流那样具备“流动性”的东西。 感知机的信号只有“流/不流”(1/0)两种取值。在本书中，0对应“不传递信号”，1对应“传递信号”。 $x_{1}$和$x_{2}$ 是输入信号">
-<meta name="twitter:image" content="d:%5Cdev%5Cmemorywalker.github.io%5Csource%5Cuploads%5Cai%5Cor_plot.png">
+<meta name="twitter:image" content="http://memorywalker.github.io/2025/10/02/uploads/ai/or_plot.png">
 
 
 
@@ -397,12 +409,24 @@
                 
               
 
-              <time title="创建时间：2025-10-02 20:07:25 / 修改时间：15:34:06" itemprop="dateCreated datePublished" datetime="2025-10-02T20:07:25+00:00">2025-10-02</time>
+              <time title="创建时间：2025-10-02 20:07:25" itemprop="dateCreated datePublished" datetime="2025-10-02T20:07:25+00:00">2025-10-02</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2025-10-03 04:42:25" itemprop="dateModified" datetime="2025-10-03T04:42:25+00:00">2025-10-03</time>
               
             
           </span>
@@ -496,7 +520,7 @@
 <h5 id="感知机的实现"><a href="#感知机的实现" class="headerlink" title="感知机的实现"></a>感知机的实现</h5><p>上面的感知机公式可以换一种方式表示：</p>
 <p>$$<br>y =<br>\begin{cases}<br>0, &amp; (b+w_{1}x_{1}+w_{2}x_{2} \leq 0) \[4ex]<br>1, &amp; (b+w_{1}x_{1}+w_{2}x_{2} \gt 0)<br>\end{cases}<br>$$</p>
 <p>这个公式中b称为偏置，$w_{1}$和$w_{2}$称为权重。感知机会计算输入信号和权重的乘积，然后加上偏置，如果这个值大于0则输出1，否则输出0。</p>
-<p>◆ 偏置和权重的作用是不一样的。权重是控制输入信号的重要性的参数，而偏置是调整神经元被激活的容易程度（输出信号为1的程度）的参数。</p>
+<p>◆ 偏置和权重的作用是不一样的。<strong>权重是控制输入信号的重要性的参数，而偏置是调整神经元被激活的容易程度（输出信号为1的程度）的参数。</strong></p>
 <p>使用Numpy实现三个逻辑门，计算的逻辑是完全相同，只是权重参数不同，这里计算逻辑可以理解为模型，w和b是模型参数</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">AND</span><span class="params">(x1, x2)</span>:</span></span><br><span class="line">    x = np.array([x1, x2])</span><br><span class="line">    w = np.array([<span class="number">0.5</span>, <span class="number">0.5</span>])</span><br><span class="line">    b = <span class="number">-0.7</span></span><br><span class="line">    tmp = np.sum(w*x) + b</span><br><span class="line">    <span class="keyword">if</span> tmp &lt;= <span class="number">0</span>:</span><br><span class="line">       <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">       <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">NAND</span><span class="params">(x1, x2)</span>:</span></span><br><span class="line">    x = np.array([x1, x2])</span><br><span class="line">    w = np.array([<span class="number">-0.5</span>, <span class="number">-0.5</span>]) <span class="comment"># 仅权重和偏置与AND不同！</span></span><br><span class="line">    b = <span class="number">0.7</span></span><br><span class="line">    tmp = np.sum(w*x) + b</span><br><span class="line">    <span class="keyword">if</span> tmp &lt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">OR</span><span class="params">(x1, x2)</span>:</span></span><br><span class="line">    x = np.array([x1, x2])</span><br><span class="line">    w = np.array([<span class="number">0.5</span>, <span class="number">0.5</span>]) <span class="comment"># 仅权重和偏置与AND不同！</span></span><br><span class="line">    b = <span class="number">-0.2</span></span><br><span class="line">    tmp = np.sum(w*x) + b</span><br><span class="line">    <span class="keyword">if</span> tmp &lt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
 
@@ -506,95 +530,192 @@
 </ul>
 <p><strong>对于或门</strong>如果使用以下权重参数$w_{1} w_{2}$都为1，偏置为-0.5，对应公式为：<br>$$<br>y =<br>\begin{cases}<br>0, &amp; (-0.5+x_{1}+x_{2} \leq 0) \[4ex]<br>1, &amp; (-0.5+x_{1}+x_{2} \gt 0)<br>\end{cases}<br>$$</p>
 <p>感知机会生成一个 $-0.5+x_{1}+x_{2} = 0$的直线，即$x_{2} = 0.5-x_{1}$，这条直线用图形表示为</p>
-<p><img src="D:%5Cdev%5Cmemorywalker.github.io%5Csource%5Cuploads%5Cai%5Cor_plot.png" alt="1759414782201"></p>
+<p><img src="../../uploads/ai/or_plot.png" alt="or_plot"><br><img src="/uploads/ai/or_plot.png" alt="or_plot"></p>
 <p>其中横轴为x1，纵轴为x2，○和△表示或门的输出，圆圈○表示输出0，三角△表示输出1，直线左下方灰色区域都为0</p>
 <p><strong>异或门的非线性</strong></p>
 <p>对于异或门，两个输入值x不同的时候才能输出1，“异或”是拒绝其他的意思。根据真值表，它的图形表示为：</p>
-<p><img src="D:%5Cdev%5Cmemorywalker.github.io%5Csource%5Cuploads%5Cai%5Cxor_plot.png" alt="1759415036677"></p>
+<p><img src="../../uploads/ai/xor_plot.png" alt="xor_plot"><br><img src="/uploads/ai/xor_plot.png" alt="xor_plot"></p>
 <p>当x1和x2都是1时为0，无法使用一条直线来分割0和1所在区域，只能使用曲线来把0和1分开，直线无法分割这种交叉的情况。</p>
-<h4 id="多层感知机"><a href="#多层感知机" class="headerlink" title="多层感知机"></a>多层感知机</h4><p>◆ 感知机的绝妙之处在于它可以“叠加层”（通过叠加层来表示异或门是本节的要点）</p>
-<p>◆ 与非门前端的○表示反转输出的意思</p>
-<p>◆ 通过组合与门、与非门、或门实现异或门</p>
-<p>◆ 叠加了多层的感知机也称为多层感知机(multi-layered perceptron)。</p>
-<p>◆ 单层感知机无法表示的东西，通过增加一层就可以解决”。也就是说，通过叠加层（加深层），感知机能进行更加灵活的表示。</p>
-<h4 id="从与非门到计算机"><a href="#从与非门到计算机" class="headerlink" title="从与非门到计算机"></a>从与非门到计算机</h4><p>◆ 说明使用感知机也可以表示计算机</p>
-<p>◆ 《计算机系统要素：从零开始构建现代计算机》。这本书以深入理解计算机为主题，论述了通过NAND构建可运行俄罗斯方块的计算机的过程。此书能让读者真实体会到，通过简单的NAND元件就可以实现计算机这样复杂的系统。</p>
-<p>◆ 激活函数使用了非线性的sigmoid函数的感知机</p>
-<p>◆ 感知机通过叠加层能够进行非线性的表示，理论上还可以表示计算机进行的处理。</p>
-<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>◆ 感知机是具有输入和输出的算法。给定一个输入后，将输出一个既定的值。·感知机将权重和偏置设定为参数。·使用感知机可以表示与门和或门等逻辑电路。</p>
-<p>◆ 单层感知机只能表示线性空间，而多层感知机可以表示非线性空间。·多层感知机（在理论上）可以表示计算机。</p>
+<h4 id="多层感知机"><a href="#多层感知机" class="headerlink" title="多层感知机"></a>多层感知机</h4><ul>
+<li><p>感知机的绝妙之处在于它可以“叠加层”，可以通过叠加层使用与门，与非门和或门来表示异或门。</p>
+<p>通过真值表可以推出异或门的表示</p>
+<table>
+<thead>
+<tr>
+<th>x1</th>
+<th>x2</th>
+<th>s1(nand)</th>
+<th>s2(or)</th>
+<th>y(xor)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>与非门的输出s1和或门的输出s2，再作为输入通过一层<strong>与门</strong>的处理得到异或门的输出y (与非门前端的○表示反转输出)。可以把s1和s2看做神经网络的第1层，最后的与门看作输出层。</p>
+</li>
+</ul>
+<p><img src="../../uploads/ai/xor_composite.png" alt="xor_composite"><br><img src="/uploads/ai/xor_composite.png" alt="xor_composite"></p>
+<p>叠加了多层的感知机也称为多层感知机(multi-layered perceptron)。 单层感知机无法表示的东西，通过增加一层就可以解决”。也就是说，通过叠加层（加深层），感知机能进行更加灵活的表示。</p>
+<h4 id="从与非门到计算机"><a href="#从与非门到计算机" class="headerlink" title="从与非门到计算机"></a>从与非门到计算机</h4><p>使用多层感知机可以实现加法器，二进制转换为十进制的编码器等等，这些小的组件可以组合实现计算机，因此用感知机也可以表示计算机</p>
+<p>《计算机系统要素：从零开始构建现代计算机》这本书以深入理解计算机为主题，论述了通过NAND构建可运行俄罗斯方块的计算机的过程。此书能让读者真实体会到，通过简单的NAND元件就可以实现计算机这样复杂的系统。</p>
+<p>在用与非门等低层的元件构建计算机的情况下，分阶段地制作所需的零件（模块）会比较自然，即先实现与门和或门，然后实现半加器和全加器，接着实现算数逻辑单元(ALU)，然后实现CPU。</p>
+<ul>
+<li>感知机通过叠加层能够进行非线性的表示，理论上还可以表示计算机进行的处理。</li>
+</ul>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><ul>
+<li><p>感知机是具有输入和输出的算法。给定一个输入后，将输出一个既定的值。</p>
+</li>
+<li><p>感知机将权重和偏置设定为参数。·使用感知机可以表示与门和或门等逻辑电路。</p>
+</li>
+<li><p>单层感知机只能表示线性空间，而多层感知机可以表示非线性空间。</p>
+</li>
+<li><p>多层感知机（在理论上）可以表示计算机。</p>
+</li>
+</ul>
 <h3 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h3><p>神经网络的一个重要性质是它可以自动地从数据中学习到合适的权重参数</p>
-<p>3.1 从感知机到神经网络</p>
-<p>◆ b是被称为偏置的参数，用于控制神经元被激活的容易程度</p>
-<p>◆ h(x)函数会将输入信号的总和转换为输出信号，这种函数一般称为激活函数(activation function)。如“激活”一词所示，激活函数的作用在于决定如何来激活输入信号的总和。</p>
-<p>◆ 2025/10/02发表想法</p>
-<p>分两步，先求加权和，在用激活函数转换为输出</p>
-<p>原文：信号的加权总和为节点a，然后节点a被激活函数h()转换成节点y</p>
-<p>◆ 一般而言，“朴素感知机”是指单层网络，指的是激活函数使用了阶跃函数[插图]的模型。“多层感知机”是指神经网络，即使用sigmoid函数（后述）等平滑的激活函数的多层网络。</p>
-<p>3.2 激活函数</p>
-<p>◆ 激活函数以阈值为界，一旦输入超过阈值，就切换输出。这样的函数称为“阶跃函数”。因此，可以说感知机中使用了阶跃函数作为激活函数。</p>
-<p>◆ sigmoid函数(sigmoid function)。[插图]式(3.6)中的exp(-x)表示[插图]的意思。e是纳皮尔常数2.7182 …。式(3.6)表示的sigmoid函数看上去有些复杂，但它也仅仅是个函数而已。而函数就是给定某个输入后，会返回某个输出的转换器。比如，向sigmoid函数输入1.0或2.0后，就会有某个值被输出，类似h(1.0) = 0.731 …、h(2.0) = 0.880 …这样</p>
-<p>◆ 从视觉上确认函数的形状对理解函数而言很重要</p>
-<p>◆ 对NumPy数组进行不等号运算后，数组的各个元素都会进行不等号运算，生成一个布尔型数组。这里，数组x中大于0的元素被转换为True，小于等于0的元素被转换为False，从而生成一个新的数组y</p>
-<p>◆ def sigmoid(x):    return 1 / (1 + np.exp(-x))这里，np.exp(-x)对应exp(-x)</p>
-<p>◆ 根据NumPy的广播功能，如果在标量和NumPy数组之间进行运算，则标量会和NumPy数组的各个元素进行运算。</p>
-<p>◆ sigmoid函数是一条平滑的曲线，输出随着输入发生连续性的变化。而阶跃函数以0为界，输出发生急剧性的变化。sigmoid函数的平滑性对神经网络的学习具有重要意义。</p>
-<p>◆ 输入小时，输出接近0（为0）；随着输入增大，输出向1靠近（变成1）”。也就是说，当输入信号为重要信息时，阶跃函数和sigmoid函数都会输出较大的值；当输入信号为不重要的信息时，两者都输出较小的值。还有一个共同点是，不管输入信号有多小，或者有多大，输出信号的值都在0到1之间。</p>
-<p>◆ 向这个转换器输入某个值后，输出值是输入值的常数倍的函数称为线性函数（用数学式表示为h(x) = cx。c为常数）。因此，线性函数是一条笔直的直线。而非线性函数，顾名思义，指的是不像线性函数那样呈现出一条直线的函数。</p>
-<p>◆ 因为使用线性函数的话，加深神经网络的层数就没有意义了。</p>
-<p>◆ 线性函数的问题在于，不管如何加深层数，总是存在与之等效的“无隐藏层的神经网络”。</p>
-<p>◆ ，把y(x) =h(h(h(x)))的运算对应3层神经网络[插图]。这个运算会进行y(x) = c×c×c×x的乘法运算，但是同样的处理可以由y(x) =ax（注意，[插图]）这一次乘法运算（即没有隐藏层的神经网络）来表示</p>
-<p>◆ 为了发挥叠加层所带来的优势，激活函数必须使用非线性函数。</p>
-<p>◆ 最近则主要使用ReLU(Rectified Linear Unit)函数。ReLU函数在输入大于0时，直接输出该值；在输入小于等于0时，输出0</p>
-<p>3.3 多维数组的运算</p>
-<p>◆ 矩阵的乘积是通过左边矩阵的行（横向）和右边矩阵的列（纵向）以对应元素的方式相乘后再求和而得到的。并且，运算的结果保存为新的多维数组的元素</p>
-<p>3.4 3层神经网络的实现</p>
-<p>◆ 权重右下角按照“后一层的索引号、前一层的索引号”的顺序排列。</p>
-<p>◆ 输出层的激活函数用σ()表示，不同于隐藏层的激活函数h()（σ读作sigma）</p>
-<p>◆ 输出层所用的激活函数，要根据求解问题的性质决定。一般地，回归问题可以使用恒等函数，二元分类问题可以使用sigmoid函数，多元分类问题可以使用softmax函数。关于输出层的激活函数</p>
-<p>◆ 这里出现了forward（前向）一词，它表示的是从输入到输出方向的传递处理。后面在进行神经网络的训练时，我们将介绍后向（backward，从输出到输入方向）的处理</p>
-<p>3.5 输出层的设计</p>
-<p>◆ 神经网络可以用在分类问题和回归问题上，不过需要根据情况改变输出层的激活函数。一般而言，回归问题用恒等函数，分类问题用softmax函数。</p>
-<p>◆ 机器学习的问题大致可以分为分类问题和回归问题。分类问题是数据属于哪一个类别的问题。比如，区分图像中的人是男性还是女性的问题就是分类问题。而回归问题是根据某个输入预测一个（连续的）数值的问题。</p>
-<p>◆ softmax函数可以用下面的式(3.10)表示。[插图]exp(x)是表示[插图]的指数函数（e是纳皮尔常数2.7182 …）。式(3.10)表示假设输出层共有n个神经元，计算第k个神经元的输出[插图]。如式(3.10)所示，softmax函数的分子是输入信号[插图]的指数函数，分母是所有输入信号的指数函数的和。</p>
-<p>◆ 计算机处理“数”时，数值必须在4字节或8字节的有限数据宽度内。这意味着数存在有效位数，也就是说，可以表示的数值范围是有限的。因此，会出现超大值无法表示的问题。这个问题称为溢出，在进行计算机的运算时必须（常常）注意。</p>
-<p>◆ 在进行softmax的指数函数的运算时，加上（或者减去）某个常数并不会改变运算的结果。这里的C’可以使用任何值，但是为了防止溢出，一般会使用输入信号中的最大值。</p>
-<p>◆ softmax函数的输出是0.0到1.0之间的实数。并且，softmax函数的输出值的总和是1</p>
-<p>◆ 即便使用了softmax函数，各个元素之间的大小关系也不会改变。这是因为指数函数(y= exp(x))是单调递增函数</p>
-<p>◆ 一般而言，神经网络只把输出值最大的神经元所对应的类别作为识别结果。并且，即便使用softmax函数，输出值最大的神经元的位置也不会变。因此，神经网络在进行分类时，输出层的softmax函数可以省略。在实际的问题中，由于指数函数的运算需要一定的计算机运算量，因此输出层的softmax函数一般会被省略。</p>
-<p>◆ 推理阶段一般会省略输出层的softmax函数。在输出层使用softmax函数是因为它和神经网络的学习有关系</p>
-<p>3.6 手写数字识别</p>
-<p>◆ 首先使用训练数据（学习数据）进行权重参数的学习；进行推理时，使用刚才学习到的参数，对输入数据进行分类。</p>
-<p>◆ MNIST数据集是由0到9的数字图像构成的（图3-24）。训练图像有6万张，测试图像有1万张，这些图像可以用于学习和推理。MNIST数据集的一般使用方法是，先用训练图像进行学习，再用学习到的模型度量能在多大程度上对测试图像进行正确的分类</p>
-<p>◆ MNIST的图像数据是28像素×28像素的灰度图像</p>
-<p>◆ 参数normalize设置是否将输入图像正规化为0.0～1.0的值。如果将该参数设置为False，则输入图像的像素会保持原来的0～255</p>
-<p>◆ 第2个参数flatten设置是否展开输入图像（变成一维数组）。如果将该参数设置为False，则输入图像为1×28×28的三维数组；若设置为True，则输入图像会保存为由784个元素构成的一维数组</p>
-<p>◆ one_hot_label设置是否将标签保存为one-hot表示(one-hot representation)。one-hot表示是仅正确解标签为1，其余皆为0的数组，就像[0,0,1,0,0,0,0,0,0,0]这样。当one_hot_label为False时，只是像7、2这样简单保存正确解标签；当one_hot_label为True时，标签则保存为one-hot表示。</p>
-<p>◆ Python有pickle这个便利的功能。这个功能可以将程序运行中的对象保存为文件。如果加载保存过的pickle文件，可以立刻复原之前程序运行中的对象</p>
-<p>◆ 神经网络的输入层有784个神经元，输出层有10个神经元。输入层的784这个数字来源于图像大小的28×28 = 784，输出层的10这个数字来源于10类别分类（数字0到9，共10类别）。</p>
-<p>◆ 这个神经网络有2个隐藏层，第1个隐藏层有50个神经元，第2个隐藏层有100个神经元。这个50和100可以设置为任何值</p>
-<p>◆ 读入保存在pickle文件sample_weight.pkl中的学习到的权重参数[插图]。这个文件中以字典变量的形式保存了权重和偏置参数</p>
-<p>◆ np.argmax(x)将获取被赋给参数x的数组中的最大值元素的索引</p>
-<p>◆ 将normalize设置成True后，函数内部会进行转换，将图像的各个像素值除以255，使得数据的值在0.0～1.0的范围内。像这样把数据限定到某个范围内的处理称为正规化(normalization)。此外，对神经网络的输入数据进行某种既定的转换称为预处理(pre-processing)。这里，作为对输入图像的一种预处理，我们进行了正规化。</p>
-<p>◆ 实际上，很多预处理都会考虑到数据的整体分布。比如，利用数据整体的均值或标准差，移动数据，使数据整体以0为中心分布，或者进行正规化，把数据的延展控制在一定范围内。除此之外，还有将数据整体的分布形状均匀化的方法，即数据白化(whitening)等。</p>
-<p>◆ 输入一个由784个元素（原本是一个28×28的二维数组）构成的一维数组后，输出一个有10个元素的一维数组。这是只输入一张图像数据时的处理流程。</p>
-<p>◆ 我们想用predict()函数一次性打包处理100张图像。为此，可以把[插图]的形状改为100×784，将100张图像打包作为输入数据</p>
-<p>◆ ，输入数据的形状为100×784，输出数据的形状为100×10。这表示输入的100张图像的结果被一次性输出了。比如，x[0]和y[0]中保存了第0张图像及其推理结果，x[1]和y[1]中保存了第1张图像及其推理结果</p>
-<p>◆ 这种打包式的输入数据称为批(batch)。批有“捆”的意思，图像就如同纸币一样扎成一捆。</p>
-<p>◆ 批处理对计算机的运算大有利处，可以大幅缩短每张图像的处理时间。那么为什么批处理可以缩短处理时间呢？这是因为大多数处理数值计算的库都进行了能够高效处理大型数组运算的最优化。并且，在神经网络的运算中，当数据传送成为瓶颈时，批处理可以减轻数据总线的负荷（严格地讲，相对于数据读入，可以将更多的时间用在计算上）。也就是说，批处理一次性计算大型数组要比分开逐步计算各个小型数组速度更快</p>
-<p>3.7 小结</p>
-<p>◆ 神经网络中使用的是平滑变化的sigmoid函数，而感知机中使用的是信号急剧变化的阶跃函数。</p>
-<p>◆ 输入数据的集合称为批。通过以批为单位进行推理处理，能够实现高速的运算。</p>
-<h3 id="nmpy库"><a href="#nmpy库" class="headerlink" title="nmpy库"></a>nmpy库</h3><p>◆ “对应元素的”的英文是element-wise，比如“对应元素的乘法”就是element-wise product。</p>
-<p>◆ 数学上将一维数组称为向量，将二维数组称为矩阵。另外，可以将一般化之后的向量或矩阵等统称为张量(tensor)。本书基本上将二维数组称为“矩阵”，将三维数组及三维以上的数组称为“张量”或“多维数组”。</p>
-<p>◆ 标量10被扩展成了2×2的形状，然后再与矩阵A进行乘法运算。这个巧妙的功能称为广播(broadcast)。</p>
-<p>◆ 2025/09/28发表想法</p>
-<p>不是矩阵乘法</p>
-<p>原文：一维数组B被“巧妙地”变成了和二维数组A相同的形状，然后再以对应元素的方式进行运算。</p>
-<p>◆ 2025/09/28发表想法</p>
-<p>转为一维展开</p>
-<p>原文： X = X.flatten()</p>
-<p>◆ NumPy中，主要的处理也都是通过C或C++实现的。因此，我们可以在不损失性能的情况下，使用Python便利的语法</p>
+<h4 id="从感知机到神经网络"><a href="#从感知机到神经网络" class="headerlink" title="从感知机到神经网络"></a>从感知机到神经网络</h4><p>神经网络和感知机同样有偏置和权重，同时引入了激活函数的概念</p>
+<p>$y = h(b+w_{1}x_{1}+w_{2}x_{2})$</p>
+<p>上式中h(x)函数会将输入信号的总和转换为输出信号，这种函数一般称为<strong>激活函数(activation function)</strong>。如“激活”一词所示，<strong>激活函数的作用在于决定如何来激活输入信号的总和</strong>。</p>
+<p><img src="../../uploads/ai/input_1layer.png" alt="input_1layer"><br><img src="/uploads/ai/input_1layer.png" alt="input_1layer"></p>
+<p>一个节点的计算过程为：先把上一层信号的所有求加权和$a_{1}$，在用激活函数h()转换为输出$z_{1}$</p>
+<p>“朴素感知机”是指单层网络，激活函数使用了阶跃函数的模型。</p>
+<p>“多层感知机”是指神经网络，使用sigmoid函数等平滑的激活函数的多层网络。</p>
+<h4 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h4><p><strong>阶跃函数</strong>：激活函数以阈值为界，一旦输入超过阈值，就切换输出。因此可以说感知机中使用了阶跃函数作为激活函数。</p>
+<h5 id="sigmoid函数-sigmoid-function"><a href="#sigmoid函数-sigmoid-function" class="headerlink" title="sigmoid函数(sigmoid function)"></a>sigmoid函数(sigmoid function)</h5><p>公式如下<br>$$<br>h(x) = \frac{1}{1+e^{-x}}<br>$$<br>e是纳皮尔常数2.7182 …。sigmoid函数看上去有些复杂，但它也仅仅是个函数而已。而函数就是给定某个输入后，会返回某个输出的转换器。比如，向sigmoid函数输入1.0或2.0后，就会有某个值被输出，类似h(1.0) = 0.731 …、h(2.0) = 0.880 …这样</p>
+<p>视觉上确认函数的形状对理解函数而言很重要，下图中蓝色为sigmoid函数，黑色虚线为阶跃函数，橙色为ReLU函数。</p>
+<p>不同点：sigmoid函数是一条平滑的曲线，输出随着输入发生连续性的变化。sigmoid函数的平滑性对神经网络的学习具有重要意义。而阶跃函数以0为界，输出发生急剧性的变化。感知机中神经元之间流动的是0或1的二元信号，而神经网络中流动的是连续的实数值信号。如果把这两个函数与水联系起来，则阶跃函数可以比作“竹筒敲石”，sigmoid函数可以比作“水车”。阶跃函数就像竹筒敲石一样，只做是否传送水（0或1）两个动作，而sigmoid函数就像水车一样，根据流过来的水量相应地调整传送出去的水量</p>
+<p>相同点：</p>
+<ul>
+<li>输入小时，输出接近0（为0）；随着输入增大，输出向1靠近（变成1）。也就是说，当输入信号为重要信息时，阶跃函数和sigmoid函数都会输出较大的值；当输入信号为不重要的信息时，两者都输出较小的值。</li>
+<li>不管输入信号有多小，或者有多大，输出信号的值都在0到1之间。</li>
+<li>都是非线性函数，向函数输入某个值后，输出值是输入值的常数倍的函数称为线性函数（用数学式表示为h(x) = cx，c为常数）。因此，线性函数是一条笔直的直线。而非线性函数，指的是不像线性函数那样呈现出一条直线的函数。</li>
+</ul>
+<p><img src="../../uploads/ai/sig_step_compare.png" alt="sig_step_compare"><br><img src="/uploads/ai/sig_step_compare.png" alt="sig_step_compare"></p>
+<p>代码实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>/(<span class="number">1</span>+np.exp(-x))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">relu</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> np.maximum(<span class="number">0</span>, x)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">step_function</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="string">'''input x is np.array'''</span></span><br><span class="line">    <span class="keyword">return</span> np.array(x &gt; <span class="number">0</span>, dtype=int)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sig_step_compare</span><span class="params">()</span>:</span></span><br><span class="line">    x = np.arange(<span class="number">-5.0</span>, <span class="number">5.0</span>, <span class="number">0.1</span>)</span><br><span class="line">    sig = sigmoid(x)</span><br><span class="line">    step = step_function(x)</span><br><span class="line"></span><br><span class="line">    plt.plot(x, sig)</span><br><span class="line">    plt.plot(x, step, <span class="string">'k--'</span>)</span><br><span class="line">    plt.ylim(<span class="number">-0.1</span>, <span class="number">1.1</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>在阶跃函数实现中，对NumPy数组进行不等号运算后，数组的各个元素都会进行不等号运算，生成一个布尔型数组。这里，数组x中大于0的元素被转换为True，小于等于0的元素被转换为False，从而生成一个新的数组y</p>
+<p>在sigmoid函数实现中，根据NumPy的广播功能，如果在标量和NumPy数组之间进行运算，则标量会和NumPy数组的各个元素进行运算。 </p>
+<p>神经网络中为什么要使用非线性函数？</p>
+<p>线性函数的问题在于，不管如何加深层数，总是存在与之等效的“无隐藏层的神经网络”。</p>
+<p>例如，把y(x) =h(h(h(x)))的运算对应3层神经网络，其中h(x)=cx是一个线性函数。这个运算会进行y(x) = c×c×c×x的乘法运算，但是同样的处理可以由y(x) =ax这一次乘法运算（即没有隐藏层的神经网络）来表示。</p>
+<p>因此神经网络中为了发挥叠加层所带来的优势，激活函数必须使用非线性函数。</p>
+<h5 id="ReLU激活函数"><a href="#ReLU激活函数" class="headerlink" title="ReLU激活函数"></a>ReLU激活函数</h5><p>最近则主要使用ReLU(Rectified Linear Unit)函数。ReLU函数在输入大于0时，直接输出该值；在输入小于等于0时，输出0。</p>
+<h4 id="多层神经网络的实现"><a href="#多层神经网络的实现" class="headerlink" title="多层神经网络的实现"></a>多层神经网络的实现</h4><h5 id="中间层（隐层）"><a href="#中间层（隐层）" class="headerlink" title="中间层（隐层）"></a>中间层（隐层）</h5><p><img src="../../uploads/ai/hidden_layer_calc.png" alt="hidden_layer_calc"><br><img src="/uploads/ai/hidden_layer_calc.png" alt="hidden_layer_calc"></p>
+<p>对于有两个中间层的网络，右上标数字表示层数，权重w右下角按照“后一层的索引号、前一层的索引号”的顺序排列。例如$w_{12}^{(2)}$表示第二层的第1个节点对应的前一层第2个节点的权重。</p>
+<p>权重和计算 $a_{1}^{(2)} = z_{1}^{(1)}w_{11}^{(2)} + z_{2}^{(1)}w_{12}^{(2)} + z_{3}^{(1)}w_{13}^{(2)} + b_{1}^{(2)}$</p>
+<p>使用矩阵乘法计算 $A^{(2)} = Z^{(1)}W^{(2)}+B^{(2)}$，其中$Z^{(1)}$的(1,3)，$W^{(2)}$为(3,2)大小，最后得到的$A^{(2)}$为(1,2)</p>
+<h5 id="输出层的设计"><a href="#输出层的设计" class="headerlink" title="输出层的设计"></a>输出层的设计</h5><p>输出层的激活函数用σ()表示，不同于隐藏层的激活函数h()（σ读作sigma）.</p>
+<p>代码中实现用了<code>identity_function()</code>函数（也称为“恒等函数”），并将其作为输出层的激活函数。恒等函数会将输入按原样输出。</p>
+<p>输出层所用的激活函数，要根据求解问题的性质决定。一般地，回归问题可以使用恒等函数，二元分类问题可以使用sigmoid函数，多元分类问题可以使用softmax函数。</p>
+<p><img src="../../uploads/ai/output_node_calc.png" alt="output_node_calc"><br><img src="/uploads/ai/output_node_calc.png" alt="output_node_calc"></p>
+<p>完整网络代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_network</span><span class="params">()</span>:</span></span><br><span class="line">    network = &#123;&#125; <span class="comment"># 这里权重参数只是示例，没有意义</span></span><br><span class="line">    network[<span class="string">'W1'</span>] = np.array([[<span class="number">0.1</span>, <span class="number">0.3</span>, <span class="number">0.5</span>], [<span class="number">0.2</span>, <span class="number">0.4</span>, <span class="number">0.6</span>]]) <span class="comment">#(2, 3)</span></span><br><span class="line">    network[<span class="string">'b1'</span>] = np.array([<span class="number">0.1</span>, <span class="number">0.2</span>, <span class="number">0.3</span>])</span><br><span class="line">    network[<span class="string">'W2'</span>] = np.array([[<span class="number">0.1</span>, <span class="number">0.4</span>], [<span class="number">0.2</span>, <span class="number">0.5</span>], [<span class="number">0.3</span>, <span class="number">0.6</span>]]) <span class="comment">#(3, 2)</span></span><br><span class="line">    network[<span class="string">'b2'</span>] = np.array([<span class="number">0.1</span>, <span class="number">0.2</span>])</span><br><span class="line">    network[<span class="string">'W3'</span>] = np.array([[<span class="number">0.1</span>, <span class="number">0.3</span>], [<span class="number">0.2</span>, <span class="number">0.4</span>]]) <span class="comment"># (2, 2)</span></span><br><span class="line">    network[<span class="string">'b3'</span>] = np.array([<span class="number">0.1</span>, <span class="number">0.2</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> network</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(network, x)</span>:</span></span><br><span class="line">    W1, W2, W3 = network[<span class="string">'W1'</span>], network[<span class="string">'W2'</span>], network[<span class="string">'W3'</span>]</span><br><span class="line">    b1, b2, b3 = network[<span class="string">'b1'</span>], network[<span class="string">'b2'</span>], network[<span class="string">'b3'</span>]</span><br><span class="line"></span><br><span class="line">    a1 = np.dot(x, W1) + b1</span><br><span class="line">    z1 = sigmoid(a1) <span class="comment"># 第一层计算</span></span><br><span class="line">    a2 = np.dot(z1, W2) + b2</span><br><span class="line">    z2 = sigmoid(a2) <span class="comment"># 第二层计算</span></span><br><span class="line">    a3 = np.dot(z2, W3) + b3</span><br><span class="line">    y = identity_function(a3) <span class="comment"># 输出层</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">identity_function</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">simple_network</span><span class="params">()</span>:</span></span><br><span class="line">    network = init_network()</span><br><span class="line">    x = np.array([<span class="number">1.0</span>, <span class="number">0.5</span>])</span><br><span class="line">    y = forward(network, x)</span><br><span class="line">    print(y) <span class="comment"># [ 0.31682708 0.69627909]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    simple_network()</span><br></pre></td></tr></table></figure>
+
+<p> 代码中forward（前向）一词，它表示的是从输入到输出方向的传递处理。后面在进行神经网络的训练时，我们将介绍后向（backward，从输出到输入方向）的处理。</p>
+<h6 id="softmax函数"><a href="#softmax函数" class="headerlink" title="softmax函数"></a>softmax函数</h6><p>神经网络可以用在分类问题和回归问题上，不过需要根据情况改变输出层的激活函数。一般而言，回归问题用恒等函数，分类问题用softmax函数。</p>
+<p>分类问题是数据属于哪一个类别的问题。比如，区分图像中的人是男性还是女性的问题就是分类问题。而回归问题是根据某个输入预测一个（连续的）数值的问题。</p>
+<p>softmax函数可以用下面的式表示。</p>
+<p> $$y_{k} = \frac {e^{a_k}}{\sum _{i=1}^n e^{a_i}}$$ </p>
+<p>e是纳皮尔常数2.7182 …。假设输出层共有n个神经元，计算第k个神经元的输出。</p>
+<p>softmax函数的分子是输入信号$a_k$的指数函数，分母是所有输入信号的指数函数的和。输出层的各个神经元都受到所有输入信号的影响.</p>
+<p>softmax函数的输出是0.0到1.0之间的实数。并且，softmax函数的输出值的总和是1</p>
+<p>计算机处理“数”时，数值必须在4字节或8字节的有限数据宽度内。这意味着数存在有效位数，也就是说，可以表示的数值范围是有限的。因此，会出现超大值无法表示的问题。这个问题称为溢出，在进行计算机的运算时必须（常常）注意。</p>
+<p>$$<br>y_{k} = \frac {e^{a_k}}{\sum _{i=1}^n e^{a_i}} \<br>      = \frac {C{e^{a_k}}}{C{\sum _{i=1}^n e^{a_i}}} \<br>      = \frac {e^{({a_k}+logC)}}{\sum _{i=1}^n e^{({a_i}+logC)}} \<br>      = \frac {e^{({a_k}+C’)}}{\sum _{i=1}^n e^{({a_i}+C’)}}<br>$$</p>
+<p>在进行softmax的指数函数的运算时，加上（或者减去）某个常数并不会改变运算的结果。这里的C’可以使用任何值，但是为了防止溢出，一般会使用输入信号中的最大值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">softmax</span><span class="params">(a)</span>:</span></span><br><span class="line">    c = np.max(a) <span class="comment"># 所有值中的最大值</span></span><br><span class="line">    exp_a = np.exp(a - c) <span class="comment"># 每一个计算指数，并处理溢出对策</span></span><br><span class="line">    sum_exp_a = np.sum(exp_a) <span class="comment"># 所有指数求和</span></span><br><span class="line">    y = exp_a / sum_exp_a</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">softmax</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> x.ndim == <span class="number">2</span>:</span><br><span class="line">        x = x.T</span><br><span class="line">        x = x - np.max(x, axis=<span class="number">0</span>)</span><br><span class="line">        y = np.exp(x) / np.sum(np.exp(x), axis=<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> y.T </span><br><span class="line"></span><br><span class="line">    x = x - np.max(x) <span class="comment"># 溢出对策</span></span><br><span class="line">    <span class="keyword">return</span> np.exp(x) / np.sum(np.exp(x))</span><br></pre></td></tr></table></figure>
+
+<p>即便使用了softmax函数，各个元素之间的大小关系也不会改变。这是因为指数函数(y= exp(x))是单调递增函数</p>
+<p>一般而言，神经网络只把输出值最大的神经元所对应的类别作为识别结果。并且，即便使用softmax函数，输出值最大的神经元的位置也不会变。因此，神经网络在进行分类时，输出层的softmax函数可以省略。在实际的问题中，由于指数函数的运算需要一定的计算机运算量，因此输出层的softmax函数一般会被省略。</p>
+<p>求解机器学习问题的步骤可以分为<strong>“学习”</strong>和<strong>“推理”</strong>两个阶段。首先，在<strong>学习阶段使用训练数据进行模型权重参数的学习</strong>，然后，在<strong>推理阶段，用学到的模型参数对未知的数据进行推理(分类)</strong>。推理阶段一般会省略输出层的softmax函数。在输出层使用softmax函数是因为它和神经网络的学习有关系。</p>
+<h4 id="手写数字识别"><a href="#手写数字识别" class="headerlink" title="手写数字识别"></a>手写数字识别</h4><h5 id="MNIST数据集"><a href="#MNIST数据集" class="headerlink" title="MNIST数据集"></a>MNIST数据集</h5><p>MNIST数据集是由0到9的数字图像构成的。训练图像有6万张，测试图像有1万张，这些图像可以用于学习和推理。MNIST数据集的一般使用方法是，先用训练图像进行学习，再用学习到的模型度量能在多大程度上对测试图像进行正确的分类</p>
+<ul>
+<li>MNIST的图像数据是28像素×28像素的灰度图像</li>
+<li>图像数据格式：魔术数2051(4B)+图像数量(4B)+行数28(4B)+列数28(4B)+图像1像素数据(1B<em>28</em>28)+图像2像素数据(1B<em>28</em>28)  ，例如测试集图像 <code>t10k-images.idx3-ubyte</code> 文件大小为7840016 = 16+10000<em>28</em>28 </li>
+<li>标签数据格式：魔术数2049(4B)+标签数量(4B)+标签数据(每个数据一个字节值为0-9) ，例如，测试集标签<code>t10k-labels.idx1-ubyte</code>文件大小为 10008 = 8+10000</li>
+</ul>
+<h5 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h5><p>dataset目录中存放4个数据集文件和加在数据集的程序文件mnist.py </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os.path</span><br><span class="line"><span class="keyword">import</span> gzip</span><br><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">key_file = &#123;</span><br><span class="line">    <span class="string">'train_img'</span>:<span class="string">'train-images-idx3-ubyte.gz'</span>,</span><br><span class="line">    <span class="string">'train_label'</span>:<span class="string">'train-labels-idx1-ubyte.gz'</span>,</span><br><span class="line">    <span class="string">'test_img'</span>:<span class="string">'t10k-images-idx3-ubyte.gz'</span>,</span><br><span class="line">    <span class="string">'test_label'</span>:<span class="string">'t10k-labels-idx1-ubyte.gz'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dataset_dir = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line">save_file = dataset_dir + <span class="string">"/mnist.pkl"</span></span><br><span class="line"></span><br><span class="line">train_num = <span class="number">60000</span></span><br><span class="line">test_num = <span class="number">10000</span></span><br><span class="line">img_dim = (<span class="number">1</span>, <span class="number">28</span>, <span class="number">28</span>)  <span class="comment"># 灰度图像，大小为28*28</span></span><br><span class="line">img_size = <span class="number">784</span> <span class="comment"># 28*28</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_load_label</span><span class="params">(file_name)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    数据格式为:魔术数2049(4B)+标签数量(4B)+标签数据(每个数据一个字节值为0-9)   </span></span><br><span class="line"><span class="string">    t10k-labels.idx1-ubyte文件大小为 10008 = 8+10000 </span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    file_path = dataset_dir + <span class="string">"/"</span> + file_name</span><br><span class="line">    </span><br><span class="line">    print(<span class="string">"Converting "</span> + file_name + <span class="string">" to NumPy Array ..."</span>)</span><br><span class="line">    <span class="keyword">with</span> gzip.open(file_path, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            labels = np.frombuffer(f.read(), np.uint8, offset=<span class="number">8</span>)</span><br><span class="line">    print(<span class="string">"Done"</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> labels</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_load_img</span><span class="params">(file_name)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    数据格式为:魔术数2051(4B)+图像数量(4B)+行数28(4B)+列数28(4B)+图像1像素数据(1B*28*28)+图像2像素数据(1B*28*28)   </span></span><br><span class="line"><span class="string">    t10k-images.idx3-ubyte 文件大小为7840016 = 16+10000*28*28   </span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    file_path = dataset_dir + <span class="string">"/"</span> + file_name</span><br><span class="line">    </span><br><span class="line">    print(<span class="string">"Converting "</span> + file_name + <span class="string">" to NumPy Array ..."</span>)    </span><br><span class="line">    <span class="keyword">with</span> gzip.open(file_path, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            data = np.frombuffer(f.read(), np.uint8, offset=<span class="number">16</span>)</span><br><span class="line">    data = data.reshape(<span class="number">-1</span>, img_size) </span><br><span class="line">    print(<span class="string">"data shape:"</span>, data.shape) <span class="comment"># 对于测试集: (10000, 784)</span></span><br><span class="line">    print(<span class="string">"Done"</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_convert_numpy</span><span class="params">()</span>:</span></span><br><span class="line">    dataset = &#123;&#125;</span><br><span class="line">    dataset[<span class="string">'train_img'</span>] =  _load_img(key_file[<span class="string">'train_img'</span>])</span><br><span class="line">    dataset[<span class="string">'train_label'</span>] = _load_label(key_file[<span class="string">'train_label'</span>])    </span><br><span class="line">    dataset[<span class="string">'test_img'</span>] = _load_img(key_file[<span class="string">'test_img'</span>])</span><br><span class="line">    dataset[<span class="string">'test_label'</span>] = _load_label(key_file[<span class="string">'test_label'</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> dataset</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_change_one_hot_label</span><span class="params">(X)</span>:</span></span><br><span class="line">    <span class="comment"># 对于测试集X为10000个点，size为10000</span></span><br><span class="line">    T = np.zeros((X.size, <span class="number">10</span>)) <span class="comment"># shape (10000, 10)</span></span><br><span class="line">    <span class="keyword">for</span> idx, row <span class="keyword">in</span> enumerate(T):</span><br><span class="line">        <span class="comment"># 每一行的10个值中，原来的X对应的值标记为1，其他都为0</span></span><br><span class="line">        row[X[idx]] = <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> T</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_mnist</span><span class="params">()</span>:</span></span><br><span class="line">    dataset = _convert_numpy()</span><br><span class="line">    print(<span class="string">"Creating pickle file ..."</span>)</span><br><span class="line">    <span class="keyword">with</span> open(save_file, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        pickle.dump(dataset, f, <span class="number">-1</span>)  <span class="comment"># 54,950,267 字节</span></span><br><span class="line">    print(<span class="string">"Done!"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">load_mnist</span><span class="params">(normalize=True, flatten=True, one_hot_label=False)</span>:</span></span><br><span class="line">    <span class="string">"""读入MNIST数据集    </span></span><br><span class="line"><span class="string">    Parameters</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    normalize : 将图像的像素值正规化为0.0~1.0</span></span><br><span class="line"><span class="string">    one_hot_label : </span></span><br><span class="line"><span class="string">        one_hot_label为True的情况下，标签作为one-hot数组返回</span></span><br><span class="line"><span class="string">        one-hot数组是指[0,0,1,0,0,0,0,0,0,0]这样的数组</span></span><br><span class="line"><span class="string">    flatten : 是否将图像展开为一维数组    </span></span><br><span class="line"><span class="string">    Returns</span></span><br><span class="line"><span class="string">    -------</span></span><br><span class="line"><span class="string">    (训练图像, 训练标签), (测试图像, 测试标签)</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(save_file):</span><br><span class="line">        init_mnist()</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">with</span> open(save_file, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        dataset = pickle.load(f)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> normalize:</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> (<span class="string">'train_img'</span>, <span class="string">'test_img'</span>):</span><br><span class="line">            dataset[key] = dataset[key].astype(np.float32)</span><br><span class="line">            dataset[key] /= <span class="number">255.0</span></span><br><span class="line">            </span><br><span class="line">    <span class="keyword">if</span> one_hot_label:</span><br><span class="line">        dataset[<span class="string">'train_label'</span>] = _change_one_hot_label(dataset[<span class="string">'train_label'</span>])</span><br><span class="line">        dataset[<span class="string">'test_label'</span>] = _change_one_hot_label(dataset[<span class="string">'test_label'</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> flatten:</span><br><span class="line">         <span class="keyword">for</span> key <span class="keyword">in</span> (<span class="string">'train_img'</span>, <span class="string">'test_img'</span>):</span><br><span class="line">            dataset[key] = dataset[key].reshape(<span class="number">-1</span>, <span class="number">1</span>, <span class="number">28</span>, <span class="number">28</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (dataset[<span class="string">'train_img'</span>], dataset[<span class="string">'train_label'</span>]), (dataset[<span class="string">'test_img'</span>], dataset[<span class="string">'test_label'</span>]) </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    init_mnist()</span><br></pre></td></tr></table></figure>
+
+<p><code>_load_label()</code>和<code>_load_img()</code>用来把数据集中的标签数据转换为numpy的数组数据</p>
+<p><code>load_mnist()</code>返回训练集和测试集的图像和标签数据，它的参数：</p>
+<ul>
+<li>参数normalize设置是否将输入图像正规化为0.0～1.0的值。如果将该参数设置为False，则输入图像的像素会保持原来的0～255</li>
+<li>第2个参数flatten设置是否展开输入图像（变成一维数组）。如果将该参数设置为False，则输入图像为1×28×28的三维数组；若设置为True，则输入图像会保存为由784个元素构成的一维数组</li>
+<li><code>one_hot_label</code>设置是否将标签保存为<code>one-hot</code>表示<code>(one-hot representation)</code>。<code>one-hot</code>表示是仅正确解标签为1，其余皆为0的数组，就像[0,0,1,0,0,0,0,0,0,0]这样。当one_hot_label为False时，只是像7、2这样简单保存正确解标签；当<code>one_hot_label</code>为True时，标签则保存为<code>one-hot</code>表示。</li>
+</ul>
+<p>Python的pickle库可以将程序运行中的对象保存为文件。如果加载保存过的pickle文件，可以立刻复原之前程序运行中的对象</p>
+<p>可以使用以下程序查看数据集中的图像</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> dataset.mnist <span class="keyword">import</span> load_mnist</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_mnist_image</span><span class="params">(idx, test=True)</span>:</span></span><br><span class="line">    (x_train, t_train), (x_test, t_test) = load_mnist(flatten=<span class="literal">True</span>, normalize=<span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">if</span> test:</span><br><span class="line">        img = x_test[idx]</span><br><span class="line">        label = t_test[idx]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        img = x_train[idx]</span><br><span class="line">        label = t_train[idx]</span><br><span class="line">    </span><br><span class="line">    print(label)  <span class="comment"># 5</span></span><br><span class="line">    print(img.shape)  <span class="comment"># (784,) # 数据中的图像为784个值</span></span><br><span class="line">    img = img.reshape(<span class="number">28</span>, <span class="number">28</span>)  <span class="comment"># 把图像的形状变为原来的尺寸28*28</span></span><br><span class="line">    print(img.shape)  <span class="comment"># (28, 28)</span></span><br><span class="line">    pil_img = Image.fromarray(np.uint8(img))</span><br><span class="line">    pil_img.show()</span><br></pre></td></tr></table></figure>
+
+<h5 id="神经网络推理"><a href="#神经网络推理" class="headerlink" title="神经网络推理"></a>神经网络推理</h5><p>推理一张图片是数字几时，输入的图片大小为28*28个像素，所以输入层有784个神经元，推断的结果是0-9中的任何一个数字，所以输出层有10个神经元。</p>
+<p>举例的这个神经网络有2个隐藏层，第1个隐藏层有50个神经元，第2个隐藏层有100个神经元。这个50和100可以设置为任何值。示例程序使用了与训练好的权重参数，通过pickle读取<code>sample_weight.pkl</code>中的权重数据。数据以字典变量的形式保存了权重和偏置参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_data</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">'''推理，所以只需返回测试集数据'''</span></span><br><span class="line">    (x_train, t_train), (x_test, t_test) = load_mnist(normalize=<span class="literal">True</span>, flatten=<span class="literal">True</span>, one_hot_label=<span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">return</span> x_test, t_test</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_network</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 读取权重数据</span></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">"sample_weight.pkl"</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        network = pickle.load(f)</span><br><span class="line">    <span class="keyword">return</span> network</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(network, x)</span>:</span></span><br><span class="line">    <span class="comment"># 和前面的简单神经网络一样的逻辑流程，只是权重参数从文件中读取</span></span><br><span class="line">    W1, W2, W3 = network[<span class="string">'W1'</span>], network[<span class="string">'W2'</span>], network[<span class="string">'W3'</span>]</span><br><span class="line">    b1, b2, b3 = network[<span class="string">'b1'</span>], network[<span class="string">'b2'</span>], network[<span class="string">'b3'</span>]</span><br><span class="line"></span><br><span class="line">    a1 = np.dot(x, W1) + b1 <span class="comment"># 第一层</span></span><br><span class="line">    z1 = sigmoid(a1)</span><br><span class="line">    a2 = np.dot(z1, W2) + b2 <span class="comment"># 第二层</span></span><br><span class="line">    z2 = sigmoid(a2)</span><br><span class="line">    a3 = np.dot(z2, W3) + b3 <span class="comment"># 输出层</span></span><br><span class="line">    y = softmax(a3)  <span class="comment"># (1, 10)</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">interfere</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 1. 准备数据</span></span><br><span class="line">    x, t = get_data()</span><br><span class="line">    <span class="comment"># 2. 加载模型</span></span><br><span class="line">    network = init_network()</span><br><span class="line">    accuracy_cnt = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(x)): <span class="comment"># 遍历测试集中的每一个图像数据</span></span><br><span class="line">        <span class="comment"># 3. 执行推理，得到结果数字 </span></span><br><span class="line">        y = predict(network, x[i])</span><br><span class="line">        p= np.argmax(y) <span class="comment"># 获取数组y中概率最高的元素的索引</span></span><br><span class="line">        <span class="comment"># 4. 和标签数据对比，计算正确率</span></span><br><span class="line">        <span class="keyword">if</span> p == t[i]:</span><br><span class="line">            accuracy_cnt += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Accuracy:"</span> + str(float(accuracy_cnt) / len(x)))</span><br></pre></td></tr></table></figure>
+
+<p>将normalize设置成True后，函数内部会进行转换，将图像的各个像素值除以255，使得数据的值在0.0～1.0的范围内。像这样<strong>把数据限定到某个范围内的处理称为正规化(normalization)</strong>。此外，<strong>对神经网络的输入数据进行某种既定的转换称为预处理(pre-processing)</strong>。这里，作为对输入图像的一种预处理，我们进行了正规化。</p>
+<p>实际上，很多预处理都会考虑到数据的整体分布。比如，利用数据整体的均值或标准差，移动数据，使数据整体以0为中心分布，或者进行正规化，把数据的延展控制在一定范围内。除此之外，还有将数据整体的分布形状均匀化的方法，即数据白化(whitening)等。</p>
+<h5 id="批处理优化"><a href="#批处理优化" class="headerlink" title="批处理优化"></a>批处理优化</h5><p>上面的推理过程中，每次输入$X$由784个元素（原本是一个28×28的二维数组）构成的一维数组，输出是一个有10个元素的一维数组。这是只输入一张图像数据时的处理流程。使用矩阵乘法，可以一次处理多行输入数据。</p>
+<p>例如可以一次性打包处理100张图像，把输入$X$的形状改为100×784，输出数据的形状为100×10，这表示输入的100张图像的结果被一次性输出了。即x[0]和y[0]中保存了第0张图像及其推理结果，x[1]和y[1]中保存了第1张图像及其推理结果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">batch_interfere</span><span class="params">()</span>:</span></span><br><span class="line">    x, t = get_data()</span><br><span class="line">    network = init_network()</span><br><span class="line">    batch_size = <span class="number">100</span></span><br><span class="line">    accuracy_cnt = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(x), batch_size): <span class="comment"># 设置步长为batch_size，一批次处理100个输入</span></span><br><span class="line">        x_batch = x[i:i+batch_size] <span class="comment"># (100, 784)</span></span><br><span class="line">        y_batch = predict(network, x_batch) <span class="comment"># (100, 10)</span></span><br><span class="line">        p= np.argmax(y_batch, axis=<span class="number">1</span>) <span class="comment"># 在第2维度获取概率最高的元素的索引，得到100个数字</span></span><br><span class="line">        accuracy_cnt += np.sum(p == t[i:i+batch_size]) <span class="comment"># 两个一维数组比较对应位置元素相同的个数</span></span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Accuracy:"</span> + str(float(accuracy_cnt) / len(x))) <span class="comment"># Accuracy:0.9352</span></span><br></pre></td></tr></table></figure>
+
+<p>这种打包式的输入数据称为批(batch)。批有“捆”的意思，图像就如同纸币一样扎成一捆。</p>
+<p>批处理对计算机的运算大有利处，可以大幅缩短每张图像的处理时间。那么为什么批处理可以缩短处理时间呢？这是因为大多数处理数值计算的库都进行了能够高效处理大型数组运算的最优化。并且，在神经网络的运算中，<strong>当数据传送成为瓶颈时，批处理可以减轻数据总线的负荷（严格地讲，相对于数据读入，可以将更多的时间用在计算上）</strong>。也就是说，批处理一次性计算大型数组要比分开逐步计算各个小型数组速度更快。</p>
+<h4 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h4><ul>
+<li><p>神经网络中使用的是平滑变化的sigmoid函数，而感知机中使用的是信号急剧变化的阶跃函数。</p>
+</li>
+<li><p>输入数据的集合称为批。通过以批为单位进行推理处理，能够实现高速的运算。</p>
+</li>
+</ul>
+<h3 id="nmpy库"><a href="#nmpy库" class="headerlink" title="nmpy库"></a>nmpy库</h3><p>NumPy中，主要的处理也都是通过C或C++实现的。因此，我们可以在不损失性能的情况下，使用Python便利的语法。</p>
+<p>“对应元素的”的英文是element-wise，比如“对应元素的乘法”就是element-wise product。</p>
+<p>多维数组就是“数字的集合”，数字排成一列的集合、排成长方形的集合、排成三维状或者（更加一般化的）N维状的集合都称为多维数组。数学上将一维数组称为向量，将二维数组称为矩阵。另外，可以将一般化之后的向量或矩阵等统称为张量(tensor)。本书基本上将二维数组称为“矩阵”，将三维数组及三维以上的数组称为“张量”或“多维数组”。</p>
+<h4 id="广播"><a href="#广播" class="headerlink" title="广播"></a>广播</h4><p>NumPy中，广播机制让形状不同的数组之间也可以进行运算。2×2的矩阵A和标量10之间进行了乘法运算。在这个过程中，<strong>标量10被扩展成了2×2的形状</strong>，然后再与矩阵A进行乘法运算。这个巧妙的功能称为<strong>广播(broadcast)</strong>。广播是numpy的一种计算规则，广播和线性代数中的矩阵乘法不同</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 10 被扩展成了 [[10, 10], [10, 10]]</span></span><br><span class="line">[ [<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]] * <span class="number">10</span>  = [ [<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]] * [[<span class="number">10</span>, <span class="number">10</span>], [<span class="number">10</span>, <span class="number">10</span>]] = [[<span class="number">10</span>, <span class="number">20</span>], [<span class="number">30</span>, <span class="number">40</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># [10, 20] 被扩展成了 [[10, 20], [10, 20]]，和前一个矩阵相同的形状</span></span><br><span class="line">[ [<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]] * [<span class="number">10</span>, <span class="number">20</span>]  = [ [<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]] * [[<span class="number">10</span>, <span class="number">20</span>], [<span class="number">10</span>, <span class="number">20</span>]] = [[<span class="number">10</span>, <span class="number">40</span>], [<span class="number">30</span>, <span class="number">80</span>]]</span><br></pre></td></tr></table></figure>
+
+<h4 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h4><ul>
+<li><p><code>X = X.flatten()</code> 把多维数据转换为一维数组，对于矩阵从上到下逐行拼接</p>
+</li>
+<li><p>数组的维数可以通过<code>np.ndim()</code>函数获得。</p>
+</li>
+<li><p>数组的形状可以通过实例变量<code>shape</code>获得</p>
+</li>
+<li><p>矩阵元素的数据类型可以通过<code>dtype</code>查看</p>
+</li>
+<li><p>对NumPy数组使用不等号运算符等（例如X是一个数组，对 <code>X &gt; 15</code>，会对X中的每个元素进行<code>&gt;15</code>比较），结果会得到一个布尔型的数组</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = np.array([<span class="number">10</span>, <span class="number">9</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">1</span>])</span><br><span class="line">y = x &gt; <span class="number">5</span></span><br><span class="line">print(y) <span class="comment"># [ True  True False False False]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>矩阵的乘积是通过左边矩阵的行（横向）和右边矩阵的列（纵向）以对应元素的方式相乘后再求和而得到的。并且，运算的结果保存为新的多维数组的元素</p>
+</li>
+<li><p>乘积可以通过NumPy的<code>np.dot()</code>函数计算（乘积也称为点积）。<code>np.dot()</code>接收两个NumPy数组作为参数，并返回数组的乘积。这里要注意的是，<code>np.dot(A, B)</code>和<code>np.dot(B, A)</code>的值可能不一样。和一般的运算（+或*等）不同，矩阵的乘积运算中，操作数(A、B)的顺序不同，结果也会不同</p>
+</li>
+</ul>
 
       
     </div>
@@ -623,9 +744,9 @@
           
             <a href="/tags/AI/" rel="tag"># AI</a>
           
-            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
-          
             <a href="/tags/read/" rel="tag"># read</a>
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
           
         </div>
       
@@ -1015,7 +1136,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#《深度学习入门：基于Python的理论与实现》1-3章"><span class="nav-number">1.</span> <span class="nav-text">《深度学习入门：基于Python的理论与实现》1-3章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#感知机"><span class="nav-number">1.1.</span> <span class="nav-text">感知机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机实现简单逻辑电路"><span class="nav-number">1.1.1.</span> <span class="nav-text">感知机实现简单逻辑电路</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#感知机的实现"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">感知机的实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#感知机的局限性"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">感知机的局限性</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多层感知机"><span class="nav-number">1.1.2.</span> <span class="nav-text">多层感知机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从与非门到计算机"><span class="nav-number">1.1.3.</span> <span class="nav-text">从与非门到计算机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">1.1.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#神经网络"><span class="nav-number">1.2.</span> <span class="nav-text">神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nmpy库"><span class="nav-number">1.3.</span> <span class="nav-text">nmpy库</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#《深度学习入门：基于Python的理论与实现》1-3章"><span class="nav-number">1.</span> <span class="nav-text">《深度学习入门：基于Python的理论与实现》1-3章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#感知机"><span class="nav-number">1.1.</span> <span class="nav-text">感知机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机实现简单逻辑电路"><span class="nav-number">1.1.1.</span> <span class="nav-text">感知机实现简单逻辑电路</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#感知机的实现"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">感知机的实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#感知机的局限性"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">感知机的局限性</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多层感知机"><span class="nav-number">1.1.2.</span> <span class="nav-text">多层感知机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从与非门到计算机"><span class="nav-number">1.1.3.</span> <span class="nav-text">从与非门到计算机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">1.1.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#神经网络"><span class="nav-number">1.2.</span> <span class="nav-text">神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#从感知机到神经网络"><span class="nav-number">1.2.1.</span> <span class="nav-text">从感知机到神经网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#激活函数"><span class="nav-number">1.2.2.</span> <span class="nav-text">激活函数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#sigmoid函数-sigmoid-function"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">sigmoid函数(sigmoid function)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ReLU激活函数"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">ReLU激活函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多层神经网络的实现"><span class="nav-number">1.2.3.</span> <span class="nav-text">多层神经网络的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#中间层（隐层）"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">中间层（隐层）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#输出层的设计"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">输出层的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#softmax函数"><span class="nav-number">1.2.3.2.1.</span> <span class="nav-text">softmax函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手写数字识别"><span class="nav-number">1.2.4.</span> <span class="nav-text">手写数字识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MNIST数据集"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">MNIST数据集</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据处理"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">数据处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#神经网络推理"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">神经网络推理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#批处理优化"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">批处理优化</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结-1"><span class="nav-number">1.2.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nmpy库"><span class="nav-number">1.3.</span> <span class="nav-text">nmpy库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#广播"><span class="nav-number">1.3.1.</span> <span class="nav-text">广播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基本方法"><span class="nav-number">1.3.2.</span> <span class="nav-text">基本方法</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
