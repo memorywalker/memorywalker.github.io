@@ -662,3 +662,24 @@ NumPy中，广播机制让形状不同的数组之间也可以进行运算。2×
 * 乘积可以通过NumPy的`np.dot()`函数计算（乘积也称为点积）。`np.dot()`接收两个NumPy数组作为参数，并返回数组的乘积。这里要注意的是，`np.dot(A, B)`和`np.dot(B, A)`的值可能不一样。和一般的运算（+或*等）不同，矩阵的乘积运算中，操作数(A、B)的顺序不同，结果也会不同
 
 * `np.arange (batch_size)`会生成一个从0到`batch_size-1`的数组。比如当`batch_size`为5时，会生成一个NumPy数组`[0, 1, 2, 3, 4]`。
+
+* 可以使用array[x, y]，其中x和y为两个数组，来筛出多维数组array中，x和y对应的行列的所有元素，构成一个新数组。
+
+```python
+    y = np.array([[1, np.e, np.e**2],
+                  [np.e, 1, np.e]])    
+    print("输入数组:", y)
+    '''
+     [[1.         2.71828183 7.3890561 ],
+      [2.71828183 1.         2.71828183]]
+    '''
+    batch_size = y.shape[0]
+    print(batch_size)
+    t = np.array([2, 0])
+    newarray = y[np.arange(batch_size), t] # 从数组Y的每一行,选t所在列的数字，构成一个数组
+    # y中第一行的第2个元素，第二行的第0个元素
+    print(newarray) # [7.3890561  2.71828183]
+    print(np.log(newarray + 1e-7)) # [2.00000001 1.00000004] # 对数组每一个元素取对数
+    print(np.sum(np.log(newarray + 1e-7)) / batch_size)
+```
+

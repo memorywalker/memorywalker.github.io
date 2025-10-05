@@ -96,6 +96,28 @@ def cross_entropy_error(y, t):
     return -np.sum(t * np.log(y + 1e-7)) / batch_size
 ```
 
+也可以通过让标签数据是对应的正确值的来计算
+
+```python
+# 标签数据是对应的正确值的情况
+def cross_entropy_error(y, t):
+    if y.ndim == 1:
+        t = t.reshape(1, t.size)
+        y = y.reshape(1, y.size)
+        
+    # 监督数据是one-hot-vector的情况下，转换为正确解标签的索引
+    if t.size == y.size:
+        t = t.argmax(axis=1) # 把数字1所在的位置存储到数组t中
+    # t是类似`[2, 7, 0, 9, 4]`的一维数组，即第一个图片的数字为2，第二个图片的数字为7        
+    batch_size = y.shape[0]
+    # y[np.arange(batch_size), t] 取的是y的[y_02, y_17, y_20, y_39, y_44]
+    return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size
+```
+
+由于`one-hot`表示中t为0的元素的交叉熵误差也为0，因此针对这些元素的计算可以忽略。换言之，如果可以获得神经网络在正确解标签处的输出，就可以计算交叉熵误差。因此，t为one-hot表示时通过`t * np.log(y)`计算的地方，在t为标签形式时，可用`np.log( y[np.arange (batch_size), t] )`实现相同的处理。
+
+`np.arange (batch_size)`会生成一个从0到`batch_size-1`的数组。比如当`batch_size`为5时，`np.arange(batch_size)`会生成一个NumPy数组`[0, 1, 2, 3, 4]`。如果t中标签是以`[2, 7, 0, 9, 4]`的形式存储的，其中的每个数字表示每行数据正确值，所以`y[np.arange(batch_size), t]`能抽出y的各行数据中正确解标签对应的神经网络的输出（在这个例子中，`y[np.arange(batch_size), t]`会生成NumPy数组`[y[0,2], y[1,7],y[2,0], y[3,9], y[4,4]]`，其中的y[0, 2]表示y的第0行的第2个元素，所以就是正确值对应的输出概率）。`np.log()`的输入参数是一个数组时，它会对数组的每一个元素求自然对数，最后再用`np.sum()`把数组中的元素求和。
+
 计算电视收视率时，并不会统计所有家庭的电视机，而是仅以那些被选中的家庭为统计对象。比如，通过从关东地区随机选择1000个家庭计算收视率，可以近似地求得关东地区整体的收视率。这1000个家庭的收视率，虽然严格上不等于整体的收视率，但可以作为整体的一个近似值。和收视率一样，mini-batch的损失函数也是利用一部分样本数据来近似地计算整体。
 
 #### 为何要设定损失函数
