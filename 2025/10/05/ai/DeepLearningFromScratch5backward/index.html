@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="《深度学习入门：基于Python的理论与实现》 误差反向传播法[日]斋藤康毅 误差反向传播法有两种方法：一种是基于数学式；另一种是基于计算图(computational graph)。 计算图计算图将计算过程用图形表示出来。这里说的图形是数据结构图，通过多个节点和边表示（连接节点的直线称为“边”） 计算图通过节点和箭头表示计算过程。节点用圆圈表示，节点中是计算方法，边线上是变量。将计算的中间结果写">
+<meta name="keywords" content="AI,Deep Learning,read">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习入门-误差反向传播法">
+<meta property="og:url" content="http://memorywalker.github.io/2025/10/05/ai/DeepLearningFromScratch5backward/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="《深度学习入门：基于Python的理论与实现》 误差反向传播法[日]斋藤康毅 误差反向传播法有两种方法：一种是基于数学式；另一种是基于计算图(computational graph)。 计算图计算图将计算过程用图形表示出来。这里说的图形是数据结构图，通过多个节点和边表示（连接节点的直线称为“边”） 计算图通过节点和箭头表示计算过程。节点用圆圈表示，节点中是计算方法，边线上是变量。将计算的中间结果写">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/05/uploads/ai/compute_graph.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/compute_graph.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/05/uploads/ai/chain_rule_backward.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/chain_rule_backward.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/05/uploads/ai/times_backward.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/times_backward.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/05/uploads/ai/backward_apple_cost.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/backward_apple_cost.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/05/uploads/ai/sigmoid_backward.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/sigmoid_backward.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/05/uploads/ai/WX_compute_graph.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/WX_compute_graph.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/05/uploads/ai/softmax_loss_backward_graph.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/softmax_loss_backward_graph.png">
+<meta property="og:updated_time" content="2025-10-05T12:33:12.996Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习入门-误差反向传播法">
+<meta name="twitter:description" content="《深度学习入门：基于Python的理论与实现》 误差反向传播法[日]斋藤康毅 误差反向传播法有两种方法：一种是基于数学式；另一种是基于计算图(computational graph)。 计算图计算图将计算过程用图形表示出来。这里说的图形是数据结构图，通过多个节点和边表示（连接节点的直线称为“边”） 计算图通过节点和箭头表示计算过程。节点用圆圈表示，节点中是计算方法，边线上是变量。将计算的中间结果写">
+<meta name="twitter:image" content="http://memorywalker.github.io/2025/10/05/uploads/ai/compute_graph.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2025/10/05/ai/DeepLearningFromScratch5backward/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>深度学习入门-误差反向传播法 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2025/10/05/ai/DeepLearningFromScratch5backward/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习入门-误差反向传播法
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2025-10-05 15:07:25 / 修改时间：12:33:12" itemprop="dateCreated datePublished" datetime="2025-10-05T15:07:25+00:00">2025-10-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="《深度学习入门：基于Python的理论与实现》-误差反向传播法"><a href="#《深度学习入门：基于Python的理论与实现》-误差反向传播法" class="headerlink" title="《深度学习入门：基于Python的理论与实现》 误差反向传播法"></a>《深度学习入门：基于Python的理论与实现》 误差反向传播法</h2><p>[日]斋藤康毅</p>
+<h3 id="误差反向传播法"><a href="#误差反向传播法" class="headerlink" title="误差反向传播法"></a>误差反向传播法</h3><p>有两种方法：一种是基于数学式；另一种是基于计算图(computational graph)。</p>
+<h3 id="计算图"><a href="#计算图" class="headerlink" title="计算图"></a>计算图</h3><p>计算图将计算过程用图形表示出来。这里说的图形是数据结构图，通过多个节点和边表示（连接节点的直线称为“边”）</p>
+<p>计算图通过节点和箭头表示计算过程。节点用圆圈表示，节点中是计算方法，边线上是变量。将计算的中间结果写在箭头的上方，表示各个节点的计算结果从左向右传递。</p>
+<p>计算图举例：太郎在超市买了2个100日元一个的苹果，消费税是10%，请计算支付金额。</p>
+<p><img src="../../uploads/ai/compute_graph.png" alt="compute_graph"><br><img src="/uploads/ai/compute_graph.png" alt="compute_graph"></p>
+<p>上图从左到右，第一步先<code>100*2</code> 计算出总价为200，第二步 <code>200*1.1</code>额外加上消费税。这种 “从左向右进行计算”是一种正方向上的传播，简称为<strong>正向传播(forward propagation)</strong>。正向传播是从计算图出发点到结束点的传播。<strong>反向传播(backward propagation)</strong>就是从右向左的传播。</p>
+<p>计算图的特征是可以通过传递<strong>“局部计算”</strong>获得最终结果。“局部”这个词的意思是“与自己相关的某个小范围”。局部计算是指，无论全局发生了什么，都能只根据与自己相关的信息输出接下来的结果，例如第一步<code>100*2</code>计算时不用考虑消费税的计算。</p>
+<h4 id="计算图优点"><a href="#计算图优点" class="headerlink" title="计算图优点"></a>计算图优点</h4><ul>
+<li>局部计算一般都很简单，无论全局的计算有多么复杂，各个步骤只需要完成局部计算，通过传递它的计算结果，可以获得全局的复杂计算的结果，从而简化问题。</li>
+<li>利用计算图可以将中间的计算结果全部保存起来（比如，计算进行到2个苹果时的金额是200日元、加上消费税之前的金额650日元等）。</li>
+<li>使用计算图最大的原因是，可以<strong>通过反向传播高效计算导数</strong></li>
+</ul>
+<p>假设我们想知道苹果价格的上涨会在多大程度上影响最终的支付金额？</p>
+<p>即求“支付金额关于苹果的价格的导数”。设苹果的价格为x，支付金额为L，则相当于求$\frac{\partial L}{\partial x}$，这个导数的值表示当苹果的价格稍微上涨时，支付金额会增加多少。计算中途求得的导数的结果（中间传递的导数）可以被共享，从而可以高效地计算多个导数。综上，计算图的优点是，<strong>可以通过正向传播和反向传播高效地计算各个变量的导数值</strong>。</p>
+<h3 id="链式法则-chain-rule"><a href="#链式法则-chain-rule" class="headerlink" title="链式法则(chain rule)"></a>链式法则(chain rule)</h3><p> <strong>复合函数</strong>是由多个函数构成的函数。比如，$z=(x+y)^2$是由$z=t^2$和$t = x + y$构成的。</p>
+<p>链式法则是关于复合函数的导数的性质: <strong>如果某个函数由复合函数表示，则该复合函数的导数可以用构成复合函数的各个函数的导数的乘积表示</strong>。<br>$$<br>\frac{\partial z}{\partial x} = \frac{\partial z}{\partial t}\frac{\partial t}{\partial x}=2t \times 1 = 2(x+y)<br>$$<br>$z=(x+y)^2$的计算过程使用计算图表示，正向先进行了x+y后，再对第一步的结果t进行平方得到最终结果z</p>
+<p><img src="../../uploads/ai/chain_rule_backward.png" alt="chain_rule_backward"><br><img src="/uploads/ai/chain_rule_backward.png" alt="chain_rule_backward"></p>
+<p>反向传播的计算顺序是，先将<strong>节点的输入信号乘以节点的局部导数（偏导数），然后再传递给下一个节点</strong>。上图以对x求偏导数:</p>
+<ol>
+<li>从右向左第一个节点而言，就是节点输入$\frac{\partial z}{\partial z}$乘以$z=t^2$的导数，即$\frac{\partial z}{\partial z}\frac{\partial z}{\partial t}$ 也就是$1\times 2t=2(x+y)$；</li>
+<li>下一个节点的输入$\frac{\partial z}{\partial z}\frac{\partial z}{\partial t}$ 乘以$t=x+y$对x的导数，即$\frac{\partial z}{\partial z}\frac{\partial z}{\partial t}\frac{\partial t}{\partial x}$ 也就是$2(x+y)\times 1= 2(x+y)$</li>
+</ol>
+<p>根据链式法则，最左边的反向传播的结果$\frac{\partial z}{\partial z}\frac{\partial z}{\partial t}\frac{\partial t}{\partial x}=\frac{\partial z}{\partial z}\frac{\partial z}{\partial t} = \frac{\partial z}{\partial x}$ ，对应“z关于x的导数”。</p>
+<p>计算图反向传播是基于链式法则的</p>
+<h3 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h3><h4 id="加法的反向传播"><a href="#加法的反向传播" class="headerlink" title="加法的反向传播"></a>加法的反向传播</h4><p>加法反向传播将从上游传过来的输入导数乘以1(因为<strong>加法局部计算的导数为1</strong>，如上面例子最左侧节点x+y)，然后传向下游，所以输入的值会原封不动地流向下一个节点。</p>
+<h4 id="乘法的反向传播"><a href="#乘法的反向传播" class="headerlink" title="乘法的反向传播"></a>乘法的反向传播</h4><p>乘法的反向传播会将上游的值乘以正向传播时的输入信号的“翻转值”后传递给下游。因为对于乘法计算$z=xy$，如果对x求导数$\frac{\partial z}{\partial x}=y$，所以上游输入的值乘以导数y就是对x的输出。</p>
+<p><img src="../../uploads/ai/times_backward.png" alt="times_backward"><br><img src="/uploads/ai/times_backward.png" alt="times_backward"></p>
+<p>翻转值表示一种翻转关系：正向传播时信号是x的话，反向传播时则是y；正向传播时信号是y的话，反向传播时则是x。实现乘法节点的反向传播时，要保存正向传播的输入信号。</p>
+<p>以之前买苹果的例子，计算图是两个乘法运算，支付金额对苹果的价格的导数是2.2，苹果的个数的导数是110，消费税的导数是200。这可以解释为，如果消费税和苹果的价格增加相同的值，则消费税将对最终价格产生200倍大小的影响，苹果的价格将产生2.2倍大小的影响。不过，因为这个例子中消费税和苹果的价格的量纲不同，所以才形成了这样的结果（消费税的1是100%，苹果的价格的1是1日元）。</p>
+<p><img src="../../uploads/ai/backward_apple_cost.png" alt="backward_apple_cost"><br><img src="/uploads/ai/backward_apple_cost.png" alt="backward_apple_cost"></p>
+<h3 id="各个层的实现"><a href="#各个层的实现" class="headerlink" title="各个层的实现"></a>各个层的实现</h3><p>我们将把构建神经网络的“层”实现为一个类。这里所说的“层”是神经网络中功能的单位。比如，负责sigmoid函数的Sigmoid、负责矩阵乘积的Affine等，都以层为单位进行实现。</p>
+<p>层的实现中有两个共通的方法<strong>forward()对应正向传播</strong>，<strong>backward()对应反向传播</strong>。</p>
+<h4 id="简单层的实现"><a href="#简单层的实现" class="headerlink" title="简单层的实现"></a>简单层的实现</h4><p>计算图的乘法节点称为“乘法层”(MulLayer)，加法节点称为“加法层”(AddLayer)。</p>
+<p><strong>首先，生成必要的层，以合适的顺序调用正向传播的forward()方法。然后，用与正向传播相反的顺序调用反向传播的backward()方法，就可以求出想要的导数。</strong>计算图中层的实现非常简单，使用这些层可以进行复杂的导数计算</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MulLayer</span>:</span></span><br><span class="line">    <span class="string">'''乘法层'''</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.x = <span class="literal">None</span></span><br><span class="line">        self.y = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x, y)</span>:</span></span><br><span class="line">        self.x = x</span><br><span class="line">        self.y = y</span><br><span class="line">        out = x * y</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        dx = dout * self.y <span class="comment"># 翻转x和y</span></span><br><span class="line">        dy = dout * self.x</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dx, dy</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_mul_layer</span><span class="params">()</span>:</span></span><br><span class="line">    apple = <span class="number">100</span></span><br><span class="line">    num = <span class="number">2</span></span><br><span class="line">    tax = <span class="number">1.1</span></span><br><span class="line"></span><br><span class="line">    mul_apple_layer = MulLayer()</span><br><span class="line">    mul_tax_layer = MulLayer()</span><br><span class="line">    <span class="comment">#向前计算总额</span></span><br><span class="line">    apple_price = mul_apple_layer.forward(apple, num)</span><br><span class="line">    total_price = mul_tax_layer.forward(apple_price, tax)</span><br><span class="line">    print(total_price) <span class="comment"># 220.00000000000003</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#反向计算导数</span></span><br><span class="line">    dtotal_price = <span class="number">1</span></span><br><span class="line">    dapple_price, dtax = mul_tax_layer.backward(dtotal_price)</span><br><span class="line">    dapple, dnum = mul_apple_layer.backward(dapple_price)<span class="comment"># 这里是dapple_price，不是apple_price</span></span><br><span class="line">    print(<span class="string">f"dapple:<span class="subst">&#123;dapple&#125;</span>, dtax:<span class="subst">&#123;dtax&#125;</span>"</span>) <span class="comment"># dapple:2.2, dtax:200</span></span><br><span class="line">    </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AddLayer</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x, y)</span>:</span></span><br><span class="line">        out = x + y</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        <span class="string">'''将上游传来的导数(dout)原封不动地传递给下游'''</span></span><br><span class="line">        dx = dout * <span class="number">1</span></span><br><span class="line">        dy = dout * <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> dx, dy</span><br></pre></td></tr></table></figure>
+
+<p><code>forward()</code>接收x和y两个参数，将它们相乘后输出。<code>backward()</code>将从上游传来的导数<code>dout</code>乘以正向传播的翻转值，然后传给下游。</p>
+<p>要注意<code>backward()</code>的参数中需要输入<strong>“关于正向传播时的输出变量的导数”</strong>。</p>
+<h4 id="激活函数层的实现"><a href="#激活函数层的实现" class="headerlink" title="激活函数层的实现"></a>激活函数层的实现</h4><h5 id="激活函数ReLU-Rectified-Linear-Unit"><a href="#激活函数ReLU-Rectified-Linear-Unit" class="headerlink" title="激活函数ReLU(Rectified Linear Unit)"></a>激活函数ReLU(Rectified Linear Unit)</h5><p>ReLU函数及其导数为<br>$$<br>y = \begin{cases}<br>x, &amp; (x \gt 0) \<br>0, &amp; (x \leq 0)<br>\end{cases}, </p>
+<p>\frac{\partial y}{\partial x} = \begin{cases}<br>1, &amp; (x \gt 0) \<br>0, &amp; (x \leq 0)<br>\end{cases}<br>$$<br>如果正向传播时的输入x大于0，则反向传播会将上游的值原封不动地传给下游$\frac{\partial L}{\partial y}\times 1 = \frac{\partial L}{\partial y}$。反过来，如果正向传播时的x小于等于0，则反向传播中传给下游的信号将停在此处($\frac{\partial L}{\partial y}\times 0 = 0$ )。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Relu</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.mask = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        self.mask = (x &lt;= <span class="number">0</span>)</span><br><span class="line">        out = x.copy()</span><br><span class="line">        out[self.mask] = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        dout[self.mask] = <span class="number">0</span></span><br><span class="line">        dx = dout</span><br><span class="line">        <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+
+<p>Relu类有实例变量mask。这个变量mask是由True/False构成的NumPy数组，它会把正向传播时的输入x的元素中小于等于0的地方保存为True，其他地方（大于0的元素）保存为False。如果正向传播时的输入值小于等于0，则反向传播的值为0。因此，反向传播中会使用正向传播时保存的mask，将从上游传来的dout的mask中的元素为True的地方设为0。</p>
+<h5 id="sigmoid函数"><a href="#sigmoid函数" class="headerlink" title="sigmoid函数"></a>sigmoid函数</h5><p>$$<br>y(x) = \frac{1}{1+e^{-x}}<br>$$</p>
+<p>计算图正向和反向流程如下</p>
+<p><img src="../../uploads/ai/sigmoid_backward.png" alt="sigmoid_backward"><br><img src="/uploads/ai/sigmoid_backward.png" alt="sigmoid_backward"></p>
+<p>其中最右的节点$y = \frac{1}{x}$的导数为$\frac{\partial y}{\partial x}=-x^{(-1-1)}=-\frac{1}{x^2}=-y^2$</p>
+<p>$y = e^x$的导数为$\frac{\partial y}{\partial x} = e^x$，正向的函数为$y = e^{-x}$所以它对x的导数为$e^{-x}$，这个节点反向计算使用上游的输入$-\frac{\partial L}{\partial y}y^2$乘以计算函数的导数$e^{-x}$为$-\frac{\partial L}{\partial y}y^2e^{-x}$</p>
+<p>最后一个节点是乘法节点，把上游输入乘以反转的另一个输入，这里是-1，所以最终结果是$\frac{\partial L}{\partial y}y^2e^{-x}$。这个输出还可以进行公式简化得到<br>$$<br>\frac{\partial L}{\partial y}y^2e^{-x} = \frac{\partial L}{\partial y}\frac{1}{(1+e^{-x})^2}e^{-x} \<br>= \frac{\partial L}{\partial y}\frac{1}{(1+e^{-x})}\frac {e^{-x}}{(1+e^{-x})} \<br>= \frac{\partial L}{\partial y} y(1-y)<br>$$<br>从上式可以看出，Sigmoid层的反向传播，只根据正向传播的输出就能计算出来。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sigmoid</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.out = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        out = sigmoid(x)</span><br><span class="line">        <span class="comment"># 将输出保存在了实例变量out中。反向传播时，使用该变量out进行计算</span></span><br><span class="line">        self.out = out</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        dx = dout * (<span class="number">1.0</span> - self.out) * self.out</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+
+<h4 id="Affine层的实现"><a href="#Affine层的实现" class="headerlink" title="Affine层的实现"></a>Affine层的实现</h4><p>神经网络的正向传播中进行的<strong>矩阵的乘积运算在几何学领域被称为“仿射变换”</strong>。因此，这里将进行仿射变换的处理实现为“Affine层”。</p>
+<p>神经元的加权和可以用<code>Y = np.dot(X, W) + B</code>计算出来。然后，<code>Y</code>经过激活函数转换后，传递给下一层，这就是神经网络正向传播的流程。</p>
+<p>矩阵的乘积与偏置的和的运算用计算图表示</p>
+<p><img src="../../uploads/ai/WX_compute_graph.png" alt="WX_compute_graph"><br><img src="/uploads/ai/WX_compute_graph.png" alt="WX_compute_graph"></p>
+<p>矩阵的乘积（“dot”节点）的反向传播可以通过组建使矩阵对应维度的元素个数一致的乘积运算而推导出来。例如输入矩阵$X=(x_0,x_1,…x_n)$ ，损失函数L对X的偏导数$\frac{\partial L}{\partial X}=(\frac{\partial L}{\partial x_0}, \frac{\partial L}{\partial x_1}, .., \frac{\partial L}{\partial x_n})$ ，可以看出$X$和$\frac{\partial L}{\partial X}$形状相同</p>
+<p>因为矩阵的乘积运算要求对应维度的元素个数保持一致，比如，$\frac{\partial L}{\partial Y}$的形状是(3,)，$W$的形状是(2, 3)时，可以让$\frac{\partial L}{\partial Y}$和$W^T$乘积，使得$\frac{\partial L}{\partial X}$的形状为(2,)，从而推出上图中的公式1。</p>
+<p>正向传播时，偏置会被加到每一个数据（第1个、第2个……）上。因此反向传播时，各个数据的反向传播的值需要汇总为偏置的元素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Affine</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, W, b)</span>:</span></span><br><span class="line">        self.W =W</span><br><span class="line">        self.b = b</span><br><span class="line">        </span><br><span class="line">        self.x = <span class="literal">None</span></span><br><span class="line">        self.original_x_shape = <span class="literal">None</span></span><br><span class="line">        <span class="comment"># 权重和偏置参数的导数</span></span><br><span class="line">        self.dW = <span class="literal">None</span></span><br><span class="line">        self.db = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="comment"># 对应张量 假设为(N,M)</span></span><br><span class="line">        self.original_x_shape = x.shape</span><br><span class="line">        x = x.reshape(x.shape[<span class="number">0</span>], <span class="number">-1</span>)</span><br><span class="line">        self.x = x</span><br><span class="line">        <span class="comment"># Y = XW+B</span></span><br><span class="line">        out = np.dot(self.x, self.W) + self.b</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        <span class="comment"># dX = dY * W^T</span></span><br><span class="line">        dx = np.dot(dout, self.W.T)</span><br><span class="line">        <span class="comment"># dW = X^T * dY</span></span><br><span class="line">        self.dW = np.dot(self.x.T, dout)</span><br><span class="line">        <span class="comment"># 偏置的反向传播会对这N行数据的导数按元素进行对应求和</span></span><br><span class="line">        self.db = np.sum(dout, axis=<span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">        dx = dx.reshape(*self.original_x_shape)  <span class="comment"># 还原输入数据的形状（对应张量）</span></span><br><span class="line">        <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+
+<h4 id="Softmax层的实现"><a href="#Softmax层的实现" class="headerlink" title="Softmax层的实现"></a>Softmax层的实现</h4><p>神经网络中未被正规化的输出结果（Softmax层前面的Affine层的输出）有时被称为“得分”。神经网络的<strong>推理只需要给出一个答案的情况下，因为此时只对得分最大值感兴趣，所以不需要Softmax层。但是在神经网络的学习阶段则需要Softmax层。</strong></p>
+<p><img src="../../uploads/ai/softmax_loss_backward_graph.png" alt="softmax_loss_backward_graph"><br><img src="/uploads/ai/softmax_loss_backward_graph.png" alt="softmax_loss_backward_graph"></p>
+<p>Softmax层的反向传播得到了$(y_1-t_1, y_2-t_2,…,y_n-t_n)$，即Softmax层的输出和监督标签的差分。<strong>神经网络的反向传播会把这个差分表示的误差传递给前面的层，这是神经网络学习中的重要性质</strong>。</p>
+<p>神经网络学习的目的就是通过调整权重参数，使神经网络的输出（Softmax的输出）接近监督标签。因此，必须将神经网络的输出与监督标签的误差高效地传递给前面的层。$(y_1-t_1, y_2-t_2,…,y_n-t_n)$正是Softmax层的输出与监督标签的差，直截了当地表示了当前神经网络的输出与监督标签的误差</p>
+<p>使用交叉熵误差作为softmax函数的损失函数后，反向传播得到$(y_1-t_1, y_2-t_2,…,y_n-t_n)$这样“漂亮”的结果。实际上，这样“漂亮”的结果并不是偶然的，而是为了得到这样的结果，特意设计了交叉熵误差函数。回归问题中输出层使用“恒等函数”，损失函数使用“平方和误差”，也是出于同样的理由。也就是说，使用“平方和误差”作为“恒等函数”的损失函数，反向传播才能得到$(y_1-t_1, y_2-t_2,…,y_n-t_n)$这样“漂亮”的结果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新的交叉熵损失函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cross_entropy_error</span><span class="params">(y, t)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> y.ndim == <span class="number">1</span>:</span><br><span class="line">        t = t.reshape(<span class="number">1</span>, t.size)</span><br><span class="line">        y = y.reshape(<span class="number">1</span>, y.size)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># 监督数据是one-hot-vector的情况下，转换为正确解标签的索引</span></span><br><span class="line">    <span class="keyword">if</span> t.size == y.size:</span><br><span class="line">        t = t.argmax(axis=<span class="number">1</span>)</span><br><span class="line">             </span><br><span class="line">    batch_size = y.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> -np.sum(np.log(y[np.arange(batch_size), t] + <span class="number">1e-7</span>)) / batch_size</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SoftmaxWithLoss</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.loss = <span class="literal">None</span></span><br><span class="line">        self.y = <span class="literal">None</span> <span class="comment"># softmax的输出</span></span><br><span class="line">        self.t = <span class="literal">None</span> <span class="comment"># 监督数据</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x, t)</span>:</span></span><br><span class="line">        self.t = t</span><br><span class="line">        self.y = softmax(x)</span><br><span class="line">        self.loss = cross_entropy_error(self.y, self.t)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> self.loss</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout=<span class="number">1</span>)</span>:</span></span><br><span class="line">        batch_size = self.t.shape[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">if</span> self.t.size == self.y.size: <span class="comment"># 监督数据是one-hot-vector的情况</span></span><br><span class="line">            <span class="comment"># 将要传播的值除以批的大小(batch_size)后，传递给前面的层的是单个数据的误差</span></span><br><span class="line">            dx = (self.y - self.t) / batch_size</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            dx = self.y.copy()</span><br><span class="line">            dx[np.arange(batch_size), self.t] -= <span class="number">1</span></span><br><span class="line">            <span class="comment"># 将要传播的值除以批的大小(batch_size)后，传递给前面的层的是单个数据的误差</span></span><br><span class="line">            dx = dx / batch_size</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+
+<h3 id="误差反向传播法的实现"><a href="#误差反向传播法的实现" class="headerlink" title="误差反向传播法的实现"></a>误差反向传播法的实现</h3><p>OrderedDict是有序字典，“有序”是指它可以记住向字典里添加元素的顺序。因此，神经网络的正向传播只需按照添加元素的顺序调用各层的forward()方法就可以完成处理，而反向传播只需要按照相反的顺序调用各层即可。因为Affine层和ReLU层的内部会正确处理正向传播和反向传播，所以这里要做的事情仅仅是以正确的顺序连接各层，再按顺序（或者逆序）调用各层。</p>
+<p>新的两层网络实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> OrderedDict</span><br><span class="line"><span class="keyword">from</span> layers <span class="keyword">import</span> *    </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BackwardTwoLayerNet</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, input_size, hidden_size, output_size, weight_init_std = <span class="number">0.01</span>)</span>:</span></span><br><span class="line">        <span class="comment"># 初始化权重</span></span><br><span class="line">        self.params = &#123;&#125;</span><br><span class="line">        self.params[<span class="string">'W1'</span>] = weight_init_std * np.random.randn(input_size, hidden_size)</span><br><span class="line">        self.params[<span class="string">'b1'</span>] = np.zeros(hidden_size)</span><br><span class="line">        self.params[<span class="string">'W2'</span>] = weight_init_std * np.random.randn(hidden_size, output_size) </span><br><span class="line">        self.params[<span class="string">'b2'</span>] = np.zeros(output_size)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 生成层，有序词典确保神经网络的正向传播只需按照添加元素的顺序调用各层的forward()方法</span></span><br><span class="line">        <span class="comment"># 而反向传播只需要按照相反的顺序调用各层即可</span></span><br><span class="line">        self.layers = OrderedDict()</span><br><span class="line">        self.layers[<span class="string">'Affine1'</span>] = Affine(self.params[<span class="string">'W1'</span>], self.params[<span class="string">'b1'</span>]) </span><br><span class="line">        self.layers[<span class="string">'Relu1'</span>] = Relu() <span class="comment">#第一层</span></span><br><span class="line">        self.layers[<span class="string">'Affine2'</span>] = Affine(self.params[<span class="string">'W2'</span>], self.params[<span class="string">'b2'</span>])</span><br><span class="line">        self.lastLayer = SoftmaxWithLoss() <span class="comment"># 输出层</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> self.layers.values():</span><br><span class="line">            x = layer.forward(x)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># x:输入数据, t:监督数据</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(self, x, t)</span>:</span></span><br><span class="line">        y = self.predict(x)</span><br><span class="line">        <span class="keyword">return</span> self.lastLayer.forward(y, t)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">accuracy</span><span class="params">(self, x, t)</span>:</span></span><br><span class="line">        y = self.predict(x)</span><br><span class="line">        y = np.argmax(y, axis=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> t.ndim != <span class="number">1</span> : t = np.argmax(t, axis=<span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        accuracy = np.sum(y == t) / float(x.shape[<span class="number">0</span>])</span><br><span class="line">        <span class="keyword">return</span> accuracy</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># x:输入数据, t:监督数据</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">numerical_gradient</span><span class="params">(self, x, t)</span>:</span></span><br><span class="line">        loss_W = <span class="keyword">lambda</span> W: self.loss(x, t)</span><br><span class="line">        </span><br><span class="line">        grads = &#123;&#125;</span><br><span class="line">        grads[<span class="string">'W1'</span>] = numerical_gradient(loss_W, self.params[<span class="string">'W1'</span>])</span><br><span class="line">        grads[<span class="string">'b1'</span>] = numerical_gradient(loss_W, self.params[<span class="string">'b1'</span>])</span><br><span class="line">        grads[<span class="string">'W2'</span>] = numerical_gradient(loss_W, self.params[<span class="string">'W2'</span>])</span><br><span class="line">        grads[<span class="string">'b2'</span>] = numerical_gradient(loss_W, self.params[<span class="string">'b2'</span>])</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> grads</span><br><span class="line">    <span class="comment"># 反向传播    </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gradient</span><span class="params">(self, x, t)</span>:</span></span><br><span class="line">        <span class="comment"># forward</span></span><br><span class="line">        self.loss(x, t)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># backward</span></span><br><span class="line">        dout = <span class="number">1</span></span><br><span class="line">        <span class="comment"># softMax loss的反向传播</span></span><br><span class="line">        dout = self.lastLayer.backward(dout)</span><br><span class="line">        </span><br><span class="line">        layers = list(self.layers.values())</span><br><span class="line">        layers.reverse() <span class="comment"># 层倒序</span></span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> layers:</span><br><span class="line">            <span class="comment"># 逐层反向传播</span></span><br><span class="line">            dout = layer.backward(dout)</span><br><span class="line"></span><br><span class="line">        grads = &#123;&#125;</span><br><span class="line">        <span class="comment"># 得到每层的权重和偏置的偏导数</span></span><br><span class="line">        grads[<span class="string">'W1'</span>], grads[<span class="string">'b1'</span>] = self.layers[<span class="string">'Affine1'</span>].dW, self.layers[<span class="string">'Affine1'</span>].db</span><br><span class="line">        grads[<span class="string">'W2'</span>], grads[<span class="string">'b2'</span>] = self.layers[<span class="string">'Affine2'</span>].dW, self.layers[<span class="string">'Affine2'</span>].db</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> grads</span><br></pre></td></tr></table></figure>
+
+<p>这里还保留了数值微分求梯度的方法<code>numerical_gradient()</code>，用来确认数值微分求出的梯度结果和误差反向传播法求出的结果是否一致（严格地讲，是非常相近），这个操作称为<strong>梯度确认(gradient check)</strong>。确认实现的误差反向传播算法是否正确。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gradient_check</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 读入数据</span></span><br><span class="line">    (x_train, t_train), (x_test, t_test) = load_mnist(normalize=<span class="literal">True</span>, one_hot_label=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    network = BackwardTwoLayerNet(input_size=<span class="number">784</span>, hidden_size=<span class="number">50</span>, output_size=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    x_batch = x_train[:<span class="number">3</span>]</span><br><span class="line">    t_batch = t_train[:<span class="number">3</span>]</span><br><span class="line">    <span class="comment"># 分别使用两种方法计算梯度</span></span><br><span class="line">    grad_numerical = network.numerical_gradient(x_batch, t_batch)</span><br><span class="line">    grad_backprop = network.gradient(x_batch, t_batch)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> grad_numerical.keys():</span><br><span class="line">        diff = np.average( np.abs(grad_backprop[key] - grad_numerical[key]) )</span><br><span class="line">        print(key + <span class="string">":"</span> + str(diff))</span><br><span class="line"><span class="comment"># 最终输出的两个方法的误差可以忽略        </span></span><br><span class="line">W1:<span class="number">3.350906623218549e-10</span></span><br><span class="line">b1:<span class="number">2.0746353441701993e-09</span></span><br><span class="line">W2:<span class="number">4.78867556806132e-09</span></span><br><span class="line">b2:<span class="number">1.397927196625237e-07</span></span><br></pre></td></tr></table></figure>
+
+<p>使用新的网络训练MNIST数据，和上一章的程序只是使用的网络类名称不同，其他完全一样</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">network_train</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 读入数据</span></span><br><span class="line">    (x_train, t_train), (x_test, t_test) = load_mnist(normalize=<span class="literal">True</span>, one_hot_label=<span class="literal">True</span>)</span><br><span class="line">    <span class="comment"># 图像大小为28*28，所以输入大小为784，输出为10个数字的概率，所以大小为10，中间隐藏层这里定义为50个</span></span><br><span class="line">    network = BackwardTwoLayerNet(input_size=<span class="number">784</span>, hidden_size=<span class="number">50</span>, output_size=<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">import</span> time</span><br><span class="line">    start_time = time.time()</span><br><span class="line"></span><br><span class="line">    iters_num = <span class="number">10000</span>  <span class="comment"># 梯度下降法执行总的次数</span></span><br><span class="line">    train_size = x_train.shape[<span class="number">0</span>] <span class="comment"># 60000</span></span><br><span class="line">    batch_size = <span class="number">100</span>  <span class="comment"># mini-batch大小为100个样本数据</span></span><br><span class="line">    learning_rate = <span class="number">0.1</span>  <span class="comment"># 梯度下降中用到的学习率</span></span><br><span class="line"></span><br><span class="line">    train_loss_list = [] <span class="comment"># 缓存每一轮次训练的损失函数值</span></span><br><span class="line">    train_acc_list = []</span><br><span class="line">    test_acc_list = []</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 每一个epoch执行的次数，用来把所有的训练数据都过一遍</span></span><br><span class="line">    iter_per_epoch = max(train_size / batch_size, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(iters_num):</span><br><span class="line">        <span class="comment"># 1. 获取mini-batch，挑选出batch_size个数字，利用矩阵计算一次处理batch_size个数据</span></span><br><span class="line">        batch_mask = np.random.choice(train_size, batch_size)</span><br><span class="line">        x_batch = x_train[batch_mask] <span class="comment"># 选择batch_size个图像数据出来，这里是100行图像数据</span></span><br><span class="line">        t_batch = t_train[batch_mask]</span><br><span class="line">        <span class="comment">#print("x_batch.shape:", x_batch.shape) # x_batch.shape: (100, 784)</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 2. 计算梯度        </span></span><br><span class="line">        <span class="comment">#grad = network.numerical_gradient(x_batch, t_batch)</span></span><br><span class="line">        grad = network.gradient(x_batch, t_batch)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 3. 更新参数 根据每一个参数的梯度来更新参数， 新参数值 -= 学习率x梯度 </span></span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> (<span class="string">'W1'</span>, <span class="string">'b1'</span>, <span class="string">'W2'</span>, <span class="string">'b2'</span>):</span><br><span class="line">            network.params[key] -= learning_rate * grad[key]</span><br><span class="line">        </span><br><span class="line">        loss = network.loss(x_batch, t_batch)</span><br><span class="line">        train_loss_list.append(loss)</span><br><span class="line">        <span class="comment"># 统计精度</span></span><br><span class="line">        <span class="keyword">if</span> i % iter_per_epoch == <span class="number">0</span>:</span><br><span class="line">            train_acc = network.accuracy(x_train, t_train)</span><br><span class="line">            test_acc = network.accuracy(x_test, t_test)</span><br><span class="line">            train_acc_list.append(train_acc)</span><br><span class="line">            test_acc_list.append(test_acc)</span><br><span class="line">            print(<span class="string">f"<span class="subst">&#123;i&#125;</span> train acc <span class="subst">&#123;train_acc&#125;</span> test acc <span class="subst">&#123;test_acc&#125;</span> "</span>)</span><br><span class="line"></span><br><span class="line">    end_time = time.time()</span><br><span class="line">    execution_time_minutes = (end_time - start_time) / <span class="number">60</span></span><br><span class="line">    print(<span class="string">f"Training completed in <span class="subst">&#123;execution_time_minutes:<span class="number">.2</span>f&#125;</span> minutes."</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 绘制图形</span></span><br><span class="line">    markers = &#123;<span class="string">'train'</span>: <span class="string">'o'</span>, <span class="string">'test'</span>: <span class="string">'s'</span>&#125;</span><br><span class="line">    x = np.arange(len(train_acc_list))</span><br><span class="line">    plt.plot(x, train_acc_list, label=<span class="string">'train acc'</span>)</span><br><span class="line">    plt.plot(x, test_acc_list, label=<span class="string">'test acc'</span>, linestyle=<span class="string">'--'</span>)</span><br><span class="line">    plt.xlabel(<span class="string">"epochs"</span>)</span><br><span class="line">    plt.ylabel(<span class="string">"accuracy"</span>)</span><br><span class="line">    plt.ylim(<span class="number">0</span>, <span class="number">1.0</span>)</span><br><span class="line">    plt.legend(loc=<span class="string">'lower right'</span>)</span><br><span class="line">    plt.show()</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 总时间比上一章使用优化版本的时间长了一点，第一组结果出现时间比之前的长，应该是初始化这些层增加了时间，但是准确率要高一点</span></span><br><span class="line"><span class="number">0</span> train acc <span class="number">0.08253333333333333</span> test acc <span class="number">0.0814</span></span><br><span class="line"><span class="number">600</span> train acc <span class="number">0.90405</span> test acc <span class="number">0.9069</span></span><br><span class="line"><span class="number">1200</span> train acc <span class="number">0.9243166666666667</span> test acc <span class="number">0.9267</span></span><br><span class="line"><span class="number">1800</span> train acc <span class="number">0.9366666666666666</span> test acc <span class="number">0.9374</span></span><br><span class="line"><span class="number">2400</span> train acc <span class="number">0.9470833333333334</span> test acc <span class="number">0.9437</span></span><br><span class="line"><span class="number">3000</span> train acc <span class="number">0.9510166666666666</span> test acc <span class="number">0.9453</span></span><br><span class="line"><span class="number">3600</span> train acc <span class="number">0.9593666666666667</span> test acc <span class="number">0.9543</span></span><br><span class="line"><span class="number">4200</span> train acc <span class="number">0.9628833333333333</span> test acc <span class="number">0.9569</span></span><br><span class="line"><span class="number">4800</span> train acc <span class="number">0.9667166666666667</span> test acc <span class="number">0.9609</span></span><br><span class="line"><span class="number">5400</span> train acc <span class="number">0.9679</span> test acc <span class="number">0.9609</span></span><br><span class="line"><span class="number">6000</span> train acc <span class="number">0.9722</span> test acc <span class="number">0.965</span></span><br><span class="line"><span class="number">6600</span> train acc <span class="number">0.9724166666666667</span> test acc <span class="number">0.9654</span></span><br><span class="line"><span class="number">7200</span> train acc <span class="number">0.9744833333333334</span> test acc <span class="number">0.9658</span></span><br><span class="line"><span class="number">7800</span> train acc <span class="number">0.9746833333333333</span> test acc <span class="number">0.9669</span></span><br><span class="line"><span class="number">8400</span> train acc <span class="number">0.9766</span> test acc <span class="number">0.9677</span></span><br><span class="line"><span class="number">9000</span> train acc <span class="number">0.97815</span> test acc <span class="number">0.9698</span></span><br><span class="line"><span class="number">9600</span> train acc <span class="number">0.97935</span> test acc <span class="number">0.9698</span></span><br><span class="line">Training completed <span class="keyword">in</span> <span class="number">0.87</span> minutes.</span><br></pre></td></tr></table></figure>
+
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>通过使用计算图，可以直观地把握计算过程</p>
+<p>计算图的节点是由局部计算构成的。局部计算构成全局计算</p>
+<p>计算图的正向传播进行一般的计算。通过计算图的反向传播，可以计算各个节点的导数。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+            <a href="/tags/read/" rel="tag"># read</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/10/03/ai/DeepLearningFromScratch4Learn/" rel="next" title="深度学习入门-感知机和神经网络4-学习">
+                <i class="fa fa-chevron-left"></i> 深度学习入门-感知机和神经网络4-学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">85</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">83</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#《深度学习入门：基于Python的理论与实现》-误差反向传播法"><span class="nav-number">1.</span> <span class="nav-text">《深度学习入门：基于Python的理论与实现》 误差反向传播法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#误差反向传播法"><span class="nav-number">1.1.</span> <span class="nav-text">误差反向传播法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算图"><span class="nav-number">1.2.</span> <span class="nav-text">计算图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#计算图优点"><span class="nav-number">1.2.1.</span> <span class="nav-text">计算图优点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链式法则-chain-rule"><span class="nav-number">1.3.</span> <span class="nav-text">链式法则(chain rule)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向传播"><span class="nav-number">1.4.</span> <span class="nav-text">反向传播</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#加法的反向传播"><span class="nav-number">1.4.1.</span> <span class="nav-text">加法的反向传播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#乘法的反向传播"><span class="nav-number">1.4.2.</span> <span class="nav-text">乘法的反向传播</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各个层的实现"><span class="nav-number">1.5.</span> <span class="nav-text">各个层的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#简单层的实现"><span class="nav-number">1.5.1.</span> <span class="nav-text">简单层的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#激活函数层的实现"><span class="nav-number">1.5.2.</span> <span class="nav-text">激活函数层的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#激活函数ReLU-Rectified-Linear-Unit"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">激活函数ReLU(Rectified Linear Unit)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sigmoid函数"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">sigmoid函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Affine层的实现"><span class="nav-number">1.5.3.</span> <span class="nav-text">Affine层的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Softmax层的实现"><span class="nav-number">1.5.4.</span> <span class="nav-text">Softmax层的实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#误差反向传播法的实现"><span class="nav-number">1.6.</span> <span class="nav-text">误差反向传播法的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">1.7.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
