@@ -683,3 +683,4 @@ NumPy中，广播机制让形状不同的数组之间也可以进行运算。2×
     print(np.sum(np.log(newarray + 1e-7)) / batch_size)
 ```
 
+* NumPy中存在使用for语句后处理变慢的缺点（NumPy中，访问元素时最好不要用for语句）
