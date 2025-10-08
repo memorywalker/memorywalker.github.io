@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="《深度学习入门：基于Python的理论与实现》 卷积神经网络[日]斋藤康毅 卷积神经网络(Convolutional Neural Network，CNN)。CNN被用于图像识别、语音识别等各种场合，在图像识别的比赛中，基于深度学习的方法几乎都以CNN为基础。 卷积神经网络整体结构全连接(fully-connected)：相邻层的所有神经元之间都有连接，例如第二层的第一个节点与第一层的所有神经元节">
+<meta name="keywords" content="AI,Deep Learning,read">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习入门-卷积神经网络">
+<meta property="og:url" content="http://memorywalker.github.io/2025/10/08/ai/DeepLearningFromScratch7CNN/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="《深度学习入门：基于Python的理论与实现》 卷积神经网络[日]斋藤康毅 卷积神经网络(Convolutional Neural Network，CNN)。CNN被用于图像识别、语音识别等各种场合，在图像识别的比赛中，基于深度学习的方法几乎都以CNN为基础。 卷积神经网络整体结构全连接(fully-connected)：相邻层的所有神经元之间都有连接，例如第二层的第一个节点与第一层的所有神经元节">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/convolution_vs_full_conntect.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/convolution_vs_full_conntect.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/convolution_compute.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/convolution_compute.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/convolution_copute_with_bias.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/convolution_copute_with_bias.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/convolution_padding.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/convolution_padding.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/convolution_stride.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/convolution_stride.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/3_channel_convolution_compute.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/3_channel_convolution_compute.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/batch_convolution_with_multi_fiter.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/batch_convolution_with_multi_fiter.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/pooling_compute.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/pooling_compute.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/img2col.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/img2col.png">
+<meta property="og:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/cnn_train_output.png">
+<meta property="og:image" content="http://memorywalker.github.io/uploads/ai/cnn_train_output.png">
+<meta property="og:updated_time" content="2025-10-08T10:39:45.251Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习入门-卷积神经网络">
+<meta name="twitter:description" content="《深度学习入门：基于Python的理论与实现》 卷积神经网络[日]斋藤康毅 卷积神经网络(Convolutional Neural Network，CNN)。CNN被用于图像识别、语音识别等各种场合，在图像识别的比赛中，基于深度学习的方法几乎都以CNN为基础。 卷积神经网络整体结构全连接(fully-connected)：相邻层的所有神经元之间都有连接，例如第二层的第一个节点与第一层的所有神经元节">
+<meta name="twitter:image" content="http://memorywalker.github.io/2025/10/08/uploads/ai/convolution_vs_full_conntect.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2025/10/08/ai/DeepLearningFromScratch7CNN/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>深度学习入门-卷积神经网络 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2025/10/08/ai/DeepLearningFromScratch7CNN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习入门-卷积神经网络
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2025-10-08 14:07:25 / 修改时间：10:39:45" itemprop="dateCreated datePublished" datetime="2025-10-08T14:07:25+00:00">2025-10-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="《深度学习入门：基于Python的理论与实现》-卷积神经网络"><a href="#《深度学习入门：基于Python的理论与实现》-卷积神经网络" class="headerlink" title="《深度学习入门：基于Python的理论与实现》 卷积神经网络"></a>《深度学习入门：基于Python的理论与实现》 卷积神经网络</h2><p>[日]斋藤康毅</p>
+<p>卷积神经网络(Convolutional Neural Network，CNN)。CNN被用于图像识别、语音识别等各种场合，在图像识别的比赛中，基于深度学习的方法几乎都以CNN为基础。</p>
+<h3 id="卷积神经网络整体结构"><a href="#卷积神经网络整体结构" class="headerlink" title="卷积神经网络整体结构"></a>卷积神经网络整体结构</h3><p>全连接(fully-connected)：相邻层的所有神经元之间都有连接，例如第二层的第一个节点与第一层的所有神经元节点都有连接。</p>
+<p>CNN的基本结构为<code>Convolution -&gt; ReLU -&gt; Pooling -&gt; Convolution -&gt; ReLU -&gt; Pooling -&gt; Affine -&gt; ReLU -&gt; Affine -&gt; Softmax</code></p>
+<p>只在靠近输出的层中使用了之前的“Affine - ReLU”组合，最后的输出层中使用了之前的“Affine - Softmax”组合。</p>
+<h3 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h3><p>全连接层存在什么问题呢？</p>
+<p>那就是数据的形状被“忽视”了。比如，输入数据是图像时，图像通常是高、长、通道方向上的3维形状。但是，向全连接层输入时，需要将3维数据拉平为1维数据。实际上，前面提到的使用了MNIST数据集的例子中，输入图像就是1通道、高28像素、长28像素的(1, 28, 28)形状，但却被排成1列，以784个数据的形式输入到最开始的Affine层。</p>
+<p>图像是3维形状，这个形状中应该含有重要的空间信息。比如，空间上邻近的像素为相似的值、RGB的各个通道之间分别有密切的关联性、相距较远的像素之间没有什么关联等，3维形状中可能隐藏有值得提取的本质模式。但是，因为全连接层会忽视形状，将全部的输入数据作为相同的神经元（同一维度的神经元）处理，所以无法利用与形状相关的信息。这也是注意力机制改进的地方，2017年google发布的attention is all you need，这本书是2016年出版的。</p>
+<p>CNN中，有时将卷积层的输入输出数据称为<strong>特征图(feature map)</strong>。其中，卷积层的输入数据称为输入特征图(input feature map)，输出数据称为输出特征图(output feature map)。卷积上可以看作是删减了全连接中的一些连接线的网络。</p>
+<p> <img src="../../uploads/ai/convolution_vs_full_conntect.png" alt="convolution_vs_full_conntect"><br> <img src="/uploads/ai/convolution_vs_full_conntect.png" alt="convolution_vs_full_conntect"> </p>
+<h4 id="卷积运算"><a href="#卷积运算" class="headerlink" title="卷积运算"></a>卷积运算</h4><p>卷积运算相当于图像处理中的滤波器运算。输入数据是有高长方向的形状的数据，滤波器也一样，有高长方向上的维度。假设用(height, width)表示数据和滤波器的形状，则在本例中，输入大小是(4, 4)，滤波器大小是(3, 3)，输出大小是(2, 2)。另外，有的文献中也会用“卷积核”这个词来表示这里所说的“滤波器”。</p>
+<p> <img src="../../uploads/ai/convolution_compute.png" alt="convolution_compute"><br> <img src="/uploads/ai/convolution_compute.png" alt="convolution_compute"> </p>
+<p>对于输入数据，卷积运算以一定间隔<strong>滑动滤波器的窗口</strong>并应用，然后将<strong>各个位置上滤波器的元素和输入的对应元素相乘</strong>，然后<strong>再求和</strong>（有时将这个计算称为乘积累加运算）。然后，将这个结果保存到输出的对应位置。将这个过程在所有位置都进行一遍，就可以得到卷积运算的输出。</p>
+<p>CNN中，滤波器的参数就是卷积层的参数，同时CNN中也存在偏置。</p>
+<p> <img src="../../uploads/ai/convolution_copute_with_bias.png" alt="convolution_copute_with_bias"><br> <img src="/uploads/ai/convolution_copute_with_bias.png" alt="convolution_copute_with_bias"> </p>
+<p>卷积运算的偏置只有1个，这个值会被加到应用了滤波器的所有元素上。</p>
+<h4 id="填充-Padding"><a href="#填充-Padding" class="headerlink" title="填充(Padding)"></a>填充(Padding)</h4><p>在进行卷积层的处理之前，有时要向输入数据的周围填入固定的数据（比如0等），这称为填充(padding)，是卷积运算中经常会用到的处理。下图中，对大小为(4, 4)的输入数据应用了幅度为1的填充。“幅度为1的填充”是指用幅度为1像素的<strong>0填充周围</strong>。</p>
+<p> <img src="../../uploads/ai/convolution_padding.png" alt="convolution_padding"><br> <img src="/uploads/ai/convolution_padding.png" alt="convolution_padding"> </p>
+<p>通过填充，大小为(4, 4)的输入数据变成了(6, 6)的形状。然后，应用大小为(3, 3)的滤波器，生成了大小为(4, 4)的输出数据。填充的值也可以设置成2、3等任意的整数。如果将填充设为2，则输入数据的大小变为(8, 8)；如果将填充设为3，则大小变为(10, 10)</p>
+<p>使用填充主要是为了调整输出的大小。比如，对大小为(4, 4)的输入数据应用(3, 3)的滤波器时，输出大小变为(2, 2)，相当于输出大小比输入大小缩小了2个元素。这在反复进行多次卷积运算的深度网络中会成为问题。为什么呢？<strong>因为如果每次进行卷积运算都会缩小空间，那么在某个时刻输出大小就有可能变为1，导致无法再应用卷积运算。为了避免出现这样的情况，就要使用填充。</strong></p>
+<h4 id="步幅-stride"><a href="#步幅-stride" class="headerlink" title="步幅(stride)"></a>步幅(stride)</h4><p>应用滤波器的位置间隔称为步幅(stride)。之前的例子中步幅都是1，如果将步幅设为2，应用滤波器的窗口的间隔变为2个元素。</p>
+<p> <img src="../../uploads/ai/convolution_stride.png" alt="convolution_stride"><br> <img src="/uploads/ai/convolution_stride.png" alt="convolution_stride"> </p>
+<p>增大步幅后，输出大小会变小。而增大填充后，输出大小会变大。</p>
+<h4 id="输出大小计算"><a href="#输出大小计算" class="headerlink" title="输出大小计算"></a>输出大小计算</h4><p>假设输入大小为(H,W)，滤波器大小为(FH,FW)，输出大小为(OH,OW)，填充为P，步幅为S。输出大小为：<br>$$<br>OH = \frac{H+2P-FH}{S} +1 \<br>OW = \frac{W+2P-FW}{S} +1<br>$$<br>当输出大小无法除尽时（结果是小数时），需要采取报错等对策。顺便说一下，根据深度学习的框架的不同，当值无法除尽时，有时会向最接近的整数四舍五入，不进行报错而继续运行。</p>
+<h4 id="多维数据的卷积计算"><a href="#多维数据的卷积计算" class="headerlink" title="多维数据的卷积计算"></a>多维数据的卷积计算</h4><p>对于彩色图像RGB三个颜色对应的三个通道，在进行卷积计算时，会按通道进行输入数据和滤波器的卷积运算，并将结果相加，从而得到输出。</p>
+<p>通道方向上有多个特征图时，会按通道进行输入数据和滤波器的卷积运算，并将结果相加，从而得到输出。</p>
+<p> <img src="../../uploads/ai/3_channel_convolution_compute.png" alt="3_channel_convolution_compute"><br> <img src="/uploads/ai/3_channel_convolution_compute.png" alt="3_channel_convolution_compute"> </p>
+<p>输入数据和滤波器的通道数相同，每个通道的滤波器的值可以不同，但是每个通道的滤波器Shape要都相同。</p>
+<p>把3维数据表示为多维数组时，书写顺序为(channel, height, width)。比如，通道数为C、高度为H、长度为W的数据的形状可以写成(C,H,W)。滤波器也一样，要按(channel, height, width)的顺序书写。比如，通道数为C、滤波器高度为FH(Filter Height)、长度为FW(Filter Width)时，可以写成(C,FH,FW)。</p>
+<p>上图中3个通道的输入数据和三个通道的滤波器卷积计算后，数据输出是1张特征图，它的通道数为1。如果要在通道方向上也拥有多个卷积运算的输出，该怎么做呢？</p>
+<p>为了可以让输出有多个通道，需要用到多个滤波器（权重）。通过应用FN个滤波器，输出特征图也生成了FN个。如果将这FN个特征图汇集在一起，就得到了形状为(FN,OH,OW)的方块，这个输出就可以作为下一层的输入了。</p>
+<p><strong>对于灰度图像，这里特征图的通道使用滤波器的个数来表示，每个滤波器表示一个特征维度</strong>，例如某一个滤波器表示是否是一个🍎的特征，而另一个滤波器表示是否是一只🐱的特征</p>
+<p>所以滤波器是一个4维数据，它的权重数据要按(output_channel, input_channel, height, width)的顺序书写。</p>
+<p> <img src="../../uploads/ai/batch_convolution_with_multi_fiter.png" alt="batch_convolution_with_multi_fiter"><br> <img src="/uploads/ai/batch_convolution_with_multi_fiter.png" alt="batch_convolution_with_multi_fiter"> </p>
+<p>通过矩阵的批处理可以将N次的卷积滤波处理汇总成了1次进行。</p>
+<h3 id="池化层-Pooling"><a href="#池化层-Pooling" class="headerlink" title="池化层(Pooling)"></a>池化层(Pooling)</h3><p>池化是缩小高、长方向上的空间的运算。池化会吸收输入数据的偏差（根据数据的不同，结果有可能不一致）</p>
+<p> <img src="../../uploads/ai/pooling_compute.png" alt="pooling_compute"><br> <img src="/uploads/ai/pooling_compute.png" alt="pooling_compute"> </p>
+<p>上图的例子是按步幅2进行2×2的Max池化时的处理顺序。<strong>“Max池化”</strong>是获取最大值的运算，“2×2”表示目标区域的大小。Average池化则是计算目标区域的平均值，在图像识别领域，主要使用Max池化。</p>
+<p>◆ 池化层和卷积层不同，没有要学习的参数。池化只是从目标区域中取最大值（或者平均值），所以不存在要学习的参数。</p>
+<p>经过池化运算，输入数据和输出数据的通道数不会发生变化。池化计算是按通道独立进行的。</p>
+<h3 id="网络层实现"><a href="#网络层实现" class="headerlink" title="网络层实现"></a>网络层实现</h3><h4 id="卷积层实现"><a href="#卷积层实现" class="headerlink" title="卷积层实现"></a>卷积层实现</h4><p>以之前图像识别为例，输入数据为<code>(批次大小，通道数量，图像高度，图像宽度)</code>，所以输入的数据是4维的。要对这个4维数据进行卷积运算，最直接的方法是通过for循环遍历每一个批次的每一个通道的数据，再进行实际的卷积计算，但这样的效率很低。</p>
+<p>可以通过im2col(image to column)函数把多维的图像数据转换为2维的矩阵。对可以通过对一个批次中的一个3维的输入数据应用<code>im2col</code>后，数据转换为2维矩阵（正确地讲，是把包含批数量的4维数据转换成了2维数据）。</p>
+<p>当滤波器的应用区域重叠的情况下，使用<code>im2col</code>展开后，展开后的元素个数会多于原方块的元素个数。因此，使用<code>im2col</code>的实现存在比普通的实现消耗更多内存的缺点。但是，汇总成一个大的矩阵进行计算，对计算机的计算颇有益处。比如，在矩阵计算的库（线性代数库）等中，矩阵计算的实现已被高度最优化，可以高速地进行大矩阵的乘法运算。</p>
+<p> <img src="../../uploads/ai/img2col.png" alt="img2col"><br> <img src="/uploads/ai/img2col.png" alt="img2col"> </p>
+<p>使用矩阵行列分解的和组合的方式更容易理解这个计算过程，例如输入数据为<code>(N, C, H, W)</code>，根据滤波器<code>(FN, C, FH, FW)</code>计算出的输出的大小为<code>(OH,OW)</code>。通过<code>im2col</code>计算后输出的矩阵为<code>(N*OH*OW, C*FH*FW)</code>，它的行是这个批次中数据数量个预期输出的大小的行，列是通道个数与滤波器大小的乘积，这个输出可以和<code>(C*FH*FW, FN)</code>即FN个滤波器进行矩阵乘法，最终得到<code>(N*OH*OW, FN)</code>，通过reshape重新展开，就得到<code>(N, FN, OH, OW)</code>最终的输出。</p>
+<p><code>im2col</code>的实现如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">im2col</span><span class="params">(input_data, filter_h, filter_w, stride=<span class="number">1</span>, pad=<span class="number">0</span>)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    input_data : 由(数据量, 通道, 高, 长)的4维数组构成的输入数据</span></span><br><span class="line"><span class="string">    filter_h : 滤波器的高</span></span><br><span class="line"><span class="string">    filter_w : 滤波器的长</span></span><br><span class="line"><span class="string">    stride : 步幅</span></span><br><span class="line"><span class="string">    pad : 填充</span></span><br><span class="line"><span class="string">    -------</span></span><br><span class="line"><span class="string">    col : 2维数组</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    N, C, H, W = input_data.shape</span><br><span class="line">    out_h = (H + <span class="number">2</span>*pad - filter_h)//stride + <span class="number">1</span></span><br><span class="line">    out_w = (W + <span class="number">2</span>*pad - filter_w)//stride + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 只在在高度和宽度维度上进行对称填充，不填充批量维度和通道维度</span></span><br><span class="line">    img = np.pad(input_data, [(<span class="number">0</span>,<span class="number">0</span>), (<span class="number">0</span>,<span class="number">0</span>), (pad, pad), (pad, pad)], <span class="string">'constant'</span>)</span><br><span class="line">    <span class="comment"># 输出数据，需要把每个数据的每个通道的和每个滤波器的重叠位置都展开成一行</span></span><br><span class="line">    col = np.zeros((N, C, filter_h, filter_w, out_h, out_w))</span><br><span class="line">    <span class="comment"># 对于滤波器的每个位置 (y, x)</span></span><br><span class="line">    <span class="keyword">for</span> y <span class="keyword">in</span> range(filter_h): <span class="comment"># 假设滤波器维3*3</span></span><br><span class="line">        y_max = y + stride*out_h <span class="comment"># 输出高度为2，步长为1，则y_max = 0 + 1*2 = 2</span></span><br><span class="line">        <span class="keyword">for</span> x <span class="keyword">in</span> range(filter_w):</span><br><span class="line">            x_max = x + stride*out_w</span><br><span class="line">            <span class="comment"># 从索引 y 开始，到索引 y_max（不包括）结束，步长为 stride</span></span><br><span class="line">            col[:, :, y, x, :, :] = img[:, :, y:y_max:stride, x:x_max:stride]</span><br><span class="line">    <span class="comment">#(N, out_h, out_w, C, filter_h, filter_w)</span></span><br><span class="line">    col = col.transpose(<span class="number">0</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>).reshape(N*out_h*out_w, <span class="number">-1</span>)</span><br><span class="line">    <span class="keyword">return</span> col</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_img2col</span><span class="params">()</span>:</span></span><br><span class="line">    x1 = np.random.rand(<span class="number">1</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">7</span>)</span><br><span class="line">    col1 = im2col(x1, <span class="number">5</span>, <span class="number">5</span>, stride=<span class="number">1</span>, pad=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 第1维：out_h:3, out_w:3，1*3*3 = 9</span></span><br><span class="line">    <span class="comment"># 第2维的元素个数均为75。这是滤波器（通道为3、大小为5×5）的元素个数的总和</span></span><br><span class="line">    print(col1.shape) <span class="comment"># (9, 75) 输出数据的第2维是C*filter_h*filter_w</span></span><br><span class="line"></span><br><span class="line">    x2 = np.random.rand(<span class="number">10</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">7</span>) <span class="comment"># 10个数据</span></span><br><span class="line">    col2 = im2col(x2, <span class="number">5</span>, <span class="number">5</span>, stride=<span class="number">1</span>, pad=<span class="number">0</span>)</span><br><span class="line">    print(col2.shape) <span class="comment"># (90, 75)</span></span><br></pre></td></tr></table></figure>
+
+<p>卷积层代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Convolution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, W, b, stride=<span class="number">1</span>, pad=<span class="number">0</span>)</span>:</span></span><br><span class="line">        self.W = W</span><br><span class="line">        self.b = b</span><br><span class="line">        self.stride = stride</span><br><span class="line">        self.pad = pad</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 中间数据（backward时使用）</span></span><br><span class="line">        self.x = <span class="literal">None</span>   </span><br><span class="line">        self.col = <span class="literal">None</span></span><br><span class="line">        self.col_W = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 权重和偏置参数的梯度</span></span><br><span class="line">        self.dW = <span class="literal">None</span></span><br><span class="line">        self.db = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        FN, C, FH, FW = self.W.shape</span><br><span class="line">        N, C, H, W = x.shape</span><br><span class="line">        out_h = <span class="number">1</span> + int((H + <span class="number">2</span>*self.pad - FH) / self.stride)</span><br><span class="line">        out_w = <span class="number">1</span> + int((W + <span class="number">2</span>*self.pad - FW) / self.stride)</span><br><span class="line">	    <span class="comment"># 输出为(FN*out_h*out_w, C*FH*FW)</span></span><br><span class="line">        col = im2col(x, FH, FW, self.stride, self.pad)</span><br><span class="line">        <span class="comment"># 滤波器原始数据维度为(FN, C, FH, FW), 第一个FN为滤波器的个数，即最终输出的通道数</span></span><br><span class="line">        col_W = self.W.reshape(FN, <span class="number">-1</span>).T <span class="comment"># (C*FH*FW, FN)</span></span><br><span class="line">	    <span class="comment"># 乘权重加偏置 </span></span><br><span class="line">        out = np.dot(col, col_W) + self.b <span class="comment"># (FN*out_h*out_w, FN)</span></span><br><span class="line">        <span class="comment"># 输出为(FN, FN, out_h, out_w)，第二个FN为滤波器的个数，即输出的通道数</span></span><br><span class="line">        out = out.reshape(N, out_h, out_w, <span class="number">-1</span>).transpose(<span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>) </span><br><span class="line"></span><br><span class="line">        self.x = x</span><br><span class="line">        self.col = col</span><br><span class="line">        self.col_W = col_W</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        FN, C, FH, FW = self.W.shape</span><br><span class="line">        dout = dout.transpose(<span class="number">0</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>).reshape(<span class="number">-1</span>, FN)</span><br><span class="line"></span><br><span class="line">        self.db = np.sum(dout, axis=<span class="number">0</span>)</span><br><span class="line">        self.dW = np.dot(self.col.T, dout)</span><br><span class="line">        self.dW = self.dW.transpose(<span class="number">1</span>, <span class="number">0</span>).reshape(FN, C, FH, FW)</span><br><span class="line"></span><br><span class="line">        dcol = np.dot(dout, self.col_W.T)</span><br><span class="line">        dx = col2im(dcol, self.x.shape, FH, FW, self.stride, self.pad)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+
+<p><code>reshape(FN,-1)</code>将参数指定为-1，这是reshape的一个便利的功能。通过在reshape时指定为-1，reshape函数会自动计算-1维度上的元素个数，以使多维数组的元素个数前后一致。比如，(10, 3, 5, 5)形状的数组的元素个数共有750个，指定reshape(10,-1)后，就会转换成(10, 75)形状的数组。</p>
+<p>在进行卷积层的反向传播时，必须进行im2col的逆处理col2im函数来进行</p>
+<h4 id="池化层实现"><a href="#池化层实现" class="headerlink" title="池化层实现"></a>池化层实现</h4><p>池化的应用区域按通道单独展开。 然后，只需对展开的矩阵求各行的最大值，并转换为合适的形状即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pooling</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, pool_h, pool_w, stride=<span class="number">1</span>, pad=<span class="number">0</span>)</span>:</span></span><br><span class="line">        self.pool_h = pool_h</span><br><span class="line">        self.pool_w = pool_w</span><br><span class="line">        self.stride = stride</span><br><span class="line">        self.pad = pad</span><br><span class="line">        </span><br><span class="line">        self.x = <span class="literal">None</span></span><br><span class="line">        self.arg_max = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        N, C, H, W = x.shape</span><br><span class="line">        out_h = int(<span class="number">1</span> + (H - self.pool_h) / self.stride)</span><br><span class="line">        out_w = int(<span class="number">1</span> + (W - self.pool_w) / self.stride)</span><br><span class="line">		<span class="comment"># 输入x为卷积层的输出(FN, C, out_h, out_w)，输出为(FN*out_h*out_w, C*pool_h*pool_w)</span></span><br><span class="line">        col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)</span><br><span class="line">        <span class="comment"># 把通道数据转移到第一个维度，让第2维只有需要池化的数据(FN*out_h*out_w*C, pool_h*pool_w)</span></span><br><span class="line">        col = col.reshape(<span class="number">-1</span>, self.pool_h*self.pool_w)</span><br><span class="line">		<span class="comment"># 求出第2维数据的最大值，即每行的最大值，每个池化窗口中的最大值</span></span><br><span class="line">        arg_max = np.argmax(col, axis=<span class="number">1</span>) <span class="comment"># 给反向传播使用</span></span><br><span class="line">        out = np.max(col, axis=<span class="number">1</span>) </span><br><span class="line">        <span class="comment"># 先分解为(N, out_h, out_w, C)，再换回标准的4维(N, C, out_h, out_w)，从而给下一层使用</span></span><br><span class="line">        out = out.reshape(N, out_h, out_w, C).transpose(<span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        self.x = x</span><br><span class="line">        self.arg_max = arg_max</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        dout = dout.transpose(<span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        pool_size = self.pool_h * self.pool_w</span><br><span class="line">        dmax = np.zeros((dout.size, pool_size))</span><br><span class="line">        dmax[np.arange(self.arg_max.size), self.arg_max.flatten()] = dout.flatten()</span><br><span class="line">        dmax = dmax.reshape(dout.shape + (pool_size,)) </span><br><span class="line">        </span><br><span class="line">        dcol = dmax.reshape(dmax.shape[<span class="number">0</span>] * dmax.shape[<span class="number">1</span>] * dmax.shape[<span class="number">2</span>], <span class="number">-1</span>)</span><br><span class="line">        dx = col2im(dcol, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+
+<h3 id="CNN的实现"><a href="#CNN的实现" class="headerlink" title="CNN的实现"></a>CNN的实现</h3><p>CNN的流程如下：</p>
+<p><code>Convolution -&gt; ReLU -&gt; Pooling -&gt; Convolution -&gt; ReLU -&gt; Pooling -&gt; Affine -&gt; ReLU -&gt; Affine -&gt; Softmax</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleConvNet</span>:</span></span><br><span class="line">    <span class="string">"""简单的ConvNet</span></span><br><span class="line"><span class="string">    conv - relu - pool - affine - relu - affine - softmax    </span></span><br><span class="line"><span class="string">    Parameters</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    input_size : 输入大小（MNIST的情况下为784）</span></span><br><span class="line"><span class="string">    hidden_size_list : 隐藏层的神经元数量的列表（e.g. [100, 100, 100]）</span></span><br><span class="line"><span class="string">    output_size : 输出大小（MNIST的情况下为10）</span></span><br><span class="line"><span class="string">    activation : 'relu' or 'sigmoid'</span></span><br><span class="line"><span class="string">    weight_init_std : 指定权重的标准差（e.g. 0.01）</span></span><br><span class="line"><span class="string">        指定'relu'或'he'的情况下设定“He的初始值”</span></span><br><span class="line"><span class="string">        指定'sigmoid'或'xavier'的情况下设定“Xavier的初始值”</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, input_dim=<span class="params">(<span class="number">1</span>, <span class="number">28</span>, <span class="number">28</span>)</span>, </span></span></span><br><span class="line"><span class="function"><span class="params">                 conv_param=&#123;<span class="string">'filter_num'</span>:<span class="number">30</span>, <span class="string">'filter_size'</span>:<span class="number">5</span>, <span class="string">'pad'</span>:<span class="number">0</span>, <span class="string">'stride'</span>:<span class="number">1</span>&#125;,</span></span></span><br><span class="line"><span class="function"><span class="params">                 hidden_size=<span class="number">100</span>, output_size=<span class="number">10</span>, weight_init_std=<span class="number">0.01</span>)</span>:</span></span><br><span class="line">        filter_num = conv_param[<span class="string">'filter_num'</span>]</span><br><span class="line">        filter_size = conv_param[<span class="string">'filter_size'</span>]</span><br><span class="line">        filter_pad = conv_param[<span class="string">'pad'</span>]</span><br><span class="line">        filter_stride = conv_param[<span class="string">'stride'</span>]</span><br><span class="line">        input_size = input_dim[<span class="number">1</span>]</span><br><span class="line">        conv_output_size = (input_size - filter_size + <span class="number">2</span>*filter_pad) / filter_stride + <span class="number">1</span></span><br><span class="line">        pool_output_size = int(filter_num * (conv_output_size/<span class="number">2</span>) * (conv_output_size/<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 初始化权重</span></span><br><span class="line">        self.params = &#123;&#125;</span><br><span class="line">        self.params[<span class="string">'W1'</span>] = weight_init_std * \</span><br><span class="line">                            np.random.randn(filter_num, input_dim[<span class="number">0</span>], filter_size, filter_size)</span><br><span class="line">        self.params[<span class="string">'b1'</span>] = np.zeros(filter_num)</span><br><span class="line">        self.params[<span class="string">'W2'</span>] = weight_init_std * \</span><br><span class="line">                            np.random.randn(pool_output_size, hidden_size)</span><br><span class="line">        self.params[<span class="string">'b2'</span>] = np.zeros(hidden_size)</span><br><span class="line">        self.params[<span class="string">'W3'</span>] = weight_init_std * \</span><br><span class="line">                            np.random.randn(hidden_size, output_size)</span><br><span class="line">        self.params[<span class="string">'b3'</span>] = np.zeros(output_size)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 生成层</span></span><br><span class="line">        self.layers = OrderedDict()</span><br><span class="line">        self.layers[<span class="string">'Conv1'</span>] = Convolution(self.params[<span class="string">'W1'</span>], self.params[<span class="string">'b1'</span>],</span><br><span class="line">                                           conv_param[<span class="string">'stride'</span>], conv_param[<span class="string">'pad'</span>])</span><br><span class="line">        self.layers[<span class="string">'Relu1'</span>] = Relu()</span><br><span class="line">        self.layers[<span class="string">'Pool1'</span>] = Pooling(pool_h=<span class="number">2</span>, pool_w=<span class="number">2</span>, stride=<span class="number">2</span>)</span><br><span class="line">        self.layers[<span class="string">'Affine1'</span>] = Affine(self.params[<span class="string">'W2'</span>], self.params[<span class="string">'b2'</span>])</span><br><span class="line">        self.layers[<span class="string">'Relu2'</span>] = Relu()</span><br><span class="line">        self.layers[<span class="string">'Affine2'</span>] = Affine(self.params[<span class="string">'W3'</span>], self.params[<span class="string">'b3'</span>])</span><br><span class="line"></span><br><span class="line">        self.last_layer = SoftmaxWithLoss()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> self.layers.values():</span><br><span class="line">            x = layer.forward(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(self, x, t)</span>:</span></span><br><span class="line">        <span class="string">"""求损失函数</span></span><br><span class="line"><span class="string">        参数x是输入数据、t是标签</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        y = self.predict(x)</span><br><span class="line">        <span class="keyword">return</span> self.last_layer.forward(y, t)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">accuracy</span><span class="params">(self, x, t, batch_size=<span class="number">100</span>)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> t.ndim != <span class="number">1</span> : t = np.argmax(t, axis=<span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        acc = <span class="number">0.0</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(int(x.shape[<span class="number">0</span>] / batch_size)):</span><br><span class="line">            tx = x[i*batch_size:(i+<span class="number">1</span>)*batch_size]</span><br><span class="line">            tt = t[i*batch_size:(i+<span class="number">1</span>)*batch_size]</span><br><span class="line">            y = self.predict(tx)</span><br><span class="line">            y = np.argmax(y, axis=<span class="number">1</span>)</span><br><span class="line">            acc += np.sum(y == tt) </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> acc / x.shape[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">numerical_gradient</span><span class="params">(self, x, t)</span>:</span></span><br><span class="line">        <span class="string">"""求梯度（数值微分）</span></span><br><span class="line"><span class="string">        Parameters</span></span><br><span class="line"><span class="string">        ----------</span></span><br><span class="line"><span class="string">        x : 输入数据</span></span><br><span class="line"><span class="string">        t : 教师标签</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns</span></span><br><span class="line"><span class="string">        -------</span></span><br><span class="line"><span class="string">        具有各层的梯度的字典变量</span></span><br><span class="line"><span class="string">            grads['W1']、grads['W2']、...是各层的权重</span></span><br><span class="line"><span class="string">            grads['b1']、grads['b2']、...是各层的偏置</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        loss_w = <span class="keyword">lambda</span> w: self.loss(x, t)</span><br><span class="line"></span><br><span class="line">        grads = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> idx <span class="keyword">in</span> (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>):</span><br><span class="line">            grads[<span class="string">'W'</span> + str(idx)] = numerical_gradient(loss_w, self.params[<span class="string">'W'</span> + str(idx)])</span><br><span class="line">            grads[<span class="string">'b'</span> + str(idx)] = numerical_gradient(loss_w, self.params[<span class="string">'b'</span> + str(idx)])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> grads</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gradient</span><span class="params">(self, x, t)</span>:</span></span><br><span class="line">        <span class="string">"""求梯度（误差反向传播法）</span></span><br><span class="line"><span class="string">        Parameters</span></span><br><span class="line"><span class="string">        ----------</span></span><br><span class="line"><span class="string">        x : 输入数据</span></span><br><span class="line"><span class="string">        t : 教师标签</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns</span></span><br><span class="line"><span class="string">        -------</span></span><br><span class="line"><span class="string">        具有各层的梯度的字典变量</span></span><br><span class="line"><span class="string">            grads['W1']、grads['W2']、...是各层的权重</span></span><br><span class="line"><span class="string">            grads['b1']、grads['b2']、...是各层的偏置</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="comment"># forward</span></span><br><span class="line">        self.loss(x, t)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># backward</span></span><br><span class="line">        dout = <span class="number">1</span></span><br><span class="line">        dout = self.last_layer.backward(dout)</span><br><span class="line"></span><br><span class="line">        layers = list(self.layers.values())</span><br><span class="line">        layers.reverse()</span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> layers:</span><br><span class="line">            dout = layer.backward(dout)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 设定</span></span><br><span class="line">        grads = &#123;&#125;</span><br><span class="line">        grads[<span class="string">'W1'</span>], grads[<span class="string">'b1'</span>] = self.layers[<span class="string">'Conv1'</span>].dW, self.layers[<span class="string">'Conv1'</span>].db</span><br><span class="line">        grads[<span class="string">'W2'</span>], grads[<span class="string">'b2'</span>] = self.layers[<span class="string">'Affine1'</span>].dW, self.layers[<span class="string">'Affine1'</span>].db</span><br><span class="line">        grads[<span class="string">'W3'</span>], grads[<span class="string">'b3'</span>] = self.layers[<span class="string">'Affine2'</span>].dW, self.layers[<span class="string">'Affine2'</span>].db</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> grads</span><br><span class="line">    <span class="comment"># 保存权重参数    </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">save_params</span><span class="params">(self, file_name=<span class="string">"params.pkl"</span>)</span>:</span></span><br><span class="line">        params = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> self.params.items():</span><br><span class="line">            params[key] = val</span><br><span class="line">        <span class="keyword">with</span> open(file_name, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            pickle.dump(params, f)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">load_params</span><span class="params">(self, file_name=<span class="string">"params.pkl"</span>)</span>:</span></span><br><span class="line">        <span class="keyword">with</span> open(file_name, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            params = pickle.load(f)</span><br><span class="line">        <span class="keyword">for</span> key, val <span class="keyword">in</span> params.items():</span><br><span class="line">            self.params[key] = val</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i, key <span class="keyword">in</span> enumerate([<span class="string">'Conv1'</span>, <span class="string">'Affine1'</span>, <span class="string">'Affine2'</span>]):</span><br><span class="line">            self.layers[key].W = self.params[<span class="string">'W'</span> + str(i+<span class="number">1</span>)]</span><br><span class="line">            self.layers[key].b = self.params[<span class="string">'b'</span> + str(i+<span class="number">1</span>)]</span><br><span class="line">            </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_SimpleConvNet</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 读入数据</span></span><br><span class="line">    (x_train, t_train), (x_test, t_test) = load_mnist(flatten=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 处理花费时间较长的情况下减少数据 </span></span><br><span class="line">    <span class="comment">#x_train, t_train = x_train[:5000], t_train[:5000]</span></span><br><span class="line">    <span class="comment">#x_test, t_test = x_test[:1000], t_test[:1000]</span></span><br><span class="line">    max_epochs = <span class="number">20</span></span><br><span class="line">    network = SimpleConvNet(input_dim=(<span class="number">1</span>,<span class="number">28</span>,<span class="number">28</span>), </span><br><span class="line">                            conv_param = &#123;<span class="string">'filter_num'</span>: <span class="number">30</span>, <span class="string">'filter_size'</span>: <span class="number">5</span>, <span class="string">'pad'</span>: <span class="number">0</span>, <span class="string">'stride'</span>: <span class="number">1</span>&#125;,</span><br><span class="line">                            hidden_size=<span class="number">100</span>, output_size=<span class="number">10</span>, weight_init_std=<span class="number">0.01</span>)</span><br><span class="line">                            </span><br><span class="line">    trainer = Trainer(network, x_train, t_train, x_test, t_test,</span><br><span class="line">                    epochs=max_epochs, mini_batch_size=<span class="number">100</span>,</span><br><span class="line">                    optimizer=<span class="string">'Adam'</span>, optimizer_param=&#123;<span class="string">'lr'</span>: <span class="number">0.001</span>&#125;,</span><br><span class="line">                    evaluate_sample_num_per_epoch=<span class="number">1000</span>)</span><br><span class="line">    trainer.train()</span><br><span class="line">    <span class="comment"># 保存参数</span></span><br><span class="line">    network.save_params(<span class="string">"params.pkl"</span>)</span><br><span class="line">    print(<span class="string">"Saved Network Parameters!"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 绘制图形</span></span><br><span class="line">    markers = &#123;<span class="string">'train'</span>: <span class="string">'o'</span>, <span class="string">'test'</span>: <span class="string">'s'</span>&#125;</span><br><span class="line">    x = np.arange(max_epochs)</span><br><span class="line">    plt.plot(x, trainer.train_acc_list, marker=<span class="string">'o'</span>, label=<span class="string">'train'</span>, markevery=<span class="number">2</span>)</span><br><span class="line">    plt.plot(x, trainer.test_acc_list, marker=<span class="string">'s'</span>, label=<span class="string">'test'</span>, markevery=<span class="number">2</span>)</span><br><span class="line">    plt.xlabel(<span class="string">"epochs"</span>)</span><br><span class="line">    plt.ylabel(<span class="string">"accuracy"</span>)</span><br><span class="line">    plt.ylim(<span class="number">0</span>, <span class="number">1.0</span>)</span><br><span class="line">    plt.legend(loc=<span class="string">'lower right'</span>)</span><br><span class="line">    plt.show()</span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    =============== Final Test Accuracy ===============</span></span><br><span class="line"><span class="string">    test acc:0.9894</span></span><br><span class="line"><span class="string">    Saved Network Parameters!</span></span><br><span class="line"><span class="string">    '''</span></span><br></pre></td></tr></table></figure>
+
+<p>这次模型训练需要半个小时左右时间，20个批次最终输出测试集准确率为0.989，比之前非卷积网络的高上一些。保存的权重参数文件<code>params.pkl</code>大小为3.31 MB (3,471,485 bytes)</p>
+<p> <img src="../../uploads/ai/cnn_train_output.png" alt="cnn_train_output"><br> <img src="/uploads/ai/cnn_train_output.png" alt="cnn_train_output"> </p>
+<h3 id="CNN的可视化"><a href="#CNN的可视化" class="headerlink" title="CNN的可视化"></a>CNN的可视化</h3><p>学习前的滤波器是随机进行初始化的，所以在黑白的浓淡上没有规律可循，但学习后的滤波器变成了有规律的图像。通过学习，滤波器被更新成了有规律的滤波器，比如从白到黑渐变的滤波器、含有块状区域（称为blob）的滤波器等。</p>
+<p>最开始的第一层中滤波器在“观察”边缘（颜色变化的分界线）和斑块（局部的块状区域）等。</p>
+<p>CNN通过卷积层中提取的信息。第1层的神经元对边缘或斑块有响应，第3层对纹理有响应，第5层对物体部件有响应，最后的全连接层对物体的类别（狗或车）有响应。</p>
+<p><strong>随着层次加深，提取的信息也愈加复杂、抽象，这是深度学习中很有意思的一个地方。最开始的层对简单的边缘有响应，接下来的层对纹理有响应，再后面的层对更加复杂的物体部件有响应。也就是说，随着层次加深，神经元从简单的形状向“高级”信息变化。</strong></p>
+<h3 id="具有代表性的CNN"><a href="#具有代表性的CNN" class="headerlink" title="具有代表性的CNN"></a>具有代表性的CNN</h3><p> <code>AlexNet</code>叠有多个卷积层和池化层，最后经由全连接层输出结果.</p>
+<h3 id="第6章网络优化的相关代码"><a href="#第6章网络优化的相关代码" class="headerlink" title="第6章网络优化的相关代码"></a>第6章网络优化的相关代码</h3><p>optimizer.py 权重参数更新优化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SGD</span>:</span></span><br><span class="line">    <span class="string">"""随机梯度下降法（Stochastic Gradient Descent）"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr=<span class="number">0.01</span>)</span>:</span></span><br><span class="line">        self.lr = lr</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            params[key] -= self.lr * grads[key] </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Momentum</span>:</span></span><br><span class="line">    <span class="string">"""Momentum SGD"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr=<span class="number">0.01</span>, momentum=<span class="number">0.9</span>)</span>:</span></span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.momentum = momentum</span><br><span class="line">        self.v = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.v <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.v = &#123;&#125;</span><br><span class="line">            <span class="keyword">for</span> key, val <span class="keyword">in</span> params.items():                                </span><br><span class="line">                self.v[key] = np.zeros_like(val)</span><br><span class="line">                </span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            <span class="comment"># v对应物理上的速度,表示了物体在梯度方向上受力，在这个力的作用下，物体的速度增加这一物理法则</span></span><br><span class="line">            self.v[key] = self.momentum*self.v[key] - self.lr*grads[key] </span><br><span class="line">            params[key] += self.v[key]</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Nesterov</span>:</span></span><br><span class="line">    <span class="string">"""Nesterov's Accelerated Gradient (http://arxiv.org/abs/1212.0901)"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr=<span class="number">0.01</span>, momentum=<span class="number">0.9</span>)</span>:</span></span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.momentum = momentum</span><br><span class="line">        self.v = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.v <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.v = &#123;&#125;</span><br><span class="line">            <span class="keyword">for</span> key, val <span class="keyword">in</span> params.items():</span><br><span class="line">                self.v[key] = np.zeros_like(val)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            self.v[key] *= self.momentum</span><br><span class="line">            self.v[key] -= self.lr * grads[key]</span><br><span class="line">            params[key] += self.momentum * self.momentum * self.v[key]</span><br><span class="line">            params[key] -= (<span class="number">1</span> + self.momentum) * self.lr * grads[key]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AdaGrad</span>:</span></span><br><span class="line">    <span class="string">"""AdaGrad"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr=<span class="number">0.01</span>)</span>:</span></span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.h = <span class="literal">None</span></span><br><span class="line">       </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.h <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.h = &#123;&#125;</span><br><span class="line">            <span class="keyword">for</span> key, val <span class="keyword">in</span> params.items():</span><br><span class="line">                self.h[key] = np.zeros_like(val)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            self.h[key] += grads[key] * grads[key] </span><br><span class="line">            <span class="comment"># 参数的元素中变动较大（被大幅更新）的元素的学习率将变小。也就是说，可以按参数的元素进行学习率衰减，使变动大的参数的学习率逐渐减小。</span></span><br><span class="line">            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + <span class="number">1e-7</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RMSprop</span>:</span></span><br><span class="line">    <span class="string">"""RMSprop"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr=<span class="number">0.01</span>, decay_rate = <span class="number">0.99</span>)</span>:</span></span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.decay_rate = decay_rate</span><br><span class="line">        self.h = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.h <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.h = &#123;&#125;</span><br><span class="line">            <span class="keyword">for</span> key, val <span class="keyword">in</span> params.items():</span><br><span class="line">                self.h[key] = np.zeros_like(val)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            <span class="comment"># RMSProp方法逐渐地遗忘过去的梯度，在做加法运算时将新梯度的信息更多地反映出来。</span></span><br><span class="line">            <span class="comment"># 这种操作从专业上讲，称为“指数移动平均”​，呈指数函数式地减小过去的梯度的尺度。</span></span><br><span class="line">            self.h[key] *= self.decay_rate</span><br><span class="line">            self.h[key] += (<span class="number">1</span> - self.decay_rate) * grads[key] * grads[key]</span><br><span class="line">            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + <span class="number">1e-7</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Adam</span>:</span></span><br><span class="line">    <span class="string">"""Adam (http://arxiv.org/abs/1412.6980v8)"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr=<span class="number">0.001</span>, beta1=<span class="number">0.9</span>, beta2=<span class="number">0.999</span>)</span>:</span></span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.beta1 = beta1</span><br><span class="line">        self.beta2 = beta2</span><br><span class="line">        self.iter = <span class="number">0</span></span><br><span class="line">        self.m = <span class="literal">None</span></span><br><span class="line">        self.v = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.m <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.m, self.v = &#123;&#125;, &#123;&#125;</span><br><span class="line">            <span class="keyword">for</span> key, val <span class="keyword">in</span> params.items():</span><br><span class="line">                self.m[key] = np.zeros_like(val)</span><br><span class="line">                self.v[key] = np.zeros_like(val)</span><br><span class="line">        </span><br><span class="line">        self.iter += <span class="number">1</span></span><br><span class="line">        lr_t  = self.lr * np.sqrt(<span class="number">1.0</span> - self.beta2**self.iter) / (<span class="number">1.0</span> - self.beta1**self.iter)         </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            <span class="comment">#self.m[key] = self.beta1*self.m[key] + (1-self.beta1)*grads[key]</span></span><br><span class="line">            <span class="comment">#self.v[key] = self.beta2*self.v[key] + (1-self.beta2)*(grads[key]**2)</span></span><br><span class="line">            self.m[key] += (<span class="number">1</span> - self.beta1) * (grads[key] - self.m[key])</span><br><span class="line">            self.v[key] += (<span class="number">1</span> - self.beta2) * (grads[key]**<span class="number">2</span> - self.v[key])            </span><br><span class="line">            params[key] -= lr_t * self.m[key] / (np.sqrt(self.v[key]) + <span class="number">1e-7</span>)            </span><br><span class="line">            <span class="comment">#unbias_m += (1 - self.beta1) * (grads[key] - self.m[key]) # correct bias</span></span><br><span class="line">            <span class="comment">#unbisa_b += (1 - self.beta2) * (grads[key]*grads[key] - self.v[key]) # correct bias</span></span><br><span class="line">            <span class="comment">#params[key] += self.lr * unbias_m / (np.sqrt(unbisa_b) + 1e-7)</span></span><br></pre></td></tr></table></figure>
+
+<p>trainer.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trainer</span>:</span></span><br><span class="line">    <span class="string">"""进行神经网络的训练的类</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, network, x_train, t_train, x_test, t_test,</span></span></span><br><span class="line"><span class="function"><span class="params">                 epochs=<span class="number">20</span>, mini_batch_size=<span class="number">100</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                 optimizer=<span class="string">'SGD'</span>, optimizer_param=&#123;<span class="string">'lr'</span>:<span class="number">0.01</span>&#125;, </span></span></span><br><span class="line"><span class="function"><span class="params">                 evaluate_sample_num_per_epoch=None, verbose=True)</span>:</span></span><br><span class="line">        self.network = network</span><br><span class="line">        self.verbose = verbose</span><br><span class="line">        self.x_train = x_train</span><br><span class="line">        self.t_train = t_train</span><br><span class="line">        self.x_test = x_test</span><br><span class="line">        self.t_test = t_test</span><br><span class="line">        self.epochs = epochs</span><br><span class="line">        self.batch_size = mini_batch_size</span><br><span class="line">        self.evaluate_sample_num_per_epoch = evaluate_sample_num_per_epoch</span><br><span class="line"></span><br><span class="line">        <span class="comment"># optimzer</span></span><br><span class="line">        optimizer_class_dict = &#123;<span class="string">'sgd'</span>:SGD, <span class="string">'momentum'</span>:Momentum, <span class="string">'nesterov'</span>:Nesterov,</span><br><span class="line">                                <span class="string">'adagrad'</span>:AdaGrad, <span class="string">'rmsprpo'</span>:RMSprop, <span class="string">'adam'</span>:Adam&#125;</span><br><span class="line">        self.optimizer = optimizer_class_dict[optimizer.lower()](**optimizer_param)</span><br><span class="line">        </span><br><span class="line">        self.train_size = x_train.shape[<span class="number">0</span>]</span><br><span class="line">        self.iter_per_epoch = max(self.train_size / mini_batch_size, <span class="number">1</span>)</span><br><span class="line">        self.max_iter = int(epochs * self.iter_per_epoch)</span><br><span class="line">        self.current_iter = <span class="number">0</span></span><br><span class="line">        self.current_epoch = <span class="number">0</span></span><br><span class="line">        </span><br><span class="line">        self.train_loss_list = []</span><br><span class="line">        self.train_acc_list = []</span><br><span class="line">        self.test_acc_list = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train_step</span><span class="params">(self)</span>:</span></span><br><span class="line">        batch_mask = np.random.choice(self.train_size, self.batch_size)</span><br><span class="line">        x_batch = self.x_train[batch_mask]</span><br><span class="line">        t_batch = self.t_train[batch_mask]</span><br><span class="line">        </span><br><span class="line">        grads = self.network.gradient(x_batch, t_batch)</span><br><span class="line">        self.optimizer.update(self.network.params, grads)</span><br><span class="line">        </span><br><span class="line">        loss = self.network.loss(x_batch, t_batch)</span><br><span class="line">        self.train_loss_list.append(loss)</span><br><span class="line">        <span class="keyword">if</span> self.verbose: print(<span class="string">"train loss:"</span> + str(loss))</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> self.current_iter % self.iter_per_epoch == <span class="number">0</span>:</span><br><span class="line">            self.current_epoch += <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">            x_train_sample, t_train_sample = self.x_train, self.t_train</span><br><span class="line">            x_test_sample, t_test_sample = self.x_test, self.t_test</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.evaluate_sample_num_per_epoch <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">                t = self.evaluate_sample_num_per_epoch</span><br><span class="line">                x_train_sample, t_train_sample = self.x_train[:t], self.t_train[:t]</span><br><span class="line">                x_test_sample, t_test_sample = self.x_test[:t], self.t_test[:t]</span><br><span class="line">                </span><br><span class="line">            train_acc = self.network.accuracy(x_train_sample, t_train_sample)</span><br><span class="line">            test_acc = self.network.accuracy(x_test_sample, t_test_sample)</span><br><span class="line">            self.train_acc_list.append(train_acc)</span><br><span class="line">            self.test_acc_list.append(test_acc)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> self.verbose: print(<span class="string">"=== epoch:"</span> + str(self.current_epoch) + <span class="string">", train acc:"</span> + str(train_acc) + <span class="string">", test acc:"</span> + str(test_acc) + <span class="string">" ==="</span>)</span><br><span class="line">        self.current_iter += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.max_iter):</span><br><span class="line">            self.train_step()</span><br><span class="line"></span><br><span class="line">        test_acc = self.network.accuracy(self.x_test, self.t_test)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.verbose:</span><br><span class="line">            print(<span class="string">"=============== Final Test Accuracy ==============="</span>)</span><br><span class="line">            print(<span class="string">"test acc:"</span> + str(test_acc))</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+            <a href="/tags/read/" rel="tag"># read</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/10/05/ai/DeepLearningFromScratch5backward/" rel="next" title="深度学习入门-误差反向传播法">
+                <i class="fa fa-chevron-left"></i> 深度学习入门-误差反向传播法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">86</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">83</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#《深度学习入门：基于Python的理论与实现》-卷积神经网络"><span class="nav-number">1.</span> <span class="nav-text">《深度学习入门：基于Python的理论与实现》 卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#卷积神经网络整体结构"><span class="nav-number">1.1.</span> <span class="nav-text">卷积神经网络整体结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#卷积层"><span class="nav-number">1.2.</span> <span class="nav-text">卷积层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#卷积运算"><span class="nav-number">1.2.1.</span> <span class="nav-text">卷积运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#填充-Padding"><span class="nav-number">1.2.2.</span> <span class="nav-text">填充(Padding)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步幅-stride"><span class="nav-number">1.2.3.</span> <span class="nav-text">步幅(stride)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#输出大小计算"><span class="nav-number">1.2.4.</span> <span class="nav-text">输出大小计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多维数据的卷积计算"><span class="nav-number">1.2.5.</span> <span class="nav-text">多维数据的卷积计算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#池化层-Pooling"><span class="nav-number">1.3.</span> <span class="nav-text">池化层(Pooling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络层实现"><span class="nav-number">1.4.</span> <span class="nav-text">网络层实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#卷积层实现"><span class="nav-number">1.4.1.</span> <span class="nav-text">卷积层实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#池化层实现"><span class="nav-number">1.4.2.</span> <span class="nav-text">池化层实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CNN的实现"><span class="nav-number">1.5.</span> <span class="nav-text">CNN的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CNN的可视化"><span class="nav-number">1.6.</span> <span class="nav-text">CNN的可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具有代表性的CNN"><span class="nav-number">1.7.</span> <span class="nav-text">具有代表性的CNN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第6章网络优化的相关代码"><span class="nav-number">1.8.</span> <span class="nav-text">第6章网络优化的相关代码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
