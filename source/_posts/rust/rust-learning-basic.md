@@ -104,6 +104,8 @@ directory = "vendor"
 
 ##### 文档
 
+执行`rustup doc --std`可以在浏览器中打开本地离线的rust标准库文档
+
 执行`cargo doc --open`可以构建本地依赖库的文档，并在浏览器中打开
 
 ![cargo_doc](../../uploads/rust/cargo_doc.png)
@@ -146,6 +148,80 @@ fn main() {
         }
     }    
 }
+```
+
+Programming Rust 第二章示例程序
+
+```rust
+use actix_web::{web, App, HttpResponse, HttpServer};
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct GCDParameters {
+    a: u64,
+    b: u64,
+}
+
+fn gcd(a: u64, b: u64) -> u64 {
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
+}
+
+async fn post_gcd(form: web::Form<GCDParameters>) -> HttpResponse {
+    if form.a == 0 || form.b == 0 {
+        return HttpResponse::BadRequest()
+            .content_type("text/html")
+            .body("Computeing the GCD error");
+    }
+
+    let response = format!("The result is <b>{} </b>\n", gcd(form.a, form.b));
+    HttpResponse::Ok().content_type("text/html").body(response)
+}
+
+#[actix_web::main]
+async fn main() {
+    print!("start run");
+    let server = HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(get_index))
+            .route("/gcd", web::post().to(post_gcd))
+    });
+
+    println!("Serving on http://localhost:3000");
+    server
+        .bind("127.0.0.1:3000")
+        .expect("error binding server to address")
+        .run()
+        .await
+        .expect("error running server");
+}
+
+async fn get_index() -> HttpResponse {
+    HttpResponse::Ok().content_type("text/html").body(
+        r##"
+                <title>GCD Calculator</title>
+                <h1>GCD Calculator</h1>
+                <form action="/gcd" method="post">
+                    <label for="number1">Number 1:</label>
+                    <input type="number" id="number1" name="a" required>
+                    <label for="number2">Number 2:</label>
+                    <input type="number" id="number2" name="b" required>
+                    <button type="submit">Calculate</button>
+                </form>
+            "##,
+    )
+}
+```
+
+对应的依赖
+
+```toml
+[dependencies]
+actix-web = "4.9.0"
+serde = { version = "1.0.228", features = ["derive"] }
 ```
 
 ### 基本语法
@@ -242,15 +318,40 @@ fn cal_price(val: f64, fac: f64) -> f64  {
 let price = cal_price(21.5, 1.25);
 ```
 
+rust的编译器只会推断函数体内变量的类型，函数的参数和返回值的类型必须要声明写出来。
+
+rust的典型函数实现中会用表达式返回函数的返回值，return只在需要在函数体内提前返回值的情况。
+
+#### 表达式
+
 **语句(statements)**是执行一些操作但不返回值的指令
 
 **表达式(Expressions)**计算并产生一个值，**表达式结尾没有分号**。
+
+在C++中表达式和语句有明确区分，`if`或`switch`这种代码段称为语句， 这样的`5*(f-32)/9`称为表达式，表达式有值，而语句不会产生值，也不能放在表达式中间。
+
+rust是表达式语言。它的`if`和`match`表达式都会产生值。例如可以使用match作为参数
+
+```rust
+let length = 100;
+println!(
+    "Use match expression value {}",
+    match length {
+        100 => "hello world",
+        _ => "",
+    }
+);
+```
+
+所以rust中不需要c++里面的三元运算符`(expr1 ? expr2:expr3)`，rust里面直接使用`let`表达式就行了。
+
+代码块表达式block expression：对于使用`{ }`包围的代码块，它的最后一个表达式就是这个代码块的最终值。如果一个代码块的最后一行代码以`;`结束，它的值为`()`
 
 #### 控制流
 
 ##### 条件表达式
 
-if后跟一个条件，和其他语言类似，这个条件必须返回bool类型的值。if表达式可以给let赋值。
+if后跟一个条件，和其他语言类似，这个条件必须返回bool类型的值。if表达式可以给let赋值。如果if语句没有else，那么它必须返回`()`即最后一行语句要以`;`结束。否则rust编译器会提示``if` expressions without `else` evaluate to `()``
 
 ```rust
     let number = 255;

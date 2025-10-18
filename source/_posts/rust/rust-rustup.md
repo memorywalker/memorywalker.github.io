@@ -83,9 +83,7 @@ RUSTUP_UPDATE_ROOT=https://mirrors.aliyun.com/rustup/rustup
 RUSTUP_DIST_SERVER=https://mirrors.aliyun.com/rustup
 ```
 
-
-
-Cargo下载依赖库的镜像配置，在` $CARGO_HOME` 目录下新建一个config文件，内容如下
+Cargo下载依赖库的镜像配置，在` $CARGO_HOME` 目录下新建一个`config.toml`文件，内容如下
 
 ```ini
 [source.crates-io]
