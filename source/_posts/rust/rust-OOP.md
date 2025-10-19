@@ -2,7 +2,7 @@
 title: Rust Learning-Object Oriented Programming
 date: 2024-02-17 09:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

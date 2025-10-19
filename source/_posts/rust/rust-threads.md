@@ -2,7 +2,7 @@
 title: Rust Learning-Threads
 date: 2024-01-07 09:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning
@@ -286,5 +286,4 @@ Sync和Send这两个Trait是语言核心提供语法。
 实现了Sync的Trait的对象可以被多个线程引用。一个不可变引用&T是支持Send的，那么类型T就是Sync的，因为它的引用可以被传递给其他线程，多个线程就能引用它。基本数据类型是Sync的，Mutex<T>`也是Sync的。
 
 完全由支持Send和Sync的类型组成的新类型也是Send和Sync的，所以一般不用自己手动实现Send和Sync，他们也没有需要实现的方法
-
 

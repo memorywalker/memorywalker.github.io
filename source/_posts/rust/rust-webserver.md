@@ -2,7 +2,7 @@
 title:  Rust Web Server
 date: 2024-03-09 09:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

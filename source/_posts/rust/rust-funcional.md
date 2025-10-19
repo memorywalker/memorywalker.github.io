@@ -2,7 +2,7 @@
 title: Rust Learning-Functional
 date: 2024-01-01 11:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning
@@ -360,7 +360,6 @@ for i in 12..buffer.len() {
 对于coefficients遍历，rust知道其中有12个元素，为了减少循环控制代码性能损耗，rust会生成12个重复的代码来优化这个循环。
 
 Rust knows that there are 12 iterations, so it “unrolls” the loop. *Unrolling* is an optimization that removes the overhead of the loop controlling code and instead generates repetitive code for each iteration of the loop.
-
 
 
 

@@ -2,7 +2,7 @@
 title: Rust Learning basic
 date: 2023-02-19 09:25:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

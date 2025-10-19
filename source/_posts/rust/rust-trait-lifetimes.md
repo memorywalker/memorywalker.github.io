@@ -2,7 +2,7 @@
 title: Rust Learning-Generic, Trait and Lifetimes
 date: 2023-04-01 22:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

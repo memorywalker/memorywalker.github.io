@@ -2,7 +2,7 @@
 title: Rust Learning-Patterns and Matching
 date: 2024-02-18 10:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

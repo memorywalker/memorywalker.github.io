@@ -2,7 +2,7 @@
 title: Rust Network Tun
 date: 2024-03-17 21:32:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

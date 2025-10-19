@@ -2,10 +2,10 @@
 title: Rust SDL2 Develop
 date: 2024-03-02 15:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
-- learning
+- game
 ---
 
 ## RUST SDL2 Develop 

@@ -2,7 +2,7 @@
 title: Rust Learning-Unsafe Rust
 date: 2024-02-19 08:58:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

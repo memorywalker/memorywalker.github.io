@@ -2,7 +2,7 @@
 title: Rust Learning-Smart Pointers
 date: 2024-01-14 15:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

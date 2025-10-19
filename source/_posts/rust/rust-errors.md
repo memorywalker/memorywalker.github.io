@@ -2,7 +2,7 @@
 title: Rust Learning-Errors
 date: 2024-01-21 21:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning
@@ -232,5 +232,4 @@ impl Guess {
     }
 }
 ```
-
 

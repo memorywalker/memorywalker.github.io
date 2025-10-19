@@ -2,7 +2,7 @@
 title: Rust Tips
 date: 2024-03-24 16:25:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

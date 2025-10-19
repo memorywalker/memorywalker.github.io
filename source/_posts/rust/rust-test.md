@@ -2,7 +2,7 @@
 title: Rust Learning-Test
 date: 2024-02-25 23:15:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

@@ -2,7 +2,7 @@
 title: Rust Learning-Advanced Traits and Types
 date: 2024-02-19 11:36:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

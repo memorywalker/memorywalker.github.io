@@ -2,7 +2,7 @@
 title: Rust Learning-Collections
 date: 2023-12-31 14:42:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

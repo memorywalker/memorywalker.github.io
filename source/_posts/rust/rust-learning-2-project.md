@@ -2,7 +2,7 @@
 title: Rust Learning - Crates and Modules 
 date: 2023-03-18 16:25:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning

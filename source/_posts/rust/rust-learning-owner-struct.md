@@ -2,7 +2,7 @@
 title: Rust Learning Owner Struct and Enum
 date: 2023-03-05 09:25:49
 categories:
-- programming
+- rust
 tags:
 - rust
 - learning
