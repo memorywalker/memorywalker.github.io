@@ -196,7 +196,7 @@ fn fisrt_word(s: &String) -> &str { // 返回一个String的slice
 
 对于一个整型数的数组他的slice数据类型为`&[i32]`
 
-#### 结构体
+### 结构体
 
 结构体和C++中的类似，包含不同类型的字段。
 
@@ -378,11 +378,13 @@ let halo = Game::new_game(String::from("HALO"));
 println!("info of struct value {:?}", halo);
 ```
 
-#### 枚举
+### 枚举
 
  structs give you a way of grouping together related fields and data, like a `Rectangle` with its `width` and `height`，enums give you a way of saying a value is one of a possible set of values.
 
 枚举一组数据类型的集合，可以让你列举出其中的每一种变体(variants)。其中的每一个变体之间时互斥的。
+
+#### 类C枚举
 
 ```rust
 #[derive(Debug)]
@@ -397,9 +399,73 @@ struct Game {
     game_type: GameType,
     rate: f32,
 }
+
+use std::cmp::Ordering;
+use std::mem;
+
+enum HttpStatus { 
+	Ok = 200, 
+	NotFound = 404, 
+}
+
+assert_eq!(mem::size_of::<Ordering>(), 1); 
+assert_eq!(mem::size_of::<HttpStatus>(), 2); // 404 doesn't fit in a u8
+assert_eq!(HttpStatus::Ok as u8, 200); // convert enum type to integer
+```
+Rust可以定义和C一样的整数值枚举，如果可以给每一个枚举值设置一个整数值，如果不赋值，则按顺序从0开始自动赋值。
+rust编译器为类似C的整数枚举在内存中分配的空间大小为适合这个枚举所有值的最小整数类型。例如把上面的`NotFound`的404改为40，这个枚举的大小就为1，不是2了。当`HttpStatus`中，只有一个可选值`Ok`时，枚举的内存大小为0。可以给枚举使用`#[repr]`属性修改rust的默认内存分配属性。
+可以把类C的整数枚举转换为整数类型，反过来不能把一个整数转换为一个枚举值。因为rust为了保证每一个枚举值都是按声明的那样唯一值，如果把整数转换为枚举，可能两个枚举值对应的整数值相同就破坏了这一个规则。
+
+rust编译器可以自动为枚举实现常见的操作符例如`==`，只需要在枚举声明上面增加对应的宏
+```rust
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+enum TimeUnit {
+    Seconds, Minutes, Hours, Days, Months, Years,
+}
 ```
 
-可以将数据直接附加到枚举成员上，并且每个枚举成员可以处理不同类型和数量的数据，这个数据可以结构体或其他枚举类型。
+rust 的枚举值不支持bit运算，只能使用整数来实现flag的bit或运算。
+
+#### 枚举中的数据和方法
+
+Rust的枚举可以包含数据，并且数据的类型可以不同。例如`Result<String, io::Error>`的类型就是一个枚举，它的值可以是一个拥有String的Ok值或者是`io::Error`的Err值。
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+可以将数据直接附加到枚举成员上，并且每个枚举成员可以处理不同类型和数量的数据，这个数据可以是结构体、元组或其他枚举类型。枚举变量有三类：
+1. 没有数据的变量
+2. 元组变量
+3. 结构体变量
+一个枚举可以同时使用这三种类型的变量，例如下面的Message枚举。
+```rust
+/// A timestamp that has been deliberately rounded off, so our program
+/// says "6 months ago" instead of "February 9, 2016, at 9:49 AM".
+#[derive(Copy, Clone, Debug, PartialEq)]
+enum RoughTime {
+    InThePast(TimeUnit, u32),
+    JustNow,
+    InTheFuture(TimeUnit, u32),
+}
+
+enum Shape {
+    Sphere { center: Point3d, radius: f32 },
+    Cuboid { corner1: Point3d, corner2: Point3d },
+}
+
+let four_score_and_seven_years_ago = RoughTime::InThePast(TimeUnit::Years, 4 * 20 + 7);    
+let three_hours_from_now = RoughTime::InTheFuture(TimeUnit::Hours, 3);
+
+let unit_sphere = Shape::Sphere {
+	center: ORIGIN,
+	radius: 1.0,
+};
+
+assert_eq!(mem::size_of::<RoughTime>(), 8);
+```
 
 枚举也可以定义方法，self的作用和结构体的相同，也表示调用方法的实例对象。
 
@@ -430,7 +496,27 @@ move_msg.call(); // Move { x: 15, y: 20 }
 ```
 
 我们可以使用不同的结构体来定义上面Message枚举选项中的各个数据类型，但是对于struct由于他们是不同的类型，无法定义一个函数就可以处理所有这些结构体类型，但是枚举是同一个数据类型。
+#### 枚举内存
 
+有数据的枚举在内存中第一个字节为tag字段，它是一个索引告诉rust这个枚举变量使用哪个构造器从而知道它有哪些字段。对于上面的`RoughTime`枚举，它的变量占用8字节内存，因为其中最大的变量占用内存大小为8字节。
+
+![enum_mem](uploads/rust/enum_mem.png)
+
+rust的枚举可以用来实现复杂的数据表示，特别是树状数据，例如可以用枚举表示json数据类型，根据json的文档描述，一个json数据类型可以是null，bool，数值，字符串，json数组，key-value的对象，因此这个枚举可以这样定义：
+```rust
+enum Json {
+    Null,
+    Boolean(bool),
+    Number(f64),
+    String(String),
+    Array(Vec<Json>),
+    Object(Box<HashMap<String, Json>>),
+}
+```
+这个枚举值占用的内存大小为32字节，它的最大空间成员是第5个`Array(Vec<Json>)`，除了1个字节的tag外，它的Array底层是一个`vec![]`，因此需要一个buffer地址8字节(x64系统)，数组的容量8字节，当前实际大小8字节，字节对齐后为`4*8`共32个字节。
+#### 泛型枚举
+
+枚举可以泛型化，例如标准库中使用很多的两个枚举`Option<T>`和`Result<T, E>`。
 ##### Option枚举
 
 In his 2009 presentation “Null References: The Billion Dollar Mistake,” Tony Hoare, the inventor of null, has this to say:
@@ -438,6 +524,7 @@ In his 2009 presentation “Null References: The Billion Dollar Mistake,” Tony
 > I call it my billion-dollar mistake. At that time, I was designing the first comprehensive type system for references in an object-oriented language. My goal was to ensure that all use of references should be absolutely safe, with checking performed automatically by the compiler. But I couldn’t resist the temptation to put in a null reference, simply because it was so easy to implement. This has led to innumerable errors, vulnerabilities, and system crashes, which have probably caused a billion dollars of pain and damage in the last forty years.
 
 对于rust没有null关键字，因为程序中会出现因为没有判断null导致的bug。rust使用Option表示是否有值，它是标准库的基础功能之一，使用这个enum不需要指定枚举名字，直接使用`Some`和`None`。`Option<T>`和`T`是不同的数据类型，所以他们之间不能直接运算，这样就能避免对没有值时的异常调用。所有的计算都需要先将`Option<T>`转换为`T`类型后才能执行。所以只要一个值类型不是Option类型，就可认为他的值肯定不会为空，增加代码安全性。如果一个值可能为空，编码时需要使用`Option<T>`来保护，如果代码中没有处理None保护，编译器会提示错误。
+当Option的T的类型为引用，Box或其他智能指针类型时，rust会把option枚举中的tag字段省略掉，因为这些T类型不会为0，因此可以用0表示Option中的None，非0表示Some指针。例如`Option<Box<i32>>`的内存大小为8字节。而`Option<i32>`大小为8字节，虽然i32是4字节，它有一个字节的tag。
 
 ```rust
 enum Option<T> {
