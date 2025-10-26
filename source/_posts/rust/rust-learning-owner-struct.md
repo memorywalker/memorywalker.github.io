@@ -544,3 +544,30 @@ let z : Option<Color> = None;
 println!("Color is :{}", z.expect("wrong color").0);  // output wrong color
 ```
 
+#### 枚举兼容
+
+枚举中的所有变量和枚举的可见度相同，例如一个pub枚举，它的所有变量值都是pub的，如果你开发了一个库，里面的枚举在未来的版本增加了了一个变量选项，对于所有使用这个枚举进行匹配match表达式，都需要更新，因为rust要求match覆盖所有的选项，但是老代码中match表达式没有新增的枚举项。
+
+可以使用`#[non_exhaustive]`属性说明一个枚举、结构体、枚举变体以后会添加更多的字段。这个属性只在跨crate时才会有效，如果使用枚举的代码和枚举代码在同一个crate，rust不会提示。例如一个lib.rs文件中定义了一个`pub enum Status `，在另一个app.rs中使用了这个枚举。如果应用的match表达式中没有增加`_`分支，编译器会提示增加。这样以后枚举增加了一个字段，应用的程序不会被影响。
+
+```rust
+// lib.rs
+#[non_exhaustive]
+pub enum Status {
+    Waiting,
+    Working,
+    Finished,
+}
+
+// app.rs
+use cargo_demo::Status;
+let status = Status::Waiting;
+match status {
+	Status::Waiting => println!("Waiting"),
+	Status::Working => println!("Working"),
+	Status::Finished => println!("Finished"),
+	_ => println!("Unknown status"),  // 如果没有这一行，编译器会提示note: `Status` is marked as non-exhaustive, so a wildcard `_` is necessary to match exhaustively
+}
+```
+
+由于enum不能像C++的类那样继承，所以使用一个库中的枚举时无法扩展这个枚举，只能修改库的枚举的定义来扩展，而一旦枚举多了一个选项后，就会导致所有使用这个枚举的代码增加对新选项的处理，重新编译。
