@@ -122,3 +122,28 @@ rust种使用的编译平台的命名规则`<arch><sub>-<vendor>-<sys>-<env>`，
 
    `cargo build --target=armv7-unknown-linux-gnueabi`
 
+### 开发工具
+
+#### VS Code插件
+
+[参考来源](https://github.com/tyr-rust-bootcamp/template)
+
+1. GitLens ：Git增强，可以在代码行中显示文本编辑的时间和修改人
+2. Dependi ：检查依赖库是否安全，支持多种语言
+3. Indent-Rainbow ：缩进优化显示
+4. Indent-Rainbow ：rust语法分析和api提示
+5. Rust Test Explorer：侧边栏显示rust单元测试
+6. TODO Highlight：高亮显示TODO注释
+7. Error Lens：错误信息优化显示
+#### 其他工具
+
+1. [pre-commit](https://pre-commit.com/)：git commit之前会自动执行一些批处理，需要结合`.pre-commit-config.yaml`文件一起使用
+	1. 安装`pip install pre-commit`
+	2. 在工程目录下执行`pre-commit install`
+	3. 在下一次执行`git commit`前会检查项目是否有错误，没有错误后，就会弹出默认编辑器用来输入commit的信息。
+2. cargo deny：检查依赖的安全性，例如依赖一些库不是MIT的就会提示 `cargo install --locked cargo-deny`，之后执行`cargo deny check`检查项目是否存在问题。
+3. typos：拼写检查工具`cargo install typos-cli`
+4. git cliff：生成CHANGELOG的工具`cargo install git-cliff`
+5. cargo nextest：单元测试更快的执行`cargo install cargo-nextest --locked`
+
+

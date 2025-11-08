@@ -10,7 +10,24 @@ tags:
 
 ## Rust Tips 
 
+### 常用网站
 
+*  rust的crate库(https://crates.io/)查看最流行的库，以及按库的类型找合适的库。
+* 库网站还有[lib.rs](https://lib.rs/)，可以查看一个库的统计信息
+* 库文档[docs.rs](https://docs.rs/)
+* 中文社区(https://rustcc.cn/)
+* reddit.com/r/rust
+* https://github.com/trending
+
+### 常用库
+
+* 错误处理：anyhow
+* 日志处理：tracing、tracing-subcriber
+* 宏：derive_builder、derive_more、strum、darling
+* 数据转换：serde
+* 异步运行时：tokio
+* 应用开发：tower
+* 数据库：sqlx
 
 ### 基本用法
 
