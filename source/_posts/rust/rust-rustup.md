@@ -83,6 +83,13 @@ RUSTUP_UPDATE_ROOT=https://mirrors.aliyun.com/rustup/rustup
 RUSTUP_DIST_SERVER=https://mirrors.aliyun.com/rustup
 ```
 
+rustup使用`https://rsproxy.cn/`的源可以正常下载指定的rust版本，而aliyun镜像源索引文件地址错误，总是在错误的目录中找版本文件，只有最新版本的索引地址时正确的。下面的命令在使用zsh终端时，临时配置源的地址为https://rsproxy.cn。
+
+```Bash
+export RUSTUP_DIST_SERVER="https://rsproxy.cn"
+export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
+```
+
 Cargo下载依赖库的镜像配置，在` $CARGO_HOME` 目录下新建一个`config.toml`文件，内容如下
 
 ```ini
@@ -145,5 +152,6 @@ rust种使用的编译平台的命名规则`<arch><sub>-<vendor>-<sys>-<env>`，
 3. typos：拼写检查工具`cargo install typos-cli`
 4. git cliff：生成CHANGELOG的工具`cargo install git-cliff`
 5. cargo nextest：单元测试更快的执行`cargo install cargo-nextest --locked`
+6. tokei：统计一个目录下的代码信息`cargo install tokei` https://github.com/XAMPPRocky/tokei
 
 

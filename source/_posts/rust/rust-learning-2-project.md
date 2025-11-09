@@ -23,14 +23,68 @@ Cargo的一个功能，可以构建、测试和分享crate。包是提供一系�
 * `src/bin`目录下是这个包中的其他的二进制crate
 
 crate根文件由Cargo传递给rustc来实际构建库或二进制项目。
+#### rust版本
 
+##### edition
+
+为了处理rust大版本更新后兼容，在`[package]`中会说明类似`edition = "2021"`版本信息，告诉编译器这个包是对哪个版本兼容的。因此如果项目要使用rust的新特性，需要使用特性对应的版本。基本上3年一个版本，目前最新的为2024.
+详细的版本信息和指南在这里[The Rust Edition Guide](https://doc.rust-lang.org/edition-guide/editions/index.html)
+
+使用`cargo fix`可以辅助版本升级。
+
+例如：
+* 2015版本兼容rust1.0版本
+* 2018版本把async和await作为关键字，所以程序中不能在使用这两个作为变量名
+
+##### rust version
+
+可以为工程指名使用的rust的最低版本，例如在`[package]`下添加`rust-version = "1.91.0"`。如果当前本机安装的rust版本小于指定的版本号，会提示无法编译
+
+```rust
+error: rustc 1.88.0 is not supported by the following package:
+  memorywalk@0.1.0 requires rustc 1.91.0
+```
+
+如果要求版本号小于本地安装的rust版本，cargo会用当前安装的版本编译，不会精确匹配编译器的版本。
+
+* 使用指定的rust版本编译
+`cargo +1.91.0 build` 就会用rustup去自动下载1.91.0版本，不过配置的aliyun镜像目录不正确，会下载失败。
+* 使用配置文件指定编译版本，在项目根目录下新建`rust-toolchain.toml`，文件中指定rust的版本，下次在`cargo build`时，就会用指定的版本编译
+	```toml
+	[toolchain]
+	channel = "1.91.0" # 也可以写 channel = "stable"
+	components = [ "clippy" ]
+	```
 ### Crates
 
 crate是rust在编译时的最小代码单位，可以是一个文件。Crate有两类：库或二进制项目。一般crate都是指的库。
 
+### 依赖
+
+`Cargo.toml`中`[dependencies]`段是当前项目的依赖，cargo在编译时会依次下载依赖库的源代码，并进行编译。如果一个库又依赖其他库，也会先下载被依赖的库，进行编译，从而把整个依赖树下载编译。例如`rand`crate依赖`rand_core v0.9.3`就会下载`rand_core v0.9.3`并进行编译，而不只是下载当前项目直接依赖的crate。
+
+cargo会传递`--extern`选项，告诉rustc在编译时使用的crate，所以当rustc看到代码中的`use rand::Rng;`就直到rand是一个crate，并且也知道去哪里找到这个库文件。
+
+通过`cargo build --verbose`可以查看详细的编译信息
+`--extern 'rand=E:\dev\rust\memorywork\target\debug\deps\librand-f6713db433808e1e.rmeta'`
+
+### 项目编译
+
+#### lib项目
+
+cargo使用`--crate-type lib`选项，这样rustc不会去代码中找main函数，同时会生成`.rlib`文件，这时rust的库文件，可以被其他rust程序静态链接使用。
+
+`.rlib`文件中存储了库的类型信息，因此rustc就可以知道程序中使用的crate的features是否在这个crate中。
+#### 可执行程序
+
+cargo使用`--crate-type bin`选项，生成一个二进制程序。
+
+`cargo build --release`选项会优化代码，程序执行的更快，但是编译所需的时间更长，不会检查整数溢出，并会跳过`debug_asser!()`断言，生成的调用栈追溯也更不可靠。
+
+
 ### Modules
 
-多个模块构成了一个crate，用来对一个crate中的代码进行分组，提高可读性和重复使用。模块使用**mod**声明，和python的module类似，也可以看作和c++中的namespace类似。
+多个模块构成了一个crate，module用来对一个crate中的代码进行分组，提高可读性和重复使用。模块使用**mod**声明，和python的module类似，也可以看作和c++中的namespace类似。
 
 模块以树结构进行组织，一个模块中的代码默认是私有的，子模块可以访问父模块的成员，但父模块默认不能访问子模块的成员，除非在子模块中将成员声明为**pub**的。同一级的模块之间是可以访问的。
 
@@ -126,31 +180,86 @@ use std::collections::*;   // 引用collections下的所有内容
 
 #### 模块文件管理
 
+模块文件可以有三种组织方式：
+
+1. 模块使用单独的文件存放，文件名就是模块的名称
+
 不同的模块可以按文件放在其父模块的目录中，编译器根据mod语句定位模块的代码文件的位置。
+```rust
+└── src
+    ├── lib.rs
+    ├── main.rs
+    └── square.rs
+    
+// lib.rs，在lib.rs的当前目录中找square.rs或在当前目录下的square目录中找mod.rs，看里面有没有这个模块
+pub mod square;
 
-例如crate的根文件`src/lib.rs`中
+// main.rs
+use memorywalk::square::Square;
+```
+编译器看到了根文件中的square模块声明，就会在根目录中找这个`src/square.rs`文件。
+
+2. 当需要把多个子模块放在一起时，可以使用目录名来创建一个模块，目录中使用`mod.rs`来声明这个模块的子模块
+
+例如有一个模块名称为shape标识形状，它有2个子模块circle和square
 
 ```rust
-mod front_of_house;  // 声明front_of_house模块
-pub use crate::front_of_house::hosting;
-pub fn eat_at_restaurant() {
-    hosting::add_to_waitlist();
+└── src
+    ├── lib.rs
+    └── main.rs
+    └── shape
+      ├── circle.rs
+      ├── mod.rs
+      └── square.rs
+      
+//lib.rs
+pub mod shape;
+
+// square.rs
+pub struct Square {
+    side: f64,
+}  
+impl Square {
+    pub fn new(side: f64) -> Self {
+        Square { side }
+    }
+    pub fn area(&self) -> f64 {
+        self.side * self.side
+    }
 }
+
+// main.rs
+use memorywalk::shape::{Circle, Square};
+
+fn main() {
+    let side = 5.0;
+    let square = Square::new(side);
+    let area = square.area();
+    println!("Area of the square with side {} is {}", side, area);
 ```
 
-编译器看到了根文件中的front_of_house模块声明，就会在根目录中找这个`src/front_of_house.rs`文件。在`src/front_of_house.rs`中，
+3. 使用文件名和目录名相同来创建一个模块
+
+例如在`src/front_of_house.rs`中声明了一个子模块`hosting`，
 
 ```rust
-pub mod hosting;
+└── src
+    ├── main.rs
+    └── shape.rs
+    └── shape
+      ├── circle.rs
+      └── square.rs
+      
+// shape.rs 中声明两个子模块，两个子模块的文件放在名字为shape的目录中
+pub mod circle;
+pub mod square;  
+
+// main.rs中使用
+pub mod shape;  // 先声明当前目录下的模块shape
+use shape::square::Square;  // 使用shape的子模块  
 ```
 
-`hosting`是`front_of_house`的子模块，所以它的模块文件放在他父模块`front_of_house`同名的目录下`src/front_of_house/hosting.rs`
-
-```rust
-pub fn add_to_waitlist() {}
-```
-
-
+`square`是`shape`的子模块，所以它的模块文件`square.rs`放在他父模块`shape`同名的目录下`src/shape/square.rs`
 
 ### IO控制台项目
 
