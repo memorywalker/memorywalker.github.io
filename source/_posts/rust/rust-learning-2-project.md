@@ -238,7 +238,7 @@ fn main() {
     println!("Area of the square with side {} is {}", side, area);
 ```
 
-3. 使用文件名和目录名相同来创建一个模块
+3. 使用文件名和目录名相同来创建一个模块，**rust的官方指南推荐使用这种方法，如果用方法2，每个目录中都有mod.rs在编辑器中打开多个不容易区分**。
 
 例如在`src/front_of_house.rs`中声明了一个子模块`hosting`，
 
