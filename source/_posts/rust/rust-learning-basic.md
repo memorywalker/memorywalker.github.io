@@ -78,6 +78,22 @@ rand = "0.8.5"
 
 再次执行build后，会下载所有依赖的库，包括rand依赖的库
 
+##### 编译选项
+
+在Cargo.toml中有三个段和对应的cargo命令相匹配，对应段的设置对对应的命令进行配置。
+
+| 配置段               | 命令                    |
+| ----------------- | --------------------- |
+| [profile.dev]     | cargo build           |
+| [profile.release] | cargo build --release |
+| [profile.test]    | cargo test            |
+例如在编译的release版本时，增加符号信息，可以在`[profile.release]`段下增加debug信息配置，同时不影响编译优化。
+
+```toml
+[profile.release]
+debug = "limited"
+```
+
 ##### Cargo.lock
 
 工程中的`Cargo.lock`文件记录了第一次构建时，所有符合要求的依赖库版本，以后再次构建不会再去找依赖库的版本，方便今后“可重复构建”
