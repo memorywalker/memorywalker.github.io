@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="使用Tauri开发简单桌面程序Tauri 可以开发主流桌面和移动平台应用程序。使用任何可编译为 HTML、JavaScript 和 CSS 的前端框架来构前端，使用 Rust、Swift 和 Kotlin 等语言进行后端逻辑开发。 https://tauri.app/zh-cn/start/ 基本架构核心组件  TAO用于跨平台创建应用程序窗口，使用rust实现，是winit的分支。 WRY跨平台">
+<meta name="keywords" content="rust,tauri,vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Tauri开发简单桌面程序">
+<meta property="og:url" content="http://memorywalker.github.io/2025/11/16/rust/tauri-simple/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="使用Tauri开发简单桌面程序Tauri 可以开发主流桌面和移动平台应用程序。使用任何可编译为 HTML、JavaScript 和 CSS 的前端框架来构前端，使用 Rust、Swift 和 Kotlin 等语言进行后端逻辑开发。 https://tauri.app/zh-cn/start/ 基本架构核心组件  TAO用于跨平台创建应用程序窗口，使用rust实现，是winit的分支。 WRY跨平台">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2025/11/16/rust/tauri-simple/uploads/rust/tauri_architecture.svg">
+<meta property="og:image" content="http://memorywalker.github.io/2025/11/16/rust/tauri-simple/uploads/rust/tauri_currency_convert.png">
+<meta property="og:updated_time" content="2025-11-16T10:22:58.605Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Tauri开发简单桌面程序">
+<meta name="twitter:description" content="使用Tauri开发简单桌面程序Tauri 可以开发主流桌面和移动平台应用程序。使用任何可编译为 HTML、JavaScript 和 CSS 的前端框架来构前端，使用 Rust、Swift 和 Kotlin 等语言进行后端逻辑开发。 https://tauri.app/zh-cn/start/ 基本架构核心组件  TAO用于跨平台创建应用程序窗口，使用rust实现，是winit的分支。 WRY跨平台">
+<meta name="twitter:image" content="http://memorywalker.github.io/2025/11/16/rust/tauri-simple/uploads/rust/tauri_architecture.svg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2025/11/16/rust/tauri-simple/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用Tauri开发简单桌面程序 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2025/11/16/rust/tauri-simple/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Tauri开发简单桌面程序
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2025-11-16 10:48:00 / 修改时间：10:22:58" itemprop="dateCreated datePublished" datetime="2025-11-16T10:48:00+00:00">2025-11-16</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/tauri/" itemprop="url" rel="index"><span itemprop="name">tauri</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="使用Tauri开发简单桌面程序"><a href="#使用Tauri开发简单桌面程序" class="headerlink" title="使用Tauri开发简单桌面程序"></a>使用Tauri开发简单桌面程序</h2><p>Tauri 可以开发主流桌面和移动平台应用程序。使用任何可编译为 HTML、JavaScript 和 CSS 的前端框架来构前端，使用 Rust、Swift 和 Kotlin 等语言进行后端逻辑开发。</p>
+<p><a href="https://tauri.app/zh-cn/start/" target="_blank" rel="noopener">https://tauri.app/zh-cn/start/</a></p>
+<h3 id="基本架构"><a href="#基本架构" class="headerlink" title="基本架构"></a>基本架构</h3><h4 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h4><p><img src="uploads/rust/tauri_architecture.svg" alt="tauri_architecture"></p>
+<ul>
+<li><strong>TAO</strong>用于跨平台创建应用程序窗口，使用rust实现，是winit的分支。</li>
+<li><strong>WRY</strong>跨平台WebView渲染库，使用rust实现，作为抽象层决定使用哪个WebView以及如何交互</li>
+<li><strong>tauri-runtime</strong>，tauri与底层WebView库之间的粘合层</li>
+<li><strong>tauri-runtime-wry</strong>，为WRY提供系统级交互，例如打印、显示器检测等</li>
+<li><strong>tauri-macros</strong>，使用<code>tauri-codegen</code>为上下文、处理程序和命令创建宏<h4 id="进程模型"><a href="#进程模型" class="headerlink" title="进程模型"></a>进程模型</h4></li>
+</ul>
+<p>每个 Tauri 应用程序都有一个核心进程和多个WebView进程。</p>
+<h5 id="核心进程"><a href="#核心进程" class="headerlink" title="核心进程"></a>核心进程</h5><ul>
+<li><p>应用程序的入口点，并且是唯一一个拥有完全操作系统访问权限的组件</p>
+</li>
+<li><p>创建和协调应用程序窗口、系统托盘菜单或通知</p>
+</li>
+<li><p>路由所有进程间通信，允许你在一个中心位置拦截、过滤和操作 IPC 消息</p>
+</li>
+<li><p>负责管理全局状态，例如设置或数据库连接</p>
+<h5 id="WebView进程"><a href="#WebView进程" class="headerlink" title="WebView进程"></a>WebView进程</h5></li>
+<li><p>利用操作系统的WevView库</p>
+</li>
+<li><p>相当于一个浏览器，执行前端HTML、JavaScript代码</p>
+</li>
+<li><p>可以通过检查页面元素调试前端页面</p>
+<h5 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h5></li>
+</ul>
+<p>Tauri使用异步消息传递进行进程间通信，通信消息有两种：</p>
+<ul>
+<li><strong>事件</strong>：一次性、单向IPC消息，可以由WebView或核心进程发出</li>
+<li><strong>命令</strong>：允许前端通过<code>invoke</code> API调用rust的函数并获取返回数据，命令消息使用类似JSON-RPC协议来序列化请求和响应，所有参数和返回数据必须能序列化为json。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant WebView</span><br><span class="line">    participant Core Backend</span><br><span class="line">    participant Invoke Handler</span><br><span class="line">    WebView--&gt;&gt;Core Backend: IPC Request</span><br><span class="line">    Core Backend--&gt;&gt;Invoke Handler: Invoke Command</span><br><span class="line">    Invoke Handler--&gt;&gt; Core Backend: Serialize return</span><br><span class="line">    Core Backend --&gt;&gt; WebView: Reponse</span><br></pre></td></tr></table></figure>
+
+<h3 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h3><p>Windows 10（从版本 1803 开始）系统默认支持了WebView2</p>
+<ol>
+<li><p>安装rust</p>
+</li>
+<li><p>安装nodejs</p>
+</li>
+<li><p>安装pnpm，使用npm的方式安装<code>npx pnpm@latest-10 dlx @pnpm/exe@latest-10 setup</code></p>
+</li>
+<li><p>使用cargo安装<code>create-tauri-app</code>，这个脚手架工具可以用来引导创建工程<code>cargo install create-tauri-app --locked</code></p>
+</li>
+<li><p>使用工具创建工程<code>cargo create-tauri-app</code></p>
+</li>
+<li><p>根据提示选择工程名称，标识，前端语言，框架等</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">➜  /e/dev/rust cargo create-tauri-app</span><br><span class="line">✔ Project name · memory-store</span><br><span class="line">✔ Identifier · memorywalker</span><br><span class="line">✔ Choose <span class="built_in">which</span> language to use <span class="keyword">for</span> your frontend · TypeScript / JavaScript - (pnpm, yarn, npm, deno, bun)</span><br><span class="line">✔ Choose your package manager · pnpm</span><br><span class="line">✔ Choose your UI template · Vue - (https://vuejs.org/)</span><br><span class="line">✔ Choose your UI flavor · TypeScript</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入新创建的工程目录，执行<code>pnpm install</code></p>
+</li>
+<li><p>执行<code>pnpm tauri dev</code>运行程序</p>
+</li>
+</ol>
+<h3 id="工程结构"><a href="#工程结构" class="headerlink" title="工程结构"></a>工程结构</h3><p>默认创建的工程目录如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">├── .gitignore        </span><br><span class="line">├── index.html        </span><br><span class="line">├── package.json      </span><br><span class="line">├── README.md</span><br><span class="line">├── tsconfig.json     </span><br><span class="line">├── tsconfig.node.json</span><br><span class="line">└── vite.config.ts    </span><br><span class="line">├── .vscode</span><br><span class="line">├── public</span><br><span class="line">├── src</span><br><span class="line">  ├── App.vue</span><br><span class="line">  ├── main.ts</span><br><span class="line">  └── vite-env.d.ts</span><br><span class="line">  └── assets</span><br><span class="line">└── src-tauri</span><br><span class="line">  ├── .gitignore</span><br><span class="line">  ├── build.rs</span><br><span class="line">  ├── Cargo.lock</span><br><span class="line">  ├── Cargo.toml</span><br><span class="line">  └── tauri.conf.json</span><br><span class="line">  ├── capabilities</span><br><span class="line">  ├── gen</span><br><span class="line">  ├── icons</span><br><span class="line">  └── src</span><br><span class="line">    ├── lib.rs</span><br><span class="line">    └── main.rs</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>tauri.conf.json</code> 是Tauri的主要的配置文件cli工具也会依赖它的位置来找Rust工程目录</li>
+<li><code>capabilities/</code> directory is the default folder Tauri reads <a href="https://v2.tauri.app/security/capabilities/" target="_blank" rel="noopener">capability files</a> from (in short, you need to allow commands here to use them in your JavaScript code), to learn more about it, see <a href="https://v2.tauri.app/security/" target="_blank" rel="noopener">Security</a></li>
+<li><code>icons/</code> 在 <code>tauri.conf.json &gt; bundle &gt; icon</code> 下引用，作为应用的图标</li>
+<li><code>build.rs</code>  tauri编译程序</li>
+<li><code>src/lib.rs</code> 包含Rust 代码和移动端程序入口点<code>#[cfg_attr(mobile, tauri::mobile_entry_point)]</code>), 移动平台上rust代码会编译为库，再被框架使用。</li>
+<li><code>src/main.rs</code> 桌面程序的入口点，它的main函数中调用lib.rs中的 <code>app_lib::run()</code> 从而实现和移动端相同的调用流程，后续的代码实现都放在lib.rs中，而不是这个文件。</li>
+</ul>
+<h4 id="前端配置"><a href="#前端配置" class="headerlink" title="前端配置"></a>前端配置</h4><p>tauri可以看作是一个静态网页服务器，所以需要告诉tauri这些静态网页资源的信息。官方推荐使用vite作为前端框架。<br>对于根目录中的<code>package.json</code>，确认前端开发和编译配置如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  "scripts": &#123;</span><br><span class="line">    "dev": "vite",</span><br><span class="line">    "build": "vue-tsc --noEmit &amp;&amp; vite build",</span><br><span class="line">    "preview": "vite preview",</span><br><span class="line">    "tauri": "tauri"</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<p><code>tauri.conf.json</code>中编译字段的内容配置如下，前端静态资源最终目录为<code>../dist</code></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  "build": &#123;</span><br><span class="line">    "beforeDevCommand": "pnpm dev",</span><br><span class="line">    "devUrl": "http://localhost:1420",</span><br><span class="line">    "beforeBuildCommand": "pnpm build",</span><br><span class="line">    "frontendDist": "../dist"</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<p>确保<code>vite.config.ts</code>中的配置服务端口和<code>tauri.conf.json</code>中的端口相同。</p>
+<h3 id="模板代码说明"><a href="#模板代码说明" class="headerlink" title="模板代码说明"></a>模板代码说明</h3><h4 id="前端调用后端"><a href="#前端调用后端" class="headerlink" title="前端调用后端"></a>前端调用后端</h4><p>前端<code>App.vue</code>中，通过输入框调用js的<code>function greet()</code>函数，这个函数通过调用<code>@tauri-apps/api/core</code>的<strong>invoke</strong>方法给后端发送命令，第一个参数是命令的名称，第二个参数是命令的参数，这里就是输入框中的值。后端函数异步调用返回的结果字串给变量<code>greetMsg</code>，最后页面显示这个结果字串。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span> <span class="attr">lang</span>=<span class="string">"ts"</span>&gt;</span></span><br><span class="line">import &#123; ref &#125; from "vue";</span><br><span class="line">import &#123; invoke &#125; from "@tauri-apps/api/core";  </span><br><span class="line"></span><br><span class="line">const greetMsg = ref("");</span><br><span class="line">const name = ref(""); </span><br><span class="line">async function greet() &#123;</span><br><span class="line">  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/</span><br><span class="line">  greetMsg.value = await invoke("greet", &#123; name: name.value &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">... other html code</span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">class</span>=<span class="string">"row"</span> @<span class="attr">submit.prevent</span>=<span class="string">"greet"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"greet-input"</span> <span class="attr">v-model</span>=<span class="string">"name"</span> <span class="attr">placeholder</span>=<span class="string">"Enter a name..."</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span>&gt;</span>Greet<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123; greetMsg &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>后端<code>capabilities\default.json</code>中<strong>permissions</strong>字段设置了<code>&quot;core:default&quot;</code>允许前端使用tauri的基本命令。</p>
+<p><code>lib.rs</code>中定义名称为<code>greet</code>的函数，这个函数使用<code>#[tauri::command]</code>属性宏告诉tauri框架这是一个命令处理函数，它接收输入的参数，并返回一个字串结果。在run函数的<code>.invoke_handler</code>中需要把这个greet函数注册，从而让前端的invoke可以调用。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/</span></span><br><span class="line"><span class="meta">#[tauri::command]</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">greet</span></span>(name: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">    <span class="built_in">format!</span>(<span class="string">"Hello, &#123;&#125;! You've been greeted from Rust!"</span>, name)</span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg_attr(mobile, tauri::mobile_entry_point)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">run</span></span>() &#123;</span><br><span class="line">    tauri::Builder::default()</span><br><span class="line">        .plugin(tauri_plugin_opener::init())</span><br><span class="line">        .invoke_handler(tauri::generate_handler![greet])</span><br><span class="line">        .run(tauri::generate_context!())</span><br><span class="line">        .expect(<span class="string">"error while running tauri application"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="实现一个汇率换算程序"><a href="#实现一个汇率换算程序" class="headerlink" title="实现一个汇率换算程序"></a>实现一个汇率换算程序</h3><h4 id="前端更改"><a href="#前端更改" class="headerlink" title="前端更改"></a>前端更改</h4><p>src目录下新增一个components目录，其中新建<code>Converter.vue</code>组件</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">&lt;script setup lang=<span class="string">"ts"</span>&gt;</span><br><span class="line"><span class="keyword">import</span> &#123; ref, defineProps, watch &#125; <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; invoke &#125; <span class="keyword">from</span> <span class="string">'@tauri-apps/api/core'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> props = defineProps&lt;&#123;</span><br><span class="line">  availableCurrencies: <span class="built_in">string</span>[]</span><br><span class="line">&#125;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> amount = ref(<span class="string">''</span>);</span><br><span class="line"><span class="keyword">const</span> convertedAmount = ref(<span class="string">''</span>);</span><br><span class="line"><span class="keyword">const</span> conversionError = ref(<span class="string">''</span>);</span><br><span class="line"><span class="keyword">const</span> fromCurrency = ref(props.availableCurrencies?.[<span class="number">2</span>] ?? <span class="string">'UAH'</span>);</span><br><span class="line"><span class="keyword">const</span> toCurrency = ref(props.availableCurrencies?.[<span class="number">3</span>] ?? <span class="string">'CNY'</span>);</span><br><span class="line"><span class="keyword">const</span> isConverting = ref(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">swapCurrencies</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (isConverting.value) <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">const</span> tmp = fromCurrency.value;</span><br><span class="line">  fromCurrency.value = toCurrency.value;</span><br><span class="line">  toCurrency.value = tmp;</span><br><span class="line">  convertedAmount.value = <span class="string">''</span>;</span><br><span class="line">  conversionError.value = <span class="string">''</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">convertCurrency</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  conversionError.value = <span class="string">''</span>;</span><br><span class="line">  convertedAmount.value = <span class="string">''</span>;</span><br><span class="line">  isConverting.value = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> amountValue = <span class="built_in">parseFloat</span>(amount.value);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">isNaN</span>(amountValue)) &#123;</span><br><span class="line">      conversionError.value = <span class="string">'Please enter a valid number'</span>;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> invoke(<span class="string">'convert_currency'</span>, &#123;</span><br><span class="line">      amount: amountValue,</span><br><span class="line">      <span class="keyword">from</span>: fromCurrency.value,</span><br><span class="line">      to: toCurrency.value,</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    convertedAmount.value = (result <span class="keyword">as</span> <span class="built_in">number</span>).toFixed(<span class="number">2</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    conversionError.value = <span class="keyword">typeof</span> error === <span class="string">'string'</span> ? error : <span class="built_in">JSON</span>.stringify(error);</span><br><span class="line">    convertedAmount.value = <span class="string">''</span>;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    isConverting.value = <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Clear result/error when currencies change</span></span><br><span class="line">watch(fromCurrency, <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  convertedAmount.value = <span class="string">''</span>;</span><br><span class="line">  conversionError.value = <span class="string">''</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">watch(toCurrency, <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  convertedAmount.value = <span class="string">''</span>;</span><br><span class="line">  conversionError.value = <span class="string">''</span>;</span><br><span class="line">&#125;);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;template&gt;</span></span><br><span class="line"><span class="regexp">  &lt;section&gt;</span></span><br><span class="line"><span class="regexp">    &lt;form class="row compact-row" @submit.prevent="convertCurrency"&gt;</span></span><br><span class="line"><span class="regexp">      &lt;input class="compact-input" v-model="amount" placeholder="Amount" /</span>&gt;</span><br><span class="line"></span><br><span class="line">      &lt;select <span class="keyword">class</span>=<span class="string">"compact-select"</span> v-model=<span class="string">"fromCurrency"</span>&gt;</span><br><span class="line">        &lt;option v-<span class="keyword">for</span>=<span class="string">"c in availableCurrencies"</span> :key=<span class="string">"c"</span> :value=<span class="string">"c"</span>&gt;&#123;&#123; c &#125;&#125;&lt;<span class="regexp">/option&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>select&gt;</span><br><span class="line"></span><br><span class="line">      &lt;button <span class="keyword">type</span>=<span class="string">"button"</span> <span class="keyword">class</span>=<span class="string">"icon-button"</span> <span class="meta">@click</span>=<span class="string">"swapCurrencies"</span> :disabled=<span class="string">"isConverting"</span>&gt;⇄&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">      &lt;select class="compact-select" v-model="toCurrency"&gt;</span></span><br><span class="line"><span class="regexp">        &lt;option v-for="c in availableCurrencies" :key="c" :value="c"&gt;&#123;&#123; c &#125;&#125;&lt;/</span>option&gt;</span><br><span class="line">      &lt;<span class="regexp">/select&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">      &lt;button type="submit" class="compact-btn" :disabled="isConverting"&gt;&#123;&#123; isConverting ? '...' : 'Convert' &#125;&#125;&lt;/</span>button&gt;</span><br><span class="line"></span><br><span class="line">      &lt;span v-<span class="keyword">if</span>=<span class="string">"convertedAmount"</span> <span class="keyword">class</span>=<span class="string">"result-badge"</span>&gt;&#123;&#123; convertedAmount &#125;&#125; &lt;span <span class="keyword">class</span>=<span class="string">"result-currency"</span>&gt;&#123;&#123; toCurrency &#125;&#125;&lt;<span class="regexp">/span&gt;&lt;/</span>span&gt;</span><br><span class="line">    &lt;<span class="regexp">/form&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    &lt;div style="margin-top: 0.5rem"&gt;</span></span><br><span class="line"><span class="regexp">      &lt;div v-if="conversionError" style="color:crimson"&gt;&#123;&#123; conversionError &#125;&#125;&lt;/</span>div&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>section&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;style scoped&gt;</span></span><br><span class="line"><span class="regexp">.row &#123; display: flex; justify-content: center; &#125;</span></span><br><span class="line"><span class="regexp">.compact-row &#123; gap: 0.4rem; align-items: center; &#125;</span></span><br><span class="line"><span class="regexp">.compact-input &#123; width: 6rem; padding: 0.35em 0.5em; font-size: 0.9em; &#125;</span></span><br><span class="line"><span class="regexp">.compact-select &#123; padding: 0.35em 0.5em; font-size: 0.9em; &#125;</span></span><br><span class="line"><span class="regexp">.compact-btn &#123; padding: 0.35em 0.6em; font-size: 0.9em; &#125;</span></span><br><span class="line"><span class="regexp">.icon-button &#123; padding: 0.35em 0.5em; font-size: 0.9em; &#125;</span></span><br><span class="line"><span class="regexp">.link-btn &#123; margin-left: 0.4rem; background: transparent; border: none; color: #646cff; cursor: pointer; text-decoration: underline; &#125;</span></span><br><span class="line"><span class="regexp">.result-badge &#123; display: inline-flex; align-items: center; margin-left: 0.6rem; background: linear-gradient(90deg, #e6f0ff, #dce8ff); color: #0b3a8c; padding: 0.35em 0.6em; border-radius: 999px; font-weight: 600; box-shadow: 0 2px 6px rgba(13, 30, 80, 0.08); &#125;</span></span><br><span class="line"><span class="regexp">.result-currency &#123; margin-left: 0.4rem; opacity: 0.8; font-weight: 500; &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+
+<p>App.vue中引用新增的组件</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;script setup lang=<span class="string">"ts"</span>&gt;</span><br><span class="line"><span class="keyword">import</span> &#123; ref &#125; <span class="keyword">from</span> <span class="string">"vue"</span>;</span><br><span class="line"><span class="keyword">import</span> Converter <span class="keyword">from</span> <span class="string">"./components/Converter.vue"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// available currencies for the Converter component</span></span><br><span class="line"><span class="keyword">const</span> availableCurrencies = ref([<span class="string">"USD"</span>, <span class="string">"EUR"</span>, <span class="string">"UAH"</span>, <span class="string">"CNY"</span>, <span class="string">"GBP"</span>, <span class="string">"JPY"</span>]);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;template&gt;</span></span><br><span class="line"><span class="regexp">  &lt;main class="container"&gt;</span></span><br><span class="line"><span class="regexp">    &lt;section style="margin-top: 2rem"&gt;</span></span><br><span class="line"><span class="regexp">      &lt;h2&gt;Currency Converter&lt;/</span>h2&gt;</span><br><span class="line">      &lt;Converter :available-currencies=<span class="string">"availableCurrencies"</span> /&gt;</span><br><span class="line">    &lt;<span class="regexp">/section&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/m</span>ain&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="后端更改"><a href="#后端更改" class="headerlink" title="后端更改"></a>后端更改</h4><ol>
+<li><p>新建<code>src-tauri\src\commands</code>目录，并在其中新建<code>convert.rs</code>程序用来处理汇率换算</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> serde_json::Value;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tauri::command]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">convert_currency</span></span>(amount: <span class="built_in">f64</span>, from: <span class="built_in">String</span>, to: <span class="built_in">String</span>) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">f64</span>, <span class="built_in">String</span>&gt; &#123;</span><br><span class="line">    <span class="comment">// We'll fetch rates using exchangerate-api with base set to `from`</span></span><br><span class="line">    <span class="keyword">let</span> url = <span class="built_in">format!</span>(<span class="string">"https://api.exchangerate-api.com/v4/latest/&#123;&#125;"</span>, from);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Send GET request</span></span><br><span class="line">    <span class="keyword">let</span> response = reqwest::get(&amp;url)</span><br><span class="line">        .<span class="keyword">await</span></span><br><span class="line">        .map_err(|e| <span class="built_in">format!</span>(<span class="string">"Failed to fetch exchange rates: &#123;&#125;"</span>, e))?;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check if response is successful</span></span><br><span class="line">    <span class="keyword">if</span> !response.status().is_success() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">Err</span>(<span class="built_in">format!</span>(<span class="string">"Failed to fetch exchange rates. Status: &#123;&#125;"</span>, response.status()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Parse JSON response</span></span><br><span class="line">    <span class="keyword">let</span> json: Value = response</span><br><span class="line">        .json()</span><br><span class="line">        .<span class="keyword">await</span></span><br><span class="line">        .map_err(|e| <span class="built_in">format!</span>(<span class="string">"Failed to parse exchange rates: &#123;&#125;"</span>, e))?;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Use helper to extract rate and compute conversion</span></span><br><span class="line">    compute_converted_amount_from_json(amount, &amp;json, &amp;to)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// Helper: given the parsed JSON (from the exchangerate API) extract the target rate</span></span><br><span class="line"><span class="comment">/// and compute converted amount. This is pure and easy to unit test.</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">compute_converted_amount_from_json</span></span>(</span><br><span class="line">    amount: <span class="built_in">f64</span>,</span><br><span class="line">    json: &amp;Value,</span><br><span class="line">    to: &amp;<span class="built_in">str</span>,</span><br><span class="line">) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">f64</span>, <span class="built_in">String</span>&gt; &#123;</span><br><span class="line">    json[<span class="string">"rates"</span>][to]</span><br><span class="line">        .as_f64()</span><br><span class="line">        .map(|rate| amount * rate)</span><br><span class="line">        .ok_or_else(|| <span class="built_in">format!</span>(<span class="string">"Failed to extract &#123;&#125; rate from response"</span>, to))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg(test)]</span></span><br><span class="line"><span class="keyword">mod</span> tests &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line">    <span class="keyword">use</span> serde_json::json;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">compute_conversion_success</span></span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> json = json!(&#123;</span><br><span class="line">            <span class="string">"rates"</span>: &#123;</span><br><span class="line">                <span class="string">"USD"</span>: <span class="number">2.0</span>,</span><br><span class="line">                <span class="string">"CNY"</span>: <span class="number">0.5</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> res = compute_converted_amount_from_json(<span class="number">10.0</span>, &amp;json, <span class="string">"USD"</span>).unwrap();</span><br><span class="line">        <span class="built_in">assert!</span>((res - <span class="number">20.0</span>).abs() &lt; <span class="number">1e-9</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">compute_conversion_missing_rate</span></span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> json = json!(&#123;</span><br><span class="line">            <span class="string">"rates"</span>: &#123;</span><br><span class="line">                <span class="string">"CNY"</span>: <span class="number">0.5</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> err = compute_converted_amount_from_json(<span class="number">10.0</span>, &amp;json, <span class="string">"USD"</span>).unwrap_err();</span><br><span class="line">        <span class="built_in">assert!</span>(err.contains(<span class="string">"Failed to extract USD"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>lib.rs</code>中使用新增的模块<code>src-tauri\src\</code>目录中新增<code>commands.rs</code>文件，声明commands目录下的子模块</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">mod</span> convert;</span><br><span class="line"><span class="comment">// Re-export commonly used items</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">use</span> convert::convert_currency;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>lib.rs</code>中注册新添加的命令</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">mod</span> commands;</span><br><span class="line"><span class="keyword">use</span> commands::&#123;convert_currency, greet&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg_attr(mobile, tauri::mobile_entry_point)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">run</span></span>() &#123;</span><br><span class="line">    tauri::Builder::default()</span><br><span class="line">        .plugin(tauri_plugin_opener::init())</span><br><span class="line">        .invoke_handler(tauri::generate_handler![greet, convert_currency])</span><br><span class="line">        .run(tauri::generate_context!())</span><br><span class="line">        .expect(<span class="string">"error while running tauri application"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>新增文件目录结构如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">├── src</span><br><span class="line">  ├── App.vue</span><br><span class="line">  └── components</span><br><span class="line">    └── Converter.vue</span><br><span class="line">├── src-tauri</span><br><span class="line">  └── src</span><br><span class="line">    ├── commands.rs</span><br><span class="line">    ├── lib.rs</span><br><span class="line">    └── main.rs</span><br><span class="line">    └── commands</span><br><span class="line">      ├── convert.rs</span><br><span class="line">      └── greet.rs</span><br></pre></td></tr></table></figure>
+
+<p>程序运行</p>
+<p><img src="uploads/rust/tauri_currency_convert.png" alt="tauri_currency_convert"></p>
+<h3 id="程序打包"><a href="#程序打包" class="headerlink" title="程序打包"></a>程序打包</h3><p>执行<code>pnpm tauri build</code>会编译release版本程序，并使用工具打包。</p>
+<p>应用程序编译生成可执行程序后，tauri的工具会自动使用wix314和nsis去制作安装包，但是由于这两个工具需要从github下载，会卡住，因此可以提前配置好这两个工具。</p>
+<p>分别使用GitHub代理下载 <a href="https://gh.catmak.name/https://github.com/wixtoolset/wix3/releases/download/wix3141rtm/wix314-binaries.zip" target="_blank" rel="noopener">WixTools314</a>和<a href="https://gh.catmak.name/https://github.com/tauri-apps/binary-releases/releases/download/nsis-3/nsis-3.zip" target="_blank" rel="noopener">NSIS</a>并将压缩包的内容解压到<code>C:\Users\Edison\AppData\Local\tauri\WixTools314</code>和<code>C:\Users\Edison\AppData\Local\tauri\NSIS</code>目录下。<br>下载 <a href="https://github.com/tauri-apps/nsis-tauri-utils/releases/download/nsis_tauri_utils-v0.5.2/nsis_tauri_utils.dll" target="_blank" rel="noopener">nsis_tauri_utils.dll</a>到<code>C:\Users\Edison\AppData\Local\tauri\NSIS\Plugins\x86-unicode\additional</code>目录下<br>这样再执行build就可以直接使用下载好的工具打包，生成的安装包在 <code>\src-tauri\target\release\bundle\</code>目录下，分别是msi和nsis安装包。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/tauri/" rel="tag"># tauri</a>
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/11/02/tech/zsh-on-windows/" rel="next" title="Windows安装zsh终端">
+                <i class="fa fa-chevron-left"></i> Windows安装zsh终端
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">89</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">84</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Tauri开发简单桌面程序"><span class="nav-number">1.</span> <span class="nav-text">使用Tauri开发简单桌面程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本架构"><span class="nav-number">1.1.</span> <span class="nav-text">基本架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#核心组件"><span class="nav-number">1.1.1.</span> <span class="nav-text">核心组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程模型"><span class="nav-number">1.1.2.</span> <span class="nav-text">进程模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#核心进程"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">核心进程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WebView进程"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">WebView进程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#进程间通信"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">进程间通信</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发环境"><span class="nav-number">1.2.</span> <span class="nav-text">开发环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工程结构"><span class="nav-number">1.3.</span> <span class="nav-text">工程结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前端配置"><span class="nav-number">1.3.1.</span> <span class="nav-text">前端配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板代码说明"><span class="nav-number">1.4.</span> <span class="nav-text">模板代码说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前端调用后端"><span class="nav-number">1.4.1.</span> <span class="nav-text">前端调用后端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现一个汇率换算程序"><span class="nav-number">1.5.</span> <span class="nav-text">实现一个汇率换算程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前端更改"><span class="nav-number">1.5.1.</span> <span class="nav-text">前端更改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后端更改"><span class="nav-number">1.5.2.</span> <span class="nav-text">后端更改</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#程序打包"><span class="nav-number">1.6.</span> <span class="nav-text">程序打包</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
