@@ -57,6 +57,20 @@ tags:
 * 外观 -> 主题：可以从社区下载主题，主题的默认目录在仓库的`.obsidian\themes`目录下
 * 外观 -> 代码字体：可以单独为文档中的代码设置单独的字体
 
+#### 自定义样式
+
+1. 外观 -> CSS代码片段，点击文件夹图标，在打开的目录中新建`custom.css`文件
+2. 文件设置需要的样式，如修改行内代码的颜色
+3. 在CSS代码片段下打开`custom`文件的的开关，再点刷新按钮就立即生效了
+
+修改行内代码颜色css如下
+
+```css
+.cm-s-obsidian .cm-inline-code:not(.cm-formatting),
+.markdown-rendered :not(pre)>code {
+    color: rgb(247, 50, 132);
+}
+```
 
 ### Templates
 
