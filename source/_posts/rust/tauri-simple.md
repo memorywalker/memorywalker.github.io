@@ -16,7 +16,7 @@ https://tauri.app/zh-cn/start/
 
 ### 基本架构
 #### 核心组件
-![tauri_architecture](uploads/rust/tauri_architecture.svg)
+![tauri_architecture](/uploads/rust/tauri_architecture.svg)
 
 * **TAO**用于跨平台创建应用程序窗口，使用rust实现，是winit的分支。
 * **WRY**跨平台WebView渲染库，使用rust实现，作为抽象层决定使用哪个WebView以及如何交互
@@ -430,7 +430,7 @@ pub fn run() {
 
 程序运行
 
-![tauri_currency_convert](uploads/rust/tauri_currency_convert.png)
+![tauri_currency_convert](/uploads/rust/tauri_currency_convert.png)
 ### 程序打包
 
 执行`pnpm tauri build`会编译release版本程序，并使用工具打包。
