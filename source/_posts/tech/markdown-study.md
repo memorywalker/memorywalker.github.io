@@ -61,8 +61,12 @@ _列表_
 [Google主页](http://www.google.com)
 
 图片
-女汉子
-![三笠女汉子](http://img4.duitang.com/uploads/item/201306/03/20130603151306_2rRmB.thumb.600_0.jpeg)
+
+![lang_server](../../uploads/tech/language-server.png)
+在Obsidian中由于设置笔记仓库的根目录是Hexo的source目录，所以使用绝对路径`/uploads/tech/language-server.png`是可以链接到本地图片的，而Typora只能使用上面的相对路径。
+![lang_server](/uploads/tech/language-server.png)
+
+
 
 国内网站[简书][1]
 
