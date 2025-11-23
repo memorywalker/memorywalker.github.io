@@ -109,8 +109,16 @@ clone可以创建一个现有项目的完全相同的复制
 
 `git status`查看当前repo的状态，应该在执行每一个git的命令后都查看一下status
 
+#### gitdiff
 
+`git difftool`可以使用比较工具查看当前修改的文件。
 
+配置默认使用Beyond Compare
+
+1. 添加Beyond Compare的可执行程序到系统path环境变量
+2. `git config --global diff.tool bc`
+3.  `git config --global difftool.bc.path "D:\Program Files\Beyond_Compare4\BCompare\BCompare.exe"`
+4. `git difftool`开始逐个文件处理差异，会自动弹出Beyond Compare的比较界面
 #### log
 
 `git log`查看所有commit历史记录
