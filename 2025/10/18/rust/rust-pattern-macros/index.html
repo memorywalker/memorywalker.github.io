@@ -94,18 +94,18 @@
 
 
 
-  <meta name="description" content="RUST Macros宏宏在程序代码编译为机器码之前会被展开为rust代码，所以它与函数调用不同，宏必须在使用前定义。rust中的宏和c++中的宏类似，但是rust的宏有语法检查，不像C++的宏只是纯粹的文本展开。 1234567891011// 一个断言宏assert_eq!(gcd(6, 10), 2);// 上面断言宏展开match (&amp;amp;gcd(6, 10), &amp;amp;2) &amp;#1">
-<meta name="keywords" content="rust">
+  <meta name="description" content="RUST Macros宏宏是一种为写其他代码而写代码的方式。 宏在程序代码编译为机器码之前会被展开为rust代码，所以它与函数调用不同，宏必须在使用前定义。rust中的宏和c++中的宏类似，但是rust的宏有语法检查，不像C++的宏只是纯粹的文本展开。 1234567891011// 一个断言宏assert_eq!(gcd(6, 10), 2);// 上面断言宏展开match (&amp;amp;gcd(">
+<meta name="keywords" content="rust,macro">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Programming Rust - Macros">
 <meta property="og:url" content="http://memorywalker.github.io/2025/10/18/rust/rust-pattern-macros/index.html">
 <meta property="og:site_name" content="How Time Flies">
-<meta property="og:description" content="RUST Macros宏宏在程序代码编译为机器码之前会被展开为rust代码，所以它与函数调用不同，宏必须在使用前定义。rust中的宏和c++中的宏类似，但是rust的宏有语法检查，不像C++的宏只是纯粹的文本展开。 1234567891011// 一个断言宏assert_eq!(gcd(6, 10), 2);// 上面断言宏展开match (&amp;amp;gcd(6, 10), &amp;amp;2) &amp;#1">
+<meta property="og:description" content="RUST Macros宏宏是一种为写其他代码而写代码的方式。 宏在程序代码编译为机器码之前会被展开为rust代码，所以它与函数调用不同，宏必须在使用前定义。rust中的宏和c++中的宏类似，但是rust的宏有语法检查，不像C++的宏只是纯粹的文本展开。 1234567891011// 一个断言宏assert_eq!(gcd(6, 10), 2);// 上面断言宏展开match (&amp;amp;gcd(">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2025-11-23T04:21:00.272Z">
+<meta property="og:updated_time" content="2025-11-23T16:25:16.177Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Programming Rust - Macros">
-<meta name="twitter:description" content="RUST Macros宏宏在程序代码编译为机器码之前会被展开为rust代码，所以它与函数调用不同，宏必须在使用前定义。rust中的宏和c++中的宏类似，但是rust的宏有语法检查，不像C++的宏只是纯粹的文本展开。 1234567891011// 一个断言宏assert_eq!(gcd(6, 10), 2);// 上面断言宏展开match (&amp;amp;gcd(6, 10), &amp;amp;2) &amp;#1">
+<meta name="twitter:description" content="RUST Macros宏宏是一种为写其他代码而写代码的方式。 宏在程序代码编译为机器码之前会被展开为rust代码，所以它与函数调用不同，宏必须在使用前定义。rust中的宏和c++中的宏类似，但是rust的宏有语法检查，不像C++的宏只是纯粹的文本展开。 1234567891011// 一个断言宏assert_eq!(gcd(6, 10), 2);// 上面断言宏展开match (&amp;amp;gcd(">
 
 
 
@@ -411,7 +411,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2025-11-23 04:21:00" itemprop="dateModified" datetime="2025-11-23T04:21:00+00:00">2025-11-23</time>
+                <time title="修改时间：2025-11-23 16:25:16" itemprop="dateModified" datetime="2025-11-23T16:25:16+00:00">2025-11-23</time>
               
             
           </span>
@@ -463,19 +463,113 @@
       
 
       
-        <h2 id="RUST-Macros"><a href="#RUST-Macros" class="headerlink" title="RUST Macros"></a>RUST Macros</h2><h3 id="宏"><a href="#宏" class="headerlink" title="宏"></a>宏</h3><p>宏在程序代码编译为机器码之前会被展开为rust代码，所以它与函数调用不同，宏必须在使用前定义。rust中的宏和c++中的宏类似，但是rust的宏有语法检查，不像C++的宏只是纯粹的文本展开。</p>
+        <h1 id="RUST-Macros"><a href="#RUST-Macros" class="headerlink" title="RUST Macros"></a>RUST Macros</h1><h2 id="宏"><a href="#宏" class="headerlink" title="宏"></a>宏</h2><p>宏是一种为写其他代码而写代码的方式。</p>
+<p>宏在程序代码编译为机器码之前会被展开为rust代码，所以它与函数调用不同，宏必须在使用前定义。rust中的宏和c++中的宏类似，但是rust的宏有语法检查，不像C++的宏只是纯粹的文本展开。</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一个断言宏</span></span><br><span class="line"><span class="built_in">assert_eq!</span>(gcd(<span class="number">6</span>, <span class="number">10</span>), <span class="number">2</span>);</span><br><span class="line"><span class="comment">// 上面断言宏展开</span></span><br><span class="line"><span class="keyword">match</span> (&amp;gcd(<span class="number">6</span>, <span class="number">10</span>), &amp;<span class="number">2</span>) &#123;</span><br><span class="line">    (left_val, right_val) =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> !(*left_val == *right_val) &#123;</span><br><span class="line">            <span class="built_in">panic!</span>(<span class="string">"assertion failed: `(left == right)`, \</span></span><br><span class="line"><span class="string">                (left: `&#123;:?&#125;`, right: `&#123;:?&#125;`)"</span>, left_val, right_val);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>宏在使用时使用exclamation point<strong>感叹号</strong>作为标记</p>
-<h3 id="声明宏"><a href="#声明宏" class="headerlink" title="声明宏"></a>声明宏</h3><p>对代码模板进行简单替换。声明宏可以使用<code>macro_rules!</code>来声明，定义的格式一般为</p>
+<h3 id="声明宏"><a href="#声明宏" class="headerlink" title="声明宏"></a>声明宏</h3><p>详细教程<a href="https://veykril.github.io/tlborm/" target="_blank" rel="noopener">“The Little Book of Rust Macros”</a></p>
+<p>对传给宏的源代码字面值与模式匹配，如果匹配成功，模式的代码会替换为传递给宏的代码，最终替换到模板代码中。声明宏可以使用<code>macro_rules!</code>来定义，定义的格式一般为</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">( pattern1 ) =&gt; ( template1 );</span><br><span class="line">( pattern2 ) =&gt; ( template2 );</span><br></pre></td></tr></table></figure>
 
 <p>即把一个模式替换为一个模板中的内容，其中的<code>()</code>也可以用<code>[]</code>或<code>{}</code>，对rust而言这三个符号没有区别。因此使用一个宏的时候，这三种符号都可以使用，只是<code>{}</code>不需要额外的<code>;</code>作为语句结束。通常情况下,<code>assert_eq!</code>使用<code>()</code>，<code>vec!</code>使用<code>[]</code>，<code>macro_rules!</code>使用<code>{}</code></p>
-<p><code>assert_eq</code>的定义如下，定义宏时，名字后面不需要<code>!</code></p>
+<p>宏定义的<a href="https://doc.rust-lang.org/reference/macros-by-example.html" target="_blank" rel="noopener">模式语法</a>和普通的rust模式匹配的语法不同，宏定义的模式匹配的是代码结构，普通的模式匹配的是值。</p>
+<h4 id="宏展开"><a href="#宏展开" class="headerlink" title="宏展开"></a>宏展开</h4><p><code>assert_eq</code>的定义如下，定义宏时，名字后面不需要<code>!</code>，这里的<code>($left:expr, $right:expr $(,)?)</code>部分就是模式，其中expr标识匹配一个表达式。在模板中使用<code>$left</code>，不能带类型<code>expr</code>。<br><strong>注意</strong>：这里把模式变量<code>$left</code>转换为本地变量<code>left_val</code>在模板中使用，因为如果直接使用原始的表达式，rust会简单的把这个表达式替换在模板中，如果这个表达式是<code>letter.pop()</code>这种每次执行都会产生变化的，在模板中调用多次，值已经不是预期的调用一次的值了，所以使用match把表达式只计算一次，并把值保存重复使用。至于为什么用match，而不用let，没有特别的原因，也可以用let。另外这里使用了<code>&amp;$left</code>引用，是为了避免把宏参数的所有权移入的宏内部，导致外部无法再使用参数，例如参数不是这里的整数，而是String类型，就会把变量move到宏内部，宏后面的代码如果想继续使用这变量就会无法访问了。</p>
+<p><code>#[macro_export]</code>注解说明导入这个宏所在的crate，就可以使用这个宏，否则不能引用这个宏</p>
+<p>宏定义中，使用<code>$</code>作为变量前缀，说明这个变量是一个宏变量</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[macro_export]</span></span><br><span class="line"><span class="meta">#[stable(feature = <span class="meta-string">"rust1"</span>, since = <span class="meta-string">"1.0.0"</span>)]</span></span><br><span class="line"><span class="meta">#[rustc_diagnostic_item = <span class="meta-string">"assert_eq_macro"</span>]</span></span><br><span class="line"><span class="meta">#[allow_internal_unstable(panic_internals)]</span></span><br><span class="line"><span class="built_in">macro_rules!</span> assert_eq &#123;</span><br><span class="line">    ($left:expr, $right:expr $(,)?) =&gt; &#123;</span><br><span class="line">        <span class="keyword">match</span> (&amp;$left, &amp;$right) &#123;</span><br><span class="line">            (left_val, right_val) =&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> !(*left_val == *right_val) &#123;</span><br><span class="line">                    <span class="keyword">let</span> kind = $crate::panicking::AssertKind::<span class="built_in">Eq</span>;</span><br><span class="line">                    <span class="comment">// The reborrows below are intentional. Without them, the stack slot for the</span></span><br><span class="line">                    <span class="comment">// borrow is initialized even before the values are compared, leading to a</span></span><br><span class="line">                    <span class="comment">// noticeable slow down.</span></span><br><span class="line">                    $crate::panicking::assert_failed(kind, &amp;*left_val, &amp;*right_val, $crate::option::<span class="built_in">Option</span>::<span class="literal">None</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    ($left:expr, $right:expr, $($arg:tt)+) =&gt; &#123;</span><br><span class="line">        <span class="keyword">match</span> (&amp;$left, &amp;$right) &#123;</span><br><span class="line">            (left_val, right_val) =&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> !(*left_val == *right_val) &#123;</span><br><span class="line">                    <span class="keyword">let</span> kind = $crate::panicking::AssertKind::<span class="built_in">Eq</span>;</span><br><span class="line">                    <span class="comment">// The reborrows below are intentional. Without them, the stack slot for the</span></span><br><span class="line">                    <span class="comment">// borrow is initialized even before the values are compared, leading to a</span></span><br><span class="line">                    <span class="comment">// noticeable slow down.</span></span><br><span class="line">                    $crate::panicking::assert_failed(kind, &amp;*left_val, &amp;*right_val, $crate::option::<span class="built_in">Option</span>::<span class="literal">Some</span>($crate::<span class="built_in">format_args!</span>($($arg)+)));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="过程宏"><a href="#过程宏" class="headerlink" title="过程宏"></a>过程宏</h3><h4 id="函数宏"><a href="#函数宏" class="headerlink" title="函数宏"></a>函数宏</h4><h4 id="派生宏"><a href="#派生宏" class="headerlink" title="派生宏"></a>派生宏</h4><p>例如<code>#[derive(Debug)]</code>，会额外添加功能的代码，为下面的结构体增加实现代码。</p>
-<h4 id="属性宏"><a href="#属性宏" class="headerlink" title="属性宏"></a>属性宏</h4>
+<p>对于C++，<code>#define ADD_ONE(n) n + 1</code> 这样的宏，如果这样使用<code>ADD_ONE(1) * 10</code>或<code>ADD_ONE(1 &lt;&lt; 4)</code>都会产生非预期的结果，但是rust的宏会在把一个表达式复制的时候自动加上括号。</p>
+<h4 id="宏重复"><a href="#宏重复" class="headerlink" title="宏重复"></a>宏重复</h4><p>vec!的实现框架如下，这个宏定义了三个规则，编译器拿到代码<code>vec![1, 2, 3]</code>后会按顺序逐个规则进行匹配，找到第一个有效匹配。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">macro_rules!</span> vec &#123;</span><br><span class="line">    ($elem:expr ; $n:expr) =&gt; &#123;<span class="comment">// vec![0, 100]</span></span><br><span class="line">        ::std::vec::from_elem($elem, $n)</span><br><span class="line">    &#125;;</span><br><span class="line">    ( $( $x:expr ),* ) =&gt; &#123; <span class="comment">// vec![1, 2, 3]</span></span><br><span class="line">        &lt;[_]&gt;::into_vec(<span class="built_in">Box</span>::new([ $( $x ),* ]))</span><br><span class="line">    &#125;;</span><br><span class="line">    ( $( $x:expr ),+ ,) =&gt; &#123;<span class="comment">// 匹配列表末尾是逗号的情况</span></span><br><span class="line">        <span class="built_in">vec!</span>[ $( $x ),* ]</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 还可以使用push执行多次的方法实现，对于第二个规则</span></span><br><span class="line">( $( $x:expr ),* ) =&gt; &#123;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> v = <span class="built_in">Vec</span>::new();</span><br><span class="line">        $( v.push($x); )* <span class="comment">// 对于表达式列表$x的每一个表达式都执行一次v.push()，最后的*表示重复多次</span></span><br><span class="line">        v</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其中第二个规则的模式<code>$( PATTERN ),</code>表示使用<code>,</code>分隔，重复<code>PATTERN</code>多次，后面的<code>*</code>表示重复0或多次，和正则表达式一样，可以使用<code>+</code>表示重复1或多次，<code>?</code>表示0或1次。<code>$x:expr</code>在这里不是一个表达式，而是一个表达式列表。<br><code>&lt;[_]&gt;</code>表示某种类型的切片，这个类型由rust自己推导出来。<br>注意：<code>fn()</code>, <code>&amp;str</code>, or <code>[_]</code>这种特殊字符的表达式需要使用<code>&lt;&gt;</code>括起来</p>
+<h4 id="内建宏"><a href="#内建宏" class="headerlink" title="内建宏"></a>内建宏</h4><p>一部分宏在rustc编译器内部实现，而不是通过<code>macro_rules!</code>来定义。</p>
+<ul>
+<li><p><code>file!()</code> 当前文件名的字串值</p>
+</li>
+<li><p><code>line!()</code>当前行号</p>
+</li>
+<li><p><code>stringify!(...tokens...)</code>把rust代码元素以字串值显示出来，如果参数是宏，这个宏不会被展开。<code>stringify!(line!())</code>只会输出“line!()”。</p>
+</li>
+<li><p><code>concat!(str0, str1, ...)</code>把列表中的字串拼接为一个字串</p>
+</li>
+<li><p><code>cfg!(...)</code>获取当前编译配置是否为括号中值的boolean值。<code>cfg!(debug_assertions);</code>debug模式下返回值为true。</p>
+</li>
+<li><p><code>env!(&quot;VAR_NAME&quot;)</code>获取指定的环境变量的字串值，例如<code>env!(&quot;CARGO_PKG_VERSION&quot;);</code>得到字串<code>0.1.0</code></p>
+</li>
+<li><p><code>option_env!(&quot;VAR_NAME&quot;)</code>同上，只是返回一个option，如果环境变量不存在返回None</p>
+</li>
+<li><p><code>include!(&quot;file.rs&quot;)</code>把另一个rust代码文件扩展进来</p>
+</li>
+<li><p><code>include_str!(&quot;file.txt&quot;)</code>把一个文本文件读入到一个<code>&amp;&#39;static str</code>中，`const COMPOSITOR_SHADER: &amp;str = include_str!(“../resources/compositor.glsl”);</p>
+</li>
+<li><p><code>include_bytes!(&quot;file.dat&quot;)</code>把一个二进制文件读入到<code>&amp;&#39;static [u8]</code>中</p>
+</li>
+<li><p><code>matches!(value, pattern)</code> 相当于以下代码，当一个value匹配了pattern，返回true</p>
+  <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">match</span> value &#123;</span><br><span class="line">    pattern =&gt; <span class="literal">true</span>,</span><br><span class="line">    _ =&gt; <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>unimplemented!()</code>如果代码执行到这里会<code>panic</code>，<code>todo!()</code>表示这段代码还需要实现<code>not yet implemented:</code></p>
+</li>
+</ul>
+<h4 id="宏调试"><a href="#宏调试" class="headerlink" title="宏调试"></a>宏调试</h4><p>使用<code>cargo-expand</code>查看展开后的代码，安装<code>cargo install cargo-expand</code> 后，项目目录下执行<code>cargo expand</code>就可以查看展开后的代码。</p>
+<p>例如函数</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">test_macros</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> data = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"data is &#123;:?&#125;"</span>, data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的输出为</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">test_macros</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> data = &lt;[_]&gt;::into_vec(::alloc::boxed::box_new([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]));</span><br><span class="line">    &#123;</span><br><span class="line">        ::std::io::_print(<span class="built_in">format_args!</span>(<span class="string">"data is &#123;0:?&#125;\n"</span>, data));</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>trace_macros!(true)</code>让rustc输出宏的名称和参数，只有这个宏有效区间的宏展开会输出</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![feature(trace_macros)]</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">test_macros</span></span>() &#123;</span><br><span class="line">    trace_macros!(<span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">let</span> data = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">    trace_macros!(<span class="literal">false</span>); <span class="comment">// 这个代码之后宏展开不会输出</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"data is &#123;:?&#125;"</span>, data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">note: trace_macro</span><br><span class="line">  --&gt; src\bin\lang.rs:<span class="number">90</span>:<span class="number">16</span></span><br><span class="line">   |</span><br><span class="line"><span class="number">90</span> |     <span class="keyword">let</span> data = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">   |                ^^^^^^^^^^^^^</span><br><span class="line">   |</span><br><span class="line">   = note: expanding `<span class="built_in">vec!</span> &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;`</span><br><span class="line">   = note: to `&lt; [_] &gt; :: into_vec($<span class="keyword">crate</span> :: boxed :: box_new([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]))`</span><br></pre></td></tr></table></figure>
+
+<h3 id="过程宏-Procedural-macros"><a href="#过程宏-Procedural-macros" class="headerlink" title="过程宏(Procedural macros)"></a>过程宏(Procedural macros)</h3><p>过程宏像函数一样接收rust代码作为输入，在这些代码上进行操作，然后输出另一些代码</p>
+<p>过程宏需要定义在特殊类型的crate中</p>
+<p>定义过程宏的函数接收一个<code>TokenStream</code> 作为输入并生成 <code>TokenStream</code> 作为输出。函数上还有一个属性指明了创建的过程宏的类型。在同一 crate 中可以有多种过程宏。</p>
+<p><code>TokenStream</code> 是<code>proc_macro</code> crate 里定义的代表一系列 token 的类型。宏所处理的源代码组成了输入 <code>TokenStream</code>，宏生成的代码是输出 <code>TokenStream</code>。</p>
+<h4 id="派生宏"><a href="#派生宏" class="headerlink" title="派生宏"></a>派生宏</h4><p>派生宏可以为注解的代码额外添加功能的代码，例如为一个struct生成trait的方法实现。例如<code>#[derive(Debug)]</code>。</p>
+<h5 id="创建过程宏"><a href="#创建过程宏" class="headerlink" title="创建过程宏"></a>创建过程宏</h5><p>假设有一个库名称为breakingbad，它有一个trait叫SayMyName，现在要为这个trait定义过程宏<code>breakingbad_derive</code>，方便所有实现这个trait的结构都可以SayMyName。</p>
+<ol>
+<li><p>使用<code>cargo new breakingbad --lib</code>创建一个库crate</p>
+</li>
+<li><p>在lib.rs中定义这个库的trait和它的方法</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">trait</span> <span class="title">SayMyName</span></span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">say_macro</span></span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>按命名习惯创建库的过程宏的crate名字为<code>libname_derive</code>，这里在库的目录下直接<code>cargo new breakingbad_derive --lib</code>创建派生过程宏的工程</p>
+</li>
+<li><p>修改过程宏工程toml文件，配置lib为过程宏，并添加syn和quote的依赖。<code>syn</code> crate 将Rust 代码字符串解析成为一个可以操作的数据结构。<code>quote</code> crate 则将 <code>syn</code> 解析的数据结构转换回 Rust 代码。</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[lib]</span></span><br><span class="line"><span class="attr">proc-macro</span> = <span class="literal">true</span>  </span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">syn</span> = <span class="string">"2.0"</span></span><br><span class="line"><span class="attr">quote</span> = <span class="string">"1.0"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在过程宏的lib.rs文件中定义一个过程宏，一般都分两步实现，先用syn的parse解析代码字串为结构，再根据结构的信息生成代码字串。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> proc_macro::TokenStream;</span><br><span class="line"><span class="keyword">use</span> quote::quote;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[proc_macro_derive(SayMyName)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">breakingbad_derive</span></span>(input: TokenStream) -&gt; TokenStream &#123;</span><br><span class="line">    <span class="comment">// 使用syn将输入的Rust 代码TokenStream构建成我们可以操作的语法树 DeriveInput类型</span></span><br><span class="line">    <span class="keyword">let</span> ast = syn::parse(input).unwrap();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 生成 trait 的实现。</span></span><br><span class="line">    impl_say_macro(&amp;ast)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">impl_say_macro</span></span>(ast: &amp;syn::DeriveInput) -&gt; TokenStream &#123;</span><br><span class="line">    <span class="keyword">let</span> name = &amp;ast.ident; <span class="comment">// identity 是类型名字</span></span><br><span class="line">    <span class="keyword">let</span> generated = quote! &#123;<span class="comment">// quote! 宏返回需要的代码</span></span><br><span class="line">        <span class="keyword">impl</span> SayMyName <span class="keyword">for</span> #name &#123;</span><br><span class="line">            <span class="function"><span class="keyword">fn</span> <span class="title">say</span></span>() &#123;</span><br><span class="line">                <span class="comment">// stringify!(#name) 把输入的表达式转换为硬编码字符串，而不是计算表达式的值，节省一次内存分配</span></span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">"My name is &#123;&#125;!"</span>, <span class="built_in">stringify!</span>(#name));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    generated.into() <span class="comment">// 转换为TokenStream</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>一个DeriveInput结构体内容类似如下</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DeriveInput &#123; </span><br><span class="line">    <span class="comment">// --snip-- </span></span><br><span class="line">    ident: Ident &#123; </span><br><span class="line">        ident: <span class="string">"Heisenberg"</span>, </span><br><span class="line">        span: #<span class="number">0</span> bytes(<span class="number">95</span>..<span class="number">103</span>) </span><br><span class="line">    &#125;, </span><br><span class="line">    data: Struct( DataStruct &#123; </span><br><span class="line">        struct_token: Struct, fields: Unit, semi_token: <span class="literal">Some</span>( Semi ) </span><br><span class="line">    &#125; ) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><p>在项目toml文件中<code>[dependencies]</code>段下添加过程宏crate的依赖<code>breakingbad_derive = { path = &quot;breakingbad_derive&quot; }</code>，项目目录新建example测试程序 <code>\breakingbad\examples\derive_example.rs</code></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> breakingbad::SayMyName;</span><br><span class="line"><span class="keyword">use</span> breakingbad_derive::SayMyName;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(SayMyName)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Heisenberg</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="comment">// The generated impl will print the type name.</span></span><br><span class="line">    Heisenberg::say();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行<code>cargo run --example derive_example -q</code>来运行example程序，输出<code>My name is Heisenberg!</code></p>
+</li>
+</ol>
+<h4 id="类属性宏-Attribute-Like"><a href="#类属性宏-Attribute-Like" class="headerlink" title="类属性宏(Attribute-Like)"></a>类属性宏(Attribute-Like)</h4><p>派生宏只能为derive属性生成代码，只能用于结构体和枚举；属性宏可以创建新的属性，它可以应用于其他类型，如函数上。</p>
+<p>例如web框架一般提供的<code>#[route(GET, &quot;/&quot;)]</code>就是框架库定义的属性名称为route的过程宏。这个过程宏的定义一般如下：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[proc_macro_attribute]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">route</span></span>(attr: TokenStream, item: TokenStream) -&gt; TokenStream &#123;</span><br></pre></td></tr></table></figure>
+
+<p>第一个参数attr是属性的内容，即例子中的<code>GET, &quot;/&quot;</code>，第二个参数为注解的函数。属性宏的定义方法和派生宏一样。</p>
+<h4 id="类函数宏-Function-like"><a href="#类函数宏-Function-like" class="headerlink" title="类函数宏(Function-like)"></a>类函数宏(Function-like)</h4><p>函数宏的定义像函数的调用，它可以接收任意数量的参数。和另外两种过程宏一样，它也接收一个<code>TokenStream</code> 参数，它定义的函数处理这个输入参数，并输出<code>TokenStream</code>。</p>
+<p>例如<code>sql!</code>宏用来检查输入的sql语句是否合法，而不是简单的像<code>macro_rules!</code>那样替换代码。它的定义如下</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[proc_macro]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">sql</span></span>(input: TokenStream) -&gt; TokenStream &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用时和函数调用类似</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> sql = sql!(SELECT * FROM posts WHERE id=<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
 
@@ -502,6 +596,8 @@
         <div class="post-tags">
           
             <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/macro/" rel="tag"># macro</a>
           
         </div>
       
@@ -835,7 +931,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">84</span>
+                      
+                    
+                    <span class="site-state-item-count">85</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -899,7 +997,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RUST-Macros"><span class="nav-number">1.</span> <span class="nav-text">RUST Macros</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#宏"><span class="nav-number">1.1.</span> <span class="nav-text">宏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#声明宏"><span class="nav-number">1.2.</span> <span class="nav-text">声明宏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过程宏"><span class="nav-number">1.3.</span> <span class="nav-text">过程宏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#函数宏"><span class="nav-number">1.3.1.</span> <span class="nav-text">函数宏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#派生宏"><span class="nav-number">1.3.2.</span> <span class="nav-text">派生宏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#属性宏"><span class="nav-number">1.3.3.</span> <span class="nav-text">属性宏</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RUST-Macros"><span class="nav-number">1.</span> <span class="nav-text">RUST Macros</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#宏"><span class="nav-number">1.1.</span> <span class="nav-text">宏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#声明宏"><span class="nav-number">1.1.1.</span> <span class="nav-text">声明宏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#宏展开"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">宏展开</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#宏重复"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">宏重复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内建宏"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">内建宏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#宏调试"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">宏调试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过程宏-Procedural-macros"><span class="nav-number">1.1.2.</span> <span class="nav-text">过程宏(Procedural macros)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#派生宏"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">派生宏</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#创建过程宏"><span class="nav-number">1.1.2.1.1.</span> <span class="nav-text">创建过程宏</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类属性宏-Attribute-Like"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">类属性宏(Attribute-Like)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类函数宏-Function-like"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">类函数宏(Function-like)</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
