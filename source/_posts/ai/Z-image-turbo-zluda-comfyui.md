@@ -35,7 +35,20 @@ tags:
     3. [ae.safetensors](https://hf-mirror.com/Comfy-Org/z_image_turbo/blob/main/split_files/vae/ae.safetensors)vae模型，放在`\models\vae\ae.safetensors`，文件大小为320M左右
 3. 在运行ComfyUI的浏览器窗口中，打开坛友配置好的工作流json文件，修改提示词后运行。
 
-由于官方默认的文本编码模型太大，最后找了一个fp8的简化qwen模型，这样占用内存能小点。[qwen3_4b_fp8_scaled.safetensors](https://hf-mirror.com/jiangchengchengNLP/qwen3-4b-fp8-scaled/blob/main/qwen3_4b_fp8_scaled.safetensors)，注意记得修改工作流中使用的模型是fp8的名字。
+#### 使用量化模型
+
+由于官方默认的文本编码模型太大，可以使用fp8的量化模型减少内存占用，最后找了一个fp8的简化qwen模型[qwen3_4b_fp8_scaled.safetensors](https://hf-mirror.com/jiangchengchengNLP/qwen3-4b-fp8-scaled/blob/main/qwen3_4b_fp8_scaled.safetensors)，文件大小为4.1G，注意记得修改工作流中使用的模型是fp8的名字。
+##### ComfyUI使用GGUF模型
+
+网络上有很多量化模型是GGUF格式，而ComfyUI默认的格式是safetensors，因此需要`ComfyUI-GGUF`插件来加载GGUF的模型。
+
+1. ComfyUI的`custom_nodes`目录下，`git clone https://github.com/city96/ComfyUI-GGUF`下载插件到自定义节点目录中。
+2. 激活当前ComfyUI的python虚拟环境，并在`ComfyUI-GGUF`目录中执行`pip install --upgrade gguf`
+3. 在`https://hf-mirror.com/unsloth/Qwen3-4B-GGUF/tree/main`下载自己想用的模型，例如[Qwen3-4B-Q8_0.gguf](https://hf-mirror.com/unsloth/Qwen3-4B-GGUF/blob/main/Qwen3-4B-Q8_0.gguf)大小为3.98G，如果内存小，还可以下载更小的模型。
+4. 把下载的模型文件放在`\models\clip\`或`\models\text_encoders\`目录中
+5. 重启comfyui，在启动过程中确认`ComfyUI-GGUF`插件正常加载
+6. 工作流中新建CLIPLoader(GGUF)节点来加载`Qwen3-4B-Q8_0.gguf`模型，如果这个节点的模型列表中没有刚下载的模型，需要把comfyui重启
+
 
 工作流文件`workflow_txt2img.json`
 ```json
@@ -194,6 +207,7 @@ tags:
     替换了fp8的千问4B文本模型后，占用的内存大多数时候在11.5G左右，比原来还快了。
 2. ComfyUI需要升级到最新版本
     `!!! Exception during processing !!! Error(s) in loading state_dict for Llama2: size mismatch for model.embed_tokens.weight` 出现这个错误需要把ComfyUI升级到最新版本来支持新模型。zluda-comfyui需要全局代理打开，运行comfyui.bat时会自动检查升级。
+
 
 ### 提示词
 
