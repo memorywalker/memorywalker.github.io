@@ -28,6 +28,15 @@ tags:
 
 https://ghproxy.com/https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.2/SDL2_image-devel-2.8.2-VC.zip
 
+##### git clone加速
+
+代理前缀：
+* https://gh.felicity.ac.cn/
+
+命令：
+
+git clone https://gh.felicity.ac.cn/https://github.com/google/comprehensive-rust
+
 ### 远程仓库
 
 远端仓库是存在远端服务器或PC上的git仓库，可以使用URL或文件系统的路径来访问一个远程仓库
