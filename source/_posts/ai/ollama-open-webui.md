@@ -18,6 +18,15 @@ tags:
 
 ### Ollama运行AI模型
 
+#### Ollama安装配置
+
+2026-03-17 新版本Ollama与以前安装有差异
+
+1. 在命令行执行 `OllamaSetup.exe /DIR="D:\Program\Ollama"`，后面的DIR参数用来指定Ollama的安装位置
+2. 可以直接按窗口程序中设置模型的位置
+
+#### AMD显卡配置
+
 以我的电脑AMD 6650 XT 8G显卡为例：
 
 1. 下载[ollama-windows-amd64.7z](https://github.com/likelovewant/ollama-for-amd/releases/download/v0.5.4/ollama-windows-amd64.7z)  ，并解压到`D:\Program Files\ollama-windows-amd64`
