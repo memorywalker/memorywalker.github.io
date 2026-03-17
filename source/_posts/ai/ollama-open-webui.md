@@ -1,12 +1,12 @@
 ---
-title: 本地运行AI模型的最简单方法
+title: 本地运行AI模型的最简单方法(ollama/lm-studio)
 date: 2025-02-08 13:07:49
 categories:
-- AI
+  - AI
 tags:
-- AI
-- ollama
-- WebUI
+  - AI
+  - ollama
+  - WebUI
 ---
 
 ## 本地运行AI模型的最简单方法 
@@ -16,6 +16,20 @@ tags:
 1. 运行AI模型的后端服务
 2. 处理用户输入交互的前端界面
 
+### LM-Studio
+
+**2026-03-17 update:** 
+
+使用LM-Studio在AMD显卡上运行模型更简单，比Ollama使用方便，对模型更好设置参数，模型更新的也快，需要在程序里面搜索模型，能看到更多的模型，官网看到的模型数量很少，软件里面是直接从hugging-face获取的模型列表，并且官方支持HuggingFace的代理。
+
+* 官方模型下载代理，需要在设置菜单中的General中打开`Use LM Studio's Hugging Face Proxy`，不过下载速度没有ollama的快，可以自己使用工具下载gguf的模型，在软件中加载自己下载好的模型文件。
+* 在软件左侧工具中的模型搜索中就可以下载想要的模型，并且软件会提示这个模型在本机能否正常运行
+* 软件提供自己的API和OpenAI兼容的API接口服务，可以使用LM-studio在后台加载运行模型，在CherryStudio中使用API来访问模型
+* 在软件顶部的加载模型列表中，可以手动选择模型加载的参数，例如模型的上下文大小，GPU负载的数量，软件会预估GPU的使用，如果配置的参数超过本机性能，系统会立即提示
+* 在软件右侧可以设置这次聊天的模型参数设置例如温度，输出格式，默认的系统提示词等
+* 自己使用过程中，觉得和Ollama的速度差不多，只有第一次加载的时候需要时间多一点
+
+![](uploads/ai/lm-studio.png)
 ### Ollama运行AI模型
 
 #### Ollama安装配置
@@ -26,6 +40,39 @@ tags:
 2. 可以直接按窗口程序中设置模型的位置
 
 #### AMD显卡配置
+
+**2026-03-17 update:** 
+
+https://github.com/likelovewant/ollama-for-amd/releases 
+最新支持AMD的6650XT的版本是0.16.1
+HIP支持6650XT的版本是6.4.2，这也是6.x的最后一个版本了，7.x现在还不知道是否支持6650XT
+
+[ollama-windows-amd64.7z](https://github.com/likelovewant/ollama-for-amd/releases/download/v0.16.1/ollama-windows-amd64.7z)
+[HIP 6.4.2](https://download.amd.com/developer/eula/rocm-hub/AMD-Software-PRO-Edition-25.Q3-Win10-Win11-For-HIP.exe)
+[rocm.gfx1032.for.hip.6.4.2.7z](https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.4.2/rocm.gfx1032.for.hip.6.4.2.7z)
+
+参考https://github.com/patientx/ComfyUI-Zluda 来升级为6.4.2版本
+
+1. **uninstall 6.2.4 and then delete the ROCm directory from your Program Files folder** otherwise there may be problems even after uninstalling.
+2. Install HIP SDK 6.4.2 from [AMD ROCm Hub](https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html)
+3. Add entries for `HIP_PATH` and `HIP_PATH_62` to your System Variables (not user variables), both should have this value: `C:\Program Files\AMD\ROCm\6.2\`
+4. Check the PATH system variable and ensure that `C:\Program Files\AMD\ROCm\6.4\bin` is in the list.
+5. Download this addon package from [Google Drive](https://drive.google.com/file/d/1Gvg3hxNEj2Vsd2nQgwadrUEY6dYXy0H9/view?usp=sharing) (or [alternative source](https://www.mediafire.com/file/ooawc9s34sazerr/HIP-SDK-extension\(zluda395\).zip/file))
+6. Extract the addon package into `C:\Program Files\AMD\ROCm\6.4` overwriting files if asked
+7. Get library files for your GPU from [rocm.gfx1032.for.hip.6.4.2.7z](https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.4.2/rocm.gfx1032.for.hip.6.4.2.7z)
+8. 使用下载的包中的library目录覆盖`C:\Program Files\AMD\ROCm\6.4\bin\rocblas\library`
+9. 把下载包中`rocblas.dll`文件覆盖到`C:\Program Files\AMD\ROCm\6.4\bin`目录
+
+* Ollama使用6.4.2的Rocm 
+1. 解压[ollama-windows-amd64.7z](https://github.com/likelovewant/ollama-for-amd/releases/download/v0.16.1/ollama-windows-amd64.7z)到`D:\Program\ollama-windows-amd64\`
+2. 删除`D:\Program\ollama-windows-amd64\lib\ollama\rocm\rocblas\library`目录
+3. 把[rocm.gfx1032.for.hip.6.4.2.7z](https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.4.2/rocm.gfx1032.for.hip.6.4.2.7z)中的library目录替换进去
+4. 把[rocm.gfx1032.for.hip.6.4.2.7z](https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.4.2/rocm.gfx1032.for.hip.6.4.2.7z)中的rocblas.dll放到`D:\Program\ollama-windows-amd64\lib\ollama\rocm`
+5. 运行`ollama serve`，可以看到日志 
+    ```
+     library=ROCm compute=gfx1032 name=ROCm0 description="AMD Radeon RX 6650 XT" libdirs=ollama,rocm driver=60450.10 pci_id=0000:07:00.0 type=discrete total="8.0 GiB" available="7.0 GiB"
+    ```
+6. `ollama run xxx`，运行一个模型后，可以在任务管理器中明显看到显存使用增加
 
 以我的电脑AMD 6650 XT 8G显卡为例：
 

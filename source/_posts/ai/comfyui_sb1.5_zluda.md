@@ -30,6 +30,22 @@ tags:
 
 5. 系统环境变量path中添加 `C:\Program Files\AMD\ROCm\6.2\bin`目录
 
+#### 升级HIP的版本到6.4.2
+
+**2026-03-17 update:** 
+
+参考https://github.com/patientx/ComfyUI-Zluda 来升级为6.4.2版本
+
+1. **uninstall 6.2.4 and then delete the ROCm directory from your Program Files folder** otherwise there may be problems even after uninstalling.
+2. Install HIP SDK 6.4.2 from [AMD ROCm Hub](https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html)
+3. Add entries for `HIP_PATH` and `HIP_PATH_62` to your System Variables (not user variables), both should have this value: `C:\Program Files\AMD\ROCm\6.2\`
+4. Check the PATH system variable and ensure that `C:\Program Files\AMD\ROCm\6.4\bin` is in the list.
+5. Download this addon package from [Google Drive](https://drive.google.com/file/d/1Gvg3hxNEj2Vsd2nQgwadrUEY6dYXy0H9/view?usp=sharing) (or [alternative source](https://www.mediafire.com/file/ooawc9s34sazerr/HIP-SDK-extension\(zluda395\).zip/file))
+6. Extract the addon package into `C:\Program Files\AMD\ROCm\6.4` overwriting files if asked
+7. Get library files for your GPU from [rocm.gfx1032.for.hip.6.4.2.7z](https://github.com/likelovewant/ROCmLibs-for-gfx1103-AMD780M-APU/releases/download/v0.6.4.2/rocm.gfx1032.for.hip.6.4.2.7z)
+8. 使用下载的包中的library目录覆盖`C:\Program Files\AMD\ROCm\6.4\bin\rocblas\library`
+9. 把下载包中`rocblas.dll`文件覆盖到`C:\Program Files\AMD\ROCm\6.4\bin`目录
+
 ### 升级使用3.9.5版本Zluda
 
 在https://github.com/patientx/ComfyUI-Zluda 有说明更新3.9.5版本，同时`patchzluda-n.bat`文件中也有注释说明
