@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Rust开发一个最简单的RAG由于之前本机电脑运行LM studio的效果比Ollama好很多，就来试试使用LM Studio提供的OpenAI兼容API来实现简单Agent功能现在用的比较多的库是Python的LangChain，但是为了让我学过的rust不会生疏，还是得多用起来Rust中对AI相关的支持库还是挺多的，比如Rig，今天想从最简单的方式去尝试开发，不用Rig库，这样也知道其中的细节">
+<meta name="keywords" content="AI,rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust开发一个最简单的RAG">
+<meta property="og:url" content="http://memorywalker.github.io/2026/03/28/ai/make-simple-agent-rust/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="Rust开发一个最简单的RAG由于之前本机电脑运行LM studio的效果比Ollama好很多，就来试试使用LM Studio提供的OpenAI兼容API来实现简单Agent功能现在用的比较多的库是Python的LangChain，但是为了让我学过的rust不会生疏，还是得多用起来Rust中对AI相关的支持库还是挺多的，比如Rig，今天想从最简单的方式去尝试开发，不用Rig库，这样也知道其中的细节">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://memorywalker.github.io/2026/03/28/ai/make-simple-agent-rust/uploads/ai/lmstuido_server.png">
+<meta property="og:updated_time" content="2026-03-28T14:45:26.225Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust开发一个最简单的RAG">
+<meta name="twitter:description" content="Rust开发一个最简单的RAG由于之前本机电脑运行LM studio的效果比Ollama好很多，就来试试使用LM Studio提供的OpenAI兼容API来实现简单Agent功能现在用的比较多的库是Python的LangChain，但是为了让我学过的rust不会生疏，还是得多用起来Rust中对AI相关的支持库还是挺多的，比如Rig，今天想从最简单的方式去尝试开发，不用Rig库，这样也知道其中的细节">
+<meta name="twitter:image" content="http://memorywalker.github.io/2026/03/28/ai/make-simple-agent-rust/uploads/ai/lmstuido_server.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2026/03/28/ai/make-simple-agent-rust/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Rust开发一个最简单的RAG | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2026/03/28/ai/make-simple-agent-rust/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust开发一个最简单的RAG
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2026-03-28 21:11:00 / 修改时间：14:45:26" itemprop="dateCreated datePublished" datetime="2026-03-28T21:11:00+00:00">2026-03-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Rust开发一个最简单的RAG"><a href="#Rust开发一个最简单的RAG" class="headerlink" title="Rust开发一个最简单的RAG"></a>Rust开发一个最简单的RAG</h2><p>由于之前本机电脑运行LM studio的效果比Ollama好很多，就来试试使用LM Studio提供的OpenAI兼容API来实现简单Agent功能<br>现在用的比较多的库是Python的LangChain，但是为了让我学过的rust不会生疏，还是得多用起来<br>Rust中对AI相关的支持库还是挺多的，比如Rig，今天想从最简单的方式去尝试开发，不用Rig库，这样也知道其中的细节流程</p>
+<h3 id="RAG运行步骤"><a href="#RAG运行步骤" class="headerlink" title="RAG运行步骤"></a>RAG运行步骤</h3><ol>
+<li>参考数据准备，包括数据清洗，分割</li>
+<li>对分割好的Chuck数据片段向量编码（嵌入）</li>
+<li>把数据片段和它的向量值存入向量数据库，供以后增强检索</li>
+<li>用户查询文本向量化后，在向量数据库中检索出k个和这个向量最近邻的相关数据</li>
+<li>将查询到的相关数据重排后和用户的查询数据一起作为上下文提供给大模型</li>
+<li>大模型根据额外的上下文知识，进行推理给出最终结果到用户</li>
+</ol>
+<p>下面就按上面的基本步骤来实现最简单的RAG</p>
+<p>cargo.toml需要添加以下依赖</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">tokio</span> = &#123; version = <span class="string">"1.0"</span>, features = [<span class="string">"full"</span>] &#125;</span><br><span class="line"><span class="attr">reqwest</span> = &#123; version = <span class="string">"0.11"</span>, features = [<span class="string">"json"</span>] &#125;</span><br><span class="line"><span class="attr">serde</span> = &#123; version = <span class="string">"1.0"</span>, features = [<span class="string">"derive"</span>] &#125;</span><br><span class="line"><span class="attr">serde_json</span> = <span class="string">"1.0"</span></span><br><span class="line"><span class="attr">anyhow</span> = <span class="string">"1.0"</span></span><br><span class="line"><span class="attr">dotenv</span> = <span class="string">"0.15"</span></span><br><span class="line"><span class="attr">lancedb</span> = &#123; version = <span class="string">"0.22.3"</span>, features = [<span class="string">"polars"</span>] &#125;</span><br><span class="line"><span class="attr">polars</span> = <span class="string">"&gt;=0.37,&lt;0.40.0"</span></span><br><span class="line"><span class="attr">polars-arrow</span> = <span class="string">"&gt;=0.37,&lt;0.40.0"</span></span><br><span class="line"><span class="attr">arrow-array</span> = <span class="string">"56.2.0"</span></span><br><span class="line"><span class="attr">arrow-json</span> = <span class="string">"56.2.0"</span></span><br><span class="line"><span class="attr">arrow-schema</span> = <span class="string">"56.2.0"</span></span><br><span class="line"><span class="attr">futures</span> = <span class="string">"0.3"</span></span><br><span class="line"><span class="attr">uuid</span> = &#123; version = <span class="string">"1.0"</span>, features = [<span class="string">"v4"</span>] &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="文本分割"><a href="#文本分割" class="headerlink" title="文本分割"></a>文本分割</h3><p><code>src/ingest.rs</code> 中对数据清洗，长文本分割为文本片段，并去调用嵌入模型获取嵌入向量。我这里只是最简单的按长度进行文本分割。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anyhow::<span class="built_in">Result</span>;</span><br><span class="line"><span class="keyword">use</span> crate::&#123;embedding, vectordb::Record, vectordb&#125;;</span><br><span class="line"><span class="keyword">use</span> uuid::Uuid;</span><br><span class="line"><span class="comment">// 文本分割</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">split_text</span></span>(text: &amp;<span class="built_in">str</span>, chunk_size: <span class="built_in">usize</span>) -&gt; <span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> chunks = <span class="built_in">Vec</span>::new();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> start = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> start &lt; text.len() &#123;</span><br><span class="line">        <span class="keyword">let</span> end = <span class="built_in">usize</span>::min(start + chunk_size, text.len());</span><br><span class="line">        chunks.push(text[start..end].to_string());</span><br><span class="line">        start = end;    </span><br><span class="line">    &#125;</span><br><span class="line">    chunks</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 把分割后的文本向量化后，存储到向量数据库中</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">ingest_text</span></span>(text: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Result</span>&lt;()&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> chunks = split_text(text, <span class="number">300</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> records = <span class="built_in">Vec</span>::new();</span><br><span class="line">    <span class="keyword">for</span> chunk <span class="keyword">in</span> chunks &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"处理文本块: &#123;&#125;"</span>, chunk);</span><br><span class="line">        <span class="keyword">let</span> embedding = embedding::embed(&amp;chunk).<span class="keyword">await</span>?;</span><br><span class="line">        records.push(Record &#123;</span><br><span class="line">            id: Uuid::new_v4().to_string(),</span><br><span class="line">            text: chunk,</span><br><span class="line">            vector: embedding,</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> !records.is_empty() &#123;</span><br><span class="line">        <span class="keyword">let</span> embedding_dim = records[<span class="number">0</span>].vector.len() <span class="keyword">as</span> <span class="built_in">i32</span>;</span><br><span class="line">        vectordb::insert_records(records, embedding_dim).<span class="keyword">await</span>?;</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据嵌入向量化"><a href="#数据嵌入向量化" class="headerlink" title="数据嵌入向量化"></a>数据嵌入向量化</h3><p><code>src/embedding.rs</code> 中使用reqwest库直接访问LM Studio提供的API接口，将输入文本通过文本嵌入模型获得对应的嵌入向量的值，这个值就是f32类型的一维数组。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anyhow::<span class="built_in">Result</span>;</span><br><span class="line"><span class="keyword">use</span> reqwest::Client;</span><br><span class="line"><span class="keyword">use</span> serde_json::json;</span><br><span class="line"><span class="keyword">use</span> std::env;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">embed</span></span>(text: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">Vec</span>&lt;<span class="built_in">f32</span>&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> api_url = env::var(<span class="string">"EMBEDDING_API"</span>)?;</span><br><span class="line">    <span class="keyword">let</span> model = env::var(<span class="string">"EMBEDDING_MODEL"</span>)?;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> client = Client::new();</span><br><span class="line">    <span class="keyword">let</span> request_body = json!(&#123;</span><br><span class="line">        <span class="string">"model"</span>: model,</span><br><span class="line">        <span class="string">"input"</span>: text</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> response = client.post(&amp;api_url)</span><br><span class="line">        .json(&amp;request_body)</span><br><span class="line">        .send()</span><br><span class="line">        .<span class="keyword">await</span>?</span><br><span class="line">        .json::&lt;serde_json::Value&gt;()</span><br><span class="line">        .<span class="keyword">await</span>?;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> arr = response[<span class="string">"data"</span>][<span class="number">0</span>][<span class="string">"embedding"</span>].as_array().unwrap();</span><br><span class="line"></span><br><span class="line">    <span class="literal">Ok</span>(arr.iter()</span><br><span class="line">        .map(|v| v.as_f64().unwrap() <span class="keyword">as</span> <span class="built_in">f32</span>)</span><br><span class="line">        .collect())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="量数据库存储和检索"><a href="#量数据库存储和检索" class="headerlink" title="量数据库存储和检索"></a>量数据库存储和检索</h3><p>向量数据库有很多，AI推荐的是<a href="https://qdrant.tech/" target="_blank" rel="noopener">Qdrant</a>，但是这个需要Docker环境在windows使用有点麻烦，我选择了<a href="https://lancedb.com/" target="_blank" rel="noopener">LanceDB</a>，这是个使用rust实现的开源向量数据库。它支持本地数据文件存储，不需要运行任何服务，和SQLite有点像。虽然这个库是rust实现的内核，但是对rust支持挺一般的。我主要参考了官方的指南的这个代码 <a href="https://github.com/lancedb/docs/blob/main/tests/rs/quickstart.rs" target="_blank" rel="noopener">https://github.com/lancedb/docs/blob/main/tests/rs/quickstart.rs</a></p>
+<p><code>src/vectordb.rs</code> 这个是目前整个工程中最长的代码了，虽然也就100多行，主要是我让AI帮我生成代码，始终编译有问题，走了弯路，最后还是参考官方代码正常实现了。</p>
+<p>Lancedb需要使用<code>arrow_array</code>的数据结构来往LanceDB中存储数据，因此需要实现<code>records_to_reader()</code>方法来把文本和对应的向量数据转换成<code>arrow_array</code>的RecordBatch。schema是用来告诉数据库这个表的结构是什么样的。具体这个库的使用有很多细节，包括建立索引，查询选择不同的算法，在官方指南有详细介绍算法的实现，这里我只是用了最简单的方法。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anyhow::&#123;anyhow, <span class="built_in">Result</span>, Context&#125;;</span><br><span class="line"><span class="keyword">use</span> arrow_array::types::Float32Type;</span><br><span class="line"><span class="keyword">use</span> arrow_array::&#123;Array, FixedSizeListArray, Float32Array, LargeStringArray, RecordBatch, RecordBatchIterator&#125;;</span><br><span class="line"><span class="keyword">use</span> arrow_schema::&#123;DataType, Field, Schema&#125;;</span><br><span class="line"><span class="keyword">use</span> lancedb::query::&#123;ExecutableQuery, QueryBase, Select&#125;;</span><br><span class="line"><span class="keyword">use</span> lancedb::&#123;connect, table::Table, Connection&#125;;</span><br><span class="line"><span class="keyword">use</span> serde::&#123;Serialize, Deserialize&#125;;</span><br><span class="line"><span class="keyword">use</span> std::sync::OnceLock;</span><br><span class="line"><span class="keyword">use</span> std::sync::Arc;</span><br><span class="line"><span class="keyword">use</span> futures::TryStreamExt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> DB: OnceLock&lt;Connection&gt; = OnceLock::new();</span><br><span class="line"><span class="comment">// 初始化数据库</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">init</span></span>() -&gt; <span class="built_in">Result</span>&lt;()&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> db = connect(<span class="string">"data"</span>).execute().<span class="keyword">await</span>?;</span><br><span class="line">    DB.set(db).map_err(|_| anyhow!(<span class="string">"Database already initialized"</span>))?;</span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一个文本片段结构，主要包括文本内容和它对应的向量值</span></span><br><span class="line"><span class="meta">#[derive(Serialize, Deserialize, Clone, Debug)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">Record</span></span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> id: <span class="built_in">String</span>,</span><br><span class="line">    <span class="keyword">pub</span> text: <span class="built_in">String</span>,</span><br><span class="line">    <span class="keyword">pub</span> vector: <span class="built_in">Vec</span>&lt;<span class="built_in">f32</span>&gt;,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 告诉数据库这个表的结构，例如第一列id，数据类型是字串</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">create_schema</span></span>(vector_dim: <span class="built_in">i32</span>) -&gt; Arc&lt;Schema&gt; &#123;</span><br><span class="line">    Arc::new(Schema::new(<span class="built_in">vec!</span>[</span><br><span class="line">        Field::new(<span class="string">"id"</span>, DataType::LargeUtf8, <span class="literal">false</span>),</span><br><span class="line">        Field::new(<span class="string">"text"</span>, DataType::LargeUtf8, <span class="literal">false</span>),</span><br><span class="line">        Field::new(</span><br><span class="line">            <span class="string">"vector"</span>,</span><br><span class="line">            DataType::FixedSizeList(</span><br><span class="line">                Arc::new(Field::new(<span class="string">"item"</span>, DataType::Float32, <span class="literal">true</span>)),</span><br><span class="line">                vector_dim,</span><br><span class="line">            ),</span><br><span class="line">            <span class="literal">false</span>,</span><br><span class="line">        ),</span><br><span class="line">    ]))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">BatchIter</span></span> = RecordBatchIterator&lt;</span><br><span class="line">    std::vec::IntoIter&lt;std::result::<span class="built_in">Result</span>&lt;RecordBatch, arrow_schema::ArrowError&gt;&gt;,</span><br><span class="line">&gt;;</span><br><span class="line"><span class="comment">// 将多个文本数据转换为arrow_array的结构</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">records_to_reader</span></span>(schema: Arc&lt;Schema&gt;, rows: &amp;[Record]) -&gt; BatchIter &#123;</span><br><span class="line">    <span class="keyword">let</span> ids = LargeStringArray::from_iter_values(rows.iter().map(|row| row.id.as_str()));</span><br><span class="line">    <span class="keyword">let</span> texts = LargeStringArray::from_iter_values(rows.iter().map(|row| row.text.as_str()));</span><br><span class="line">    <span class="keyword">let</span> vectors = FixedSizeListArray::from_iter_primitive::&lt;Float32Type, _, _&gt;(</span><br><span class="line">        rows.iter()</span><br><span class="line">            .map(|row| <span class="literal">Some</span>(row.vector.iter().copied().map(<span class="literal">Some</span>).collect::&lt;<span class="built_in">Vec</span>&lt;_&gt;&gt;())),</span><br><span class="line">        rows.first().map(|r| r.vector.len() <span class="keyword">as</span> <span class="built_in">i32</span>).unwrap_or(<span class="number">0</span>),</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> batch = RecordBatch::try_new(</span><br><span class="line">        schema.clone(),</span><br><span class="line">        <span class="built_in">vec!</span>[Arc::new(ids), Arc::new(texts), Arc::new(vectors)],</span><br><span class="line">    )</span><br><span class="line">    .unwrap();</span><br><span class="line">    RecordBatchIterator::new(<span class="built_in">vec!</span>[<span class="literal">Ok</span>(batch)].into_iter(), schema)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 插入一条记录</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">insert_records</span></span>(records: <span class="built_in">Vec</span>&lt;Record&gt;, vector_dim: <span class="built_in">i32</span>) -&gt; anyhow::<span class="built_in">Result</span>&lt;()&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> db = DB.get().unwrap();</span><br><span class="line">    <span class="keyword">let</span> schema = create_schema(vector_dim);</span><br><span class="line">    <span class="keyword">let</span> table = <span class="keyword">match</span> db.open_table(<span class="string">"docs"</span>).execute().<span class="keyword">await</span> &#123;</span><br><span class="line">        <span class="literal">Ok</span>(table) =&gt; table,</span><br><span class="line">        <span class="literal">Err</span>(_) =&gt; &#123;<span class="comment">// 只有表没有创建的时候才执行Create</span></span><br><span class="line">            db.create_table(<span class="string">"docs"</span>, records_to_reader(schema.clone(), &amp;records))</span><br><span class="line">                .execute()</span><br><span class="line">                .<span class="keyword">await</span>?</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 添加一条数据到数据表中</span></span><br><span class="line">    table</span><br><span class="line">        .add(records_to_reader(schema.clone(), &amp;records))</span><br><span class="line">        .execute()</span><br><span class="line">        .<span class="keyword">await</span>?;    </span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 从数据库中检索和输入的向量最邻近的n个数据</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">search</span></span>(query_vector: <span class="built_in">Vec</span>&lt;<span class="built_in">f32</span>&gt;, limit: <span class="built_in">usize</span>) -&gt; anyhow::<span class="built_in">Result</span>&lt;<span class="built_in">Vec</span>&lt;Record&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> db = DB.get().ok_or(anyhow::anyhow!(<span class="string">"Database not initialized"</span>))?;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> table: Table = db.open_table(<span class="string">"docs"</span>).execute().<span class="keyword">await</span>.unwrap();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> results = table</span><br><span class="line">        .query()</span><br><span class="line">        .nearest_to(query_vector)<span class="comment">// 这里可以有不同的算法</span></span><br><span class="line">        .unwrap()</span><br><span class="line">        <span class="comment">// .select(Select::Columns(vec![</span></span><br><span class="line">        <span class="comment">//     "id".to_string(),</span></span><br><span class="line">        <span class="comment">//     "text".to_string(),</span></span><br><span class="line">        <span class="comment">// ]))</span></span><br><span class="line">        .limit(limit)</span><br><span class="line">        .execute()</span><br><span class="line">        .<span class="keyword">await</span></span><br><span class="line">        .unwrap();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> records = <span class="built_in">Vec</span>::new();</span><br><span class="line">    <span class="comment">// 使用 try_next() 遍历流中的每个 RecordBatch</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">let</span> <span class="literal">Some</span>(batch) = results.try_next().<span class="keyword">await</span>? &#123;</span><br><span class="line">        <span class="comment">// 从 batch 中提取列</span></span><br><span class="line">        <span class="keyword">let</span> ids = batch</span><br><span class="line">            .column(<span class="number">0</span>)</span><br><span class="line">            .as_any()</span><br><span class="line">            .downcast_ref::&lt;LargeStringArray&gt;()</span><br><span class="line">            .context(<span class="string">"Column 0 is not a StringArray"</span>)?;</span><br><span class="line">        <span class="keyword">let</span> texts = batch</span><br><span class="line">            .column(<span class="number">1</span>)</span><br><span class="line">            .as_any()</span><br><span class="line">            .downcast_ref::&lt;LargeStringArray&gt;()</span><br><span class="line">            .context(<span class="string">"Column 1 is not a StringArray"</span>)?;</span><br><span class="line">        <span class="keyword">let</span> vectors = batch</span><br><span class="line">            .column(<span class="number">2</span>)</span><br><span class="line">            .as_any()</span><br><span class="line">            .downcast_ref::&lt;FixedSizeListArray&gt;()</span><br><span class="line">            .context(<span class="string">"Column 2 is not a FixedSizeListArray"</span>)?;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..batch.num_rows() &#123;</span><br><span class="line">            <span class="keyword">let</span> id = ids.value(i).to_string();</span><br><span class="line">            <span class="keyword">let</span> text = texts.value(i).to_string();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 提取向量：从 FixedSizeListArray 中取出第 i 个元素，转换为 Float32Array</span></span><br><span class="line">            <span class="keyword">let</span> vector_arc = vectors.value(i);</span><br><span class="line">            <span class="keyword">let</span> vec_array = vector_arc</span><br><span class="line">                .as_any()</span><br><span class="line">                .downcast_ref::&lt;Float32Array&gt;()</span><br><span class="line">                .context(<span class="string">"Failed to downcast vector element to Float32Array"</span>)?;</span><br><span class="line">            <span class="keyword">let</span> vector = vec_array.values().to_vec();</span><br><span class="line">            records.push(Record &#123; id, text, vector &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"查询到 &#123;&#125; 条相关记录"</span>, records.len());</span><br><span class="line">    <span class="keyword">for</span> rec <span class="keyword">in</span> records.iter() &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"记录ID: &#123;&#125;, 文本: &#123;&#125;, 向量前5维: &#123;:?&#125;"</span>, rec.id, rec.text, &amp;rec.vector[..<span class="number">5</span>.min(rec.vector.len())]);        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="literal">Ok</span>(records)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="实现RAG流程"><a href="#实现RAG流程" class="headerlink" title="实现RAG流程"></a>实现RAG流程</h3><p><code>src/rag.rs</code> 中按RAG的流程逐步调用</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anyhow::<span class="built_in">Result</span>;</span><br><span class="line"><span class="keyword">use</span> crate::&#123;embedding, vectordb, llm&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">ask</span></span>(question: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">    <span class="comment">// 1. 获取问题的向量表示</span></span><br><span class="line">    <span class="keyword">let</span> embedding = embedding::embed(question).<span class="keyword">await</span>?;</span><br><span class="line">    <span class="comment">// 2. 在向量数据库中查询相关内容，取最接近的3个</span></span><br><span class="line">    <span class="keyword">let</span> docs = vectordb::search(embedding, <span class="number">3</span>).<span class="keyword">await</span>?;</span><br><span class="line">    <span class="comment">// 3. 将查询到的内容拼接成上下文</span></span><br><span class="line">    <span class="keyword">let</span> context = docs.into_iter().map(|r| r.text.clone()).collect::&lt;<span class="built_in">Vec</span>&lt;_&gt;&gt;().join(<span class="string">"\n---\n"</span>);</span><br><span class="line">    <span class="comment">// 4. 构建提示词并调用LLM生成回答</span></span><br><span class="line">    <span class="keyword">let</span> prompt = <span class="built_in">format!</span>(<span class="string">"你是一个专业助手，请基于上下文回答问题: \n\n上下文: \n&#123;&#125;\n\n问题: &#123;&#125;"</span>, context, question);</span><br><span class="line">    <span class="comment">// 5. 返回LLM的回答</span></span><br><span class="line">    <span class="keyword">let</span> response = llm::chat(&amp;prompt).<span class="keyword">await</span>?;</span><br><span class="line">    <span class="literal">Ok</span>(response)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="调用LLM获取返回结果"><a href="#调用LLM获取返回结果" class="headerlink" title="调用LLM获取返回结果"></a>调用LLM获取返回结果</h3><p><code>src/llm.rs</code>负责接收提示词，使用配置的大语言模型进行推理，并获取最终的结果返回。这里主要是调整提示词，用来在不同的使用场景获取更好的效果。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anyhow::<span class="built_in">Result</span>;</span><br><span class="line"><span class="keyword">use</span> reqwest::Client;</span><br><span class="line"><span class="keyword">use</span> serde_json::json;</span><br><span class="line"><span class="keyword">use</span> std::env;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">chat</span></span>(prompt: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> api_url = env::var(<span class="string">"LLM_API"</span>)?;</span><br><span class="line">    <span class="keyword">let</span> model = env::var(<span class="string">"MODEL"</span>)?;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> client = Client::new();</span><br><span class="line">    <span class="keyword">let</span> request_body = json!(&#123;</span><br><span class="line">        <span class="string">"model"</span>: model,</span><br><span class="line">        <span class="string">"messages"</span>: [</span><br><span class="line">            &#123;<span class="string">"role"</span>: <span class="string">"system"</span>, <span class="string">"content"</span>: <span class="string">"You are a helpful assistant."</span>&#125;,</span><br><span class="line">            &#123;<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: prompt&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> response = client.post(&amp;api_url)</span><br><span class="line">        .json(&amp;request_body)</span><br><span class="line">        .send()</span><br><span class="line">        .<span class="keyword">await</span>?</span><br><span class="line">        .json::&lt;serde_json::Value&gt;()</span><br><span class="line">        .<span class="keyword">await</span>?;</span><br><span class="line">    <span class="literal">Ok</span>(response[<span class="string">"choices"</span>][<span class="number">0</span>][<span class="string">"message"</span>][<span class="string">"content"</span>].as_str().unwrap().to_string())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Agent应用"><a href="#Agent应用" class="headerlink" title="Agent应用"></a>Agent应用</h3><p>RAG只是基于大模型的一种应用，我们可以根据不同的目的开发不同的Agent满足需求。增加了一个Agent层用来管理多个不同的Agent。<code>src/agent.rs</code>目前只有一个rag的功能的agent，它把用户的输入传给rag模块，获取返回的结果。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anyhow::<span class="built_in">Result</span>;</span><br><span class="line"><span class="keyword">use</span> crate::rag;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">run</span></span>(input: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"用户输入: &#123;&#125;"</span>, input);</span><br><span class="line">    <span class="keyword">let</span> response = rag::ask(input).<span class="keyword">await</span>?;</span><br><span class="line">    <span class="literal">Ok</span>(response)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="应用程序总入口"><a href="#应用程序总入口" class="headerlink" title="应用程序总入口"></a>应用程序总入口</h3><p><code>src/main.rs</code> 从终端获取用户输入，并将输入给Agent，并将Agent返回结果显示在终端。这里输入了三段背景知识资料。对于复杂系统会把pdf文件转成文本，进行分割，存储到向量数据库中，作为额外的知识库。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mod</span> llm;</span><br><span class="line"><span class="keyword">mod</span> embedding;</span><br><span class="line"><span class="keyword">mod</span> vectordb;</span><br><span class="line"><span class="keyword">mod</span> ingest;</span><br><span class="line"><span class="keyword">mod</span> rag;</span><br><span class="line"><span class="keyword">mod</span> agent;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> std::io::&#123;<span class="keyword">self</span>, Write&#125;;</span><br><span class="line"><span class="keyword">use</span> anyhow::<span class="built_in">Result</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() -&gt; <span class="built_in">Result</span>&lt;()&gt; &#123;</span><br><span class="line">    dotenv::dotenv().ok();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"Agent start!"</span>);</span><br><span class="line">    vectordb::init().<span class="keyword">await</span>?;</span><br><span class="line">    <span class="comment">// 这里测试输入3段背景知识资料</span></span><br><span class="line">    ingest::ingest_text(<span class="string">"Rust is a systems programming language focused on safety, speed, and concurrency. It was designed to be a safe alternative to C and C++, with a strong emphasis on memory safety and zero-cost abstractions. Rust achieves memory safety without a garbage collector, using a system of ownership with rules that the compiler checks at compile time. This allows developers to write efficient and safe code, making Rust a popular choice for performance-critical applications such as game development, operating systems, and web servers."</span>).<span class="keyword">await</span>?;</span><br><span class="line">    ingest::ingest_text(<span class="string">"tokio is an asynchronous runtime for Rust that provides the building blocks needed for writing asynchronous applications. It includes a multi-threaded, work-stealing scheduler, a powerful timer system, and support for asynchronous I/O. Tokio allows developers to write high-performance, scalable applications that can handle many concurrent tasks without blocking the main thread. It is widely used in web servers, network applications, and other scenarios where high concurrency is required."</span>).<span class="keyword">await</span>?;</span><br><span class="line">    ingest::ingest_text(<span class="string">"memorywalker is from China and he love studing"</span>).<span class="keyword">await</span>?;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="built_in">print!</span>(<span class="string">"\n&gt; "</span>);</span><br><span class="line">        io::stdout().flush().unwrap();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> input = <span class="built_in">String</span>::new();</span><br><span class="line">        std::io::stdin().read_line(&amp;<span class="keyword">mut</span> input)?;</span><br><span class="line">        <span class="keyword">let</span> response = agent::run(input.trim()).<span class="keyword">await</span>?;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"\n&#123;&#125;"</span>, response);  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><p>项目的根目录下新建<code>.env</code>文件，其中内容为环境变量配置值，用来在程序中获取API和模型配置信息</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">LLM_API</span>=http://localhost:<span class="number">1234</span>/v1/chat/completions</span><br><span class="line"><span class="attr">EMBEDDING_API</span>=http://localhost:<span class="number">1234</span>/v1/embeddings</span><br><span class="line"><span class="attr">EMBEDDING_MODEL</span>=text-embedding-nomic-embed-text-v1.<span class="number">5</span></span><br><span class="line"><span class="attr">MODEL</span>=qwen/qwen3.<span class="number">5</span>-<span class="number">9</span>b</span><br></pre></td></tr></table></figure>
+
+<p>另外还要配置LM Studio，在它的开发者界面中打开服务运行，并同时加载千问3.5-9b模型和文本嵌入模型</p>
+<p><img src="uploads/ai/lmstuido_server.png" alt="LMStudio"></p>
+<h3 id="最终运行效果"><a href="#最终运行效果" class="headerlink" title="最终运行效果"></a>最终运行效果</h3><p>因为我运行了多次这个程序，导致背景知识三段话被重复插入到了数据库中，当我询问<code>tell me something about memorywalker</code>时，向量数据库只返回了和memorywalker相关3条记录，rust的记录没有一条返回，的确找到了相关的背景知识。虽然3条记录的内容相同，但是id是不同的，这是因为我重复运行程序，main函数的测试数据被存储了3次。<br>另外看模型的思考过程中，它发现背景知识中<code>memorywalker is from China and he love studing</code>有语法错误，它做了一些纠结后，最后还是以一个专业助手的角度把语法错误改正，并给出了英文结论<code>Based on the provided context, memorywalker is from China and he loves studying.</code>。<br>当我再次问模型<code>Is he a good guy?</code>，模型改为了用中文思考，并用中文给出了回答。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">Agent start!</span><br><span class="line">处理文本块: Rust is a systems programming language focused on safety, speed, and concurrency. It was designed to be a safe alternative to C and C++, with a strong emphasis on memory safety and zero-cost abstractions. Rust achieves memory safety without a garbage collector, using a system of ownership with rules</span><br><span class="line">处理文本块:  that the compiler checks at compile time. This allows developers to write efficient and safe code, making Rust a popular choice for performance-critical applications such as game development, operating systems, and web servers.</span><br><span class="line">处理文本块: tokio is an asynchronous runtime for Rust that provides the building blocks needed for writing asynchronous applications. It includes a multi-threaded, work-stealing scheduler, a powerful timer system, and support for asynchronous I/O. Tokio allows developers to write high-performance, scalable appl</span><br><span class="line">处理文本块: ications that can handle many concurrent tasks without blocking the main thread. It is widely used in web servers, network applications, and other scenarios where high concurrency is required.</span><br><span class="line">处理文本块: memorywalker is from China and he love studing</span><br><span class="line"></span><br><span class="line">&gt; tell me something about memorywalker</span><br><span class="line">用户输入: tell me something about memorywalker</span><br><span class="line">查询到 3 条相关记录</span><br><span class="line">记录ID: 9dd5b6fb-ae4e-4af3-a43f-411b25fbf0a4, 文本: memorywalker is from China and he love studing, 向量前5维: [-0.016413346, 0.078260995, -0.21805552, -0.010767964, -0.014839452]</span><br><span class="line">记录ID: 858285ce-eeb4-4dce-9e56-2efa62ca47dd, 文本: memorywalker is from China and he love studing, 向量前5维: [-0.016413346, 0.078260995, -0.21805552, -0.010767964, -0.014839452]</span><br><span class="line">记录ID: 4d4cdac5-6c6d-41fd-b6a2-38dbcc8ec867, 文本: memorywalker is from China and he love studing, 向量前5维: [-0.016413346, 0.078260995, -0.21805552, -0.010767964, -0.014839452]</span><br><span class="line"></span><br><span class="line">&lt;think&gt;Thinking Process:</span><br><span class="line"></span><br><span class="line">1.  **Analyze the Request:**</span><br><span class="line">    *   Role: Professional assistant.</span><br><span class="line">    *   Task: Answer a question based on the provided context.</span><br><span class="line">    *   Context: Three identical lines stating &quot;memorywalker is from China and he love studing&quot;.</span><br><span class="line">    *   Question: &quot;tell me something about memorywalker&quot;</span><br><span class="line"></span><br><span class="line">2.  **Analyze the Context:**</span><br><span class="line">    *   The context contains three repeated sentences: &quot;memorywalker is from China and he love studing&quot;.</span><br><span class="line">    *   Note on grammar: &quot;love studing&quot; should probably be &quot;loves studying&quot;, but I must stick to the provided text or interpret it naturally while remaining accurate to the source. However, as an AI assistant, I should correct minor grammatical errors if stating facts derived from the text, or simply report the information contained in the text without necessarily emphasizing the grammar unless it changes meaning.</span><br><span class="line">    *   Key Information extracted:</span><br><span class="line">        *   Name/Identity: memorywalker</span><br><span class="line">        *   Origin: China</span><br><span class="line">        *   Interest/Activity: studying</span><br><span class="line"></span><br><span class="line">3.  **Formulate the Answer:**</span><br><span class="line">    *   The user wants to know something about &quot;memorywalker&quot;.</span><br><span class="line">    *   Based *only* on the provided context, I should state the facts available.</span><br><span class="line">    *   Draft 1 (Internal Monologue): Okay, the text says memorywalker is from China and loves studying. I will report this.</span><br><span class="line">    *   Draft 2 (Polite &amp; Professional): According to the information provided, memorywalker is from China and enjoys studying.</span><br><span class="line">    *   Draft 3 (Addressing the repetition): The context repeats the same sentence three times. It doesn&apos;t add new info. So just summarizing the unique info is enough.</span><br><span class="line">    *   Draft 4 (Language): The question is in English (&quot;tell me something about memorywalker&quot;), but the prompt instructions are in Chinese (&quot;你是一个专业助手，请基于上下文回答问题&quot;). Usually, if the context and question are in English, the answer should be in English unless specified otherwise. However, looking at the prompt structure: &quot;Context: ... Question: ...&quot;. The instruction is in Chinese. The context is in English. The question is in English.</span><br><span class="line">    *   Decision: I will answer in the same language as the question (English) to be natural, but I can also provide a bilingual or Chinese response if the user prefers. Wait, looking at standard behavior for this type of task: If the </span><br><span class="line">instruction is in Chinese, often the expected output is in Chinese. However, the content is English. Let&apos;s look at the instruction again: &quot;请基于上下文回答问题&quot; (Please answer the question based on the context). It doesn&apos;t specify the </span><br><span class="line">language of the answer.</span><br><span class="line">    *   Safe bet: Answer in English because the question and context are in English, but I can acknowledge the instruction language. Actually, usually, if the user asks in English (&quot;tell me...&quot;), I should reply in English. If I reply in Chinese, it might be better given the prompt is in Chinese. Let&apos;s check common patterns. Usually, match the language of the question/context unless instructed otherwise.</span><br><span class="line">    *   Refined Decision: Since the prompt instruction is in Chinese, but the task content is English, I will provide the answer in English to match the question, but I can add a Chinese introduction if needed. Actually, standard practice for &quot;Answer based on context&quot; where context/question are English -&gt; Answer in English.</span><br><span class="line">    *   Wait, looking at the system instruction: &quot;You are a helpful assistant.&quot; (English). The user prompt is mixed (Chinese instruction, English content).</span><br><span class="line">    *   Let&apos;s provide the answer in English as it matches the question&apos;s language, which is the most natural interaction flow for the specific content.</span><br><span class="line">    *   Content to include: Origin (China), Hobby/Interest (studying).</span><br><span class="line"></span><br><span class="line">4.  **Final Polish:**</span><br><span class="line">    *   &quot;Based on the context provided, memorywalker is from China and he loves studying.&quot;</span><br><span class="line">    *   Keep it concise and professional.</span><br><span class="line">    *   Note: The text has &quot;love studing&quot; (grammar error). I should probably output &quot;loves studying&quot; for correctness, or quote &quot;love studing&quot;. As an AI assistant, correcting obvious typos is usually preferred for natural flow unless exact quoting is required. I will phrase it naturally.</span><br><span class="line"></span><br><span class="line">5.  **Final Output Generation:**</span><br><span class="line">    *   Based on the context provided, here is what we know about memorywalker: He is from China and he loves studying.</span><br><span class="line"></span><br><span class="line">    *(Self-Correction)*: Wait, looking at the instruction language again. The user asked me in Chinese (&quot;你是一个专业助手...&quot;). It is often safer to reply in the same language as the instruction (Chinese) unless the content strongly dictates otherwise. However, since the question itself is English, an English answer is also acceptable. Let&apos;s provide a bilingual or English answer. I&apos;ll stick to English because the Q&amp;A pair is English.</span><br><span class="line">    *   Actually, often when the prompt instruction is Chinese, the expectation is Chinese. Let&apos;s write the response in English but keep it simple, or write in Chinese?</span><br><span class="line">    *   Let&apos;s check the typical behavior for this specific template. Usually, if the user asks &quot;tell me something...&quot; in English, I answer in English.</span><br><span class="line">    *   Okay, I will answer in English to match the question.</span><br><span class="line"></span><br><span class="line">    *   Draft: Based on the provided context, memorywalker is from China and he loves studying.</span><br><span class="line"></span><br><span class="line">6.  **Final Check:** Does this hallucinate? No. Does it ignore negative constraints? No. Is it helpful? Yes.</span><br><span class="line"></span><br><span class="line">    Let&apos;s refine the answer to be slightly more complete based on the text.</span><br><span class="line">    &quot;According to the information given, memorywalker is from China and he loves studying.&quot;</span><br><span class="line"></span><br><span class="line">    (Wait, I should check if I need to mention the repetition. No, that&apos;s irrelevant.)</span><br><span class="line"></span><br><span class="line">    Okay, ready to output. I will respond in English as per the question language.</span><br><span class="line"></span><br><span class="line">    *Wait, one more consideration:* The system instruction is in Chinese (&quot;你是一个专业助手...&quot;). Sometimes this implies the user wants the response in Chinese. Let&apos;s provide the answer in Chinese to be safe with the instruction language, or match the context language?</span><br><span class="line">    Actually, looking at similar tasks, if the question is English, answer in English.</span><br><span class="line">    Okay, I&apos;ll write: &quot;Based on the context provided, memorywalker is from China and he loves studying.&quot;</span><br><span class="line"></span><br><span class="line">    Let&apos;s try to combine languages for maximum helpfulness? No, pick one. English is consistent with Q&amp;A.</span><br><span class="line">    Actually, looking at the prompt start &quot;你是一个专业助手...&quot; (You are a professional assistant...), this sets the persona in Chinese. But the content is English. I will answer in English because the question is in English.</span><br><span class="line"></span><br><span class="line">    Wait, I&apos;ll provide the answer in English.</span><br><span class="line"></span><br><span class="line">    *Revised Plan:* Just answer the question directly based on the text.</span><br><span class="line"></span><br><span class="line">    Answer: Based on the context provided, memorywalker is from China and he loves studying.</span><br><span class="line"></span><br><span class="line">    (Wait, the text says &quot;love studing&quot;. I will correct &quot;studing&quot; to &quot;studying&quot; for professionalism, or keep it? Better to correct it implicitly.)</span><br><span class="line"></span><br><span class="line">    Final decision: English answer.</span><br><span class="line"></span><br><span class="line">    Wait, let&apos;s look at the instruction again. &quot;请基于上下文回答问题&quot; (Please answer the question based on context).</span><br><span class="line">    If I answer in Chinese: &quot;根据提供的上下文，memorywalker 来自中国，并且他热爱学习。&quot;</span><br><span class="line">    If I answer in English: &quot;Based on the context provided, memorywalker is from China and he loves studying.&quot;</span><br><span class="line">    Since the user asked in English (&quot;tell me something...&quot;), I will reply in English.</span><br><span class="line"></span><br><span class="line">    Okay, finalizing.</span><br><span class="line"></span><br><span class="line">    Wait, one detail: The prompt says &quot;memorywalker&quot; (lowercase). I should keep it consistent.</span><br><span class="line">    Also &quot;love studing&quot;. I&apos;ll write &quot;loves studying&quot; for grammar correction as an AI assistant.</span><br><span class="line"></span><br><span class="line">    Let&apos;s go.cw</span><br><span class="line">&lt;/think&gt;</span><br><span class="line">Based on the provided context, memorywalker is from China and he loves studying.</span><br></pre></td></tr></table></figure>
+
+<p>第二次换了一个问题，不知道为什么这个模型开始用中文回复了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&gt; Is he a good guy?</span><br><span class="line">用户输入: Is he a good guy?</span><br><span class="line">查询到 3 条相关记录</span><br><span class="line">记录ID: 9dd5b6fb-ae4e-4af3-a43f-411b25fbf0a4, 文本: memorywalker is from China and he love studing, 向量前5维: [-0.016413346, 0.078260995, -0.21805552, -0.010767964, -0.014839452]</span><br><span class="line">记录ID: 858285ce-eeb4-4dce-9e56-2efa62ca47dd, 文本: memorywalker is from China and he love studing, 向量前5维: [-0.016413346, 0.078260995, -0.21805552, -0.010767964, -0.014839452]</span><br><span class="line">记录ID: 4d4cdac5-6c6d-41fd-b6a2-38dbcc8ec867, 文本: memorywalker is from China and he love studing, 向量前5维: [-0.016413346, 0.078260995, -0.21805552, -0.010767964, -0.014839452]</span><br><span class="line"></span><br><span class="line">&lt;think&gt;好的，我现在需要处理用户的问题。首先，上下文中的三条记录都是一样的：memorywalker来自中国，喜欢学习。问题是问他是否是个好人。我需要仔细分析这些信息，判断是否能从上下文中得出答案。</span><br><span class="line"></span><br><span class="line">首先，用户的指令是作为专业助手，基于上下文回答问题。但这里的关键是，上下文提供的信息有限。通常，“好人”的判断可能需要更多关于性格、行为或道德方面的信息。而现有的数据只是国籍和爱好学习。学习可能暗示他重视教育，但这是否直接关联到是否是个 </span><br><span class="line">好人呢？可能存在地域刻板印象的风险，比如假设来自某个地方的人就是好人，但这样可能不准确。</span><br><span class="line"></span><br><span class="line">接下来，我需要检查是否有隐含的偏见。用户的问题可能带有测试意图，看是否会基于不完整的信息进行推断。作为专业助手，应该指出上下文信息不足以支持这样的结论，避免做出没有根据的判断。同时，要确保回答中立，不涉及性别、国籍等方面的刻板印象。   </span><br><span class="line"></span><br><span class="line">另外，三条重复的记录可能是在强调某些信息，但即使如此，内容本身并没有说明他的品德如何。可能用户希望得到肯定回答，但正确的做法是依据现有信息，不能确定，所以需要明确说明无法判断，并建议参考更多相关信息。</span><br><span class="line"></span><br><span class="line">还要注意，问题中的“good guy”可能存在文化差异。在中文里，“好人”通常指品德好的人，但根据什么标准呢？上下文没有提到任何关于他的行为或他人对他评价的信息。因此，直接回答是或否都是不合适的。</span><br><span class="line"></span><br><span class="line">总结下来，正确的回答应该是基于现有信息无法确定，并指出需要更多关于个人品质和行为的资料。同时要避免任何可能的偏见，保持客观中立。这样既符合专业助手的角色，也遵循了提供准确信息的原则。</span><br><span class="line">&lt;/think&gt;</span><br><span class="line"></span><br><span class="line">根据现有上下文信息，仅能得知 memorywalker 来自中国且热爱学习，但**“好人”的判断通常需要更全面的行为、品德或他人评价等依据**。仅凭国籍和爱好无法直接推导其人品，因此**无法确定他是否是“good guy”**。建议参考更多具体信息（如个人成就、人际关系反馈等）进行综合评估。</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2026/02/09/english/farcry3/far-cry3/" rel="next" title="Far Cry 3 English Notes">
+                <i class="fa fa-chevron-left"></i> Far Cry 3 English Notes
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">96</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">86</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust开发一个最简单的RAG"><span class="nav-number">1.</span> <span class="nav-text">Rust开发一个最简单的RAG</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RAG运行步骤"><span class="nav-number">1.1.</span> <span class="nav-text">RAG运行步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文本分割"><span class="nav-number">1.2.</span> <span class="nav-text">文本分割</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据嵌入向量化"><span class="nav-number">1.3.</span> <span class="nav-text">数据嵌入向量化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#量数据库存储和检索"><span class="nav-number">1.4.</span> <span class="nav-text">量数据库存储和检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现RAG流程"><span class="nav-number">1.5.</span> <span class="nav-text">实现RAG流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用LLM获取返回结果"><span class="nav-number">1.6.</span> <span class="nav-text">调用LLM获取返回结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Agent应用"><span class="nav-number">1.7.</span> <span class="nav-text">Agent应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用程序总入口"><span class="nav-number">1.8.</span> <span class="nav-text">应用程序总入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环境配置"><span class="nav-number">1.9.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终运行效果"><span class="nav-number">1.10.</span> <span class="nav-text">最终运行效果</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
