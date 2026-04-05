@@ -26,6 +26,9 @@ tags:
 7. 直接聊天让claude实现一个功能，这种方式纯聊天，只是在终端看文件的修改
 ![](uploads/ai/claudemakerustgame.png)
 
+claude code现在加了一个宠物系统，输入`/buddy`命令时，命令会彩色显示，开启后，会显示显示一个宠物信息，并在会在终端输入框右侧放一个宠物图标，它会动态变化。我这里是一个稀有的蜗牛，名字叫Moth。宠物还有自己的属性，Deubg，Patience，Chaos，Wisdom，Snark 
+![](uploads/ai/claudepet.png)
+
 ### 总结
 
 1. 对于想体验在Claude使用本地模型或者第三方模型是可行的
