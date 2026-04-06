@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_16.ico?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Rust异步编程当一个线程被I/O阻塞，只能等系统I/O调用执行完成后，这段时间存在资源浪费。例如处理n多个客户端请求，对于每个请求创建一个线程，而每个线程的栈可能有上千字节，在线程等待期间，就会有上千字节内存被占用，但是又不做任何其他事情，当请求的数量巨大时，内存的占用就非常明显了。 以下内容是AI生成的解释 一、Rust 异步编程核心概念1.1 异步编程的本质Rust 的异步编程基于 零成本抽">
+<meta name="keywords" content="rust,并行,async">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust异步编程">
+<meta property="og:url" content="http://memorywalker.github.io/2026/04/02/rust/rust-async/index.html">
+<meta property="og:site_name" content="How Time Flies">
+<meta property="og:description" content="Rust异步编程当一个线程被I/O阻塞，只能等系统I/O调用执行完成后，这段时间存在资源浪费。例如处理n多个客户端请求，对于每个请求创建一个线程，而每个线程的栈可能有上千字节，在线程等待期间，就会有上千字节内存被占用，但是又不做任何其他事情，当请求的数量巨大时，内存的占用就非常明显了。 以下内容是AI生成的解释 一、Rust 异步编程核心概念1.1 异步编程的本质Rust 的异步编程基于 零成本抽">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2026-04-06T16:20:56.067Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust异步编程">
+<meta name="twitter:description" content="Rust异步编程当一个线程被I/O阻塞，只能等系统I/O调用执行完成后，这段时间存在资源浪费。例如处理n多个客户端请求，对于每个请求创建一个线程，而每个线程的栈可能有上千字节，在线程等待期间，就会有上千字节内存被占用，但是又不做任何其他事情，当请求的数量巨大时，内存的占用就非常明显了。 以下内容是AI生成的解释 一、Rust 异步编程核心概念1.1 异步编程的本质Rust 的异步编程基于 零成本抽">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://memorywalker.github.io/2026/04/02/rust/rust-async/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Rust异步编程 | How Time Flies</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How Time Flies</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://memorywalker.github.io/2026/04/02/rust/rust-async/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MemoryWalker">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How Time Flies">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust异步编程
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2026-04-02 23:58:00" itemprop="dateCreated datePublished" datetime="2026-04-02T23:58:00+00:00">2026-04-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2026-04-06 16:20:56" itemprop="dateModified" datetime="2026-04-06T16:20:56+00:00">2026-04-06</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/rust/" itemprop="url" rel="index"><span itemprop="name">rust</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Rust异步编程"><a href="#Rust异步编程" class="headerlink" title="Rust异步编程"></a>Rust异步编程</h2><p>当一个线程被I/O阻塞，只能等系统I/O调用执行完成后，这段时间存在资源浪费。<br>例如处理n多个客户端请求，对于每个请求创建一个线程，而每个线程的栈可能有上千字节，在线程等待期间，就会有上千字节内存被占用，但是又不做任何其他事情，当请求的数量巨大时，内存的占用就非常明显了。</p>
+<p>以下内容是AI生成的解释</p>
+<h2 id="一、Rust-异步编程核心概念"><a href="#一、Rust-异步编程核心概念" class="headerlink" title="一、Rust 异步编程核心概念"></a>一、Rust 异步编程核心概念</h2><h3 id="1-1-异步编程的本质"><a href="#1-1-异步编程的本质" class="headerlink" title="1.1 异步编程的本质"></a>1.1 异步编程的本质</h3><p>Rust 的异步编程基于 <strong>零成本抽象</strong> 的理念，在编译期将 <code>async/await</code> 语法转换为状态机，避免了运行时的额外开销。与 Go 的 goroutine 或 Java 的虚拟线程不同，Rust 的异步模型是 <strong>惰性求值（lazy）</strong> 的——创建一个 Future 并不会立即执行，需要 executor 来驱动它。</p>
+<h3 id="1-2-核心三要素"><a href="#1-2-核心三要素" class="headerlink" title="1.2 核心三要素"></a>1.2 核心三要素</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────┐</span><br><span class="line">│              Rust 异步编程架构              │</span><br><span class="line">├─────────────────────────────────────────────┤</span><br><span class="line">│                                             │</span><br><span class="line">│   ┌──────────┐  ┌──────────┐  ┌──────────┐  │</span><br><span class="line">│   │  Future  │  │  Waker   │  │ Executor │  │</span><br><span class="line">│   │  (任务)  │  │ (唤醒器) │  │ (执行器) │  │</span><br><span class="line">│   └─────┬────┘  └─────┬────┘  └─────┬────┘  │</span><br><span class="line">│         │             │             │       │</span><br><span class="line">│         └─────────────┼─────────────┘       │</span><br><span class="line">│                       │                     │</span><br><span class="line">│              Poll 驱动模型                  │</span><br><span class="line">│                                             │</span><br><span class="line">└─────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-Future-Trait"><a href="#1-3-Future-Trait" class="headerlink" title="1.3 Future Trait"></a>1.3 Future Trait</h3><p><code>Future</code> 是 Rust 异步编程的基石：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">trait</span> <span class="title">Future</span></span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">poll</span></span>(<span class="keyword">self</span>: Pin&lt;&amp;<span class="keyword">mut</span> <span class="keyword">Self</span>&gt;, cx: &amp;<span class="keyword">mut</span> Context&lt;<span class="symbol">'_</span>&gt;) -&gt; Poll&lt;Self::Output&gt;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">enum</span> <span class="title">Poll</span></span>&lt;T&gt; &#123;</span><br><span class="line">    Ready(T),    <span class="comment">// 任务完成，返回结果</span></span><br><span class="line">    Pending,     <span class="comment">// 任务未完成，稍后再试</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>工作流程：</strong></p>
+<ol>
+<li>Executor 调用 <code>Future::poll()</code> 尝试推进任务</li>
+<li>如果返回 <code>Poll::Ready(value)</code>，任务完成</li>
+<li>如果返回 <code>Poll::Pending</code>，Future 通过 <code>Waker</code> 注册回调</li>
+<li>当外部事件就绪时（如 I/O 完成），<code>Waker::wake()</code> 通知 Executor 重新 poll</li>
+</ol>
+<h3 id="1-4-async-await-的编译期转换"><a href="#1-4-async-await-的编译期转换" class="headerlink" title="1.4 async/await 的编译期转换"></a>1.4 async/await 的编译期转换</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 你写的代码：</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">fetch_data</span></span>() -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> response = make_request().<span class="keyword">await</span>;</span><br><span class="line">    <span class="keyword">let</span> body = read_body(response).<span class="keyword">await</span>;</span><br><span class="line">    body</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译器会将其转换为类似如下的状态机：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">FetchDataState</span></span> &#123;</span><br><span class="line">    State0 &#123; <span class="comment">/* 初始状态 */</span> &#125;,</span><br><span class="line">    State1 &#123; request_future: MakeRequestFuture &#125;,</span><br><span class="line">    State2 &#123; read_future: ReadBodyFuture &#125;,</span><br><span class="line">    Completed,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FetchDataFuture</span></span> &#123;</span><br><span class="line">    state: FetchDataState,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Future <span class="keyword">for</span> FetchDataFuture &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = <span class="built_in">String</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">poll</span></span>(<span class="keyword">self</span>: Pin&lt;&amp;<span class="keyword">mut</span> <span class="keyword">Self</span>&gt;, cx: &amp;<span class="keyword">mut</span> Context&lt;<span class="symbol">'_</span>&gt;) -&gt; Poll&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">loop</span> &#123;</span><br><span class="line">            <span class="keyword">match</span> <span class="keyword">self</span>.state &#123;</span><br><span class="line">                State0 =&gt; &#123;</span><br><span class="line">                    <span class="comment">// 创建 request future，转到 State1</span></span><br><span class="line">                    <span class="keyword">let</span> fut = make_request();</span><br><span class="line">                    <span class="keyword">self</span>.state = State1 &#123; request_future: fut &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">                State1 &#123; <span class="keyword">ref</span> <span class="keyword">mut</span> request_future &#125; =&gt; &#123;</span><br><span class="line">                    <span class="keyword">match</span> Pin::new(request_future).poll(cx) &#123;<span class="comment">// poll()的第一个参数是self: Pin&lt;&amp;mut Self&gt;，所以要把request_future用Pin包起来 </span></span><br><span class="line">                        Poll::Ready(response) =&gt; &#123;</span><br><span class="line">                            <span class="keyword">let</span> fut = read_body(response);</span><br><span class="line">                            <span class="keyword">self</span>.state = State2 &#123; read_future: fut &#125;;<span class="comment">// 当前异步去到了数据，切换到下一个状态</span></span><br><span class="line">                        &#125;</span><br><span class="line">                        Poll::Pending =&gt; <span class="keyword">return</span> Poll::Pending,</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                State2 &#123; <span class="keyword">ref</span> <span class="keyword">mut</span> read_future &#125; =&gt; &#123;</span><br><span class="line">                    <span class="keyword">match</span> Pin::new(read_future).poll(cx) &#123;</span><br><span class="line">                        Poll::Ready(body) =&gt; &#123;</span><br><span class="line">                            <span class="keyword">self</span>.state = Completed;<span class="comment">// 切换到最终的完成状态</span></span><br><span class="line">                            <span class="keyword">return</span> Poll::Ready(body);</span><br><span class="line">                        &#125;</span><br><span class="line">                        Poll::Pending =&gt; <span class="keyword">return</span> Poll::Pending,</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                Completed =&gt; <span class="built_in">panic!</span>(<span class="string">"polled after completion"</span>),</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-5-Pin-与自引用"><a href="#1-5-Pin-与自引用" class="headerlink" title="1.5 Pin 与自引用"></a>1.5 Pin 与自引用</h3><p><code>Pin</code> 的存在是为了解决 <strong>自引用结构体</strong> 问题。当 async 块跨 await 点持有引用时，编译器生成的状态机会包含自引用字段：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">fn</span> <span class="title">example</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> data = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">    <span class="keyword">let</span> reference = &amp;data;  <span class="comment">// 自引用：reference 指向同一结构体中的 data</span></span><br><span class="line">    some_async_op().<span class="keyword">await</span>;   <span class="comment">// await 点 —— 由于reference在await之后还有使用，所以状态机需要保存 data 和 reference</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;:?&#125;"</span>, reference);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Pin&lt;&amp;mut Self&gt;</code> 确保 Future 在内存中不会被移动，从而保证自引用的安全性。</p>
+<h3 id="1-6-Waker-机制"><a href="#1-6-Waker-机制" class="headerlink" title="1.6 Waker 机制"></a>1.6 Waker 机制</h3><p><code>Waker</code> 是连接 <strong>I/O 事件系统</strong> 和 <strong>Executor</strong> 的桥梁：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">┌──────────┐     poll()       ┌──────────┐</span><br><span class="line">│ Executor │ ───────────────&gt; │  Future  │</span><br><span class="line">│          │ &lt;─────────────── │          │</span><br><span class="line">│          │   Pending +      │          │</span><br><span class="line">│          │   保存 Waker     │          │</span><br><span class="line">└────┬─────┘                  └──────────┘</span><br><span class="line">     │                              │</span><br><span class="line">     │  wake()                      │ 注册到 I/O 系统</span><br><span class="line">     │ &lt;────────────────────────────┘</span><br><span class="line">     │</span><br><span class="line">     │  重新 poll()</span><br><span class="line">     └──────────────────────────────&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、手写一个简单的异步运行时"><a href="#二、手写一个简单的异步运行时" class="headerlink" title="二、手写一个简单的异步运行时"></a>二、手写一个简单的异步运行时</h2><p>下面我们从零开始构建一个包含以下组件的异步运行时：</p>
+<ul>
+<li><strong>Task（任务）</strong>：封装 Future</li>
+<li><strong>Executor（执行器）</strong>：调度和执行任务</li>
+<li><strong>Spawner（生成器）</strong>：向 Executor 提交新任务</li>
+<li><strong>简单的定时器 Future</strong>：演示自定义 Future 的实现</li>
+<li><strong>简单的异步 TCP 请求</strong>：演示网络 I/O</li>
+</ul>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::&#123;</span><br><span class="line">    collections::HashMap,</span><br><span class="line">    future::Future,</span><br><span class="line">    io::&#123;Read, Write&#125;,</span><br><span class="line">    net::TcpStream,</span><br><span class="line">    pin::Pin,</span><br><span class="line">    sync::&#123;</span><br><span class="line">        mpsc::&#123;<span class="keyword">self</span>, Receiver, Sender&#125;,</span><br><span class="line">        Arc, Mutex,</span><br><span class="line">    &#125;,</span><br><span class="line">    task::&#123;Context, Poll, RawWaker, RawWakerVTable, Waker&#125;,</span><br><span class="line">    thread,</span><br><span class="line">    time::&#123;Duration, Instant&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"><span class="comment">// 第一部分：Task 定义</span></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 一个可被 Executor 调度的异步任务</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Task</span></span> &#123;</span><br><span class="line">    <span class="comment">/// 被包装的 Future，使用 Pin&lt;Box&lt;&gt;&gt; 确保不会被移动</span></span><br><span class="line">    future: Pin&lt;<span class="built_in">Box</span>&lt;<span class="keyword">dyn</span> Future&lt;Output = ()&gt; + <span class="built_in">Send</span>&gt;&gt;,</span><br><span class="line">    <span class="comment">/// 任务 ID（用于调试）</span></span><br><span class="line">    id: <span class="built_in">usize</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"><span class="comment">// 第二部分：Executor（执行器）和 Spawner（任务生成器）</span></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 任务生成器：用于向 Executor 提交新的异步任务</span></span><br><span class="line"><span class="meta">#[derive(Clone)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Spawner</span></span> &#123;</span><br><span class="line">    sender: Sender&lt;Task&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Spawner &#123;</span><br><span class="line">    <span class="comment">/// 生成一个新的异步任务</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">spawn</span></span>&lt;F&gt;(&amp;<span class="keyword">self</span>, id: <span class="built_in">usize</span>, future: F)</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        F: Future&lt;Output = ()&gt; + <span class="built_in">Send</span> + <span class="symbol">'static</span>,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> task = Task &#123;</span><br><span class="line">            future: <span class="built_in">Box</span>::pin(future),</span><br><span class="line">            id,</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">self</span>.sender</span><br><span class="line">            .send(task)</span><br><span class="line">            .expect(<span class="string">"任务队列已满或 Executor 已关闭"</span>);</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"[Spawner] 已提交任务 #&#123;&#125;"</span>, id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 执行器：负责驱动所有异步任务直到完成</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Executor</span></span> &#123;</span><br><span class="line">    <span class="comment">/// 就绪队列：存放等待执行的任务</span></span><br><span class="line">    ready_queue: Receiver&lt;Task&gt;,</span><br><span class="line">    <span class="comment">/// 用于重新调度任务的发送端</span></span><br><span class="line">    sender: Sender&lt;Task&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Executor &#123;</span><br><span class="line">    <span class="comment">/// 创建一对 (Executor, Spawner)</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>() -&gt; (<span class="keyword">Self</span>, Spawner) &#123;</span><br><span class="line">        <span class="keyword">let</span> (sender, receiver) = mpsc::channel();</span><br><span class="line">        <span class="keyword">let</span> spawner = Spawner &#123;</span><br><span class="line">            sender: sender.clone(),</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">let</span> executor = Executor &#123;</span><br><span class="line">            ready_queue: receiver,</span><br><span class="line">            sender,</span><br><span class="line">        &#125;;</span><br><span class="line">        (executor, spawner)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/// 运行所有任务直到全部完成</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">run</span></span>(&amp;<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"[Executor] 开始运行...\n"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 持续从队列中取出任务并 poll</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">let</span> <span class="literal">Ok</span>(<span class="keyword">mut</span> task) = <span class="keyword">self</span>.ready_queue.recv() &#123;</span><br><span class="line">            <span class="keyword">let</span> task_id = task.id;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"[Executor] 正在 poll 任务 #&#123;&#125;..."</span>, task_id);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 为这个任务创建一个 Waker</span></span><br><span class="line">            <span class="keyword">let</span> waker = create_waker(task_id, <span class="keyword">self</span>.sender.clone());</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> cx = Context::from_waker(&amp;waker);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 调用 Future::poll</span></span><br><span class="line">            <span class="keyword">match</span> task.future.as_mut().poll(&amp;<span class="keyword">mut</span> cx) &#123;</span><br><span class="line">                Poll::Ready(()) =&gt; &#123;</span><br><span class="line">                    <span class="built_in">println!</span>(<span class="string">"[Executor] ✅ 任务 #&#123;&#125; 已完成!\n"</span>, task_id);</span><br><span class="line">                &#125;</span><br><span class="line">                Poll::Pending =&gt; &#123;</span><br><span class="line">                    <span class="built_in">println!</span>(<span class="string">"[Executor] ⏳ 任务 #&#123;&#125; 返回 Pending，等待唤醒...\n"</span>, task_id);</span><br><span class="line">                    <span class="comment">// 注意：这里我们不重新入队</span></span><br><span class="line">                    <span class="comment">// 任务会在 Waker::wake() 被调用时重新入队</span></span><br><span class="line">                    <span class="comment">// 但为了简化，某些 Future 内部会自行处理重新调度</span></span><br><span class="line">                    <span class="comment">// 在我们的实现中，Waker 会将任务重新发送到队列</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 我们需要保存任务，以便 Waker 能重新调度它</span></span><br><span class="line">                    <span class="comment">// 在简化版本中，我们通过闭包捕获来实现</span></span><br><span class="line">                    <span class="comment">// 这里将任务发送到一个等待区域</span></span><br><span class="line">                    PENDING_TASKS</span><br><span class="line">                        .lock()</span><br><span class="line">                        .unwrap()</span><br><span class="line">                        .insert(task_id, task);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"[Executor] 所有任务已完成，退出。"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局 pending 任务存储（简化实现）</span></span><br><span class="line">lazy_static::lazy_static! &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">ref</span> PENDING_TASKS: Mutex&lt;HashMap&lt;<span class="built_in">usize</span>, Task&gt;&gt; = Mutex::new(HashMap::new());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"><span class="comment">// 第三部分：Waker 的创建</span></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 用于存储 Waker 关联数据的结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">WakerData</span></span> &#123;</span><br><span class="line">    task_id: <span class="built_in">usize</span>,</span><br><span class="line">    sender: Sender&lt;Task&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 创建一个 Waker</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">create_waker</span></span>(task_id: <span class="built_in">usize</span>, sender: Sender&lt;Task&gt;) -&gt; Waker &#123;</span><br><span class="line">    <span class="keyword">let</span> data = Arc::new(WakerData &#123; task_id, sender &#125;);</span><br><span class="line">    <span class="keyword">let</span> raw = Arc::into_raw(data) <span class="keyword">as</span> *<span class="keyword">const</span> ();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> vtable = &amp;RawWakerVTable::new(</span><br><span class="line">        waker_clone,</span><br><span class="line">        waker_wake,</span><br><span class="line">        waker_wake_by_ref,</span><br><span class="line">        waker_drop,</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsafe</span> &#123; Waker::from_raw(RawWaker::new(raw, vtable)) &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsafe</span> <span class="function"><span class="keyword">fn</span> <span class="title">waker_clone</span></span>(ptr: *<span class="keyword">const</span> ()) -&gt; RawWaker &#123;</span><br><span class="line">    <span class="keyword">let</span> arc = Arc::from_raw(ptr <span class="keyword">as</span> *<span class="keyword">const</span> WakerData);</span><br><span class="line">    <span class="keyword">let</span> cloned = arc.clone();</span><br><span class="line">    std::mem::forget(arc); <span class="comment">// 不减少原来的引用计数</span></span><br><span class="line">    <span class="keyword">let</span> raw = Arc::into_raw(cloned) <span class="keyword">as</span> *<span class="keyword">const</span> ();</span><br><span class="line">    RawWaker::new(</span><br><span class="line">        raw,</span><br><span class="line">        &amp;RawWakerVTable::new(waker_clone, waker_wake, waker_wake_by_ref, waker_drop),</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsafe</span> <span class="function"><span class="keyword">fn</span> <span class="title">waker_wake</span></span>(ptr: *<span class="keyword">const</span> ()) &#123;</span><br><span class="line">    <span class="keyword">let</span> arc = Arc::from_raw(ptr <span class="keyword">as</span> *<span class="keyword">const</span> WakerData);</span><br><span class="line">    do_wake(&amp;arc);</span><br><span class="line">    <span class="comment">// arc 在这里被 drop，引用计数减少</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsafe</span> <span class="function"><span class="keyword">fn</span> <span class="title">waker_wake_by_ref</span></span>(ptr: *<span class="keyword">const</span> ()) &#123;</span><br><span class="line">    <span class="keyword">let</span> arc = Arc::from_raw(ptr <span class="keyword">as</span> *<span class="keyword">const</span> WakerData);</span><br><span class="line">    do_wake(&amp;arc);</span><br><span class="line">    std::mem::forget(arc); <span class="comment">// 不减少引用计数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsafe</span> <span class="function"><span class="keyword">fn</span> <span class="title">waker_drop</span></span>(ptr: *<span class="keyword">const</span> ()) &#123;</span><br><span class="line">    <span class="built_in">drop</span>(Arc::from_raw(ptr <span class="keyword">as</span> *<span class="keyword">const</span> WakerData));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">do_wake</span></span>(data: &amp;WakerData) &#123;</span><br><span class="line">    <span class="keyword">let</span> task_id = data.task_id;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"[Waker] 唤醒任务 #&#123;&#125;!"</span>, task_id);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 从 pending 任务表中取出任务，重新发送到就绪队列</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(task) = PENDING_TASKS.lock().unwrap().remove(&amp;task_id) &#123;</span><br><span class="line">        <span class="keyword">let</span> _ = data.sender.send(task);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"><span class="comment">// 第四部分：自定义 Future 实现</span></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ---------- 4.1 TimerFuture：异步定时器 ----------</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TimerFuture</span></span> &#123;</span><br><span class="line">    <span class="comment">/// 到期时间</span></span><br><span class="line">    target_time: Instant,</span><br><span class="line">    <span class="comment">/// 是否已经启动了后台线程</span></span><br><span class="line">    started: <span class="built_in">bool</span>,</span><br><span class="line">    <span class="comment">/// 共享状态：标记是否已完成</span></span><br><span class="line">    completed: Arc&lt;Mutex&lt;<span class="built_in">bool</span>&gt;&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> TimerFuture &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(duration: Duration) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        TimerFuture &#123;</span><br><span class="line">            target_time: Instant::now() + duration,</span><br><span class="line">            started: <span class="literal">false</span>,</span><br><span class="line">            completed: Arc::new(Mutex::new(<span class="literal">false</span>)),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Future <span class="keyword">for</span> TimerFuture &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = ();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">poll</span></span>(<span class="keyword">mut</span> <span class="keyword">self</span>: Pin&lt;&amp;<span class="keyword">mut</span> <span class="keyword">Self</span>&gt;, cx: &amp;<span class="keyword">mut</span> Context&lt;<span class="symbol">'_</span>&gt;) -&gt; Poll&lt;()&gt; &#123;</span><br><span class="line">        <span class="comment">// 检查是否已完成</span></span><br><span class="line">        <span class="keyword">if</span> *<span class="keyword">self</span>.completed.lock().unwrap() &#123;</span><br><span class="line">            <span class="keyword">return</span> Poll::Ready(());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果还没有启动后台线程，就启动一个</span></span><br><span class="line">        <span class="keyword">if</span> !<span class="keyword">self</span>.started &#123;</span><br><span class="line">            <span class="keyword">self</span>.started = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">let</span> waker = cx.waker().clone();</span><br><span class="line">            <span class="keyword">let</span> target = <span class="keyword">self</span>.target_time;</span><br><span class="line">            <span class="keyword">let</span> completed = <span class="keyword">self</span>.completed.clone();</span><br><span class="line"></span><br><span class="line">            thread::spawn(<span class="keyword">move</span> || &#123;</span><br><span class="line">                <span class="keyword">let</span> now = Instant::now();</span><br><span class="line">                <span class="keyword">if</span> now &lt; target &#123;</span><br><span class="line">                    thread::sleep(target - now);</span><br><span class="line">                &#125;</span><br><span class="line">                *completed.lock().unwrap() = <span class="literal">true</span>;</span><br><span class="line">                waker.wake(); <span class="comment">// 唤醒 Executor 重新 poll 这个任务</span></span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Poll::Pending</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ---------- 4.2 HttpFuture：异步 HTTP GET 请求 ----------</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">HttpFuture</span></span> &#123;</span><br><span class="line">    url: <span class="built_in">String</span>,</span><br><span class="line">    host: <span class="built_in">String</span>,</span><br><span class="line">    path: <span class="built_in">String</span>,</span><br><span class="line">    port: <span class="built_in">u16</span>,</span><br><span class="line">    started: <span class="built_in">bool</span>,</span><br><span class="line">    result: Arc&lt;Mutex&lt;<span class="built_in">Option</span>&lt;<span class="built_in">String</span>&gt;&gt;&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> HttpFuture &#123;</span><br><span class="line">    <span class="comment">/// 创建一个简单的 HTTP GET Future</span></span><br><span class="line">    <span class="comment">/// 参数格式：host, path, port</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(host: &amp;<span class="built_in">str</span>, path: &amp;<span class="built_in">str</span>, port: <span class="built_in">u16</span>) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        HttpFuture &#123;</span><br><span class="line">            url: <span class="built_in">format!</span>(<span class="string">"&#123;&#125;:&#123;&#125;&#123;&#125;"</span>, host, port, path),</span><br><span class="line">            host: host.to_string(),</span><br><span class="line">            path: path.to_string(),</span><br><span class="line">            port,</span><br><span class="line">            started: <span class="literal">false</span>,</span><br><span class="line">            result: Arc::new(Mutex::new(<span class="literal">None</span>)),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Future <span class="keyword">for</span> HttpFuture &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = <span class="built_in">String</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">poll</span></span>(<span class="keyword">mut</span> <span class="keyword">self</span>: Pin&lt;&amp;<span class="keyword">mut</span> <span class="keyword">Self</span>&gt;, cx: &amp;<span class="keyword">mut</span> Context&lt;<span class="symbol">'_</span>&gt;) -&gt; Poll&lt;<span class="built_in">String</span>&gt; &#123;</span><br><span class="line">        <span class="comment">// 检查是否已有结果</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(result) = <span class="keyword">self</span>.result.lock().unwrap().take() &#123;</span><br><span class="line">            <span class="keyword">return</span> Poll::Ready(result);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 首次 poll 时启动后台 I/O 线程</span></span><br><span class="line">        <span class="keyword">if</span> !<span class="keyword">self</span>.started &#123;</span><br><span class="line">            <span class="keyword">self</span>.started = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> host = <span class="keyword">self</span>.host.clone();</span><br><span class="line">            <span class="keyword">let</span> path = <span class="keyword">self</span>.path.clone();</span><br><span class="line">            <span class="keyword">let</span> port = <span class="keyword">self</span>.port;</span><br><span class="line">            <span class="keyword">let</span> url = <span class="keyword">self</span>.url.clone();</span><br><span class="line">            <span class="keyword">let</span> result = <span class="keyword">self</span>.result.clone();</span><br><span class="line">            <span class="keyword">let</span> waker = cx.waker().clone();</span><br><span class="line"></span><br><span class="line">            thread::spawn(<span class="keyword">move</span> || &#123;</span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">"  [HTTP] 开始请求: &#123;&#125;"</span>, url);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">let</span> response = do_http_get(&amp;host, &amp;path, port);</span><br><span class="line"></span><br><span class="line">                *result.lock().unwrap() = <span class="literal">Some</span>(response);</span><br><span class="line">                waker.wake(); <span class="comment">// 通知 Executor 结果已就绪</span></span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Poll::Pending</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// 执行同步 HTTP GET 请求（用于后台线程）</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">do_http_get</span></span>(host: &amp;<span class="built_in">str</span>, path: &amp;<span class="built_in">str</span>, port: <span class="built_in">u16</span>) -&gt; <span class="built_in">String</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> addr = <span class="built_in">format!</span>(<span class="string">"&#123;&#125;:&#123;&#125;"</span>, host, port);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">match</span> TcpStream::connect_timeout(</span><br><span class="line">        &amp;addr.parse().unwrap_or_else(|_| &#123;</span><br><span class="line">            <span class="comment">// 如果是域名，先做 DNS 解析</span></span><br><span class="line">            <span class="keyword">use</span> std::net::ToSocketAddrs;</span><br><span class="line">            <span class="built_in">format!</span>(<span class="string">"&#123;&#125;:&#123;&#125;"</span>, host, port)</span><br><span class="line">                .to_socket_addrs()</span><br><span class="line">                .ok()</span><br><span class="line">                .and_then(|<span class="keyword">mut</span> addrs| addrs.next())</span><br><span class="line">                .unwrap_or_else(|| <span class="string">"127.0.0.1:80"</span>.parse().unwrap())</span><br><span class="line">        &#125;),</span><br><span class="line">        Duration::from_secs(<span class="number">5</span>),</span><br><span class="line">    ) &#123;</span><br><span class="line">        <span class="literal">Ok</span>(<span class="keyword">mut</span> stream) =&gt; &#123;</span><br><span class="line">            <span class="keyword">let</span> request = <span class="built_in">format!</span>(</span><br><span class="line">                <span class="string">"GET &#123;&#125; HTTP/1.1\r\nHost: &#123;&#125;\r\nConnection: close\r\n\r\n"</span>,</span><br><span class="line">                path, host</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            stream.write_all(request.as_bytes()).ok();</span><br><span class="line">            stream</span><br><span class="line">                .set_read_timeout(<span class="literal">Some</span>(Duration::from_secs(<span class="number">5</span>)))</span><br><span class="line">                .ok();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut</span> response = <span class="built_in">String</span>::new();</span><br><span class="line">            stream.read_to_string(&amp;<span class="keyword">mut</span> response).ok();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 只返回前 200 个字符作为摘要</span></span><br><span class="line">            <span class="keyword">let</span> summary: <span class="built_in">String</span> = response.chars().take(<span class="number">200</span>).collect();</span><br><span class="line">            <span class="built_in">format!</span>(<span class="string">"[响应摘要] &#123;&#125;"</span>, summary)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="literal">Err</span>(e) =&gt; &#123;</span><br><span class="line">            <span class="built_in">format!</span>(<span class="string">"[请求失败] &#123;&#125; - 错误: &#123;&#125;"</span>, addr, e)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"><span class="comment">// 第五部分：组合 Future —— JoinAll</span></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 简单的 join_all 实现：并发执行多个 Future</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">JoinAll</span></span>&lt;F: Future&gt; &#123;</span><br><span class="line">    futures: <span class="built_in">Vec</span>&lt;<span class="built_in">Option</span>&lt;Pin&lt;<span class="built_in">Box</span>&lt;F&gt;&gt;&gt;&gt;,</span><br><span class="line">    results: <span class="built_in">Vec</span>&lt;<span class="built_in">Option</span>&lt;F::Output&gt;&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;F: Future&gt; JoinAll&lt;F&gt; &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(futures: <span class="built_in">Vec</span>&lt;F&gt;) -&gt; <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> len = futures.len();</span><br><span class="line">        JoinAll &#123;</span><br><span class="line">            futures: futures</span><br><span class="line">                .into_iter()</span><br><span class="line">                .map(|f| <span class="literal">Some</span>(<span class="built_in">Box</span>::pin(f)))</span><br><span class="line">                .collect(),</span><br><span class="line">            results: (<span class="number">0</span>..len).map(|_| <span class="literal">None</span>).collect(),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;F: Future&gt; Future <span class="keyword">for</span> JoinAll&lt;F&gt; &#123;</span><br><span class="line">    <span class="class"><span class="keyword">type</span> <span class="title">Output</span></span> = <span class="built_in">Vec</span>&lt;F::Output&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">poll</span></span>(<span class="keyword">mut</span> <span class="keyword">self</span>: Pin&lt;&amp;<span class="keyword">mut</span> <span class="keyword">Self</span>&gt;, cx: &amp;<span class="keyword">mut</span> Context&lt;<span class="symbol">'_</span>&gt;) -&gt; Poll&lt;<span class="built_in">Vec</span>&lt;F::Output&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> this = <span class="keyword">unsafe</span> &#123; <span class="keyword">self</span>.as_mut().get_unchecked_mut() &#125;;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> all_done = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..this.futures.len() &#123;</span><br><span class="line">            <span class="keyword">if</span> this.results[i].is_some() &#123;</span><br><span class="line">                <span class="keyword">continue</span>; <span class="comment">// 已完成</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Some</span>(<span class="keyword">ref</span> <span class="keyword">mut</span> future) = this.futures[i] &#123;</span><br><span class="line">                <span class="keyword">match</span> future.as_mut().poll(cx) &#123;</span><br><span class="line">                    Poll::Ready(value) =&gt; &#123;</span><br><span class="line">                        this.results[i] = <span class="literal">Some</span>(value);</span><br><span class="line">                        this.futures[i] = <span class="literal">None</span>; <span class="comment">// 释放已完成的 Future</span></span><br><span class="line">                    &#125;</span><br><span class="line">                    Poll::Pending =&gt; &#123;</span><br><span class="line">                        all_done = <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> all_done &#123;</span><br><span class="line">            <span class="keyword">let</span> results: <span class="built_in">Vec</span>&lt;F::Output&gt; = this</span><br><span class="line">                .results</span><br><span class="line">                .iter_mut()</span><br><span class="line">                .map(|r| r.take().unwrap())</span><br><span class="line">                .collect();</span><br><span class="line">            Poll::Ready(results)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Poll::Pending</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"><span class="comment">// 第六部分：主函数 —— 使用我们的运行时</span></span><br><span class="line"><span class="comment">// ============================================================</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"╔══════════════════════════════════════════╗"</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"║    手写 Rust 异步运行时 Demo             ║"</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"╚══════════════════════════════════════════╝\n"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建 Executor 和 Spawner</span></span><br><span class="line">    <span class="keyword">let</span> (executor, spawner) = Executor::new();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ---- 任务 1: 简单的定时器任务 ----</span></span><br><span class="line">    spawner.spawn(<span class="number">1</span>, <span class="keyword">async</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务1] 开始执行，等待 1 秒..."</span>);</span><br><span class="line">        TimerFuture::new(Duration::from_secs(<span class="number">1</span>)).<span class="keyword">await</span>;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务1] 1 秒已到！任务完成。"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ---- 任务 2: 多个网络请求并发执行 ----</span></span><br><span class="line">    spawner.spawn(<span class="number">2</span>, <span class="keyword">async</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务2] 开始发起多个并发 HTTP 请求...\n"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 模拟多个网络请求</span></span><br><span class="line">        <span class="comment">// 注意：这些是真实的 TCP 请求，如果无法连接会超时</span></span><br><span class="line">        <span class="keyword">let</span> request1 = HttpFuture::new(<span class="string">"httpbin.org"</span>, <span class="string">"/get"</span>, <span class="number">80</span>);</span><br><span class="line">        <span class="keyword">let</span> request2 = HttpFuture::new(<span class="string">"httpbin.org"</span>, <span class="string">"/ip"</span>, <span class="number">80</span>);</span><br><span class="line">        <span class="keyword">let</span> request3 = HttpFuture::new(<span class="string">"httpbin.org"</span>, <span class="string">"/user-agent"</span>, <span class="number">80</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用我们的 JoinAll 并发等待所有请求</span></span><br><span class="line">        <span class="keyword">let</span> results = JoinAll::new(<span class="built_in">vec!</span>[request1, request2, request3]).<span class="keyword">await</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"\n  [任务2] 所有请求完成！结果："</span>);</span><br><span class="line">        <span class="keyword">for</span> (i, result) <span class="keyword">in</span> results.iter().enumerate() &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"  ── 请求 &#123;&#125;: &#123;&#125;"</span>, i + <span class="number">1</span>, result);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ---- 任务 3: 模拟多个异步操作的管道 ----</span></span><br><span class="line">    spawner.spawn(<span class="number">3</span>, <span class="keyword">async</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务3] 开始模拟异步流水线..."</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤 1: 模拟数据获取（等待 500ms）</span></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务3] 步骤1: 获取数据..."</span>);</span><br><span class="line">        TimerFuture::new(Duration::from_millis(<span class="number">500</span>)).<span class="keyword">await</span>;</span><br><span class="line">        <span class="keyword">let</span> data = <span class="string">"原始数据-XYZ"</span>;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务3] 步骤1完成: 获取到 '&#123;&#125;'"</span>, data);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤 2: 模拟数据处理（等待 300ms）</span></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务3] 步骤2: 处理数据..."</span>);</span><br><span class="line">        TimerFuture::new(Duration::from_millis(<span class="number">300</span>)).<span class="keyword">await</span>;</span><br><span class="line">        <span class="keyword">let</span> processed = <span class="built_in">format!</span>(<span class="string">"processed(&#123;&#125;)"</span>, data);</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务3] 步骤2完成: '&#123;&#125;'"</span>, processed);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤 3: 模拟保存结果（等待 200ms）</span></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务3] 步骤3: 保存结果..."</span>);</span><br><span class="line">        TimerFuture::new(Duration::from_millis(<span class="number">200</span>)).<span class="keyword">await</span>;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务3] 步骤3完成: 数据已保存！"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"  [任务3] 流水线全部完成! 最终结果: &#123;&#125;"</span>, processed);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 丢弃 spawner，当所有任务完成后 executor 会退出</span></span><br><span class="line">    <span class="built_in">drop</span>(spawner);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 运行 Executor</span></span><br><span class="line">    executor.run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Cargo-toml-依赖"><a href="#Cargo-toml-依赖" class="headerlink" title="Cargo.toml 依赖"></a>Cargo.toml 依赖</h3><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">"mini-async-runtime"</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">"0.1.0"</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">"2021"</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">lazy_static</span> = <span class="string">"1.4"</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、代码架构解析"><a href="#三、代码架构解析" class="headerlink" title="三、代码架构解析"></a>三、代码架构解析</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│                       main()                        │</span><br><span class="line">│  ┌───────────┐  ┌───────────┐  ┌───────────┐       │</span><br><span class="line">│  │  任务 #1   │  │  任务 #2   │  │  任务 #3   │      │</span><br><span class="line">│  │ TimerFuture│  │ HttpFuture│  │  Pipeline  │      │</span><br><span class="line">│  │  (1s 延迟) │  │ (3个请求) │  │  (3步流水) │      │</span><br><span class="line">│  └─────┬─────┘  └─────┬─────┘  └─────┬─────┘       │</span><br><span class="line">│        │              │              │              │</span><br><span class="line">│        └──────────────┼──────────────┘              │</span><br><span class="line">│                       ▼                             │</span><br><span class="line">│              ┌─────────────────┐                    │</span><br><span class="line">│              │    Spawner      │                    │</span><br><span class="line">│              │  (提交到队列)   │                    │</span><br><span class="line">│              └────────┬────────┘                    │</span><br><span class="line">│                       ▼                             │</span><br><span class="line">│              ┌─────────────────┐                    │</span><br><span class="line">│              │   Channel       │  ◄── Waker::wake() │</span><br><span class="line">│              │  (mpsc::channel)│       重新入队      │</span><br><span class="line">│              └────────┬────────┘                    │</span><br><span class="line">│                       ▼                             │</span><br><span class="line">│              ┌─────────────────┐                    │</span><br><span class="line">│              │   Executor      │                    │</span><br><span class="line">│              │  (循环 poll)    │                    │</span><br><span class="line">│              └─────────────────┘                    │</span><br><span class="line">└─────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行流程详解"><a href="#执行流程详解" class="headerlink" title="执行流程详解"></a>执行流程详解</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">时间线 ──────────────────────────────────────────────►</span><br><span class="line"></span><br><span class="line">Executor:  poll(#1) → Pending    poll(#2) → Pending    poll(#3) → Pending</span><br><span class="line">              │                     │                     │</span><br><span class="line">              ▼                     ▼                     ▼</span><br><span class="line">后台线程:  [线程A: sleep 1s]   [线程B: HTTP req1]    [线程D: sleep 500ms]</span><br><span class="line">                               [线程C: HTTP req2]</span><br><span class="line">                               [线程E: HTTP req3]</span><br><span class="line">              │                     │                     │</span><br><span class="line">              ▼                     ▼                     ▼</span><br><span class="line">           wake(#1)             wake(#2)              wake(#3)</span><br><span class="line">              │                     │                     │</span><br><span class="line">              ▼                     ▼                     ▼</span><br><span class="line">Executor:  poll(#1) → Ready ✅  poll(#2) → ...        poll(#3) → Pending</span><br><span class="line">                                                          │</span><br><span class="line">                                                       (继续步骤2/3...)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、关键机制深入解读"><a href="#四、关键机制深入解读" class="headerlink" title="四、关键机制深入解读"></a>四、关键机制深入解读</h2><h3 id="4-1-为什么用-mpsc-channel-作为任务队列？"><a href="#4-1-为什么用-mpsc-channel-作为任务队列？" class="headerlink" title="4.1 为什么用 mpsc::channel 作为任务队列？"></a>4.1 为什么用 <code>mpsc::channel</code> 作为任务队列？</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生产者-消费者模型完美匹配 Executor 的需求：</span></span><br><span class="line"><span class="comment">// - Spawner（生产者）可以从任意线程提交任务</span></span><br><span class="line"><span class="comment">// - Executor（消费者）从队列中取出任务执行</span></span><br><span class="line"><span class="comment">// - Waker 也是生产者，将被唤醒的任务重新入队</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> (sender, receiver) = mpsc::channel();</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-Waker-的实现原理"><a href="#4-2-Waker-的实现原理" class="headerlink" title="4.2 Waker 的实现原理"></a>4.2 Waker 的实现原理</h3><p>Waker 的核心是一个 <strong>虚函数表（VTable）</strong>，这是 Rust 低级抽象的体现：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RawWakerVTable 定义了 4 个操作：</span></span><br><span class="line">RawWakerVTable::new(</span><br><span class="line">    clone,          <span class="comment">// 克隆 Waker</span></span><br><span class="line">    wake,           <span class="comment">// 唤醒并消费 Waker</span></span><br><span class="line">    wake_by_ref,    <span class="comment">// 唤醒但不消费 Waker</span></span><br><span class="line">    <span class="built_in">drop</span>,           <span class="comment">// 销毁 Waker</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这使得 Waker 可以跨越 trait object 的边界，</span></span><br><span class="line"><span class="comment">// 不依赖于具体的 Executor 实现</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-与-tokio-等成熟运行时的对比"><a href="#4-3-与-tokio-等成熟运行时的对比" class="headerlink" title="4.3 与 tokio 等成熟运行时的对比"></a>4.3 与 tokio 等成熟运行时的对比</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>我们的实现</th>
+<th>tokio</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>任务调度</td>
+<td>单线程，mpsc channel</td>
+<td>多线程 work-stealing</td>
+</tr>
+<tr>
+<td>I/O 模型</td>
+<td>后台线程 + 阻塞 I/O</td>
+<td>epoll/kqueue/IOCP (非阻塞)</td>
+</tr>
+<tr>
+<td>定时器</td>
+<td>每个定时器一个线程</td>
+<td>时间轮算法，共享线程</td>
+</tr>
+<tr>
+<td>Waker</td>
+<td>手动 VTable</td>
+<td>优化的 waker 实现</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>学习/理解原理</td>
+<td>生产环境</td>
+</tr>
+</tbody></table>
+<h3 id="4-4-真正的异步-I-O-vs-我们的模拟"><a href="#4-4-真正的异步-I-O-vs-我们的模拟" class="headerlink" title="4.4 真正的异步 I/O vs 我们的模拟"></a>4.4 真正的异步 I/O vs 我们的模拟</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">我们的实现（线程模拟异步）：</span><br><span class="line">┌──────────┐     spawn thread      ┌──────────────┐</span><br><span class="line">│  Future   │ ──────────────────&gt;  │ 后台线程       │</span><br><span class="line">│  poll()   │                      │ 阻塞 I/O      │</span><br><span class="line">│  Pending  │ &lt;────── wake() ───── │ 完成后唤醒     │</span><br><span class="line">└──────────┘                       └──────────────┘</span><br><span class="line"></span><br><span class="line">真正的异步 I/O（tokio/epoll）：</span><br><span class="line">┌──────────┐    register fd       ┌──────────────┐</span><br><span class="line">│  Future   │ ──────────────────&gt; │ epoll/kqueue  │</span><br><span class="line">│  poll()   │                     │ 内核事件循环   │</span><br><span class="line">│  Pending  │ &lt;──── wake() ────── │ 事件就绪通知   │</span><br><span class="line">└──────────┘                      └──────────────┘</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、不使用-lazy-static-的改进版本"><a href="#五、不使用-lazy-static-的改进版本" class="headerlink" title="五、不使用 lazy_static 的改进版本"></a>五、不使用 <code>lazy_static</code> 的改进版本</h2><p>如果你不想引入外部依赖，可以使用以下改进方案：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::sync::OnceLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> PENDING_TASKS: OnceLock&lt;Mutex&lt;HashMap&lt;<span class="built_in">usize</span>, Task&gt;&gt;&gt; = OnceLock::new();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">pending_tasks</span></span>() -&gt; &amp;<span class="symbol">'static</span> Mutex&lt;HashMap&lt;<span class="built_in">usize</span>, Task&gt;&gt; &#123;</span><br><span class="line">    PENDING_TASKS.get_or_init(|| Mutex::new(HashMap::new()))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>或者更优雅的方式——将 pending tasks 存储在 Executor 内部，通过 <code>Arc</code> 共享：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Executor</span></span> &#123;</span><br><span class="line">    ready_queue: Receiver&lt;Task&gt;,</span><br><span class="line">    sender: Sender&lt;Task&gt;,</span><br><span class="line">    pending: Arc&lt;Mutex&lt;HashMap&lt;<span class="built_in">usize</span>, Task&gt;&gt;&gt;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、运行效果示例"><a href="#六、运行效果示例" class="headerlink" title="六、运行效果示例"></a>六、运行效果示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">╔══════════════════════════════════════════╗</span><br><span class="line">║    手写 Rust 异步运行时 Demo             ║</span><br><span class="line">╚══════════════════════════════════════════╝</span><br><span class="line"></span><br><span class="line">[Spawner] 已提交任务 #1</span><br><span class="line">[Spawner] 已提交任务 #2</span><br><span class="line">[Spawner] 已提交任务 #3</span><br><span class="line">[Executor] 开始运行...</span><br><span class="line"></span><br><span class="line">[Executor] 正在 poll 任务 #1...</span><br><span class="line">  [任务1] 开始执行，等待 1 秒...</span><br><span class="line">[Executor] ⏳ 任务 #1 返回 Pending，等待唤醒...</span><br><span class="line"></span><br><span class="line">[Executor] 正在 poll 任务 #2...</span><br><span class="line">  [任务2] 开始发起多个并发 HTTP 请求...</span><br><span class="line">  [HTTP] 开始请求: httpbin.org:80/get</span><br><span class="line">  [HTTP] 开始请求: httpbin.org:80/ip</span><br><span class="line">  [HTTP] 开始请求: httpbin.org:80/user-agent</span><br><span class="line">[Executor] ⏳ 任务 #2 返回 Pending，等待唤醒...</span><br><span class="line"></span><br><span class="line">[Executor] 正在 poll 任务 #3...</span><br><span class="line">  [任务3] 开始模拟异步流水线...</span><br><span class="line">  [任务3] 步骤1: 获取数据...</span><br><span class="line">[Executor] ⏳ 任务 #3 返回 Pending，等待唤醒...</span><br><span class="line"></span><br><span class="line">[Waker] 唤醒任务 #3!</span><br><span class="line">[Executor] 正在 poll 任务 #3...</span><br><span class="line">  [任务3] 步骤1完成: 获取到 &apos;原始数据-XYZ&apos;</span><br><span class="line">  [任务3] 步骤2: 处理数据...</span><br><span class="line">[Executor] ⏳ 任务 #3 返回 Pending，等待唤醒...</span><br><span class="line"></span><br><span class="line">[Waker] 唤醒任务 #1!</span><br><span class="line">[Executor] 正在 poll 任务 #1...</span><br><span class="line">  [任务1] 1 秒已到！任务完成。</span><br><span class="line">[Executor] ✅ 任务 #1 已完成!</span><br><span class="line"></span><br><span class="line">[Waker] 唤醒任务 #3!</span><br><span class="line">[Executor] 正在 poll 任务 #3...</span><br><span class="line">  [任务3] 步骤2完成: &apos;processed(原始数据-XYZ)&apos;</span><br><span class="line">  [任务3] 步骤3: 保存结果...</span><br><span class="line">[Executor] ⏳ 任务 #3 返回 Pending，等待唤醒...</span><br><span class="line"></span><br><span class="line">...（继续直到所有任务完成）</span><br><span class="line"></span><br><span class="line">[Executor] 所有任务已完成，退出。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><h3 id="Rust-异步编程的核心设计哲学"><a href="#Rust-异步编程的核心设计哲学" class="headerlink" title="Rust 异步编程的核心设计哲学"></a>Rust 异步编程的核心设计哲学</h3><ol>
+<li><strong>零成本抽象</strong>：async/await 在编译期转换为状态机，无 GC、无运行时开销</li>
+<li><strong>运行时可插拔</strong>：语言只定义 <code>Future</code> trait，具体运行时由库提供（tokio、async-std、smol 等）</li>
+<li><strong>协作式调度</strong>：Future 在 await 点主动让出控制权</li>
+<li><strong>类型安全</strong>：Pin 机制在编译期防止自引用问题</li>
+<li><strong>惰性求值</strong>：Future 不 poll 就不执行，避免不必要的计算</li>
+</ol>
+<h3 id="何时使用异步"><a href="#何时使用异步" class="headerlink" title="何时使用异步"></a>何时使用异步</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>大量并发 I/O（Web 服务器、爬虫）</td>
+<td>✅ async/await</td>
+</tr>
+<tr>
+<td>CPU 密集计算</td>
+<td>❌ 使用 <code>rayon</code> 或线程池</td>
+</tr>
+<tr>
+<td>少量并发任务</td>
+<td>🤔 线程可能更简单</td>
+</tr>
+<tr>
+<td>嵌入式/no_std</td>
+<td>✅ async 很适合（embassy 框架）</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/rust/" rel="tag"># rust</a>
+          
+            <a href="/tags/并行/" rel="tag"># 并行</a>
+          
+            <a href="/tags/async/" rel="tag"># async</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2026/03/28/ai/make-simple-agent-rust/" rel="next" title="Rust开发一个最简单的RAG">
+                <i class="fa fa-chevron-left"></i> Rust开发一个最简单的RAG
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2026/04/04/ai/claude-code-local/" rel="prev" title="Claude Code使用本地模型">
+                Claude Code使用本地模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="MemoryWalker">
+            
+              <p class="site-author-name" itemprop="name">MemoryWalker</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">99</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">87</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/memorywalker" title="GitHub &rarr; https://github.com/memorywalker" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/aquar" title="Weibo &rarr; https://weibo.com/aquar" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust异步编程"><span class="nav-number">1.</span> <span class="nav-text">Rust异步编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Rust-异步编程核心概念"><span class="nav-number">2.</span> <span class="nav-text">一、Rust 异步编程核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-异步编程的本质"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 异步编程的本质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-核心三要素"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 核心三要素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-Future-Trait"><span class="nav-number">2.3.</span> <span class="nav-text">1.3 Future Trait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-async-await-的编译期转换"><span class="nav-number">2.4.</span> <span class="nav-text">1.4 async/await 的编译期转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-Pin-与自引用"><span class="nav-number">2.5.</span> <span class="nav-text">1.5 Pin 与自引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-Waker-机制"><span class="nav-number">2.6.</span> <span class="nav-text">1.6 Waker 机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、手写一个简单的异步运行时"><span class="nav-number">3.</span> <span class="nav-text">二、手写一个简单的异步运行时</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码"><span class="nav-number">3.1.</span> <span class="nav-text">完整代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cargo-toml-依赖"><span class="nav-number">3.2.</span> <span class="nav-text">Cargo.toml 依赖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、代码架构解析"><span class="nav-number">4.</span> <span class="nav-text">三、代码架构解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#执行流程详解"><span class="nav-number">4.1.</span> <span class="nav-text">执行流程详解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、关键机制深入解读"><span class="nav-number">5.</span> <span class="nav-text">四、关键机制深入解读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-为什么用-mpsc-channel-作为任务队列？"><span class="nav-number">5.1.</span> <span class="nav-text">4.1 为什么用 mpsc::channel 作为任务队列？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Waker-的实现原理"><span class="nav-number">5.2.</span> <span class="nav-text">4.2 Waker 的实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-与-tokio-等成熟运行时的对比"><span class="nav-number">5.3.</span> <span class="nav-text">4.3 与 tokio 等成熟运行时的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-真正的异步-I-O-vs-我们的模拟"><span class="nav-number">5.4.</span> <span class="nav-text">4.4 真正的异步 I/O vs 我们的模拟</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、不使用-lazy-static-的改进版本"><span class="nav-number">6.</span> <span class="nav-text">五、不使用 lazy_static 的改进版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、运行效果示例"><span class="nav-number">7.</span> <span class="nav-text">六、运行效果示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、总结"><span class="nav-number">8.</span> <span class="nav-text">七、总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rust-异步编程的核心设计哲学"><span class="nav-number">8.1.</span> <span class="nav-text">Rust 异步编程的核心设计哲学</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#何时使用异步"><span class="nav-number">8.2.</span> <span class="nav-text">何时使用异步</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MemoryWalker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
