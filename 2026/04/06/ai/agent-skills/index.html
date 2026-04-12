@@ -103,7 +103,7 @@
 <meta property="og:description" content="Agent Skills官网 https://agentskills.io/home 吴恩达Agent Skills视频课程 https://www.bilibili.com/video/BV1bE6iB7EFG 概念Agent Skills are a lightweight, open format for extending AI agent capabilities. A skill is">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://memorywalker.github.io/2026/04/06/ai/agent-skills/uploads/ai/agentskillmcp.png">
-<meta property="og:updated_time" content="2026-04-06T16:20:56.062Z">
+<meta property="og:updated_time" content="2026-04-12T11:32:42.116Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Agent Skills">
 <meta name="twitter:description" content="Agent Skills官网 https://agentskills.io/home 吴恩达Agent Skills视频课程 https://www.bilibili.com/video/BV1bE6iB7EFG 概念Agent Skills are a lightweight, open format for extending AI agent capabilities. A skill is">
@@ -396,12 +396,24 @@
                 
               
 
-              <time title="创建时间：2026-04-06 09:24:00 / 修改时间：16:20:56" itemprop="dateCreated datePublished" datetime="2026-04-06T09:24:00+00:00">2026-04-06</time>
+              <time title="创建时间：2026-04-06 09:24:00" itemprop="dateCreated datePublished" datetime="2026-04-06T09:24:00+00:00">2026-04-06</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2026-04-12 11:32:42" itemprop="dateModified" datetime="2026-04-12T11:32:42+00:00">2026-04-12</time>
               
             
           </span>
@@ -582,7 +594,7 @@
 <h5 id="正文说明"><a href="#正文说明" class="headerlink" title="正文说明"></a>正文说明</h5><p>markdown格式内容，建议包括：</p>
 <ul>
 <li>工作流一步一步的说明，如果一个步骤是可以跳过的，也要明确写出来</li>
-<li>输入格式，输出格式以及举个例子</li>
+<li>输入格式，输出格式，输出的目录结构以及举个例子</li>
 <li>常规的边界情况</li>
 </ul>
 <p><strong>实践经验</strong></p>
@@ -616,30 +628,24 @@
 <td>说明引用的具体的脚本；必须遵循的顺序流程</td>
 </tr>
 </tbody></table>
-<h3 id="可选的目录"><a href="#可选的目录" class="headerlink" title="可选的目录"></a>可选的目录</h3><h4 id="assets"><a href="#assets" class="headerlink" title="/assets"></a><code>/assets</code></h4><ul>
+<h3 id="可选的目录"><a href="#可选的目录" class="headerlink" title="可选的目录"></a>可选的目录</h3><h4 id="assets"><a href="#assets" class="headerlink" title="/assets"></a><code>/assets</code></h4><p>输入或输出时可能会用到的资源文件，特别是输出可以参考模板输出</p>
+<ul>
 <li><strong>Templates:</strong> 文档模板, 配置模板</li>
 <li><strong>Images:</strong> 图, logos</li>
 <li><strong>Data files:</strong> 数据表, 模式信息</li>
 </ul>
 <h4 id="references"><a href="#references" class="headerlink" title="/references"></a><code>/references</code></h4><ul>
-<li><p>agent需要读取的额外文档资料</p>
-</li>
-<li><p>一个文件只描述一件事情</p>
-</li>
-<li><p>超过100行的文件，在文件开始添加一个目录TOC，这样agent可以知道全局</p>
-<h4 id="scripts"><a href="#scripts" class="headerlink" title="/scripts"></a><code>/scripts</code></h4></li>
-<li><p>清晰的文档依赖</p>
-</li>
-<li><p>脚本有清晰的文档说明</p>
-</li>
-<li><p>错误处理要明显和有用的</p>
-</li>
-<li><p>说明中要明确告诉agent是执行这个脚本还是把它作为一个参考资料</p>
-<h3 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h3></li>
-<li><p>人工评估反馈好坏</p>
-</li>
-<li><p>使用所有会用到的模型进行评估</p>
-</li>
+<li>当skill正文内容太长时，agent需要读取的额外文档资料放在这里</li>
+<li>一个文件只描述一件事情</li>
+<li>超过100行的文件，在文件开始添加一个目录TOC，这样agent可以知道全局<h4 id="scripts"><a href="#scripts" class="headerlink" title="/scripts"></a><code>/scripts</code></h4></li>
+<li>清晰的文档依赖</li>
+<li>脚本有清晰的文档说明</li>
+<li>错误处理要明显和有用的</li>
+<li>说明中要明确告诉agent是执行这个脚本还是把它作为一个参考资料</li>
+</ul>
+<h3 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h3><ul>
+<li>人工评估反馈好坏</li>
+<li>使用所有会用到的模型进行评估</li>
 </ul>
 <h4 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h4><p>单元测试和软件的测试类似，一个测试用例包括:</p>
 <ul>
@@ -650,6 +656,47 @@
 </ul>
 <h4 id="Example-Test-Case"><a href="#Example-Test-Case" class="headerlink" title="Example Test Case"></a>Example Test Case</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"skills"</span>: [<span class="string">"generating-practice-questions"</span>],</span><br><span class="line">  <span class="attr">"queries"</span>: [</span><br><span class="line">    <span class="string">"Generate practice questions from this lecture note and save it to output.md"</span>,</span><br><span class="line">    <span class="string">"Generate practice questions from this lecture note and save it to output.tex"</span>,</span><br><span class="line">    <span class="string">"Generate practice questions from this lecture note and save it to output.pdf"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"files"</span>: [<span class="string">"test-files/notes.pdf"</span>, <span class="string">"test-files/notes.tex"</span>, <span class="string">"test-files/notes.pdf"</span>],</span><br><span class="line">  <span class="attr">"expected_behavior"</span>: [</span><br><span class="line">    <span class="string">"Successfully reads and extracts the input file. For pdf input, uses pdfplumber."</span>,</span><br><span class="line">    <span class="string">"Successfully extracts all the learning objectives."</span>,</span><br><span class="line">    <span class="string">"Generates the 4 types of questions."</span>,</span><br><span class="line">    <span class="string">"Follows the guidelines for each question."</span>,</span><br><span class="line">    <span class="string">"Uses the output structure and the correct output templates."</span>,</span><br><span class="line">    <span class="string">"The latex output successfully compiles."</span>,</span><br><span class="line">    <span class="string">"Saves the generated questions to a file named output."</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h3 id="视频课程中例子"><a href="#视频课程中例子" class="headerlink" title="视频课程中例子"></a>视频课程中例子</h3><hr>
+<p>name: analyzing-time-series</p>
+<h2 id="description-Comprehensive-diagnostic-analysis-of-time-series-data-Use-when-users-provide-CSV-time-series-data-and-want-to-understand-its-characteristics-before-forecasting-stationarity-seasonality-trend-forecastability-and-transform-recommendations"><a href="#description-Comprehensive-diagnostic-analysis-of-time-series-data-Use-when-users-provide-CSV-time-series-data-and-want-to-understand-its-characteristics-before-forecasting-stationarity-seasonality-trend-forecastability-and-transform-recommendations" class="headerlink" title="description: Comprehensive diagnostic analysis of time series data. Use when users provide CSV time series data and want to understand its characteristics before forecasting - stationarity, seasonality, trend, forecastability, and transform recommendations."></a>description: Comprehensive diagnostic analysis of time series data. Use when users provide CSV time series data and want to understand its characteristics before forecasting - stationarity, seasonality, trend, forecastability, and transform recommendations.</h2><h1 id="Time-Series-Diagnostics"><a href="#Time-Series-Diagnostics" class="headerlink" title="Time Series Diagnostics"></a>Time Series Diagnostics</h1><p>Comprehensive diagnostic toolkit to analyze time series data characteristics before forecasting.</p>
+<h2 id="Input-Format"><a href="#Input-Format" class="headerlink" title="Input Format"></a>Input Format</h2><p>The input CSV file should have two columns:</p>
+<ul>
+<li><strong>Date column</strong> - Timestamps or dates (e.g., <code>date</code>, <code>timestamp</code>, <code>time</code>)</li>
+<li><strong>Value column</strong> - Numeric values to analyze (e.g., <code>value</code>, <code>sales</code>, <code>temperature</code>)</li>
+</ul>
+<h2 id="Workflow"><a href="#Workflow" class="headerlink" title="Workflow"></a>Workflow</h2><p><strong>Step 1: Run diagnostics</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python scripts/diagnose.py data.csv --output-dir results/</span><br></pre></td></tr></table></figure>
+
+<p>This runs all statistical tests and analyses. Outputs <code>diagnostics.json</code> with all metrics and <code>summary.txt</code> with human-readable findings. Column names are auto-detected, or can be specified with <code>--date-col</code> and <code>--value-col</code> options.</p>
+<p><strong>Step 2: Generate plots (optional)</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python scripts/visualize.py data.csv --output-dir results/</span><br></pre></td></tr></table></figure>
+
+<p>Creates diagnostic plots in <code>results/plots/</code> for visual inspection. Run after <code>diagnose.py</code> to ensure ACF/PACF plots are synchronized with stationarity results. Column names are auto-detected, or can be specified with <code>--date-col</code> and <code>--value-col</code> options.</p>
+<p><strong>Step 3: Report to user</strong></p>
+<p>Summarize findings from <code>summary.txt</code> and present relevant plots. See <code>references/interpretation.md</code> for guidance on:</p>
+<ul>
+<li>Is the data forecastable?</li>
+<li>Is it stationary? How much differencing is needed?</li>
+<li>Is there seasonality? What period?</li>
+<li>Is there a trend? What direction?</li>
+<li>Is a transform needed?</li>
+</ul>
+<h2 id="Script-Options"><a href="#Script-Options" class="headerlink" title="Script Options"></a>Script Options</h2><p>Both scripts accept:</p>
+<ul>
+<li><code>--date-col NAME</code> - Date column (auto-detected if omitted)</li>
+<li><code>--value-col NAME</code> - Value column (auto-detected if omitted)</li>
+<li><code>--output-dir PATH</code> - Output directory (default: <code>diagnostics/</code>)</li>
+<li><code>--seasonal-period N</code> - Seasonal period (auto-detected if omitted)</li>
+</ul>
+<h2 id="Output-Files"><a href="#Output-Files" class="headerlink" title="Output Files"></a>Output Files</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">results/</span><br><span class="line">├── diagnostics.json       # All test results and statistics</span><br><span class="line">├── summary.txt            # Human-readable findings</span><br><span class="line">├── diagnostics_state.json # Internal state for plot synchronization</span><br><span class="line">└── plots/</span><br><span class="line">    ├── timeseries.png</span><br><span class="line">    ├── histogram.png</span><br><span class="line">    ├── rolling_stats.png</span><br><span class="line">    ├── box_by_dayofweek.png  # By day of week (if applicable)</span><br><span class="line">    ├── box_by_month.png      # By month (if applicable)</span><br><span class="line">    ├── box_by_quarter.png    # By quarter (if applicable)</span><br><span class="line">    ├── acf_pacf.png</span><br><span class="line">    ├── decomposition.png</span><br><span class="line">    └── lag_scatter.png</span><br></pre></td></tr></table></figure>
+
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p>See <code>references/interpretation.md</code> for:</p>
+<ul>
+<li>Statistical test thresholds and interpretation</li>
+<li>Seasonal period guidelines by data frequency</li>
+<li>Transform recommendations</li>
+</ul>
+<h2 id="Dependencies"><a href="#Dependencies" class="headerlink" title="Dependencies"></a>Dependencies</h2><p><code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>, <code>statsmodels</code>, <code>scipy</code></p>
 
       
     </div>
@@ -1076,7 +1123,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Agent-Skills"><span class="nav-number">1.</span> <span class="nav-text">Agent Skills</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发展诉求"><span class="nav-number">1.1.1.</span> <span class="nav-text">发展诉求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么时候使用skill？"><span class="nav-number">1.1.2.</span> <span class="nav-text">什么时候使用skill？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Agent-Skill-MCP-Subagent-Tools-LLM关系"><span class="nav-number">1.2.</span> <span class="nav-text">Agent/Skill/MCP/Subagent/Tools/LLM关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何工作"><span class="nav-number">1.3.</span> <span class="nav-text">如何工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组织结构"><span class="nav-number">1.4.</span> <span class="nav-text">组织结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#skill-md"><span class="nav-number">1.4.1.</span> <span class="nav-text">skill.md</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最佳实践"><span class="nav-number">1.5.</span> <span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SKILL-md"><span class="nav-number">1.5.1.</span> <span class="nav-text">SKILL.md</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#name"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">name</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#description"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">description</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#正文说明"><span class="nav-number">1.5.1.3.</span> <span class="nav-text">正文说明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可选的目录"><span class="nav-number">1.6.</span> <span class="nav-text">可选的目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#assets"><span class="nav-number">1.6.1.</span> <span class="nav-text">/assets</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#references"><span class="nav-number">1.6.2.</span> <span class="nav-text">/references</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scripts"><span class="nav-number">1.6.3.</span> <span class="nav-text">/scripts</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评估"><span class="nav-number">1.7.</span> <span class="nav-text">评估</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单元测试"><span class="nav-number">1.7.1.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example-Test-Case"><span class="nav-number">1.7.2.</span> <span class="nav-text">Example Test Case</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Agent-Skills"><span class="nav-number">1.</span> <span class="nav-text">Agent Skills</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发展诉求"><span class="nav-number">1.1.1.</span> <span class="nav-text">发展诉求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么时候使用skill？"><span class="nav-number">1.1.2.</span> <span class="nav-text">什么时候使用skill？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Agent-Skill-MCP-Subagent-Tools-LLM关系"><span class="nav-number">1.2.</span> <span class="nav-text">Agent/Skill/MCP/Subagent/Tools/LLM关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何工作"><span class="nav-number">1.3.</span> <span class="nav-text">如何工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组织结构"><span class="nav-number">1.4.</span> <span class="nav-text">组织结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#skill-md"><span class="nav-number">1.4.1.</span> <span class="nav-text">skill.md</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最佳实践"><span class="nav-number">1.5.</span> <span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SKILL-md"><span class="nav-number">1.5.1.</span> <span class="nav-text">SKILL.md</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#name"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">name</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#description"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">description</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#正文说明"><span class="nav-number">1.5.1.3.</span> <span class="nav-text">正文说明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可选的目录"><span class="nav-number">1.6.</span> <span class="nav-text">可选的目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#assets"><span class="nav-number">1.6.1.</span> <span class="nav-text">/assets</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#references"><span class="nav-number">1.6.2.</span> <span class="nav-text">/references</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scripts"><span class="nav-number">1.6.3.</span> <span class="nav-text">/scripts</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评估"><span class="nav-number">1.7.</span> <span class="nav-text">评估</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单元测试"><span class="nav-number">1.7.1.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example-Test-Case"><span class="nav-number">1.7.2.</span> <span class="nav-text">Example Test Case</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视频课程中例子"><span class="nav-number">1.8.</span> <span class="nav-text">视频课程中例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#description-Comprehensive-diagnostic-analysis-of-time-series-data-Use-when-users-provide-CSV-time-series-data-and-want-to-understand-its-characteristics-before-forecasting-stationarity-seasonality-trend-forecastability-and-transform-recommendations"><span class="nav-number">2.</span> <span class="nav-text">description: Comprehensive diagnostic analysis of time series data. Use when users provide CSV time series data and want to understand its characteristics before forecasting - stationarity, seasonality, trend, forecastability, and transform recommendations.</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#Time-Series-Diagnostics"><span class="nav-number"></span> <span class="nav-text">Time Series Diagnostics</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Input-Format"><span class="nav-number">1.</span> <span class="nav-text">Input Format</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Workflow"><span class="nav-number">2.</span> <span class="nav-text">Workflow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Script-Options"><span class="nav-number">3.</span> <span class="nav-text">Script Options</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Output-Files"><span class="nav-number">4.</span> <span class="nav-text">Output Files</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dependencies"><span class="nav-number">6.</span> <span class="nav-text">Dependencies</span></a></li></ol></li></div>
             
 
           </div>
