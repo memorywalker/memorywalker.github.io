@@ -19,7 +19,7 @@ tags:
     export ANTHROPIC_BASE_URL=http://localhost:1234
     export ANTHROPIC_AUTH_TOKEN=lmstudio
     ```
-6. 运行`claude --model qwen3.5-9b-claude-4.6-opus-uncensored-distilled` 或 `claude --model gemma-4-e4b-it`
+6. 运行`claude --model qwen3.5-9b-claude-4.6-opus-uncensored-distilled` 或 `claude --model gemma-4-e4b-it`   `claude --model qwen/qwen3.5-9b`
 
 ![claudecode](uploads/ai/claudecode.png)
 
@@ -28,6 +28,48 @@ tags:
 
 claude code现在加了一个宠物系统，输入`/buddy`命令时，命令会彩色显示，开启后，会显示显示一个宠物信息，并在会在终端输入框右侧放一个宠物图标，它会动态变化。我这里是一个稀有的蜗牛，名字叫Moth。宠物还有自己的属性，Deubg，Patience，Chaos，Wisdom，Snark 
 ![](uploads/ai/claudepet.png)
+
+第三方API使用
+```bash
+export ANTHROPIC_API_KEY=sk-
+export ANTHROPIC_AUTH_TOKEN=sk-
+export ANTHROPIC_BASE_URL=https://
+export ANTHROPIC_MODEL=claude-4.5-sonnet-2cc
+export ANTHROPIC_DEFAULT_OPUS_MODEL=claude-4.5-sonnet-2cc
+export ANTHROPIC_DEFAULT_SONNET_MODEL=claude-4.5-sonnet-2cc
+export ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-4.5-sonnet-2cc
+export CLAUDE_CODE_SUBAGENT_MODEL=claude-4.5-sonnet-2cc
+
+如果要使用glm的模型，它兼容Claude Code
+export ANTHROPIC_AUTH_TOKEN=sk-
+export ANTHROPIC_BASE_URL=https://
+export ANTHROPIC_DEFAULT_SONNET_MODEL=glm-4.7
+export ANTHROPIC_DEFAULT_OPUS_MODEL=glm-4.7
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+export ENABLE_TOOL_SEARCH=0
+export CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1
+
+anyrouter支持默认的claude模型，只需要配置这两个
+export ANTHROPIC_BASE_URL=https://anyrouter.top
+export ANTHROPIC_AUTH_TOKEN=sk-
+```
+
+### Tips
+
+1. `/init` 命令可以让claude根据当前目录的文件自动推理出项目的作用，并生成一个说明文件`CLAUDE.md`，claude在这个目录中运行时上下文中都有这个文件内的信息。
+2. `./.claude/skills`中是旨在当前项目中加载的skills，而`~/.claude/skills`则是全局可以使用的skills
+3. . `/agents` 创建子agent，当一个会话agent做的事情太多，可以把它的任务分拆给多个子agent来工作，减少主agent的上下文的数据量，例如主agent用来开发实现，一个子agent用来代码评审，一个子agent用来执行单元测试。创建出来的子agent在项目目录的`./.claude/agents/xxx.md`，每一个子agent有一个自己的agent名字的md文件。注意子agent在被指定了开始执行任务后，它会加载它要使用的skills的完整的`SKILL.md`文件的内容，而不只是文件头信息。在这个md文件中可以指定子agent可以会使用的tools, model, skill。例如code-reviewer.md文件头如下：
+    ```
+    ---
+    name: code-reviewer
+    description: "Reviews code for quality, security, and convention compliance. Use when user asks to review, check, or verify code"
+    tools: Bash, Glob, Grep, Read
+    model: inherit
+    color: purple
+    skills: reviewing-cli-command
+    ---
+    ```
+使用类似`use the code-reviewer subagent to review the code @../src/main.rs`来指派一个subagent同时工作
 
 ### 总结
 

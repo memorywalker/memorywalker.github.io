@@ -162,7 +162,7 @@ YAML中其他可选字段
 
 markdown格式内容，建议包括：
 - 工作流一步一步的说明，如果一个步骤是可以跳过的，也要明确写出来
-- 输入格式，输出格式以及举个例子
+- 输入格式，输出格式，输出的目录结构以及举个例子
 - 常规的边界情况
 
 **实践经验**
@@ -188,12 +188,13 @@ markdown格式内容，建议包括：
 ### 可选的目录
 
 #### `/assets`
+输入或输出时可能会用到的资源文件，特别是输出可以参考模板输出
 - **Templates:** 文档模板, 配置模板
 - **Images:** 图, logos
 - **Data files:** 数据表, 模式信息
 
 #### `/references`
-- agent需要读取的额外文档资料
+- 当skill正文内容太长时，agent需要读取的额外文档资料放在这里
 - 一个文件只描述一件事情
 - 超过100行的文件，在文件开始添加一个目录TOC，这样agent可以知道全局
 #### `/scripts`
@@ -201,6 +202,7 @@ markdown格式内容，建议包括：
 - 脚本有清晰的文档说明
 - 错误处理要明显和有用的
 - 说明中要明确告诉agent是执行这个脚本还是把它作为一个参考资料
+
 ### 评估
 
 - 人工评估反馈好坏
@@ -236,4 +238,86 @@ markdown格式内容，建议包括：
 }
 ```
 
+### 视频课程中例子
+
+---
+name: analyzing-time-series
+description: Comprehensive diagnostic analysis of time series data. Use when users provide CSV time series data and want to understand its characteristics before forecasting - stationarity, seasonality, trend, forecastability, and transform recommendations.
+---
+
+# Time Series Diagnostics
+
+Comprehensive diagnostic toolkit to analyze time series data characteristics before forecasting.
+
+## Input Format
+
+The input CSV file should have two columns:
+- **Date column** - Timestamps or dates (e.g., `date`, `timestamp`, `time`)
+- **Value column** - Numeric values to analyze (e.g., `value`, `sales`, `temperature`)
+
+
+## Workflow
+
+**Step 1: Run diagnostics**
+
+```bash
+python scripts/diagnose.py data.csv --output-dir results/
+```
+
+This runs all statistical tests and analyses. Outputs `diagnostics.json` with all metrics and `summary.txt` with human-readable findings. Column names are auto-detected, or can be specified with `--date-col` and `--value-col` options.
+
+**Step 2: Generate plots (optional)**
+
+```bash
+python scripts/visualize.py data.csv --output-dir results/
+```
+
+Creates diagnostic plots in `results/plots/` for visual inspection. Run after `diagnose.py` to ensure ACF/PACF plots are synchronized with stationarity results. Column names are auto-detected, or can be specified with `--date-col` and `--value-col` options.
+
+**Step 3: Report to user**
+
+Summarize findings from `summary.txt` and present relevant plots. See `references/interpretation.md` for guidance on:
+- Is the data forecastable?
+- Is it stationary? How much differencing is needed?
+- Is there seasonality? What period?
+- Is there a trend? What direction?
+- Is a transform needed?
+
+## Script Options
+
+Both scripts accept:
+- `--date-col NAME` - Date column (auto-detected if omitted)
+- `--value-col NAME` - Value column (auto-detected if omitted)
+- `--output-dir PATH` - Output directory (default: `diagnostics/`)
+- `--seasonal-period N` - Seasonal period (auto-detected if omitted)
+
+## Output Files
+
+```
+results/
+├── diagnostics.json       # All test results and statistics
+├── summary.txt            # Human-readable findings
+├── diagnostics_state.json # Internal state for plot synchronization
+└── plots/
+    ├── timeseries.png
+    ├── histogram.png
+    ├── rolling_stats.png
+    ├── box_by_dayofweek.png  # By day of week (if applicable)
+    ├── box_by_month.png      # By month (if applicable)
+    ├── box_by_quarter.png    # By quarter (if applicable)
+    ├── acf_pacf.png
+    ├── decomposition.png
+    └── lag_scatter.png
+```
+
+## References
+
+See `references/interpretation.md` for:
+- Statistical test thresholds and interpretation
+- Seasonal period guidelines by data frequency
+- Transform recommendations
+
+## Dependencies
+
+`pandas`, `numpy`, `matplotlib`, `statsmodels`, `scipy`
 
